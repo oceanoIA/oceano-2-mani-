@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v10.5 // 100 UNIQUE OBJECTS & GALAXY MATRIX</title>
+  <title>STARK KINETIC LAB v9.0 // MINIMAL FUTURISTIC</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,97 +11,83 @@
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body { overflow: hidden; background-color: #030508; font-family: 'Share Tech Mono', monospace; color: #ffffff; }
+    body { overflow: hidden; background-color: #000000; font-family: 'Share Tech Mono', monospace; color: #00f3ff; }
     #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
     #video-input { display: none; }
 
-    /* LIQUID GLASS HEADER */
     .stark-header {
-      position: absolute; top: 0; left: 0; width: 100%; height: 55px;
-      background: rgba(10, 15, 25, 0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15); z-index: 10;
+      position: absolute; top: 0; left: 0; width: 100%; height: 50px;
+      background: rgba(0, 0, 0, 0.85); border-bottom: 1px solid rgba(0, 243, 255, 0.2); z-index: 10;
       display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
     .stark-title {
       font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
-      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
       display: flex; align-items: center; gap: 12px;
     }
     .security-badge {
-      font-size: 9px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #ffffff; padding: 3px 8px; border-radius: 4px; letter-spacing: 1px;
+      font-size: 9px; background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.4);
+      color: #00f3ff; padding: 2px 6px; border-radius: 2px; letter-spacing: 1px;
     }
-
-    /* LIQUID GLASS BOTTOM CENTER MODE TABS */
-    .mode-tabs-container {
-      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 10; display: flex; gap: 10px;
-      background: rgba(10, 15, 25, 0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      padding: 8px 14px; border-radius: 30px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-    }
+    .mode-tabs { display: flex; gap: 8px; }
     .tab-btn {
-      background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.25);
-      color: rgba(255, 255, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
-      padding: 8px 18px; border-radius: 20px; cursor: pointer; transition: all 0.3s ease;
-      letter-spacing: 1px;
+      background: #000000; border: 1px solid rgba(0, 243, 255, 0.3);
+      color: rgba(0, 243, 255, 0.6); font-family: 'Orbitron', sans-serif; font-size: 10px;
+      padding: 5px 14px; cursor: pointer; transition: all 0.2s ease;
     }
     .tab-btn:hover, .tab-btn.active {
-      background: rgba(255, 255, 255, 0.2); border-color: #ffffff; color: #ffffff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; color: #ffffff;
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
     }
 
-    /* LIQUID GLASS OVERLAY PANEL */
     .ui-overlay {
-      position: absolute; top: 75px; left: 20px; z-index: 10; width: 310px; padding: 18px;
-      background: rgba(10, 15, 25, 0.5); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45); display: flex; flex-direction: column; gap: 14px;
+      position: absolute; top: 65px; left: 20px; z-index: 10; width: 280px; padding: 16px;
+      background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 243, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; gap: 12px;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
-      color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      padding-bottom: 6px; display: flex; justify-content: space-between;
+      color: #ffffff; border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+      padding-bottom: 5px; display: flex; justify-content: space-between;
     }
     .control-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 9px; color: rgba(255, 255, 255, 0.75); letter-spacing: 1px; }
+    label { font-size: 9px; color: rgba(0, 243, 255, 0.7); letter-spacing: 1px; }
 
     select, input[type="color"], .stark-btn {
-      width: 100%; height: 34px; background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.3); color: #ffffff; padding: 0 10px;
+      width: 100%; height: 32px; background: #000000;
+      border: 1px solid rgba(0, 243, 255, 0.3); color: #00f3ff; padding: 0 8px;
       font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
-      letter-spacing: 1px; outline: none; cursor: pointer; border-radius: 6px; transition: all 0.2s ease;
+      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.2s ease;
     }
     select:hover, .stark-btn:hover {
-      background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+      background: rgba(0, 243, 255, 0.15); border-color: #00f3ff; color: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
     }
-    select option { background: #05080f; color: #ffffff; }
+    select option { background: #000000; color: #00f3ff; }
+
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 
     .telemetry-box {
-      font-size: 10px; background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; padding: 10px;
+      font-size: 10px; background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 243, 255, 0.15); padding: 8px;
       display: flex; flex-direction: column; gap: 6px;
     }
-    .hand-card { border-left: 2px solid #ffffff; padding-left: 8px; display: flex; flex-direction: column; gap: 3px; }
-    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.65); }
-    .telemetry-val { color: #ffffff; font-weight: bold; }
+    .hand-card { border-left: 2px solid #ffffff; padding-left: 6px; display: flex; flex-direction: column; gap: 2px; }
+    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.6); }
+    .telemetry-val { color: #00f3ff; font-weight: bold; }
 
-    /* LIQUID GLASS CAMERA PREVIEW */
     .camera-preview-container {
-      position: absolute; bottom: 24px; right: 24px; z-index: 10;
-      width: 180px; height: 135px; background: rgba(10, 15, 25, 0.5);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 10px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45); display: flex; flex-direction: column; overflow: hidden;
+      position: absolute; bottom: 20px; right: 20px; z-index: 10;
+      width: 180px; height: 135px; background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column;
     }
-    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.9; }
+    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.85; }
     .preview-hud-tag {
-      position: absolute; top: 6px; left: 8px; font-size: 8px; font-weight: bold;
-      letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.7);
-      padding: 2px 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.2);
+      position: absolute; top: 4px; left: 6px; font-size: 8px; font-weight: bold;
+      letter-spacing: 1px; color: #00f3ff; background: rgba(0, 0, 0, 0.8);
+      padding: 1px 4px; border: 1px solid rgba(0, 243, 255, 0.2);
     }
   </style>
 
@@ -117,137 +103,52 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">SATURN DEFAULT // 100 OBJECTS</span>
+      <span class="security-badge">MINIMAL BLACK</span>
     </div>
-  </div>
-
-  <div class="mode-tabs-container">
-    <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: QUANTUM CORE</button>
-    <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: 100+ MATRIX</button>
+    <div class="mode-tabs">
+      <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
+      <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: PLASMA MATRIX</button>
+    </div>
   </div>
 
   <div class="ui-overlay">
     <div class="panel-header">
-      <span id="panel-title-text">PLASMA MATRIX</span>
-      <span style="color: #ffffff; font-weight: bold;">[ACTIVE]</span>
+      <span id="panel-title-text">PARTICLE MATRIX</span>
+      <span style="color: #00f3ff; font-weight: bold;">[ACTIVE]</span>
     </div>
     
     <div id="controls-builder" style="display: none;">
       <div class="control-group">
-        <label>PLANCIA OLOGRAFICA 3D</label>
-        <button class="stark-btn" onclick="toggleCorePulse()">ATTIVA / DISATTIVA PULSAZIONE</button>
-        <button class="stark-btn" style="margin-top: 6px; border-color: #ff3366; color: #ff3366;" onclick="resetQuantumCore()">RESET ASSETTO</button>
+        <label>SPAWN OGGETTI 3D ESTESI</label>
+        <div class="btn-grid">
+          <button class="stark-btn" onclick="spawnShape('cube')">+ CUBO</button>
+          <button class="stark-btn" onclick="spawnShape('sphere')">+ SFERA</button>
+          <button class="stark-btn" onclick="spawnShape('pyramid')">+ PIRAMIDE</button>
+          <button class="stark-btn" onclick="spawnShape('torus')">+ TORUS</button>
+          <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
+          <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
+        </div>
+        <button class="stark-btn" style="margin-top: 6px; border-color: #ff3366; color: #ff3366;" onclick="clearBlocks()">RESET SCENA</button>
       </div>
     </div>
 
     <div id="controls-particles" style="display: block;">
       <div class="control-group">
-        <label>100 OBJECTS & GALAXIES (PARTENZA: SATURNO)</label>
+        <label>HOLOGRAM TEMPLATE</label>
         <select id="shape-select">
-          <option value="f1">01. GALASSIA A SPIRALE MAGENTA</option>
-          <option value="f2">02. NEBULOSA DI ORIONE BLU</option>
-          <option value="f3">03. BUCO NERO CON DISCO DORATO</option>
-          <option value="f4">04. CLUSTER STELLARE DIAMANTE</option>
-          <option value="f5">05. SUPERNOVA IN ESPANSIONE ROSSA</option>
-          <option value="f6">06. SISTEMA SOLARE COMPATTO</option>
-          <option value="f7">07. ANTEPRIMA PULSAR ROTANTE</option>
-          <option value="f8" selected>08. SATURNO CON ANELLI DI GHIACCIO BIANCHI</option>
-          <option value="f9">09. GIOVE CON TEMPESTA DI IONI</option>
-          <option value="f10">10. STELLA DI NEUTRONI MAGNETICA</option>
-          <option value="f11">11. CUBO RUBIK FUTURISTICO</option>
-          <option value="f12">12. PIRAMIDE DI CRISTALLO LASER</option>
-          <option value="f13">13. CLESSIDRA DI ENERGIA PURA</option>
-          <option value="f14">14. SFERA ARMATURA DYSON</option>
-          <option value="f15">15. DIAMANTE MULTIFACCETTA 3D</option>
-          <option value="f16">16. OROLOGIO QUANTICO SFERICO</option>
-          <option value="f17">17. TAZZA DA CAFFE OLOGRAFICA 3D</option>
-          <option value="f18">18. LAMPADINA A FILAMENTO PLASMA</option>
-          <option value="f19">19. OCCELLO DI DRAGONE MECCANICO</option>
-          <option value="f20">20. CELLULA MADRE SCIENTIFICA</option>
-          <option value="f21">21. DNA DOPPIA ELICA CHIMICA</option>
-          <option value="f22">22. VIRUS OLOGRAFICO ISOLATO</option>
-          <option value="f23">23. MOLECOLA DI ACQUA CRISTALLINA</option>
-          <option value="f24">24. RETICOLO ATOMICO DEL CARBONIO</option>
-          <option value="f25">25. STRUTTURA DI BENZENE 3D</option>
-          <option value="f26">26. SCHERMO OLOGRAFICO CURVO</option>
-          <option value="f27">27. DRONE DI ESPLORAZIONE SFERICO</option>
-          <option value="f28">28. SATELLITE ARTIFICIALE ORBITALE</option>
-          <option value="f29">29. ANTENNA RADAR PARABOLICA</option>
-          <option value="f30">30. REATTORE ARC MINIATURIZZATO</option>
-          <option value="f31">31. SPADA LASER A DOPPIO TAGLIO</option>
-          <option value="f32">32. SCUDO ENERGETICO ESAGONALE</option>
-          <option value="f33">33. CHIAVE DIGITALE CRIPTATA</option>
-          <option value="f34">34. PORTALE DI SALTO WARP</option>
-          <option value="f35">36. MONOLITE SPAZIALE NERO/LUCE</option>
-          <option value="f36">36. TORRE DI TESLA A SCARICHE</option>
-          <option value="f37">37. ANELLO DI POTERE GEOMETRICO</option>
-          <option value="f38">38. CORONA REALE FUTURISTICA</option>
-          <option value="f39">39. CALICE SACRO OLOGRAFICO</option>
-          <option value="f40">40. FIAMMA PERenne DI PLASMA</option>
-          <option value="f41">41. TORO QUANTICO ANNIDATO</option>
-          <option value="f42">42. IPERCUBO 4D PROIETTATO</option>
-          <option value="f43">43. FIORE DELLA VITA SACRO 3D</option>
-          <option value="f44">44. CUBO DI METATRON GEOMETRICO</option>
-          <option value="f45">45. MERKABA STELLARE PLATONICA</option>
-          <option value="f46">46. DODECAEDRO LUMINOSO</option>
-          <option value="f47">47. ICOSAEDRO ROTANTE</option>
-          <option value="f48">48. OCTAEDRO DI CRISTALLO</option>
-          <option value="f49">49. TETRAEDRO ENERGETICO</option>
-          <option value="f50">50. SFERA ARMATURA OMEGA</option>
-          <option value="f51">51. AUTO SPORTIVA WIREFRAME 3D</option>
-          <option value="f52">52. CASCO DA PILOTA SPAZIALE</option>
-          <option value="f53">53. GUANTO KINETICO STARK</option>
-          <option value="f54">54. BOTTEGA ALCHEMICA LASER</option>
-          <option value="f55">55. MACCHINA DEL TEMPO A DISCHI</option>
-          <option value="f56">56. CHIAVE INGLESE MECCANICA 3D</option>
-          <option value="f57">57. MARTELLO DEGLI DEI CYBER</option>
-          <option value="f58">58. SCUDO CAPITAN FUTURO</option>
-          <option value="f59">59. JETPACK A IONI ACCESO</option>
-          <option value="f60">60. RAZZO SPZIALE MULTISTADIO</option>
-          <option value="f61">61. GHIACCIAIO DI CRISTALLO</option>
-          <option value="f62">62. VULCANO ATTIVO DI PLASMA</option>
-          <option value="f63">63. CASCATA DI DATI DIGITALI</option>
-          <option value="f64">64. TORNADO DI ENERGIA PURA</option>
-          <option value="f65">65. ALBERO QUANTICO DELLA VITA</option>
-          <option value="f66">66. FUNGONO ATOMICO LUMINOSO</option>
-          <option value="f67">67. FENICE DI FUOCO OLOGRAFICA</option>
-          <option value="f68">68. AQUILA MECCANICA IN VOLO</option>
-          <option value="f69">69. LUPO GEOFISICO WIREFRAME</option>
-          <option value="f70">70. SERPENTE DI LUNGA SCALATURA</option>
-          <option value="f71">71. LABIRINTO SFERICO 3D</option>
-          <option value="f72">72. RUOTA PANORAMICA CYBER</option>
-          <option value="f73">73. STADIO OLOGRAFICO GLOBALE</option>
-          <option value="f74">74. PALAZZO GRATTACIELO FUTURO</option>
-          <option value="f75">75. CITTA GALATTICA MINIMAL</option>
-          <option value="f76">76. PONTE DI LUCE SOSPESO</option>
-          <option value="f77">77. ARCO DI TRIOFRO OLOGRAFICO</option>
-          <option value="f78">78. FONTANA DI IONI LUMINOSA</option>
-          <option value="f79">79. SCULTURA MODERNA FLUIDA</option>
-          <option value="f80">80. NUCLEO DI STELLA MADRE</option>
-          <option value="f81">81. FATTALE DI MANDELBULB</option>
-          <option value="f82">82. GEOMETRIA FRATTALE PURA</option>
-          <option value="f83">83. ONDA DI MARE QUANTICA</option>
-          <option value="f84">84. SABBIA CINETICA MOBILE</option>
-          <option value="f85">85. PIUMA DI CRISTALLO LEGGERA</option>
-          <option value="f86">86. FOGLIA DI PIANTA ALIENA</option>
-          <option value="f87">87. FIORE DI LOTO OLOGRAFICO</option>
-          <option value="f88">88. FARFALLA MULTIDIMENSIONALE</option>
-          <option value="f89">89. MEDUSA SPZIALE LUMINOSA</option>
-          <option value="f90">90. CRISTALLO DI AMETISTA GIGANTE</option>
-          <option value="f91">91. SCACCHIERA 3D SOSPESA</option>
-          <option value="f92">92. DADI QUANTICI ROTANTI</option>
-          <option value="f93">93. CARTE DA GIOCO OLOGRAFICHE</option>
-          <option value="f94">94. MASCHERA DI CARNEVALE CYBER</option>
-          <option value="f95">95. CORONA DI ALLORO LASER</option>
-          <option value="f96">96. TROFEO DI VITTORIA STELLARE</option>
-          <option value="f97">97. MEDAGLIA AL VALORE QUANTICO</option>
-          <option value="f98">98. ANCORA MARINA SPZIALE</option>
-          <option value="f99">99. BUSSOLA MAGNETICA UNIVERSALE</option>
-          <option value="f100">100. SINGOLARITA FINALE OMEGA</option>
+          <option value="jupiter">JUPITER & RINGS</option>
+          <option value="galaxy">GALAXY SPIRAL</option>
+          <option value="hypercube">HYPERCUBE MATRIX</option>
+          <option value="heart">HEART MATRIX</option>
+          <option value="flower">NEURAL FLOWER</option>
+          <option value="buddha">BUDDHA HOLOGRAM</option>
+          <option value="fireworks">ENERGY EXPLOSION</option>
+          <option value="saturn">SATURN RING SYSTEM</option>
+          <option value="DNA">DNA DOUBLE HELIX</option>
         </select>
       </div>
       <div class="control-group" style="margin-top: 6px;">
-        <label>PLASMA COLOR (PARTENZA: BIANCO PURO)</label>
+        <label>PLASMA COLOR</label>
         <input type="color" id="color-picker" value="#ffffff">
       </div>
     </div>
@@ -257,11 +158,11 @@
     <div class="telemetry-box">
       <div class="hand-card">
         <div class="telemetry-row">
-          <span>MANO UNICA:</span>
+          <span>MANO 1:</span>
           <span id="h1-status" class="telemetry-val">CERCA...</span>
         </div>
         <div class="telemetry-row">
-          <span>GESTO PINCH:</span>
+          <span>STATO:</span>
           <span id="h1-grab" class="telemetry-val">LIBERA</span>
         </div>
       </div>
@@ -335,16 +236,19 @@
     }
 
     let currentMode = 'PARTICLES';
-    const PARTICLE_COUNT = 14000;
+    const PARTICLE_COUNT = 12000;
     let scene, camera, renderer;
-    let quantumCoreGroup;
-    let quantumRings = [];
-    let corePulsing = true;
+    let builderGroup;
+    let blocks = [];
 
-    const controller = {
-      mesh: null, pointLight: null, pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
-      velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
-    };
+    // Pallino ultra-piccolo, bianco e brillante come richiesto
+    const controllers = [
+      {
+        id: 0, mesh: null, pointLight: null, color: 0xffffff,
+        grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
+        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
+      }
+    ];
 
     let particleGroup, particleGeometry, particleMaterial;
     let targetPositions = new Float32Array(PARTICLE_COUNT * 3);
@@ -356,7 +260,7 @@
     function initThree() {
       const container = document.getElementById('canvas-container');
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x030508);
+      scene.background = new THREE.Color(0x000000); // Sfondo rigorosamente nero minimalista
 
       camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
       camera.position.set(0, 4, 28);
@@ -367,9 +271,9 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
 
-      quantumCoreGroup = new THREE.Group();
-      quantumCoreGroup.visible = false;
-      scene.add(quantumCoreGroup);
+      builderGroup = new THREE.Group();
+      builderGroup.visible = false;
+      scene.add(builderGroup);
 
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
       scene.add(ambientLight);
@@ -378,33 +282,29 @@
       dirLight.position.set(10, 25, 15);
       scene.add(dirLight);
 
-      const coreGeo = new THREE.IcosahedronGeometry(2.0, 2);
-      const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
-      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-      coreMesh.name = "coreMesh";
-      quantumCoreGroup.add(coreMesh);
+      const planeGeo = new THREE.PlaneGeometry(100, 100);
+      const planeMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
+      const floor = new THREE.Mesh(planeGeo, planeMat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -6;
+      builderGroup.add(floor);
 
-      for (let i = 0; i < 3; i++) {
-        const ringGeo = new THREE.TorusGeometry(3.5 + i * 1.5, 0.04, 16, 100);
-        const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 });
-        const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.random() * Math.PI;
-        ring.rotation.y = Math.random() * Math.PI;
-        quantumCoreGroup.add(ring);
-        quantumRings.push(ring);
-      }
+      controllers.forEach((ctrl, idx) => {
+        // Sfera ridotta al minimo raggio (0.15) e bianca accesa
+        const dotGeo = new THREE.SphereGeometry(0.15, 16, 16);
+        const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
+        ctrl.mesh.visible = false;
+        builderGroup.add(ctrl.mesh);
 
-      const dotGeo = new THREE.SphereGeometry(0.15, 16, 16);
-      const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      controller.mesh = new THREE.Mesh(dotGeo, dotMat);
-      controller.mesh.visible = false;
-      quantumCoreGroup.add(controller.mesh);
+        ctrl.pointLight = new THREE.PointLight(0xffffff, 1.0, 10);
+        builderGroup.add(ctrl.pointLight);
 
-      controller.pointLight = new THREE.PointLight(0xffffff, 1.0, 10);
-      quantumCoreGroup.add(controller.pointLight);
+        ctrl.statusEl = document.getElementById(`h${idx + 1}-status`);
+        ctrl.grabEl = document.getElementById(`h${idx + 1}-grab`);
+      });
 
-      controller.statusEl = document.getElementById('h1-status');
-      controller.grabEl = document.getElementById('h1-grab');
+      spawnShape('cube', 0, 2, 0, 0x00f3ff);
 
       particleGroup = new THREE.Group();
       particleGroup.visible = true;
@@ -417,8 +317,25 @@
       }
       particleGeometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
 
-      // Colore iniziale bianco puro per le particelle
-      updateParticleColors('#ffffff');
+      const particleColors = new Float32Array(PARTICLE_COUNT * 3);
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const idx = i * 3;
+        let randomColor;
+        const rand = Math.random();
+        if (rand < 0.6) {
+          randomColor = new THREE.Color('#ffffff');
+        } else if (rand < 0.8) {
+          randomColor = new THREE.Color('#2bf2b0');
+        } else if (rand < 0.9) {
+          randomColor = new THREE.Color('#ffdf73');
+        } else {
+          randomColor = new THREE.Color('#7a53ff');
+        }
+        particleColors[idx] = randomColor.r;
+        particleColors[idx + 1] = randomColor.g;
+        particleColors[idx + 2] = randomColor.b;
+      }
+      particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
       const pCanvas = document.createElement('canvas');
       pCanvas.width = 64; pCanvas.height = 64;
@@ -434,9 +351,7 @@
 
       const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
       particleGroup.add(particleSystem);
-      
-      // Partenza fissa sull'oggetto 8 (Saturno)
-      generateShape('f8');
+      generateShape('jupiter');
 
       previewCanvas = document.getElementById('hand-preview-canvas');
       previewCtx = previewCanvas.getContext('2d');
@@ -444,39 +359,51 @@
       window.addEventListener('resize', onWindowResize);
     }
 
-    function updateParticleColors(hexColor) {
-      const baseCol = new THREE.Color(hexColor);
-      const particleColors = new Float32Array(PARTICLE_COUNT * 3);
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const idx = i * 3;
-        // Variazione di luminosità naturale legata al colore scelto
-        const factor = 0.6 + Math.random() * 0.4;
-        particleColors[idx] = baseCol.r * factor;
-        particleColors[idx + 1] = baseCol.g * factor;
-        particleColors[idx + 2] = baseCol.b * factor;
+    function spawnShape(type, x, y, z, colorHex) {
+      sounds.init();
+      let geo;
+      const size = 3.0;
+
+      if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 32, 32);
+      else if (type === 'pyramid') geo = new THREE.ConeGeometry(size / 1.4, size, 4);
+      else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 16, 32);
+      else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 32);
+      else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
+      else geo = new THREE.BoxGeometry(size, size, size);
+
+      const mat = new THREE.MeshStandardMaterial({
+        color: colorHex || 0x00f3ff,
+        roughness: 0.3, metalness: 0.2
+      });
+
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.x = x !== undefined ? x : (Math.random() - 0.5) * 8;
+      mesh.position.y = y !== undefined ? y : 6; 
+      mesh.position.z = z !== undefined ? z : (Math.random() - 0.5) * 4;
+
+      mesh.userData = {
+        originalColor: mat.color.getHex(),
+        velocity: new THREE.Vector3(0, 0, 0),
+        isGrabbed: false
+      };
+
+      builderGroup.add(mesh);
+      blocks.push(mesh);
+    }
+
+    function clearBlocks() {
+      for (let b of blocks) builderGroup.remove(b);
+      blocks = [];
+      controllers.forEach(c => { c.grabbedBlock = null; });
+    }
+
+    function setBlockHighlight(block, mode) {
+      if (!block) return;
+      if (mode === 'grab') {
+        block.material.color.setHex(0xffffff);
+      } else {
+        block.material.color.setHex(block.userData.originalColor);
       }
-      particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
-      if (particleGeometry.attributes.color) particleGeometry.attributes.color.needsUpdate = true;
-    }
-
-    // Palette di colori predefinita per ciascuna delle 100 forme/oggetti
-    const shapeColors = {
-      1: '#ff00aa', 2: '#00ffff', 3: '#ffaa00', 4: '#ffffff', 5: '#ff3333',
-      6: '#33ffaa', 7: '#9900ff', 8: '#ffffff', 9: '#ffcc00', 10: '#00ffaa',
-      11: '#ff3366', 12: '#33ffff', 13: '#ffff33', 14: '#ff9900', 15: '#ffffff',
-      16: '#00aaff', 17: '#cc9966', 18: '#ffbb00', 19: '#ff2255', 20: '#22ffaa',
-      21: '#00f3ff', 22: '#ff3300', 23: '#ffffff', 24: '#888888', 25: '#00ffcc',
-      26: '#0055ff', 27: '#aaaaaa', 28: '#ffaa33', 29: '#33ccff', 30: '#00ffff'
-    };
-
-    function toggleCorePulse() {
-      corePulsing = !corePulsing;
-      sounds.playPinch();
-    }
-
-    function resetQuantumCore() {
-      quantumCoreGroup.rotation.set(0, 0, 0);
-      sounds.playPinch();
     }
 
     function switchMode(mode) {
@@ -485,99 +412,88 @@
       document.getElementById('tab-particles').classList.toggle('active', mode === 'PARTICLES');
       document.getElementById('controls-builder').style.display = mode === 'BUILDER' ? 'block' : 'none';
       document.getElementById('controls-particles').style.display = mode === 'PARTICLES' ? 'block' : 'none';
-      document.getElementById('panel-title-text').innerText = mode === 'BUILDER' ? 'QUANTUM CORE MATRIX' : '100+ OBJECTS MATRIX';
+      document.getElementById('panel-title-text').innerText = mode === 'BUILDER' ? '3D BUILDER MATRIX' : 'PARTICLE MATRIX';
 
-      quantumCoreGroup.visible = (mode === 'BUILDER');
+      builderGroup.visible = (mode === 'BUILDER');
       particleGroup.visible = (mode === 'PARTICLES');
-      sounds.playPinch();
     }
 
-    // Generatore matematico per le 100 forme e oggetti unici
-    function generateShape(id) {
+    function generateShape(type) {
       const p = targetPositions;
-      const seedVal = parseInt(id.replace('f', '')) || 8;
-
-      // Aggiorna automaticamente il colore in base all'oggetto selezionato se presente nella mappa, altrimenti usa una tonalità coerente
-      const autoColor = shapeColors[seedVal] || '#' + Math.floor(Math.abs(Math.sin(seedVal) * 16777215)).toString(16).padStart(6, '0');
-      document.getElementById('color-picker').value = autoColor.length === 7 ? autoColor : '#ffffff';
-      updateParticleColors(autoColor);
-
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
         let x = 0, y = 0, z = 0;
 
-        switch(seedVal) {
-          case 8: // Saturno (Oggetto di default iniziale)
-            { 
-              if (i < PARTICLE_COUNT * 0.65) {
-                const u = Math.random(), v = Math.random();
-                const th = u * 2.0 * Math.PI, ph = Math.acos(2.0 * v - 1.0);
-                const r = 5.0;
-                x = r * Math.sin(ph) * Math.cos(th);
-                y = r * Math.cos(ph);
-                z = r * Math.sin(ph) * Math.sin(th);
-              } else {
-                const a = Math.random() * Math.PI * 2, d = 7.0 + Math.random() * 6.0;
-                x = Math.cos(a) * d; z = Math.sin(a) * d; y = (Math.random() - 0.5) * 0.2;
-              }
-            }
-            break;
-          case 17: // Tazza da caffè 3D (Oggetto quotidiano)
-            {
-              const h = (i / PARTICLE_COUNT) * 6 - 3;
-              if (i < PARTICLE_COUNT * 0.7) {
-                const a = Math.random() * Math.PI * 2, r = 3 + (h > 0 ? 0.5 : 0);
-                x = Math.cos(a) * r; z = Math.sin(a) * r; y = h;
-              } else {
-                const a = Math.random() * Math.PI * 2, r = 1.5;
-                x = 3 + Math.cos(a) * r; y = (Math.random() - 0.5) * 2; z = Math.sin(a) * r;
-              }
-            }
-            break;
-          case 18: // Lampadina
-            {
-              if (i < PARTICLE_COUNT * 0.7) {
-                const u = Math.random(), v = Math.random();
-                const th = u * 2 * Math.PI, ph = Math.acos(2 * v - 1);
-                x = 4 * Math.sin(ph) * Math.cos(th);
-                y = 4 * Math.cos(ph) + 2;
-                z = 4 * Math.sin(ph) * Math.sin(th);
-              } else {
-                const t = (i / PARTICLE_COUNT) * Math.PI * 2;
-                x = Math.sin(t) * 1; y = -((i / PARTICLE_COUNT) * 4); z = Math.cos(t) * 1;
-              }
-            }
-            break;
-          case 11: // Cubo Rubik 3D
-            {
-              const size = 6;
-              x = (Math.random() - 0.5) * size;
-              y = (Math.random() - 0.5) * size;
-              z = (Math.random() - 0.5) * size;
-            }
-            break;
-          case 21: // DNA Doppia Elica
-            {
-              const st = (i / PARTICLE_COUNT) * Math.PI * 14, dir = (i % 2 === 0) ? 1 : -1;
-              x = Math.sin(st) * 4 * dir; y = ((i / PARTICLE_COUNT) * 18) - 9; z = Math.cos(st) * 4 * dir;
-            }
-            break;
-          case 31: // Spada Laser
-            {
-              const h = ((i / PARTICLE_COUNT) * 16) - 8;
-              const a = Math.random() * Math.PI * 2, r = (i < PARTICLE_COUNT * 0.8) ? 0.4 : 2;
-              x = Math.cos(a) * r; y = h; z = Math.sin(a) * r;
-            }
-            break;
-          default: // Forme geometriche e galassie uniche generate proceduralmente
-            {
-              const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI;
-              const r = (4 + Math.sin(seedVal + u * 3) * 3);
-              x = r * Math.sin(v) * Math.cos(u) * (seedVal % 3 + 1);
-              y = r * Math.sin(v) * Math.sin(u) * 1.5;
-              z = r * Math.cos(v) * (seedVal % 2 + 1);
-            }
-            break;
+        if (type === 'jupiter') {
+          if (i < PARTICLE_COUNT * 0.75) {
+            const u = Math.random(), v = Math.random();
+            const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
+            const r = 7.0;
+            x = r * Math.sin(phi) * Math.cos(theta);
+            y = (r * Math.cos(phi)) * 0.85;
+            z = r * Math.sin(phi) * Math.sin(theta);
+          } else {
+            const angle = Math.random() * Math.PI * 2, dist = 9.0 + Math.random() * 4.0;
+            x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.2;
+          }
+        } else if (type === 'galaxy') {
+          const arms = 4, arm = i % arms, r = Math.pow(Math.random(), 1.5) * 15;
+          const theta = r * 0.4 + (arm * (Math.PI * 2 / arms));
+          x = Math.cos(theta) * r + (Math.random() - 0.5) * 0.7;
+          z = Math.sin(theta) * r + (Math.random() - 0.5) * 0.7;
+          y = (Math.random() - 0.5) * (1.8 - r * 0.1);
+        } else if (type === 'saturn') {
+          if (i < PARTICLE_COUNT * 0.5) {
+            const u = Math.random(), v = Math.random();
+            const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
+            const r = 5.0;
+            x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.cos(phi); z = r * Math.sin(phi) * Math.sin(theta);
+          } else {
+            const angle = Math.random() * Math.PI * 2, dist = 7.0 + Math.random() * 6.0;
+            x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.15;
+          }
+        } else if (type === 'DNA') {
+          const t = (i / PARTICLE_COUNT) * Math.PI * 12;
+          const strand = (i % 2 === 0) ? 1 : -1;
+          x = Math.sin(t) * 4 * strand;
+          y = ((i / PARTICLE_COUNT) * 16) - 8;
+          z = Math.cos(t) * 4 * strand;
+        } else if (type === 'hypercube') {
+          const size = 6, side = i % 12, t = Math.random() * size - size/2;
+          if (side === 0) { x = size/2; y = t; z = size/2; }
+          else if (side === 1) { x = -size/2; y = t; z = size/2; }
+          else if (side === 2) { x = t; y = size/2; z = size/2; }
+          else if (side === 3) { x = t; y = -size/2; z = size/2; }
+          else if (side === 4) { x = size/2; y = t; z = -size/2; }
+          else if (side === 5) { x = -size/2; y = t; z = -size/2; }
+          else if (side === 6) { x = t; y = size/2; z = -size/2; }
+          else if (side === 7) { x = t; y = -size/2; z = -size/2; }
+          else if (side === 8) { x = size/2; y = size/2; z = t; }
+          else if (side === 9) { x = -size/2; y = size/2; z = t; }
+          else if (side === 10) { x = size/2; y = -size/2; z = t; }
+          else { x = -size/2; y = -size/2; z = t; }
+        } else if (type === 'heart') {
+          const t = Math.random() * Math.PI * 2, u = (Math.random() - 0.5) * 3;
+          x = 16 * Math.pow(Math.sin(t), 3);
+          y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+          z = u; x *= 0.55; y *= 0.55; z *= 0.55;
+        } else if (type === 'flower') {
+          const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI;
+          const r = 9 * Math.sin(6 * u) * Math.sin(v);
+          x = r * Math.sin(v) * Math.cos(u); y = r * Math.sin(v) * Math.sin(u); z = r * Math.cos(v);
+        } else if (type === 'buddha') {
+          const rand = Math.random();
+          if (rand < 0.35) {
+            const a = Math.random() * Math.PI * 2, r = 2 + Math.random() * 8;
+            x = Math.cos(a) * r; z = Math.sin(a) * r; y = -7 + (Math.random() - 0.5) * 1.2;
+          } else {
+            const h = Math.random() * 9, width = (1 - h / 9) * 6.5, a = Math.random() * Math.PI * 2;
+            x = Math.cos(a) * width * Math.random(); z = Math.sin(a) * width * Math.random(); y = -6 + h;
+          }
+        } else if (type === 'fireworks') {
+          const theta = Math.random() * Math.PI * 2, phi = Math.acos((Math.random() * 2) - 1);
+          const speed = 2 + Math.random() * 12;
+          x = speed * Math.sin(phi) * Math.cos(theta); y = speed * Math.sin(phi) * Math.sin(theta); z = speed * Math.cos(phi);
         }
 
         p[idx] = x; p[idx + 1] = y; p[idx + 2] = z;
@@ -600,14 +516,14 @@
         previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
 
         const detected = results.multiHandLandmarks && results.multiHandLandmarks.length > 0;
-        const ctrl = controller;
+        const ctrl = controllers[0];
 
         if (detected) {
           ctrl.active = true;
           const landmarks = results.multiHandLandmarks[0];
 
           drawConnectors(previewCtx, landmarks, HAND_CONNECTIONS, { color: '#ffffff', lineWidth: 1 });
-          drawLandmarks(previewCtx, landmarks, { color: '#ffffff', lineWidth: 1, radius: 1.5 });
+          drawLandmarks(previewCtx, landmarks, { color: '#00f3ff', lineWidth: 1, radius: 1.5 });
 
           const thumbTip = landmarks[4], indexTip = landmarks[8];
           const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
@@ -622,7 +538,7 @@
           const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
 
           ctrl.lastPos.copy(ctrl.pos);
-          ctrl.pos.copy(targetPos);
+          ctrl.pos.copy(targetPos); // Inseguimento immediato e preciso senza ritardi
 
           ctrl.velocity.copy(ctrl.pos).sub(ctrl.lastPos);
           sounds.updateHum(ctrl.velocity.length());
@@ -636,14 +552,34 @@
           if (!wasPinching && ctrl.isPinching) sounds.playPinch();
 
           ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
-          ctrl.grabEl.innerText = ctrl.isPinching ? "CHIUSO (PINCH)" : "APERTO";
-          ctrl.grabEl.style.color = ctrl.isPinching ? "#ff3366" : "#ffffff";
 
           if (currentMode === 'BUILDER') {
-            const h1Center = landmarks[9], wrist = landmarks[0];
-            quantumCoreGroup.rotation.z = -Math.atan2(h1Center.y - wrist.y, h1Center.x - wrist.x) - Math.PI / 2;
-            quantumCoreGroup.rotation.x = (h1Center.y - 0.5) * Math.PI * 1.5;
-            quantumCoreGroup.rotation.y = (h1Center.x - 0.5) * Math.PI * 1.5;
+            if (ctrl.isPinching) {
+              if (ctrl.grabbedBlock) {
+                const blockTarget = ctrl.pos.clone().sub(ctrl.grabOffset);
+                ctrl.grabbedBlock.position.copy(blockTarget); // Presa istantanea dell'oggetto
+                ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#ffffff";
+              } else {
+                let closest = null, minDist = 4.0;
+                for (let block of blocks) {
+                  const d = ctrl.pos.distanceTo(block.position);
+                  if (d < minDist) { minDist = d; closest = block; }
+                }
+                if (closest) {
+                  ctrl.grabbedBlock = closest;
+                  closest.userData.isGrabbed = true;
+                  ctrl.grabOffset.copy(ctrl.pos).sub(closest.position);
+                  setBlockHighlight(closest, 'grab');
+                }
+              }
+            } else {
+              if (ctrl.grabbedBlock) {
+                setBlockHighlight(ctrl.grabbedBlock, 'normal');
+                ctrl.grabbedBlock.userData.isGrabbed = false;
+                ctrl.grabbedBlock = null;
+              }
+              ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#00f3ff";
+            }
           }
 
           if (currentMode === 'PARTICLES') {
@@ -658,6 +594,11 @@
         } else {
           ctrl.active = false;
           ctrl.mesh.visible = false;
+          if (ctrl.grabbedBlock) {
+            setBlockHighlight(ctrl.grabbedBlock, 'normal');
+            ctrl.grabbedBlock.userData.isGrabbed = false;
+            ctrl.grabbedBlock = null;
+          }
           ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#ff3366"; ctrl.grabEl.innerText = "N/A";
         }
 
@@ -674,17 +615,6 @@
     function animate() {
       requestAnimationFrame(animate);
 
-      if (quantumCoreGroup.visible) {
-        quantumRings.forEach((ring, idx) => {
-          ring.rotation.z += (idx + 1) * 0.01;
-        });
-        if (corePulsing) {
-          const scale = 1 + Math.sin(Date.now() * 0.005) * 0.15;
-          const coreMesh = quantumCoreGroup.getObjectByName("coreMesh");
-          if (coreMesh) coreMesh.scale.set(scale, scale, scale);
-        }
-      }
-
       if (currentMode === 'PARTICLES') {
         particleGroup.rotation.x += (targetRotX - particleGroup.rotation.x) * 0.15;
         particleGroup.rotation.y += (targetRotY + 0.003 - particleGroup.rotation.y) * 0.15;
@@ -693,7 +623,7 @@
         handExpansionScale += (targetScale - handExpansionScale) * 0.15;
         camera.position.z += (targetCamZ - camera.position.z) * 0.15;
 
-        const isPinching = controller.active && controller.isPinching;
+        const isPinching = controllers[0].active && controllers[0].isPinching;
         const positions = particleGeometry.attributes.position.array;
 
         for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
@@ -725,7 +655,7 @@
 
     document.getElementById('shape-select').addEventListener('change', (e) => generateShape(e.target.value));
     document.getElementById('color-picker').addEventListener('input', (e) => {
-      updateParticleColors(e.target.value);
+      particleMaterial.color.set(e.target.value);
     });
 
     initThree();
