@@ -3,21 +3,850 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TEST DIAGNOSTICO</title>
+  <title>STARK KINETIC LAB v9.6 // ULTRA-LOW LATENCY & PINCH GRAB</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
   <style>
-    body { background: #111; color: #00f3ff; font-family: monospace; display: flex; flex-direction: column; align-items: center; justify-content: height: 100vh; height: 100vh; margin: 0; }
-    h1 { font-size: 24px; text-shadow: 0 0 10px #00f3ff; }
-    p { font-size: 14px; color: #fff; }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body { overflow: hidden; background-color: #000000; font-family: 'Share Tech Mono', monospace; color: #00f3ff; }
+    #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+    #video-input { display: none; }
+
+    .stark-header {
+      position: absolute; top: 0; left: 0; width: 100%; height: 50px;
+      background: rgba(0, 0, 0, 0.85); border-bottom: 1px solid rgba(0, 243, 255, 0.2); z-index: 10;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+    }
+    .stark-title {
+      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
+      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .security-badge {
+      font-size: 9px; background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.4);
+      color: #00f3ff; padding: 2px 6px; border-radius: 2px; letter-spacing: 1px;
+    }
+    .mode-tabs { display: flex; gap: 8px; }
+    .tab-btn {
+      background: #000000; border: 1px solid rgba(0, 243, 255, 0.3);
+      color: rgba(0, 243, 255, 0.6); font-family: 'Orbitron', sans-serif; font-size: 10px;
+      padding: 5px 14px; cursor: pointer; transition: all 0.2s ease;
+    }
+    .tab-btn:hover, .tab-btn.active {
+      background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; color: #ffffff;
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+    }
+
+    .ui-overlay {
+      position: absolute; top: 65px; left: 20px; z-index: 10; width: 310px; padding: 16px;
+      background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 243, 255, 0.25);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; gap: 12px;
+      max-height: calc(100vh - 85px); overflow-y: auto;
+    }
+    .panel-header {
+      font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
+      color: #ffffff; border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+      padding-bottom: 5px; display: flex; justify-content: space-between;
+    }
+    .control-group { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 9px; color: rgba(0, 243, 255, 0.7); letter-spacing: 1px; }
+
+    select, input[type="color"], .stark-btn {
+      width: 100%; height: 32px; background: #000000;
+      border: 1px solid rgba(0, 243, 255, 0.3); color: #00f3ff; padding: 0 8px;
+      font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
+      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.2s ease;
+    }
+    select:hover, .stark-btn:hover {
+      background: rgba(0, 243, 255, 0.15); border-color: #00f3ff; color: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+    }
+    select option { background: #000000; color: #00f3ff; }
+
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 220px; overflow-y: auto; }
+
+    .telemetry-box {
+      font-size: 10px; background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 243, 255, 0.15); padding: 8px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .hand-card { border-left: 2px solid #ffffff; padding-left: 6px; display: flex; flex-direction: column; gap: 2px; }
+    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.6); }
+    .telemetry-val { color: #00f3ff; font-weight: bold; }
+
+    .camera-preview-container {
+      position: absolute; bottom: 20px; right: 20px; z-index: 10;
+      width: 180px; height: 135px; background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column;
+    }
+    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.85; }
+    .preview-hud-tag {
+      position: absolute; top: 4px; left: 6px; font-size: 8px; font-weight: bold;
+      letter-spacing: 1px; color: #00f3ff; background: rgba(0, 0, 0, 0.8);
+      padding: 1px 4px; border: 1px solid rgba(0, 243, 255, 0.2);
+    }
   </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <h1>TEST DIAGNOSTICO RIUSCITO</h1>
-  <p>Se vedi questa scritta, HTML e CSS funzionano.</p>
-  <p id="js-test" style="color: yellow;">Verifica JavaScript in corso...</p>
+  <video id="video-input"></video>
+  <div id="canvas-container"></div>
+
+  <div class="stark-header">
+    <div class="stark-title">
+      <span>STARK LAB</span>
+      <span class="security-badge">ZERO-LAG & PINCH GRAB ACTIVE</span>
+    </div>
+    <div class="mode-tabs">
+      <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
+      <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: PLASMA MATRIX</button>
+    </div>
+  </div>
+
+  <div class="ui-overlay">
+    <div class="panel-header">
+      <span id="panel-title-text">PARTICLE MATRIX</span>
+      <span style="color: #00f3ff; font-weight: bold;">[ACTIVE]</span>
+    </div>
+    
+    <div id="controls-builder" style="display: none;">
+      <div class="control-group">
+        <label>SPAWN OGGETTI 3D (36 FORME)</label>
+        <div class="btn-grid">
+          <button class="stark-btn" onclick="spawnShape('cube')">+ CUBO</button>
+          <button class="stark-btn" onclick="spawnShape('sphere')">+ SFERA</button>
+          <button class="stark-btn" onclick="spawnShape('pyramid')">+ PIRAMIDE</button>
+          <button class="stark-btn" onclick="spawnShape('torus')">+ TORUS</button>
+          <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
+          <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
+          <button class="stark-btn" onclick="spawnShape('star')">+ STELLA</button>
+          <button class="stark-btn" onclick="spawnShape('diamond')">+ DIAMANTE</button>
+          <button class="stark-btn" onclick="spawnShape('hourglass')">+ CLESSIDRA</button>
+          <button class="stark-btn" onclick="spawnShape('tripleTorus')">+ TRIPLE TORUS</button>
+          <button class="stark-btn" onclick="spawnShape('merkaba')">+ MERKABA</button>
+          <button class="stark-btn" onclick="spawnShape('hexPrism')">+ PRISMA ESAG.</button>
+          <button class="stark-btn" onclick="spawnShape('octahedron')">+ OTTAEDRO</button>
+          <button class="stark-btn" onclick="spawnShape('dodecahedron')">+ DODECAEDRO</button>
+          <button class="stark-btn" onclick="spawnShape('starTorus')">+ TORUS STELLATO</button>
+          <button class="stark-btn" onclick="spawnShape('spring')">+ MOLLA</button>
+          <button class="stark-btn" onclick="spawnShape('cone')">+ CONO</button>
+          <button class="stark-btn" onclick="spawnShape('ring')">+ ANELLO</button>
+          <button class="stark-btn" onclick="spawnShape('capsule')">+ CAPSULA</button>
+          <button class="stark-btn" onclick="spawnShape('tube')">+ TUBO CURVO</button>
+          <button class="stark-btn" onclick="spawnShape('octahedron2')">+ OTTAEDRO 2</button>
+          <button class="stark-btn" onclick="spawnShape('tetrahedron')">+ TETRAEDRO</button>
+          <button class="stark-btn" onclick="spawnShape('octaStar')">+ STELLA OTTA.</button>
+          <button class="stark-btn" onclick="spawnShape('pyramidHex')">+ PIRAMIDE ESAG.</button>
+          <button class="stark-btn" onclick="spawnShape('pill')">+ PILLOLA 3D</button>
+          <button class="stark-btn" onclick="spawnShape('gemstone')">+ GEMMA</button>
+          <button class="stark-btn" onclick="spawnShape('disc')">+ DISCO</button>
+          <button class="stark-btn" onclick="spawnShape('cubeFrame')">+ STRUTTURA CUBO</button>
+          <button class="stark-btn" onclick="spawnShape('cross')">+ CROCE 3D</button>
+          <button class="stark-btn" onclick="spawnShape('wedge')">+ CUNEO</button>
+          <button class="stark-btn" onclick="spawnShape('ellipsoid')">+ ELLISSOIDE</button>
+          <button class="stark-btn" onclick="spawnShape('torusThick')">+ TORUS SPESSO</button>
+          <button class="stark-btn" onclick="spawnShape('torusThin')">+ TORUS SOTTILE</button>
+          <button class="stark-btn" onclick="spawnShape('pyramidOct')">+ PIRAMIDE OTTA.</button>
+          <button class="stark-btn" onclick="spawnShape('cubeRounded')">+ CUBO SMUSSATO</button>
+          <button class="stark-btn" onclick="spawnShape('helixNode')">+ NODO ELICA</button>
+        </div>
+        <button class="stark-btn" style="margin-top: 6px; border-color: #ff3366; color: #ff3366;" onclick="clearBlocks()">RESET SCENA</button>
+      </div>
+    </div>
+
+    <div id="controls-particles" style="display: block;">
+      <div class="control-group">
+        <label>HOLOGRAM TEMPLATE (39 FORME)</label>
+        <select id="shape-select">
+          <option value="jupiter">JUPITER & RINGS</option>
+          <option value="galaxy">GALAXY SPIRAL</option>
+          <option value="hypercube">HYPERCUBE MATRIX</option>
+          <option value="heart">HEART MATRIX</option>
+          <option value="flower">NEURAL FLOWER</option>
+          <option value="buddha">BUDDHA HOLOGRAM</option>
+          <option value="fireworks">ENERGY EXPLOSION</option>
+          <option value="saturn">SATURN RING SYSTEM</option>
+          <option value="DNA">DNA DOUBLE HELIX</option>
+          <option value="nebula">NEBULA SPIRAL</option>
+          <option value="tripleDNA">TRIPLE DNA HELIX</option>
+          <option value="quantumVortex">QUANTUM VORTEX</option>
+          <option value="atomicMatrix">ATOMIC MATRIX</option>
+          <option value="supernova">SUPERNOVA BLAST</option>
+          <option value="solarCorona">SOLAR CORONA</option>
+          <option value="energyHourglass">ENERGY HOURGLASS</option>
+          <option value="gravitationalWaves">GRAVITATIONAL WAVES</option>
+          <option value="spacePortal">SPACE PORTAL</option>
+          <option value="crystalFractal">CRYSTAL FRACTAL</option>
+          <option value="plasmaSphere">PLASMA SPHERE</option>
+          <option value="cyberspaceGrid">CYBERSPACE GRID</option>
+          <option value="plasmaTorus">PLASMA TORUS</option>
+          <option value="solarFlare">SOLAR FLARE</option>
+          <option value="matrixRain">MATRIX RAIN</option>
+          <option value="warpTunnel">WARP TUNNEL</option>
+          <option value="ionStorm">ION STORM</option>
+          <option value="pulsarStar">PULSAR STAR</option>
+          <option value="quantumCube">QUANTUM CUBE</option>
+          <option value="neuralNet">NEURAL NET</option>
+          <option value="plasmaFlame">PLASMA FLAME</option>
+          <option value="blackHoleAccretion">BLACK HOLE DISK</option>
+          <option value="hyperCone">HYPER CONE</option>
+          <option value="plasmaRing">PLASMA RING</option>
+          <option value="energyShield">ENERGY SHIELD</option>
+          <option value="tachyonField">TACHYON FIELD</option>
+          <option value="singularityPoint">SINGULARITY POINT</option>
+          <option value="plasmaHelix">PLASMA HELIX</option>
+          <option value="cosmicWeb">COSMIC WEB</option>
+          <option value="cyberLotus">CYBER LOTUS</option>
+        </select>
+      </div>
+      <div class="control-group" style="margin-top: 6px;">
+        <label>PLASMA COLOR</label>
+        <input type="color" id="color-picker" value="#ffffff">
+      </div>
+    </div>
+
+    <button id="audio-toggle-btn" class="stark-btn" onclick="toggleAudio()">🔊 AUDIO: ATTIVO</button>
+
+    <div class="telemetry-box">
+      <div class="hand-card">
+        <div class="telemetry-row">
+          <span>MANO 1:</span>
+          <span id="h1-status" class="telemetry-val">CERCA...</span>
+        </div>
+        <div class="telemetry-row">
+          <span>STATO:</span>
+          <span id="h1-gesture" class="telemetry-val">PINCH: APERTO</span>
+        </div>
+      </div>
+      <div class="hand-card" style="margin-top: 4px;">
+        <div class="telemetry-row">
+          <span>MANO 2:</span>
+          <span id="h2-status" class="telemetry-val">CERCA...</span>
+        </div>
+        <div class="telemetry-row">
+          <span>STATO:</span>
+          <span id="h2-gesture" class="telemetry-val">PINCH: APERTO</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="camera-preview-container">
+    <span class="preview-hud-tag">FEED OPTICAL</span>
+    <canvas id="hand-preview-canvas" width="180" height="135"></canvas>
+  </div>
 
   <script>
-    document.getElementById('js-test').innerText = "JavaScript attivo al 100%!";
-    document.getElementById('js-test').style.color = "#00ff66";
+    const HAND_CONNECTIONS = [
+      [0,1],[1,2],[2,3],[3,4],
+      [0,5],[5,6],[6,7],[7,8],
+      [5,9],[9,10],[10,11],[11,12],
+      [9,13],[13,14],[14,15],[15,16],
+      [13,17],[17,18],[18,19],[19,20],[0,17]
+    ];
+
+    class SciFiSoundSystem {
+      constructor() {
+        this.ctx = null;
+        this.humOsc = null;
+        this.humGain = null;
+        this.enabled = true;
+        this.initialized = false;
+      }
+      init() {
+        if (this.initialized) return;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioCtx();
+        this.humOsc = this.ctx.createOscillator();
+        this.humGain = this.ctx.createGain();
+        this.humOsc.type = 'sine';
+        this.humOsc.frequency.setValueAtTime(50, this.ctx.currentTime);
+        this.humGain.gain.setValueAtTime(0.01, this.ctx.currentTime);
+        this.humOsc.connect(this.humGain);
+        this.humGain.connect(this.ctx.destination);
+        this.humOsc.start();
+        this.initialized = true;
+      }
+    }
+
+    const sounds = new SciFiSoundSystem();
+
+    function toggleAudio() {
+      sounds.enabled = !sounds.enabled;
+      document.getElementById('audio-toggle-btn').innerText = sounds.enabled ? "🔊 AUDIO: ATTIVO" : "🔇 AUDIO: DISATTIVATO";
+    }
+
+    let currentMode = 'PARTICLES';
+    const PARTICLE_COUNT = 12000;
+    let scene, camera, renderer;
+    let builderGroup;
+    let blocks = [];
+
+    const controllers = [
+      { mesh: null, pointLight: null, pos: new THREE.Vector3(), statusEl: null, gestureEl: null, active: false, grabbedBlock: null, pinching: false },
+      { mesh: null, pointLight: null, pos: new THREE.Vector3(), statusEl: null, gestureEl: null, active: false, grabbedBlock: null, pinching: false }
+    ];
+
+    let particleGroup, particleGeometry, particleMaterial;
+    let targetPositions = new Float32Array(PARTICLE_COUNT * 3);
+    let currentPositions = new Float32Array(PARTICLE_COUNT * 3);
+    let handExpansionScale = 1.0, targetScale = 1.0;
+    let targetRotX = 0, targetRotY = 0, targetRotZ = 0;
+    let previewCanvas, previewCtx;
+
+    function initThree() {
+      const container = document.getElementById('canvas-container');
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x000000);
+
+      camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 4, 28);
+      camera.lookAt(0, 0, 0);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      builderGroup = new THREE.Group();
+      builderGroup.visible = false;
+      scene.add(builderGroup);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight.position.set(10, 25, 15);
+      scene.add(dirLight);
+
+      const planeGeo = new THREE.PlaneGeometry(60, 60);
+      const planeMat = new THREE.MeshStandardMaterial({ color: 0x0a0f18, roughness: 0.8, metalness: 0.2 });
+      const floor = new THREE.Mesh(planeGeo, planeMat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -6;
+      builderGroup.add(floor);
+
+      const gridHelper = new THREE.GridHelper(60, 30, 0x00f3ff, 0x112233);
+      gridHelper.position.y = -5.98;
+      builderGroup.add(gridHelper);
+
+      controllers.forEach((ctrl, idx) => {
+        const dotGeo = new THREE.SphereGeometry(0.18, 16, 16);
+        const dotMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
+        ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
+        ctrl.mesh.visible = false;
+        builderGroup.add(ctrl.mesh);
+
+        ctrl.pointLight = new THREE.PointLight(0x00f3ff, 1.0, 10);
+        builderGroup.add(ctrl.pointLight);
+
+        ctrl.statusEl = document.getElementById(`h${idx + 1}-status`);
+        ctrl.gestureEl = document.getElementById(`h${idx + 1}-gesture`);
+      });
+
+      spawnShape('cube', 0, 2, 0);
+
+      particleGroup = new THREE.Group();
+      particleGroup.visible = true;
+      scene.add(particleGroup);
+
+      particleGeometry = new THREE.BufferGeometry();
+      for (let i = 0; i < PARTICLE_COUNT * 3; i++) {
+        currentPositions[i] = (Math.random() - 0.5) * 40;
+        targetPositions[i] = currentPositions[i];
+      }
+      particleGeometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
+
+      const particleColors = new Float32Array(PARTICLE_COUNT * 3);
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const idx = i * 3;
+        let randomColor = new THREE.Color('#ffffff');
+        const rand = Math.random();
+        if (rand < 0.6) randomColor = new THREE.Color('#ffffff');
+        else if (rand < 0.8) randomColor = new THREE.Color('#2bf2b0');
+        else if (rand < 0.9) randomColor = new THREE.Color('#ffdf73');
+        else randomColor = new THREE.Color('#7a53ff');
+        particleColors[idx] = randomColor.r;
+        particleColors[idx + 1] = randomColor.g;
+        particleColors[idx + 2] = randomColor.b;
+      }
+      particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+
+      const pCanvas = document.createElement('canvas');
+      pCanvas.width = 64; pCanvas.height = 64;
+      const pCtx = pCanvas.getContext('2d');
+      pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(32, 32, 28, 0, Math.PI * 2); pCtx.fill();
+
+      particleMaterial = new THREE.PointsMaterial({
+        size: 0.2, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
+        transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
+      });
+
+      const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+      particleGroup.add(particleSystem);
+      generateShape('jupiter');
+
+      previewCanvas = document.getElementById('hand-preview-canvas');
+      previewCtx = previewCanvas.getContext('2d');
+
+      window.addEventListener('resize', onWindowResize);
+    }
+
+    function spawnShape(type, x, y, z) {
+      sounds.init();
+      let geo;
+      const size = 3.0;
+
+      if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 32, 32);
+      else if (type === 'pyramid') geo = new THREE.ConeGeometry(size / 1.4, size, 4);
+      else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 16, 32);
+      else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 32);
+      else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
+      else if (type === 'star') geo = new THREE.OctahedronGeometry(size / 1.5, 1);
+      else if (type === 'diamond') geo = new THREE.OctahedronGeometry(size / 1.5);
+      else if (type === 'hourglass') geo = new THREE.ConeGeometry(size / 2, size, 16);
+      else if (type === 'tripleTorus') geo = new THREE.TorusKnotGeometry(size / 2.5, size / 8, 64, 16);
+      else if (type === 'merkaba') geo = new THREE.TetrahedronGeometry(size / 1.5);
+      else if (type === 'hexPrism') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 6);
+      else if (type === 'octahedron') geo = new THREE.OctahedronGeometry(size / 1.5);
+      else if (type === 'dodecahedron') geo = new THREE.DodecahedronGeometry(size / 1.6);
+      else if (type === 'starTorus') geo = new THREE.TorusKnotGeometry(size / 2, size / 10, 64, 32, 2, 3);
+      else if (type === 'spring') geo = new THREE.TorusKnotGeometry(size / 2, size / 12, 64, 16, 1, 5);
+      else if (type === 'cone') geo = new THREE.ConeGeometry(size / 2, size, 32);
+      else if (type === 'ring') geo = new THREE.RingGeometry(size / 4, size / 2, 32);
+      else if (type === 'capsule') geo = new THREE.CapsuleGeometry(size / 3, size / 2, 16, 16);
+      else if (type === 'tube') geo = new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,-1,0), new THREE.Vector3(0,1,0)), 20, size/4, 8, false);
+      else if (type === 'octahedron2') geo = new THREE.OctahedronGeometry(size / 1.4, 2);
+      else if (type === 'tetrahedron') geo = new THREE.TetrahedronGeometry(size / 1.4);
+      else if (type === 'octaStar') geo = new THREE.DodecahedronGeometry(size / 1.5, 1);
+      else if (type === 'pyramidHex') geo = new THREE.ConeGeometry(size / 2, size, 6);
+      else if (type === 'pill') geo = new THREE.CylinderGeometry(size / 3, size / 3, size * 0.8, 16);
+      else if (type === 'gemstone') geo = new THREE.CylinderGeometry(size / 2, size / 4, size, 5);
+      else if (type === 'disc') geo = new THREE.CylinderGeometry(size / 2, size / 2, size / 5, 32);
+      else if (type === 'cubeFrame') geo = new THREE.BoxGeometry(size, size, size);
+      else if (type === 'cross') geo = new THREE.BoxGeometry(size, size / 3, size / 3);
+      else if (type === 'wedge') geo = new THREE.ConeGeometry(size / 2, size, 3);
+      else if (type === 'ellipsoid') geo = new THREE.SphereGeometry(size / 2, 32, 16);
+      else if (type === 'torusThick') geo = new THREE.TorusGeometry(size / 2, size / 3, 16, 32);
+      else if (type === 'torusThin') geo = new THREE.TorusGeometry(size / 2, size / 10, 16, 32);
+      else if (type === 'pyramidOct') geo = new THREE.ConeGeometry(size / 2, size, 8);
+      else if (type === 'cubeRounded') geo = new THREE.BoxGeometry(size * 0.9, size * 0.9, size * 0.9);
+      else if (type === 'helixNode') geo = new THREE.TorusKnotGeometry(size / 2, size / 8, 32, 16, 3, 4);
+      else geo = new THREE.BoxGeometry(size, size, size);
+
+      const randomColorHex = Math.floor(Math.random() * 16777215);
+      const mat = new THREE.MeshStandardMaterial({
+        color: randomColorHex, roughness: 0.3, metalness: 0.2
+      });
+
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.x = x !== undefined ? x : (Math.random() - 0.5) * 8;
+      mesh.position.y = y !== undefined ? y : 6; 
+      mesh.position.z = z !== undefined ? z : (Math.random() - 0.5) * 4;
+
+      mesh.userData = { originalColor: randomColorHex, velocity: new THREE.Vector3(0, 0, 0), size: size };
+
+      builderGroup.add(mesh);
+      blocks.push(mesh);
+    }
+
+    function clearBlocks() {
+      for (let b of blocks) builderGroup.remove(b);
+      blocks = [];
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById('tab-builder').classList.toggle('active', mode === 'BUILDER');
+      document.getElementById('tab-particles').classList.toggle('active', mode === 'PARTICLES');
+      document.getElementById('controls-builder').style.display = mode === 'BUILDER' ? 'block' : 'none';
+      document.getElementById('controls-particles').style.display = mode === 'PARTICLES' ? 'block' : 'none';
+      document.getElementById('panel-title-text').innerText = mode === 'BUILDER' ? '3D BUILDER MATRIX' : 'PARTICLE MATRIX';
+
+      builderGroup.visible = (mode === 'BUILDER');
+      particleGroup.visible = (mode === 'PARTICLES');
+    }
+
+    function generateShape(type) {
+      const p = targetPositions;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const idx = i * 3;
+        let x = 0, y = 0, z = 0;
+
+        if (type === 'jupiter') {
+          if (i < PARTICLE_COUNT * 0.75) {
+            const u = Math.random(), v = Math.random();
+            const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
+            const r = 7.0;
+            x = r * Math.sin(phi) * Math.cos(theta);
+            y = (r * Math.cos(phi)) * 0.85;
+            z = r * Math.sin(phi) * Math.sin(theta);
+          } else {
+            const angle = Math.random() * Math.PI * 2, dist = 9.0 + Math.random() * 4.0;
+            x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.2;
+          }
+        } else if (type === 'galaxy') {
+          const arms = 4, arm = i % arms, r = Math.pow(Math.random(), 1.5) * 15;
+          const theta = r * 0.4 + (arm * (Math.PI * 2 / arms));
+          x = Math.cos(theta) * r + (Math.random() - 0.5) * 0.7;
+          z = Math.sin(theta) * r + (Math.random() - 0.5) * 0.7;
+          y = (Math.random() - 0.5) * (1.8 - r * 0.1);
+        } else if (type === 'saturn') {
+          if (i < PARTICLE_COUNT * 0.5) {
+            const u = Math.random(), v = Math.random();
+            const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
+            const r = 5.0;
+            x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.cos(phi); z = r * Math.sin(phi) * Math.sin(theta);
+          } else {
+            const angle = Math.random() * Math.PI * 2, dist = 7.0 + Math.random() * 6.0;
+            x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.15;
+          }
+        } else if (type === 'DNA') {
+          const t = (i / PARTICLE_COUNT) * Math.PI * 12;
+          const strand = (i % 2 === 0) ? 1 : -1;
+          x = Math.sin(t) * 4 * strand;
+          y = ((i / PARTICLE_COUNT) * 16) - 8;
+          z = Math.cos(t) * 4 * strand;
+        } else if (type === 'hypercube') {
+          const size = 6, side = i % 12, t = Math.random() * size - size/2;
+          if (side === 0) { x = size/2; y = t; z = size/2; }
+          else if (side === 1) { x = -size/2; y = t; z = size/2; }
+          else if (side === 2) { x = t; y = size/2; z = size/2; }
+          else if (side === 3) { x = t; y = -size/2; z = size/2; }
+          else if (side === 4) { x = size/2; y = t; z = -size/2; }
+          else if (side === 5) { x = -size/2; y = t; z = -size/2; }
+          else if (side === 6) { x = t; y = size/2; z = -size/2; }
+          else if (side === 7) { x = t; y = -size/2; z = -size/2; }
+          else if (side === 8) { x = size/2; y = size/2; z = t; }
+          else if (side === 9) { x = -size/2; y = size/2; z = t; }
+          else if (side === 10) { x = size/2; y = -size/2; z = t; }
+          else { x = -size/2; y = -size/2; z = t; }
+        } else if (type === 'heart') {
+          const t = Math.random() * Math.PI * 2, u = (Math.random() - 0.5) * 3;
+          x = 16 * Math.pow(Math.sin(t), 3);
+          y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+          z = u; x *= 0.55; y *= 0.55; z *= 0.55;
+        } else if (type === 'flower') {
+          const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI;
+          const r = 9 * Math.sin(6 * u) * Math.sin(v);
+          x = r * Math.sin(v) * Math.cos(u); y = r * Math.sin(v) * Math.sin(u); z = r * Math.cos(v);
+        } else if (type === 'buddha') {
+          const rand = Math.random();
+          if (rand < 0.35) {
+            const a = Math.random() * Math.PI * 2, r = 2 + Math.random() * 8;
+            x = Math.cos(a) * r; z = Math.sin(a) * r; y = -7 + (Math.random() - 0.5) * 1.2;
+          } else {
+            const h = Math.random() * 9, width = (1 - h / 9) * 6.5, a = Math.random() * Math.PI * 2;
+            x = Math.cos(a) * width * Math.random(); z = Math.sin(a) * width * Math.random(); y = -6 + h;
+          }
+        } else if (type === 'fireworks') {
+          const theta = Math.random() * Math.PI * 2, phi = Math.acos((Math.random() * 2) - 1);
+          const speed = 2 + Math.random() * 12;
+          x = speed * Math.sin(phi) * Math.cos(theta); y = speed * Math.sin(phi) * Math.sin(theta); z = speed * Math.cos(phi);
+        } else if (type === 'nebula') {
+          const a = Math.random() * Math.PI * 6, r = Math.random() * 12;
+          x = Math.cos(a) * r; z = Math.sin(a) * r; y = (Math.random() - 0.5) * 8;
+        } else if (type === 'tripleDNA') {
+          const t = (i / PARTICLE_COUNT) * Math.PI * 14;
+          const strand = (i % 3 === 0) ? 0 : (i % 3 === 1) ? 2.09 : 4.18;
+          x = Math.sin(t + strand) * 5; y = ((i / PARTICLE_COUNT) * 18) - 9; z = Math.cos(t + strand) * 5;
+        } else if (type === 'quantumVortex') {
+          const h = (Math.random() - 0.5) * 16, r = Math.abs(h) * 0.5 + 1, a = h * 3 + Math.random();
+          x = Math.cos(a) * r; z = Math.sin(a) * r; y = h;
+        } else if (type === 'atomicMatrix') {
+          const shell = (i % 3) * 3 + 3, a = Math.random() * Math.PI * 2, b = Math.random() * Math.PI;
+          x = Math.sin(b) * Math.cos(a) * shell; y = Math.sin(b) * Math.sin(a) * shell; z = Math.cos(b) * shell;
+        } else if (type === 'supernova') {
+          const u = Math.random() * Math.PI * 2, v = Math.acos(Math.random() * 2 - 1), r = 4 + Math.random() * 10;
+          x = r * Math.sin(v) * Math.cos(u); y = r * Math.sin(v) * Math.sin(u); z = r * Math.cos(v);
+        } else if (type === 'solarCorona') {
+          const a = Math.random() * Math.PI * 2, r = 3 + Math.random() * 9, flare = Math.sin(a * 8) * 2;
+          x = Math.cos(a) * (r + flare); z = Math.sin(a) * (r + flare); y = (Math.random() - 0.5) * 4;
+        } else if (type === 'energyHourglass') {
+          const h = (Math.random() - 0.5) * 14, r = Math.abs(h) * 0.7 + 0.5, a = Math.random() * Math.PI * 2;
+          x = Math.cos(a) * r; z = Math.sin(a) * r; y = h;
+        } else if (type === 'gravitationalWaves') {
+          const xPos = (Math.random() - 0.5) * 20, zPos = (Math.random() - 0.5) * 20;
+          const dist = Math.hypot(xPos, zPos);
+          x = xPos; z = zPos; y = Math.sin(dist * 1.5) * 3;
+        } else if (type === 'spacePortal') {
+          const a = Math.random() * Math.PI * 2, r = 3 + Math.random() * 8;
+          x = Math.cos(a) * r; z = Math.sin(a) * r; y = (Math.random() - 0.5) * 0.5;
+        } else if (type === 'crystalFractal') {
+          const u = Math.random(), v = Math.random();
+          x = (u - 0.5) * 12 * Math.sin(v * Math.PI);
+          y = (v - 0.5) * 12;
+          z = (u - 0.5) * 12 * Math.cos(v * Math.PI);
+        } else if (type === 'plasmaSphere') {
+          const u = Math.random(), v = Math.random();
+          const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0), r = 6.0;
+          x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.cos(phi); z = r * Math.sin(phi) * Math.sin(theta);
+        } else if (type === 'cyberspaceGrid') {
+          x = (Math.random() - 0.5) * 18; z = (Math.random() - 0.5) * 18; y = -4 + Math.sin(x) * Math.cos(z) * 2;
+        } else if (type === 'plasmaTorus') {
+          const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI * 2, R = 6, r = 2;
+          x = (R + r * Math.cos(v)) * Math.cos(u); z = (R + r * Math.cos(v)) * Math.sin(u); y = r * Math.sin(v);
+        } else if (type === 'solarFlare') {
+          const a = Math.random() * Math.PI * 2, r = 2 + Math.random() * 10;
+          x = Math.cos(a) * r; y = Math.sin(r * 0.5) * 4; z = Math.sin(a) * r;
+        } else if (type === 'matrixRain') {
+          x = (Math.random() - 0.5) * 16; y = (Math.random() - 0.5) * 16; z = (Math.random() - 0.5) * 16;
+        } else if (type === 'warpTunnel') {
+          const a = Math.random() * Math.PI * 2, zPos = (Math.random() - 0.5) * 20, r = 5;
+          x = Math.cos(a) * r; z = zPos; y = Math.sin(a) * r;
+        } else if (type === 'ionStorm') {
+          const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI, r = Math.random() * 10;
+          x = r * Math.sin(v) * Math.cos(u); y = r * Math.cos(v); z = r * Math.sin(v) * Math.sin(u);
+        } else if (type === 'pulsarStar') {
+          const a = Math.random() * Math.PI * 2, r = Math.random() * 4, beam = (Math.random() - 0.5) * 14;
+          if (Math.random() > 0.3) { x = Math.cos(a) * r; z = Math.sin(a) * r; y = (Math.random() - 0.5) * 2; }
+          else { x = (Math.random() - 0.5) * 1; y = beam; z = (Math.random() - 0.5) * 1; }
+        } else if (type === 'quantumCube') {
+          x = (Math.random() - 0.5) * 8; y = (Math.random() - 0.5) * 8; z = (Math.random() - 0.5) * 8;
+        } else if (type === 'neuralNet') {
+          const a = Math.random() * Math.PI * 2, r = 3 + Math.random() * 7;
+          x = Math.cos(a) * r; y = (Math.random() - 0.5) * 10; z = Math.sin(a) * r;
+        } else if (type === 'plasmaFlame') {
+          const h = Math.random() * 12, r = (12 - h) * 0.4 * Math.random(), a = Math.random() * Math.PI * 2;
+          x = Math.cos(a) * r; y = h - 6; z = Math.sin(a) * r;
+        } else if (type === 'blackHoleAccretion') {
+          const a = Math.random() * Math.PI * 2, r = 2 + Math.random() * 10;
+          x = Math.cos(a) * r; y = (Math.random() - 0.5) * 0.8; z = Math.sin(a) * r;
+        } else if (type === 'hyperCone') {
+          const h = (Math.random() - 0.5) * 10, r = (5 - h * 0.5), a = Math.random() * Math.PI * 2;
+          x = Math.cos(a) * r; y = h; z = Math.sin(a) * r;
+        } else if (type === 'plasmaRing') {
+          const a = Math.random() * Math.PI * 2, r = 7 + (Math.random() - 0.5) * 1;
+          x = Math.cos(a) * r; y = (Math.random() - 0.5) * 1; z = Math.sin(a) * r;
+        } else if (type === 'energyShield') {
+          const u = Math.random(), v = Math.random();
+          const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0), r = 7.5;
+          x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.cos(phi); z = r * Math.sin(phi) * Math.sin(theta);
+        } else if (type === 'tachyonField') {
+          x = (Math.random() - 0.5) * 14; y = (Math.random() - 0.5) * 14; z = (Math.random() - 0.5) * 14;
+        } else if (type === 'singularityPoint') {
+          const r = Math.random() * 2;
+          x = (Math.random() - 0.5) * r; y = (Math.random() - 0.5) * r; z = (Math.random() - 0.5) * r;
+        } else if (type === 'plasmaHelix') {
+          const t = (i / PARTICLE_COUNT) * Math.PI * 10;
+          x = Math.sin(t) * 5; y = ((i / PARTICLE_COUNT) * 14) - 7; z = Math.cos(t) * 5;
+        } else if (type === 'cosmicWeb') {
+          x = (Math.random() - 0.5) * 15; y = (Math.random() - 0.5) * 15; z = (Math.random() - 0.5) * 15;
+        } else if (type === 'cyberLotus') {
+          const u = Math.random() * Math.PI * 2, r = Math.random() * 8;
+          x = Math.cos(u) * r; y = Math.sin(r) * 3; z = Math.sin(u) * r;
+        }
+
+        p[idx] = x; p[idx + 1] = y; p[idx + 2] = z;
+      }
+    }
+
+    function initHandTracking() {
+      const videoElement = document.getElementById('video-input');
+      const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
+
+      hands.setOptions({
+        maxNumHands: 2, modelComplexity: 1,
+        minDetectionConfidence: 0.6, minTrackingConfidence: 0.6
+      });
+
+      hands.onResults((results) => {
+        sounds.init();
+        previewCtx.save();
+        previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+        previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
+
+        const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
+
+        for (let i = 0; i < 2; i++) {
+          const ctrl = controllers[i];
+          if (i < numHands) {
+            ctrl.active = true;
+            const landmarks = results.multiHandLandmarks[i];
+
+            drawConnectors(previewCtx, landmarks, HAND_CONNECTIONS, { color: '#ffffff', lineWidth: 1 });
+            drawLandmarks(previewCtx, landmarks, { color: '#00f3ff', lineWidth: 1, radius: 1.5 });
+
+            const indexTip = landmarks[8];
+            const pX = indexTip.x, pY = indexTip.y, pZ = indexTip.z;
+
+            const ndcX = (1 - pX) * 2 - 1, ndcY = -(pY * 2 - 1);
+            const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
+            vector.unproject(camera);
+            const dir = vector.sub(camera.position).normalize();
+            const targetZ = -pZ * 20;
+            const distanceToPlane = (targetZ - camera.position.z) / dir.z;
+            const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
+
+            // Risposta istantanea senza ritardi di movimento
+            ctrl.pos.copy(targetPos);
+            ctrl.mesh.visible = true;
+            ctrl.mesh.position.copy(ctrl.pos);
+            ctrl.pointLight.position.copy(ctrl.pos);
+
+            // Rilevamento Pinch (Pollice [4] + Indice [8])
+            const thumbTip = landmarks[4];
+            const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+            const isPinching = pinchDist < 0.055;
+
+            ctrl.pinching = isPinching;
+            ctrl.gestureEl.innerText = isPinching ? "PINCH: PRESA ATTIVA" : "PINCH: APERTO";
+            ctrl.gestureEl.style.color = isPinching ? "#2bf2b0" : "#00f3ff";
+
+            if (currentMode === 'BUILDER') {
+              if (isPinching) {
+                if (!ctrl.grabbedBlock) {
+                  // Cerca l'oggetto più vicino alla mano per afferrarlo
+                  let closestBlock = null;
+                  let minDist = 3.0;
+                  blocks.forEach(block => {
+                    const d = block.position.distanceTo(ctrl.pos);
+                    if (d < minDist) {
+                      minDist = d;
+                      closestBlock = block;
+                    }
+                  });
+                  if (closestBlock) {
+                    ctrl.grabbedBlock = closestBlock;
+                    ctrl.mesh.material.color.set(0x2bf2b0);
+                  }
+                } else {
+                  // Muovi l'oggetto insieme alla mano
+                  ctrl.grabbedBlock.position.copy(ctrl.pos);
+                  ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
+                }
+              } else {
+                if (ctrl.grabbedBlock) {
+                  ctrl.grabbedBlock = null;
+                  ctrl.mesh.material.color.set(0x00f3ff);
+                }
+              }
+            }
+
+            ctrl.statusEl.innerText = "ATTIVA";
+            ctrl.statusEl.style.color = "#ffffff";
+          } else {
+            ctrl.active = false;
+            ctrl.mesh.visible = false;
+            ctrl.grabbedBlock = null;
+            ctrl.statusEl.innerText = "CERCA...";
+            ctrl.statusEl.style.color = "#ff3366";
+          }
+        }
+
+        if (currentMode === 'PARTICLES' && numHands > 0) {
+          const landmarks1 = results.multiHandLandmarks[0];
+          const h1Center = landmarks1[9], wrist1 = landmarks1[0];
+          targetRotZ = -Math.atan2(h1Center.y - wrist1.y, h1Center.x - wrist1.x) - Math.PI / 2;
+          targetRotX = (h1Center.y - 0.5) * Math.PI * 2.0;
+          targetRotY = (h1Center.x - 0.5) * Math.PI * 3.0;
+
+          if (numHands === 2) {
+            const landmarks2 = results.multiHandLandmarks[1];
+            const distBetweenHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
+            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(distBetweenHands, 0.1, 0.7, 0.5, 2.5), 0.4, 3.0);
+          } else {
+            const span = Math.hypot(wrist1.x - landmarks1[12].x, wrist1.y - landmarks1[12].y);
+            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(span, 0.2, 0.5, 0.5, 2.0), 0.4, 2.2);
+          }
+        }
+
+        previewCtx.restore();
+      });
+
+      const cameraUtils = new Camera(videoElement, {
+        onFrame: async () => { await hands.send({ image: videoElement }); },
+        width: 640, height: 480
+      });
+      cameraUtils.start();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (currentMode === 'BUILDER') {
+        const gravity = -0.06;
+        blocks.forEach(block => {
+          // Non applicare gravità se l'oggetto è tenuto in mano
+          let isHeld = false;
+          controllers.forEach(ctrl => { if (ctrl.grabbedBlock === block) isHeld = true; });
+
+          if (!isHeld) {
+            block.userData.velocity.y += gravity;
+            block.position.add(block.userData.velocity);
+
+            const floorY = -6 + (block.userData.size / 2);
+            if (block.position.y < floorY) {
+              block.position.y = floorY;
+              block.userData.velocity.set(0, 0, 0);
+            }
+
+            blocks.forEach(other => {
+              if (block !== other) {
+                const dx = block.position.x - other.position.x;
+                const dz = block.position.z - other.position.z;
+                const distXZ = Math.sqrt(dx * dx + dz * dz);
+                const limitDist = block.userData.size * 0.8;
+
+                if (distXZ < limitDist) {
+                  const topOfOther = other.position.y + (other.userData.size / 2) + (block.userData.size / 2);
+                  if (block.position.y <= topOfOther && block.position.y > other.position.y) {
+                    block.position.y = topOfOther;
+                    block.userData.velocity.set(0, 0, 0);
+                  }
+                }
+              }
+            });
+          }
+        });
+      }
+
+      if (currentMode === 'PARTICLES') {
+        particleGroup.rotation.x += (targetRotX - particleGroup.rotation.x) * 0.4;
+        particleGroup.rotation.y += (targetRotY + 0.003 - particleGroup.rotation.y) * 0.4;
+        particleGroup.rotation.z += (targetRotZ - particleGroup.rotation.z) * 0.4;
+
+        handExpansionScale += (targetScale - handExpansionScale) * 0.4;
+
+        const positions = particleGeometry.attributes.position.array;
+        for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
+          let tx = targetPositions[i] * handExpansionScale;
+          let ty = targetPositions[i+1] * handExpansionScale;
+          let tz = targetPositions[i+2] * handExpansionScale;
+
+          positions[i] += (tx - positions[i]) * 0.4;
+          positions[i+1] += (ty - positions[i+1]) * 0.4;
+          positions[i+2] += (tz - positions[i+2]) * 0.4;
+        }
+        particleGeometry.attributes.position.needsUpdate = true;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    document.getElementById('shape-select').addEventListener('change', (e) => generateShape(e.target.value));
+    document.getElementById('color-picker').addEventListener('input', (e) => {
+      particleMaterial.color.set(e.target.value);
+    });
+
+    initThree();
+    initHandTracking();
+    animate();
   </script>
 </body>
 </html>
