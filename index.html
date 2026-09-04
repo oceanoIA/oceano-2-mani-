@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.2 // DUAL HANDS & MULTICOLOR</title>
+  <title>STARK KINETIC LAB v9.2 // OPTIMIZED</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -103,7 +103,7 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">DUAL HANDS // MULTICOLOR</span>
+      <span class="security-badge">DUAL HANDS // TURBO</span>
     </div>
     <div class="mode-tabs">
       <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
@@ -195,11 +195,8 @@
 
     class SciFiSoundSystem {
       constructor() {
-        this.ctx = null;
-        this.humOsc = null;
-        this.humGain = null;
-        this.enabled = true;
-        this.initialized = false;
+        this.ctx = null; this.humOsc = null; this.humGain = null;
+        this.enabled = true; this.initialized = false;
       }
       init() {
         if (this.initialized) return;
@@ -229,13 +226,6 @@
         gain.connect(this.ctx.destination);
         osc.start(now); osc.stop(now + 0.08);
       }
-      updateHum(speed) {
-        if (!this.enabled || !this.initialized) return;
-        const targetGain = Math.min(0.01 + speed * 0.05, 0.1);
-        const targetFreq = 50 + speed * 100;
-        this.humGain.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.05);
-        this.humOsc.frequency.setTargetAtTime(targetFreq, this.ctx.currentTime, 0.05);
-      }
     }
 
     const sounds = new SciFiSoundSystem();
@@ -246,12 +236,11 @@
     }
 
     let currentMode = 'PARTICLES';
-    const PARTICLE_COUNT = 12000;
+    const PARTICLE_COUNT = 6000; // Dimezzate per garantire fluidità estrema (da 12000 a 6000)
     let scene, camera, renderer;
     let builderGroup;
     let blocks = [];
 
-    // Controller per DUE mani con pallini bianchi e luminosi
     const controllers = [
       {
         mesh: null, pointLight: null,
@@ -281,9 +270,9 @@
       camera.position.set(0, 4, 28);
       camera.lookAt(0, 0, 0);
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+      renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" }); // antialias disattivato per aumentare i fotogrammi per secondo
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Limitato per alleggerire il rendering mobile/desktop
       container.appendChild(renderer.domElement);
 
       builderGroup = new THREE.Group();
@@ -297,7 +286,6 @@
       dirLight.position.set(10, 25, 15);
       scene.add(dirLight);
 
-      // Piano d'appoggio visibile con griglia futurista
       const planeGeo = new THREE.PlaneGeometry(60, 60);
       const planeMat = new THREE.MeshStandardMaterial({ color: 0x0a0f18, roughness: 0.8, metalness: 0.2 });
       const floor = new THREE.Mesh(planeGeo, planeMat);
@@ -309,9 +297,8 @@
       gridHelper.position.y = -5.98;
       builderGroup.add(gridHelper);
 
-      // Inizializzazione dei due pallini per le mani (ultra-piccoli e bianchi)
       controllers.forEach((ctrl, idx) => {
-        const dotGeo = new THREE.SphereGeometry(0.15, 16, 16);
+        const dotGeo = new THREE.SphereGeometry(0.15, 8, 8); // Geometria ridotta a 8 segmenti
         const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
         ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
         ctrl.mesh.visible = false;
@@ -353,12 +340,12 @@
       particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
       const pCanvas = document.createElement('canvas');
-      pCanvas.width = 64; pCanvas.height = 64;
+      pCanvas.width = 32; pCanvas.height = 32; // Texture ridotta per prestazioni ottimali
       const pCtx = pCanvas.getContext('2d');
-      pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(32, 32, 28, 0, Math.PI * 2); pCtx.fill();
+      pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(16, 16, 14, 0, Math.PI * 2); pCtx.fill();
 
       particleMaterial = new THREE.PointsMaterial({
-        size: 0.2, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
+        size: 0.25, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
         transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
       });
 
@@ -377,30 +364,22 @@
       let geo;
       const size = 3.0;
 
-      if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 32, 32);
+      if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 16, 16);
       else if (type === 'pyramid') geo = new THREE.ConeGeometry(size / 1.4, size, 4);
-      else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 16, 32);
-      else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 32);
+      else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 12, 24);
+      else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 16);
       else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
       else geo = new THREE.BoxGeometry(size, size, size);
 
-      // Colore diverso e casuale per ogni oggetto 3D creato
       const randomColorHex = Math.floor(Math.random() * 16777215);
-      const mat = new THREE.MeshStandardMaterial({
-        color: randomColorHex, roughness: 0.3, metalness: 0.2
-      });
+      const mat = new THREE.MeshStandardMaterial({ color: randomColorHex, roughness: 0.3, metalness: 0.2 });
 
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.x = x !== undefined ? x : (Math.random() - 0.5) * 8;
       mesh.position.y = y !== undefined ? y : 6; 
       mesh.position.z = z !== undefined ? z : (Math.random() - 0.5) * 4;
 
-      mesh.userData = {
-        originalColor: randomColorHex,
-        velocity: new THREE.Vector3(0, 0, 0),
-        isGrabbed: false,
-        size: size
-      };
+      mesh.userData = { originalColor: randomColorHex, velocity: new THREE.Vector3(0, 0, 0), isGrabbed: false, size: size };
 
       builderGroup.add(mesh);
       blocks.push(mesh);
@@ -414,11 +393,8 @@
 
     function setBlockHighlight(block, mode) {
       if (!block) return;
-      if (mode === 'grab') {
-        block.material.color.setHex(0xffffff);
-      } else {
-        block.material.color.setHex(block.userData.originalColor);
-      }
+      if (mode === 'grab') block.material.color.setHex(0xffffff);
+      else block.material.color.setHex(block.userData.originalColor);
     }
 
     function switchMode(mode) {
@@ -519,10 +495,12 @@
       const videoElement = document.getElementById('video-input');
       const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
 
-      // Configurato per tracciare fino a 2 mani contemporaneamente
+      // PERFORMANCE CRITICA: modelComplexity impostato a 0 (più veloce) e confidenze ottimizzate
       hands.setOptions({
-        maxNumHands: 2, modelComplexity: 1,
-        minDetectionConfidence: 0.65, minTrackingConfidence: 0.65
+        maxNumHands: 2, 
+        modelComplexity: 0,
+        minDetectionConfidence: 0.5, 
+        minTrackingConfidence: 0.5
       });
 
       hands.onResults((results) => {
@@ -609,7 +587,6 @@
           }
         }
 
-        // Controllo particelle con entrambe le mani (se attive)
         if (currentMode === 'PARTICLES' && numHands > 0) {
           const landmarks1 = results.multiHandLandmarks[0];
           const h1Center = landmarks1[9], wrist1 = landmarks1[0];
@@ -630,9 +607,10 @@
         previewCtx.restore();
       });
 
+      // RISOLUZIONE RIDOTTA A 480x360 PER ELIMINARE I LAG SULLA WEBCAM
       const cameraUtils = new Camera(videoElement, {
         onFrame: async () => { await hands.send({ image: videoElement }); },
-        width: 640, height: 480
+        width: 480, height: 360
       });
       cameraUtils.start();
     }
