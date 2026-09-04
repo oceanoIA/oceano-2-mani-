@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.6 // VISION PRO RAYCASTER</title>
+  <title>STARK KINETIC LAB v9.7 // VISION PRO RAYCASTER</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +21,7 @@
       background: rgba(15, 15, 15, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08); z-index: 10;
       display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+      pointer-events: none;
     }
     .stark-title {
       font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
@@ -38,6 +39,7 @@
       display: flex; gap: 10px; z-index: 20; background: rgba(25, 25, 25, 0.45);
       padding: 10px 18px; border-radius: 35px; backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
       border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      pointer-events: auto;
     }
     .tab-btn {
       background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.15);
@@ -57,6 +59,7 @@
       border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 26px;
       box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       display: flex; flex-direction: column; gap: 14px;
+      pointer-events: auto;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
@@ -73,9 +76,9 @@
       letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.25s ease;
       border-radius: 19px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
-    select:hover, .stark-btn:hover {
-      background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.85); color: #ffffff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+    select:hover, .stark-btn:hover, .stark-btn.virtual-hover {
+      background: rgba(255, 255, 255, 0.3) !important; border-color: rgba(255, 255, 255, 0.9) !important; color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); transform: scale(1.02);
     }
     select option { background: #151515; color: #ffffff; }
 
@@ -97,12 +100,25 @@
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 22px;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; overflow: hidden;
+      pointer-events: none;
     }
     #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.9; }
     .preview-hud-tag {
       position: absolute; top: 6px; left: 8px; font-size: 8px; font-weight: bold;
       letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.75);
       padding: 2px 6px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
+    }
+
+    /* Cursore Virtuale Della Mano sullo Schermo */
+    #virtual-cursor {
+      position: absolute; width: 20px; height: 20px; border: 2px solid #ffffff;
+      border-radius: 50%; transform: translate(-50%, -50%); z-index: 9999;
+      pointer-events: none; display: none; box-shadow: 0 0 10px rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.2);
+    }
+    #virtual-cursor.pinching {
+      background: #ffffff; transform: translate(-50%, -50%) scale(0.7);
+      box-shadow: 0 0 20px #ffffff;
     }
   </style>
 
@@ -113,11 +129,12 @@
 <body>
   <video id="video-input"></video>
   <div id="canvas-container"></div>
+  <div id="virtual-cursor"></div>
 
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">VISION PRO RAYCAST</span>
+      <span class="security-badge">VISION PRO RAYCAST - AIR TOUCH</span>
     </div>
   </div>
 
@@ -129,7 +146,7 @@
   <div class="ui-overlay">
     <div class="panel-header">
       <span id="panel-title-text">PARTICLE MATRIX</span>
-      <span style="color: #ffffff; font-weight: bold; font-size: 9px;">[ONLINE]</span>
+      <span style="color: #ffffff; font-weight: bold; font-size: 9px;">[AIR TOUCH ON]</span>
     </div>
     
     <div id="controls-builder" style="display: none;">
@@ -268,6 +285,9 @@
     let targetCamZ = 32, targetRotX = 0, targetRotY = 0, targetRotZ = 0;
     let previewCanvas, previewCtx;
 
+    // Variabili per il controllo virtuale dell'interfaccia (Air Click)
+    let lastWasPinchingUI = false;
+
     function initThree() {
       const container = document.getElementById('canvas-container');
       scene = new THREE.Scene();
@@ -305,7 +325,6 @@
       builderGroup.add(gridHelper);
 
       controllers.forEach((ctrl, idx) => {
-        // Puntino finale luminoso
         const dotGeo = new THREE.SphereGeometry(0.18, 12, 12);
         const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
         ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
@@ -315,7 +334,6 @@
         ctrl.pointLight = new THREE.PointLight(0xffffff, 0.8, 10);
         builderGroup.add(ctrl.pointLight);
 
-        // Linea / Raggio laser (stile Vision Pro) che parte da vicino alla camera/polso verso il puntino
         const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0)]);
         const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
         ctrl.rayLine = new THREE.Line(lineGeo, lineMat);
@@ -505,7 +523,6 @@
       }
     }
 
-    // Funzione contorno stile Vision Pro per l'anteprima in basso a destra
     function drawVisionProHandContour(ctx, landmarks, w, h) {
       const contourIndices = [0, 1, 2, 3, 4, 8, 12, 16, 20, 17, 0];
       ctx.beginPath();
@@ -547,6 +564,67 @@
         previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
 
         const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
+        const cursorEl = document.getElementById('virtual-cursor');
+
+        if (numHands > 0) {
+          // Usa la prima mano come cursore per l'interfaccia HTML
+          const landmarks1 = results.multiHandLandmarks[0];
+          const indexTip = landmarks1[8];
+          const thumbTip = landmarks1[4];
+          const middleTip = landmarks1[12];
+          
+          // Coordinate schermo specchiate per il cursore virtuale
+          const cursorX = (1 - indexTip.x) * window.innerWidth;
+          const cursorY = indexTip.y * window.innerHeight;
+          
+          cursorEl.style.display = 'block';
+          cursorEl.style.left = `${cursorX}px`;
+          cursorEl.style.top = `${cursorY}px`;
+
+          // Rileva pinch tra pollice e medio (o indice) per cliccare nell'UI
+          const pinchDistUI = Math.hypot(thumbTip.x - middleTip.x, thumbTip.y - middleTip.y);
+          const isPinchingUI = (pinchDistUI < 0.07);
+
+          if (isPinchingUI) {
+            cursorEl.classList.add('pinching');
+          } else {
+            cursorEl.classList.remove('pinching');
+          }
+
+          // Controlla elementi sotto il cursore per interazione "Air Click"
+          const elementUnderCursor = document.elementFromPoint(cursorX, cursorY);
+          
+          // Rimuovi hover virtuale precedente
+          document.querySelectorAll('.virtual-hover').forEach(el => el.classList.remove('virtual-hover'));
+
+          if (elementUnderCursor && (elementUnderCursor.tagName === 'BUTTON' || elementUnderCursor.tagName === 'SELECT' || elementUnderCursor.tagName === 'INPUT')) {
+            elementUnderCursor.classList.add('virtual-hover');
+            
+            // Se avviene il pinch (transizione da non-pinch a pinch), simula il click
+            if (isPinchingUI && !lastWasPinchingUI) {
+              sounds.playPinch();
+              if (elementUnderCursor.tagName === 'SELECT') {
+                // Cicla tra i valori della select
+                const sel = elementUnderCursor;
+                sel.selectedIndex = (sel.selectedIndex + 1) % sel.options.length;
+                sel.dispatchEvent(new Event('change'));
+              } else if (elementUnderCursor.type === 'color') {
+                // Se è il color picker, cambia casualmente o apri
+                const colors = ['#ffffff', '#00ffcc', '#ff0055', '#ffaa00', '#0055ff', '#aa00ff'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                elementUnderCursor.value = randomColor;
+                elementUnderCursor.dispatchEvent(new Event('input'));
+              } else {
+                elementUnderCursor.click();
+              }
+            }
+          }
+
+          lastWasPinchingUI = isPinchingUI;
+        } else {
+          cursorEl.style.display = 'none';
+          lastWasPinchingUI = false;
+        }
 
         for (let i = 0; i < 2; i++) {
           const ctrl = controllers[i];
@@ -554,7 +632,6 @@
             ctrl.active = true;
             const landmarks = results.multiHandLandmarks[i];
 
-            // Disegna il guanto/contorno nell'anteprima
             drawVisionProHandContour(previewCtx, landmarks, previewCanvas.width, previewCanvas.height);
 
             const thumbTip = landmarks[4], indexTip = landmarks[8], wrist = landmarks[0];
@@ -577,7 +654,6 @@
             ctrl.mesh.position.copy(ctrl.pos);
             ctrl.pointLight.position.copy(ctrl.pos);
 
-            // Calcolo posizione di partenza della linea (dal polso proiettato nello spazio 3D)
             const wristNdcX = (1 - wrist.x) * 2 - 1, wristNdcY = -(wrist.y * 2 - 1);
             const wVector = new THREE.Vector3(wristNdcX, wristNdcY, 0.5);
             wVector.unproject(camera);
@@ -585,7 +661,6 @@
             const wDist = (targetZ - camera.position.z) / wDir.z;
             const wristPos3D = camera.position.clone().add(wDir.multiplyScalar(wDist));
 
-            // Aggiorna la linea laser visibile nello spazio 3D
             const posAttr = ctrl.rayLine.geometry.attributes.position;
             posAttr.setXYZ(0, wristPos3D.x, wristPos3D.y, wristPos3D.z);
             posAttr.setXYZ(1, ctrl.pos.x, ctrl.pos.y, ctrl.pos.z);
