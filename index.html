@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v10.0 // 100 QUANTUM HOLOGRAMS</title>
+  <title>STARK KINETIC LAB v10.5 // 100 UNIQUE OBJECTS & GALAXY MATRIX</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +11,7 @@
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body { overflow: hidden; background-color: #030508; font-family: 'Share Tech Mono', monospace; color: #00f3ff; }
+    body { overflow: hidden; background-color: #030508; font-family: 'Share Tech Mono', monospace; color: #ffffff; }
     #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
     #video-input { display: none; }
 
@@ -19,18 +19,18 @@
     .stark-header {
       position: absolute; top: 0; left: 0; width: 100%; height: 55px;
       background: rgba(10, 15, 25, 0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(0, 243, 255, 0.15); z-index: 10;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15); z-index: 10;
       display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
     .stark-title {
       font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
-      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 12px rgba(0, 243, 255, 0.6);
+      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
       display: flex; align-items: center; gap: 12px;
     }
     .security-badge {
-      font-size: 9px; background: rgba(0, 243, 255, 0.08); border: 1px solid rgba(0, 243, 255, 0.3);
-      color: #00f3ff; padding: 3px 8px; border-radius: 4px; letter-spacing: 1px;
+      font-size: 9px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff; padding: 3px 8px; border-radius: 4px; letter-spacing: 1px;
     }
 
     /* LIQUID GLASS BOTTOM CENTER MODE TABS */
@@ -39,69 +39,69 @@
       z-index: 10; display: flex; gap: 10px;
       background: rgba(10, 15, 25, 0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       padding: 8px 14px; border-radius: 30px;
-      border: 1px solid rgba(0, 243, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
     }
     .tab-btn {
-      background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(0, 243, 255, 0.25);
-      color: rgba(0, 243, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
+      background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
       padding: 8px 18px; border-radius: 20px; cursor: pointer; transition: all 0.3s ease;
       letter-spacing: 1px;
     }
     .tab-btn:hover, .tab-btn.active {
-      background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; color: #ffffff;
-      box-shadow: 0 0 15px rgba(0, 243, 255, 0.5); text-shadow: 0 0 8px rgba(0, 243, 255, 0.8);
+      background: rgba(255, 255, 255, 0.2); border-color: #ffffff; color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
     }
 
     /* LIQUID GLASS OVERLAY PANEL */
     .ui-overlay {
-      position: absolute; top: 75px; left: 20px; z-index: 10; width: 290px; padding: 18px;
+      position: absolute; top: 75px; left: 20px; z-index: 10; width: 310px; padding: 18px;
       background: rgba(10, 15, 25, 0.5); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px;
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45); display: flex; flex-direction: column; gap: 14px;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
-      color: #ffffff; border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+      color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.15);
       padding-bottom: 6px; display: flex; justify-content: space-between;
     }
     .control-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 9px; color: rgba(0, 243, 255, 0.75); letter-spacing: 1px; }
+    label { font-size: 9px; color: rgba(255, 255, 255, 0.75); letter-spacing: 1px; }
 
     select, input[type="color"], .stark-btn {
       width: 100%; height: 34px; background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(0, 243, 255, 0.3); color: #00f3ff; padding: 0 10px;
+      border: 1px solid rgba(255, 255, 255, 0.3); color: #ffffff; padding: 0 10px;
       font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
       letter-spacing: 1px; outline: none; cursor: pointer; border-radius: 6px; transition: all 0.2s ease;
     }
     select:hover, .stark-btn:hover {
-      background: rgba(0, 243, 255, 0.15); border-color: #00f3ff; color: #ffffff;
-      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+      background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
     }
-    select option { background: #05080f; color: #00f3ff; }
+    select option { background: #05080f; color: #ffffff; }
 
     .telemetry-box {
       font-size: 10px; background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(0, 243, 255, 0.15); border-radius: 6px; padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; padding: 10px;
       display: flex; flex-direction: column; gap: 6px;
     }
     .hand-card { border-left: 2px solid #ffffff; padding-left: 8px; display: flex; flex-direction: column; gap: 3px; }
     .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.65); }
-    .telemetry-val { color: #00f3ff; font-weight: bold; }
+    .telemetry-val { color: #ffffff; font-weight: bold; }
 
     /* LIQUID GLASS CAMERA PREVIEW */
     .camera-preview-container {
       position: absolute; bottom: 24px; right: 24px; z-index: 10;
       width: 180px; height: 135px; background: rgba(10, 15, 25, 0.5);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 243, 255, 0.25); border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 10px;
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45); display: flex; flex-direction: column; overflow: hidden;
     }
     #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.9; }
     .preview-hud-tag {
       position: absolute; top: 6px; left: 8px; font-size: 8px; font-weight: bold;
-      letter-spacing: 1px; color: #00f3ff; background: rgba(0, 0, 0, 0.7);
-      padding: 2px 5px; border-radius: 3px; border: 1px solid rgba(0, 243, 255, 0.2);
+      letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.7);
+      padding: 2px 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.2);
     }
   </style>
 
@@ -117,7 +117,7 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">100 QUANTUM HOLOGRAMS</span>
+      <span class="security-badge">SATURN DEFAULT // 100 OBJECTS</span>
     </div>
   </div>
 
@@ -129,7 +129,7 @@
   <div class="ui-overlay">
     <div class="panel-header">
       <span id="panel-title-text">PLASMA MATRIX</span>
-      <span style="color: #00f3ff; font-weight: bold;">[ACTIVE]</span>
+      <span style="color: #ffffff; font-weight: bold;">[ACTIVE]</span>
     </div>
     
     <div id="controls-builder" style="display: none;">
@@ -142,114 +142,113 @@
 
     <div id="controls-particles" style="display: block;">
       <div class="control-group">
-        <label>100 HOLOGRAM TEMPLATES</label>
+        <label>100 OBJECTS & GALAXIES (PARTENZA: SATURNO)</label>
         <select id="shape-select">
-          <!-- 100 Forme Aggiunte da Zero -->
-          <option value="f1">01. TORO QUANTICO ANNIDATO</option>
-          <option value="f2">02. SPIRALE GALATTICA MULTIFACCETTA</option>
-          <option value="f3">03. IPERCUBO 4D PROiETTATO</option>
-          <option value="f4">04. MATRICE CUORE ENERGETICO</option>
-          <option value="f5">05. FIORE NEURALE OLOGRAFICO</option>
-          <option value="f6">06. STRUTTURA SACRA DI BUDDHA</option>
-          <option value="f7">07. ESPLOSIONE STELLARE NOVA</option>
-          <option value="f8">08. SISTEMA PLANETARIO A ANELLI</option>
-          <option value="f9">09. DOPPIA ELICA ADN QUANTICA</option>
-          <option value="f10">10. NUCLEO CRISTALLINO DI DIAMANTE</option>
-          <option value="f11">11. MERKABA GEOMETRICA STELLARE</option>
-          <option value="f12">12. TORUS ANNOLARE A 8 VIE</option>
-          <option value="f13">13. CILINDRO DI PLASMA MAGNETICO</option>
-          <option value="f14">14. SFERA ARMATURA DI DYSON</option>
-          <option value="f15">15. PIRAMIDE ENERGETICA DI GIZA</option>
-          <option value="f16">16. OCTAEDRO LUMINOSO PLATONICO</option>
-          <option value="f17">17. DODECAEDRO FLUTTUANTE</option>
-          <option value="f18">18. ICOSAEDRO STELLATO</option>
-          <option value="f19">19. DNA TRIPLA ELICA MUTATA</option>
-          <option value="f20">20. VORTICE DI FTON CYBERNETICO</option>
-          <option value="f21">21. ONDA GRAVITAZIONALE SIMULATA</option>
-          <option value="f22">22. NEBULOSA A FARFALLA</option>
-          <option value="f23">23. DISCO ACCRESCIMENTO BUCO NERO</option>
-          <option value="f24">24. PORTALE DIMENSIONALE STELLAR</option>
-          <option value="f25">25. SCUDO ENERGETICO ESAGONALE</option>
-          <option value="f26">26. RETE NEURALE CIBERNETICA 3D</option>
-          <option value="f27">27. MATRICE CRISTALLINA QUARZO</option>
-          <option value="f28">28. TORRE DI TESLA A SCARICA</option>
-          <option value="f29">29. ANTRACITE DI PLASMA PURO</option>
-          <option value="f30">30. ORBITA KEPLERIANA ELITTICA</option>
-          <option value="f31">31. FATTALE DI MANDELBULB LIGHT</option>
-          <option value="f32">32. COCCON DI COCOON ENERGETICO</option>
-          <option value="f33">33. GEODE DI AMETISTA OLOGRAFICA</option>
-          <option value="f34">34. CHIAVE CRIPTOGRAFICA QUANTICA</option>
-          <option value="f35">35. RADAR SFERICO A SCANSIONE</option>
-          <option value="f36">36. RAGNO ROBOTICO OLOGRAFICO</option>
-          <option value="f37">37. CLESSIDRA TEMPORALE LASER</option>
-          <option value="f38">38. ANNESSO STELARE A 12 PUNTE</option>
-          <option value="f39">39. ANTAGONISTA QUANTISTICO</option>
-          <option value="f40">40. DNA OLOGRAFICO SINTETICO</option>
-          <option value="f41">41. FLUSSO MAGNETICO TOROIDALE</option>
-          <option value="f42">42. DISCO DI EULERO LUMINOSO</option>
-          <option value="f43">43. ANNESSO A 3 ANELLI DI KERR</option>
-          <option value="f44">44. NUVOLA DI IONI DI ELIO</option>
-          <option value="f45">45. RADIAZIONE DI HAWKING</option>
-          <option value="f46">46. MATRICE DI CONFINAMENTO PLASMATICO</option>
-          <option value="f47">47. SFERA DI ORBITE POLARI</option>
-          <option value="f48">48. RETICOLO CRISTALLINO DI BISMUTO</option>
-          <option value="f49">49. GHIACCIO QUANTICO RETICOLARE</option>
-          <option value="f50">50. CORONA SOLARE STAMPATA</option>
-          <option value="f51">51. FLUTTUATORE A GRAVITA ZERO</option>
-          <option value="f52">52. ROTORE MAGNETICO STABILE</option>
-          <option value="f53">53. CUBO DI METATRON GEOMETRICO</option>
-          <option value="f54">54. FIORE DELLA VITA MULTIDIMENSIONALE</option>
-          <option value="f55">55. ALBERO DELLA VITA KABBALISTICO 3D</option>
-          <option value="f56">56. SIGILLO DI SALOMONE OLOGRAFICO</option>
-          <option value="f57">57. STELLA DI DAVID MULTISTRATO</option>
-          <option value="f58">58. PENTAGRAMMA LUMINOSO ROTANTE</option>
-          <option value="f59">59. LABIRINTO QUANTICO SPZIALE</option>
-          <option value="f60">60. FRETTA DI TACHIONI PURIFICATA</option>
-          <option value="f61">61. SCUDO DIVERGENTE TARKIN</option>
-          <option value="f62">62. NUCLEO REATTORE ARC MK-V</option>
-          <option value="f63">63. OROBOURO LUMINOSO INFINITO</option>
-          <option value="f64">64. SEME DELLA VITA OLOGRAFICO</option>
-          <option value="f65">65. UOVO COSMICO PRIMORDIALE</option>
-          <option value="f66">66. FENICE DI PLASMA INCANDESCENTE</option>
-          <option value="f67">67. DRAGO DI LUCE QUANTO-MECCANICO</option>
-          <option value="f68">68. SCAGLIE DI CORAZZA NANO-TECH</option>
-          <option value="f69">69. SFERA ARMATURA OMEGA</option>
-          <option value="f70">70. MONOLITE NERO DI 2001 SPACY</option>
-          <option value="f71">71. PORTALE DI STARGATE APERTO</option>
-          <option value="f72">72. OCCHI DI SAURON GEOMETRICO</option>
-          <option value="f73">73. MATRICE DI TRON GRID</option>
-          <option value="f74">74. BLOCCO DI NET-RUNNER</option>
-          <option value="f75">75. CRISTALLO DI KYBER SPARK</option>
-          <option value="f76">76. SPADA LASER A NUCLEO DOPPIO</option>
-          <option value="f77">77. NAVE MADRE CYBERNETICA</option>
-          <option value="f78">78. DRONE DI SORVEGLIANZA OCULARE</option>
-          <option value="f79">79. SCATOLA DI PANDORA LASER</option>
-          <option value="f80">80. ANCHOR QUANTICO STABILE</option>
-          <option value="f81">81. RAGNO TESSITORE DI DATI</option>
-          <option value="f82">82. RETE SISMICA PLANETARIA</option>
-          <option value="f83">83. ATMOSFERA DI GIOVE ARTIFICIALE</option>
-          <option value="f84">84. ANELLO DI SATURNO ISOLATO</option>
-          <option value="f85">85. COMETA DI GHIACCIO E PLASMA</option>
-          <option value="f86">86. ASTEROIDE MINERARIO 3D</option>
-          <option value="f87">87. BASE LUNARE OLOGRAFICA</option>
-          <option value="f88">88. COLONNIA SPZIALE CILINDRICA</option>
-          <option value="f89">89. SFERA DI BERNAL ROTANTE</option>
-          <option value="f90">90. TORO DI STANFORD ENERGETICO</option>
-          <option value="f91">91. MOTORE A WARP CURVATURE</option>
-          <option value="f92">92. PROPULSORE A IONI STABILE</option>
-          <option value="f93">93. SALTO IPERSPAZIALE LINEARE</option>
-          <option value="f94">94. SCANSIONE RETINICA GIGANTE</option>
-          <option value="f95">95. OLOGRAMMA DI ARCHITETTURA FUTURA</option>
-          <option value="f96">96. CITTA CYBERPUNK 3D MINIMAL</option>
-          <option value="f97">97. TORRE DI CONTROLLO DEL CIELO</option>
-          <option value="f98">98. SCUDO DI PROTEZIONE PLANETARIO</option>
-          <option value="f99">99. MATRICE UNIVERSALE DEL TEMPO</option>
+          <option value="f1">01. GALASSIA A SPIRALE MAGENTA</option>
+          <option value="f2">02. NEBULOSA DI ORIONE BLU</option>
+          <option value="f3">03. BUCO NERO CON DISCO DORATO</option>
+          <option value="f4">04. CLUSTER STELLARE DIAMANTE</option>
+          <option value="f5">05. SUPERNOVA IN ESPANSIONE ROSSA</option>
+          <option value="f6">06. SISTEMA SOLARE COMPATTO</option>
+          <option value="f7">07. ANTEPRIMA PULSAR ROTANTE</option>
+          <option value="f8" selected>08. SATURNO CON ANELLI DI GHIACCIO BIANCHI</option>
+          <option value="f9">09. GIOVE CON TEMPESTA DI IONI</option>
+          <option value="f10">10. STELLA DI NEUTRONI MAGNETICA</option>
+          <option value="f11">11. CUBO RUBIK FUTURISTICO</option>
+          <option value="f12">12. PIRAMIDE DI CRISTALLO LASER</option>
+          <option value="f13">13. CLESSIDRA DI ENERGIA PURA</option>
+          <option value="f14">14. SFERA ARMATURA DYSON</option>
+          <option value="f15">15. DIAMANTE MULTIFACCETTA 3D</option>
+          <option value="f16">16. OROLOGIO QUANTICO SFERICO</option>
+          <option value="f17">17. TAZZA DA CAFFE OLOGRAFICA 3D</option>
+          <option value="f18">18. LAMPADINA A FILAMENTO PLASMA</option>
+          <option value="f19">19. OCCELLO DI DRAGONE MECCANICO</option>
+          <option value="f20">20. CELLULA MADRE SCIENTIFICA</option>
+          <option value="f21">21. DNA DOPPIA ELICA CHIMICA</option>
+          <option value="f22">22. VIRUS OLOGRAFICO ISOLATO</option>
+          <option value="f23">23. MOLECOLA DI ACQUA CRISTALLINA</option>
+          <option value="f24">24. RETICOLO ATOMICO DEL CARBONIO</option>
+          <option value="f25">25. STRUTTURA DI BENZENE 3D</option>
+          <option value="f26">26. SCHERMO OLOGRAFICO CURVO</option>
+          <option value="f27">27. DRONE DI ESPLORAZIONE SFERICO</option>
+          <option value="f28">28. SATELLITE ARTIFICIALE ORBITALE</option>
+          <option value="f29">29. ANTENNA RADAR PARABOLICA</option>
+          <option value="f30">30. REATTORE ARC MINIATURIZZATO</option>
+          <option value="f31">31. SPADA LASER A DOPPIO TAGLIO</option>
+          <option value="f32">32. SCUDO ENERGETICO ESAGONALE</option>
+          <option value="f33">33. CHIAVE DIGITALE CRIPTATA</option>
+          <option value="f34">34. PORTALE DI SALTO WARP</option>
+          <option value="f35">36. MONOLITE SPAZIALE NERO/LUCE</option>
+          <option value="f36">36. TORRE DI TESLA A SCARICHE</option>
+          <option value="f37">37. ANELLO DI POTERE GEOMETRICO</option>
+          <option value="f38">38. CORONA REALE FUTURISTICA</option>
+          <option value="f39">39. CALICE SACRO OLOGRAFICO</option>
+          <option value="f40">40. FIAMMA PERenne DI PLASMA</option>
+          <option value="f41">41. TORO QUANTICO ANNIDATO</option>
+          <option value="f42">42. IPERCUBO 4D PROIETTATO</option>
+          <option value="f43">43. FIORE DELLA VITA SACRO 3D</option>
+          <option value="f44">44. CUBO DI METATRON GEOMETRICO</option>
+          <option value="f45">45. MERKABA STELLARE PLATONICA</option>
+          <option value="f46">46. DODECAEDRO LUMINOSO</option>
+          <option value="f47">47. ICOSAEDRO ROTANTE</option>
+          <option value="f48">48. OCTAEDRO DI CRISTALLO</option>
+          <option value="f49">49. TETRAEDRO ENERGETICO</option>
+          <option value="f50">50. SFERA ARMATURA OMEGA</option>
+          <option value="f51">51. AUTO SPORTIVA WIREFRAME 3D</option>
+          <option value="f52">52. CASCO DA PILOTA SPAZIALE</option>
+          <option value="f53">53. GUANTO KINETICO STARK</option>
+          <option value="f54">54. BOTTEGA ALCHEMICA LASER</option>
+          <option value="f55">55. MACCHINA DEL TEMPO A DISCHI</option>
+          <option value="f56">56. CHIAVE INGLESE MECCANICA 3D</option>
+          <option value="f57">57. MARTELLO DEGLI DEI CYBER</option>
+          <option value="f58">58. SCUDO CAPITAN FUTURO</option>
+          <option value="f59">59. JETPACK A IONI ACCESO</option>
+          <option value="f60">60. RAZZO SPZIALE MULTISTADIO</option>
+          <option value="f61">61. GHIACCIAIO DI CRISTALLO</option>
+          <option value="f62">62. VULCANO ATTIVO DI PLASMA</option>
+          <option value="f63">63. CASCATA DI DATI DIGITALI</option>
+          <option value="f64">64. TORNADO DI ENERGIA PURA</option>
+          <option value="f65">65. ALBERO QUANTICO DELLA VITA</option>
+          <option value="f66">66. FUNGONO ATOMICO LUMINOSO</option>
+          <option value="f67">67. FENICE DI FUOCO OLOGRAFICA</option>
+          <option value="f68">68. AQUILA MECCANICA IN VOLO</option>
+          <option value="f69">69. LUPO GEOFISICO WIREFRAME</option>
+          <option value="f70">70. SERPENTE DI LUNGA SCALATURA</option>
+          <option value="f71">71. LABIRINTO SFERICO 3D</option>
+          <option value="f72">72. RUOTA PANORAMICA CYBER</option>
+          <option value="f73">73. STADIO OLOGRAFICO GLOBALE</option>
+          <option value="f74">74. PALAZZO GRATTACIELO FUTURO</option>
+          <option value="f75">75. CITTA GALATTICA MINIMAL</option>
+          <option value="f76">76. PONTE DI LUCE SOSPESO</option>
+          <option value="f77">77. ARCO DI TRIOFRO OLOGRAFICO</option>
+          <option value="f78">78. FONTANA DI IONI LUMINOSA</option>
+          <option value="f79">79. SCULTURA MODERNA FLUIDA</option>
+          <option value="f80">80. NUCLEO DI STELLA MADRE</option>
+          <option value="f81">81. FATTALE DI MANDELBULB</option>
+          <option value="f82">82. GEOMETRIA FRATTALE PURA</option>
+          <option value="f83">83. ONDA DI MARE QUANTICA</option>
+          <option value="f84">84. SABBIA CINETICA MOBILE</option>
+          <option value="f85">85. PIUMA DI CRISTALLO LEGGERA</option>
+          <option value="f86">86. FOGLIA DI PIANTA ALIENA</option>
+          <option value="f87">87. FIORE DI LOTO OLOGRAFICO</option>
+          <option value="f88">88. FARFALLA MULTIDIMENSIONALE</option>
+          <option value="f89">89. MEDUSA SPZIALE LUMINOSA</option>
+          <option value="f90">90. CRISTALLO DI AMETISTA GIGANTE</option>
+          <option value="f91">91. SCACCHIERA 3D SOSPESA</option>
+          <option value="f92">92. DADI QUANTICI ROTANTI</option>
+          <option value="f93">93. CARTE DA GIOCO OLOGRAFICHE</option>
+          <option value="f94">94. MASCHERA DI CARNEVALE CYBER</option>
+          <option value="f95">95. CORONA DI ALLORO LASER</option>
+          <option value="f96">96. TROFEO DI VITTORIA STELLARE</option>
+          <option value="f97">97. MEDAGLIA AL VALORE QUANTICO</option>
+          <option value="f98">98. ANCORA MARINA SPZIALE</option>
+          <option value="f99">99. BUSSOLA MAGNETICA UNIVERSALE</option>
           <option value="f100">100. SINGOLARITA FINALE OMEGA</option>
         </select>
       </div>
       <div class="control-group" style="margin-top: 6px;">
-        <label>PLASMA COLOR</label>
-        <input type="color" id="color-picker" value="#00f3ff">
+        <label>PLASMA COLOR (PARTENZA: BIANCO PURO)</label>
+        <input type="color" id="color-picker" value="#ffffff">
       </div>
     </div>
 
@@ -380,14 +379,14 @@
       scene.add(dirLight);
 
       const coreGeo = new THREE.IcosahedronGeometry(2.0, 2);
-      const coreMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff, wireframe: true });
+      const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
       const coreMesh = new THREE.Mesh(coreGeo, coreMat);
       coreMesh.name = "coreMesh";
       quantumCoreGroup.add(coreMesh);
 
       for (let i = 0; i < 3; i++) {
         const ringGeo = new THREE.TorusGeometry(3.5 + i * 1.5, 0.04, 16, 100);
-        const ringMat = new THREE.MeshBasicMaterial({ color: i === 0 ? 0xffffff : 0x00f3ff, transparent: true, opacity: 0.7 });
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 });
         const ring = new THREE.Mesh(ringGeo, ringMat);
         ring.rotation.x = Math.random() * Math.PI;
         ring.rotation.y = Math.random() * Math.PI;
@@ -418,21 +417,8 @@
       }
       particleGeometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
 
-      const particleColors = new Float32Array(PARTICLE_COUNT * 3);
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const idx = i * 3;
-        let randomColor;
-        const rand = Math.random();
-        if (rand < 0.6) randomColor = new THREE.Color('#00f3ff');
-        else if (rand < 0.8) randomColor = new THREE.Color('#2bf2b0');
-        else if (rand < 0.9) randomColor = new THREE.Color('#ffdf73');
-        else randomColor = new THREE.Color('#7a53ff');
-        
-        particleColors[idx] = randomColor.r;
-        particleColors[idx + 1] = randomColor.g;
-        particleColors[idx + 2] = randomColor.b;
-      }
-      particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+      // Colore iniziale bianco puro per le particelle
+      updateParticleColors('#ffffff');
 
       const pCanvas = document.createElement('canvas');
       pCanvas.width = 64; pCanvas.height = 64;
@@ -448,13 +434,40 @@
 
       const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
       particleGroup.add(particleSystem);
-      generateShape('f1');
+      
+      // Partenza fissa sull'oggetto 8 (Saturno)
+      generateShape('f8');
 
       previewCanvas = document.getElementById('hand-preview-canvas');
       previewCtx = previewCanvas.getContext('2d');
 
       window.addEventListener('resize', onWindowResize);
     }
+
+    function updateParticleColors(hexColor) {
+      const baseCol = new THREE.Color(hexColor);
+      const particleColors = new Float32Array(PARTICLE_COUNT * 3);
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const idx = i * 3;
+        // Variazione di luminosità naturale legata al colore scelto
+        const factor = 0.6 + Math.random() * 0.4;
+        particleColors[idx] = baseCol.r * factor;
+        particleColors[idx + 1] = baseCol.g * factor;
+        particleColors[idx + 2] = baseCol.b * factor;
+      }
+      particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+      if (particleGeometry.attributes.color) particleGeometry.attributes.color.needsUpdate = true;
+    }
+
+    // Palette di colori predefinita per ciascuna delle 100 forme/oggetti
+    const shapeColors = {
+      1: '#ff00aa', 2: '#00ffff', 3: '#ffaa00', 4: '#ffffff', 5: '#ff3333',
+      6: '#33ffaa', 7: '#9900ff', 8: '#ffffff', 9: '#ffcc00', 10: '#00ffaa',
+      11: '#ff3366', 12: '#33ffff', 13: '#ffff33', 14: '#ff9900', 15: '#ffffff',
+      16: '#00aaff', 17: '#cc9966', 18: '#ffbb00', 19: '#ff2255', 20: '#22ffaa',
+      21: '#00f3ff', 22: '#ff3300', 23: '#ffffff', 24: '#888888', 25: '#00ffcc',
+      26: '#0055ff', 27: '#aaaaaa', 28: '#ffaa33', 29: '#33ccff', 30: '#00ffff'
+    };
 
     function toggleCorePulse() {
       corePulsing = !corePulsing;
@@ -472,78 +485,98 @@
       document.getElementById('tab-particles').classList.toggle('active', mode === 'PARTICLES');
       document.getElementById('controls-builder').style.display = mode === 'BUILDER' ? 'block' : 'none';
       document.getElementById('controls-particles').style.display = mode === 'PARTICLES' ? 'block' : 'none';
-      document.getElementById('panel-title-text').innerText = mode === 'BUILDER' ? 'QUANTUM CORE MATRIX' : '100+ MATRIX OLOGRAFICA';
+      document.getElementById('panel-title-text').innerText = mode === 'BUILDER' ? 'QUANTUM CORE MATRIX' : '100+ OBJECTS MATRIX';
 
       quantumCoreGroup.visible = (mode === 'BUILDER');
       particleGroup.visible = (mode === 'PARTICLES');
       sounds.playPinch();
     }
 
-    // Generatore matematico avanzato per le 100 forme olografiche e 3D
+    // Generatore matematico per le 100 forme e oggetti unici
     function generateShape(id) {
       const p = targetPositions;
-      const seedVal = parseInt(id.replace('f', '')) || 1;
+      const seedVal = parseInt(id.replace('f', '')) || 8;
+
+      // Aggiorna automaticamente il colore in base all'oggetto selezionato se presente nella mappa, altrimenti usa una tonalità coerente
+      const autoColor = shapeColors[seedVal] || '#' + Math.floor(Math.abs(Math.sin(seedVal) * 16777215)).toString(16).padStart(6, '0');
+      document.getElementById('color-picker').value = autoColor.length === 7 ? autoColor : '#ffffff';
+      updateParticleColors(autoColor);
 
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
-        const t = (i / PARTICLE_COUNT) * Math.PI * 2 * (seedVal % 7 + 1);
         let x = 0, y = 0, z = 0;
 
         switch(seedVal) {
-          case 1: // Toro Quantico Annidato
-            { const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI * 2;
-              x = (6 + 2 * Math.cos(v)) * Math.cos(u); y = (6 + 2 * Math.cos(v)) * Math.sin(u); z = 2 * Math.sin(v); }
-            break;
-          case 2: // Spirale Galattica
-            { const r = Math.pow(Math.random(), 1.3) * 14;
-              x = Math.cos(r + seedVal) * r; z = Math.sin(r + seedVal) * r; y = (Math.random() - 0.5) * 2; }
-            break;
-          case 3: // Ipercubo 4D
-            { const s = 5; x = (Math.random() - 0.5) * s * 2; y = (Math.random() - 0.5) * s * 2; z = (Math.random() - 0.5) * s * 2; }
-            break;
-          case 4: // Cuore Energetico
-            { const th = Math.random() * Math.PI * 2, u = (Math.random() - 0.5) * 4;
-              x = 16 * Math.pow(Math.sin(th), 3) * 0.4; y = (13 * Math.cos(th) - 5 * Math.cos(2*th) - 2 * Math.cos(3*th) - Math.cos(4*th)) * 0.4; z = u; }
-            break;
-          case 5: // Fiore Neurale
-            { const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI;
-              const r = 8 * Math.sin(5 * u) * Math.sin(v);
-              x = r * Math.sin(v) * Math.cos(u); y = r * Math.sin(v) * Math.sin(u); z = r * Math.cos(v); }
-            break;
-          case 6: // Buddha / Geometria Sacra
-            { const h = Math.random() * 10 - 5, w = (5 - Math.abs(h)) * Math.random();
-              const a = Math.random() * Math.PI * 2; x = Math.cos(a) * w; z = Math.sin(a) * w; y = h; }
-            break;
-          case 7: // Nova / Esplosione
-            { const th = Math.random() * Math.PI * 2, ph = Math.acos(Math.random() * 2 - 1), r = Math.random() * 12;
-              x = r * Math.sin(ph) * Math.cos(th); y = r * Math.sin(ph) * Math.sin(th); z = r * Math.cos(ph); }
-            break;
-          case 8: // Saturn Rings
-            { if (i < PARTICLE_COUNT * 0.6) {
+          case 8: // Saturno (Oggetto di default iniziale)
+            { 
+              if (i < PARTICLE_COUNT * 0.65) {
                 const u = Math.random(), v = Math.random();
-                x = 4 * Math.sin(Math.acos(2*v-1)) * Math.cos(u*Math.PI*2);
-                y = 4 * Math.cos(Math.acos(2*v-1));
-                z = 4 * Math.sin(Math.acos(2*v-1)) * Math.sin(u*Math.PI*2);
+                const th = u * 2.0 * Math.PI, ph = Math.acos(2.0 * v - 1.0);
+                const r = 5.0;
+                x = r * Math.sin(ph) * Math.cos(th);
+                y = r * Math.cos(ph);
+                z = r * Math.sin(ph) * Math.sin(th);
               } else {
-                const a = Math.random() * Math.PI * 2, d = 7 + Math.random() * 6;
-                x = Math.cos(a) * d; z = Math.sin(a) * d; y = (Math.random() - 0.5) * 0.3;
-              } }
+                const a = Math.random() * Math.PI * 2, d = 7.0 + Math.random() * 6.0;
+                x = Math.cos(a) * d; z = Math.sin(a) * d; y = (Math.random() - 0.5) * 0.2;
+              }
+            }
             break;
-          case 9: // DNA Doppia Elica
-            { const st = (i / PARTICLE_COUNT) * Math.PI * 14, dir = (i % 2 === 0) ? 1 : -1;
-              x = Math.sin(st) * 4 * dir; y = ((i / PARTICLE_COUNT) * 18) - 9; z = Math.cos(st) * 4 * dir; }
+          case 17: // Tazza da caffè 3D (Oggetto quotidiano)
+            {
+              const h = (i / PARTICLE_COUNT) * 6 - 3;
+              if (i < PARTICLE_COUNT * 0.7) {
+                const a = Math.random() * Math.PI * 2, r = 3 + (h > 0 ? 0.5 : 0);
+                x = Math.cos(a) * r; z = Math.sin(a) * r; y = h;
+              } else {
+                const a = Math.random() * Math.PI * 2, r = 1.5;
+                x = 3 + Math.cos(a) * r; y = (Math.random() - 0.5) * 2; z = Math.sin(a) * r;
+              }
+            }
             break;
-          case 10: // Nucleo Cristallino
-            { const th = Math.random() * Math.PI * 2, ph = Math.random() * Math.PI, r = Math.pow(Math.random(), 2) * 7;
-              x = r * Math.sin(ph) * Math.cos(th); y = r * Math.sin(ph) * Math.sin(th); z = r * Math.cos(ph); }
+          case 18: // Lampadina
+            {
+              if (i < PARTICLE_COUNT * 0.7) {
+                const u = Math.random(), v = Math.random();
+                const th = u * 2 * Math.PI, ph = Math.acos(2 * v - 1);
+                x = 4 * Math.sin(ph) * Math.cos(th);
+                y = 4 * Math.cos(ph) + 2;
+                z = 4 * Math.sin(ph) * Math.sin(th);
+              } else {
+                const t = (i / PARTICLE_COUNT) * Math.PI * 2;
+                x = Math.sin(t) * 1; y = -((i / PARTICLE_COUNT) * 4); z = Math.cos(t) * 1;
+              }
+            }
             break;
-          default: // Algoritmo generativo procedurale unico per tutte le altre forme fino a 100
-            { const rMod = (seedVal % 5) + 2;
+          case 11: // Cubo Rubik 3D
+            {
+              const size = 6;
+              x = (Math.random() - 0.5) * size;
+              y = (Math.random() - 0.5) * size;
+              z = (Math.random() - 0.5) * size;
+            }
+            break;
+          case 21: // DNA Doppia Elica
+            {
+              const st = (i / PARTICLE_COUNT) * Math.PI * 14, dir = (i % 2 === 0) ? 1 : -1;
+              x = Math.sin(st) * 4 * dir; y = ((i / PARTICLE_COUNT) * 18) - 9; z = Math.cos(st) * 4 * dir;
+            }
+            break;
+          case 31: // Spada Laser
+            {
+              const h = ((i / PARTICLE_COUNT) * 16) - 8;
+              const a = Math.random() * Math.PI * 2, r = (i < PARTICLE_COUNT * 0.8) ? 0.4 : 2;
+              x = Math.cos(a) * r; y = h; z = Math.sin(a) * r;
+            }
+            break;
+          default: // Forme geometriche e galassie uniche generate proceduralmente
+            {
               const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI;
-              const r = (5 + Math.sin(seedVal + u * rMod) * 3);
-              x = r * Math.sin(v) * Math.cos(u) + Math.sin(i) * 0.5;
-              y = r * Math.sin(v) * Math.sin(u) + Math.cos(i) * 0.5;
-              z = r * Math.cos(v); }
+              const r = (4 + Math.sin(seedVal + u * 3) * 3);
+              x = r * Math.sin(v) * Math.cos(u) * (seedVal % 3 + 1);
+              y = r * Math.sin(v) * Math.sin(u) * 1.5;
+              z = r * Math.cos(v) * (seedVal % 2 + 1);
+            }
             break;
         }
 
@@ -574,7 +607,7 @@
           const landmarks = results.multiHandLandmarks[0];
 
           drawConnectors(previewCtx, landmarks, HAND_CONNECTIONS, { color: '#ffffff', lineWidth: 1 });
-          drawLandmarks(previewCtx, landmarks, { color: '#00f3ff', lineWidth: 1, radius: 1.5 });
+          drawLandmarks(previewCtx, landmarks, { color: '#ffffff', lineWidth: 1, radius: 1.5 });
 
           const thumbTip = landmarks[4], indexTip = landmarks[8];
           const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
@@ -604,7 +637,7 @@
 
           ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
           ctrl.grabEl.innerText = ctrl.isPinching ? "CHIUSO (PINCH)" : "APERTO";
-          ctrl.grabEl.style.color = ctrl.isPinching ? "#ff3366" : "#00f3ff";
+          ctrl.grabEl.style.color = ctrl.isPinching ? "#ff3366" : "#ffffff";
 
           if (currentMode === 'BUILDER') {
             const h1Center = landmarks[9], wrist = landmarks[0];
@@ -692,7 +725,7 @@
 
     document.getElementById('shape-select').addEventListener('change', (e) => generateShape(e.target.value));
     document.getElementById('color-picker').addEventListener('input', (e) => {
-      particleMaterial.color.set(e.target.value);
+      updateParticleColors(e.target.value);
     });
 
     initThree();
