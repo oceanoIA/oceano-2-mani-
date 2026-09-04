@@ -475,7 +475,12 @@ const CONFIG = {
   cameraWidth: 320,
   cameraHeight: 240,
 
-  handSmooth: 0.28,
+  /* SENSIBILITÀ MANI +20%
+     Prima: 0.28
+     Ora:   0.34
+  */
+  handSmooth: 0.34,
+
   pinchOn: 0.075,
   pinchOff: 0.105,
 
@@ -483,10 +488,9 @@ const CONFIG = {
   particleReaction: 0.08,
   maxBlocks: 28,
 
-  /* GRAVITÀ TERRESTRE */
-  builderGravity: 9.81,
-
+  builderGravity: 0.06,
   snapSize: 1.5,
+  throwPower: 1.8,
 
   colors: {
     white: 0xffffff,
@@ -512,11 +516,11 @@ class SciFiSoundSystem {
   }
 
   init(){
-    if(this.initialized) return;
+    if(this.initialized)return;
 
     try{
       const AudioCtx=window.AudioContext||window.webkitAudioContext;
-      if(!AudioCtx) return;
+      if(!AudioCtx)return;
 
       this.ctx=new AudioCtx();
       this.humOsc=this.ctx.createOscillator();
@@ -537,9 +541,11 @@ class SciFiSoundSystem {
   }
 
   pinch(){
-    if(!this.enabled) return;
+    if(!this.enabled)return;
+
     this.init();
-    if(!this.initialized) return;
+
+    if(!this.initialized)return;
 
     const o=this.ctx.createOscillator();
     const g=this.ctx.createGain();
@@ -642,6 +648,7 @@ let fpsFrames=0;
    ========================================================= */
 
 function createController(index){
+
   return {
     side:index===0?'Left':'Right',
 
@@ -706,12 +713,7 @@ function initThree(){
     1000
   );
 
-  /*
-    VISUALE INIZIALE:
-    camera più arretrata e perfettamente centrata.
-  */
-  camera.position.set(0,0,34);
-  camera.lookAt(0,0,0);
+  camera.position.set(0,4,28);
 
   renderer=new THREE.WebGLRenderer({
     antialias:false,
@@ -720,30 +722,13 @@ function initThree(){
 
   renderer.setPixelRatio(1);
   renderer.setSize(innerWidth,innerHeight,false);
+
   dom.container.appendChild(renderer.domElement);
 
   initBuilder();
   initControllers();
   initParticles();
   initPreview();
-
-  /*
-    Assicura che dopo il refresh la visuale
-    parta sempre dal centro.
-  */
-  resetCameraView();
-}
-
-/* =========================================================
-   CAMERA VIEW
-   ========================================================= */
-
-function resetCameraView(){
-
-  if(!camera)return;
-
-  camera.position.set(0,0,34);
-  camera.lookAt(0,0,0);
 }
 
 /* =========================================================
@@ -794,7 +779,9 @@ function initControllers(){
 
   controllers.forEach((ctrl,index)=>{
 
-    const color=index===0?CONFIG.colors.green:CONFIG.colors.pink;
+    const color=index===0
+      ?CONFIG.colors.green
+      :CONFIG.colors.pink;
 
     const dot=new THREE.Mesh(
       new THREE.SphereGeometry(.17,7,7),
@@ -814,7 +801,8 @@ function initControllers(){
     lineGeo.setAttribute(
       'position',
       new THREE.BufferAttribute(
-        new Float32Array(6),3
+        new Float32Array(6),
+        3
       )
     );
 
@@ -840,7 +828,8 @@ function initControllers(){
     ctrl.trailGeometry.setAttribute(
       'position',
       new THREE.BufferAttribute(
-        new Float32Array(12*3),3
+        new Float32Array(12*3),
+        3
       )
     );
 
@@ -870,21 +859,36 @@ function initParticles(){
   particleGeometry=new THREE.BufferGeometry();
 
   for(let i=0;i<PARTICLE_COUNT*3;i++){
+
     const v=(Math.random()-.5)*20;
+
     targetPositions[i]=v;
     currentPositions[i]=v;
   }
 
   particleGeometry.setAttribute(
     'position',
-    new THREE.BufferAttribute(currentPositions,3)
+    new THREE.BufferAttribute(
+      currentPositions,
+      3
+    )
   );
 
-  const colors=new Float32Array(PARTICLE_COUNT*3);
+  const colors=new Float32Array(
+    PARTICLE_COUNT*3
+  );
 
   for(let i=0;i<PARTICLE_COUNT;i++){
-    const v=Math.random()<.7?1:Math.random()<.66?.66:.33;
+
+    const v=
+      Math.random()<.7
+        ?1
+        :Math.random()<.66
+          ?.66
+          :.33;
+
     const j=i*3;
+
     colors[j]=v;
     colors[j+1]=v;
     colors[j+2]=v;
@@ -892,7 +896,10 @@ function initParticles(){
 
   particleGeometry.setAttribute(
     'color',
-    new THREE.BufferAttribute(colors,3)
+    new THREE.BufferAttribute(
+      colors,
+      3
+    )
   );
 
   const texture=createGlowTexture();
@@ -926,6 +933,7 @@ function initParticles(){
 function createGlowTexture(){
 
   const c=document.createElement('canvas');
+
   c.width=32;
   c.height=32;
 
@@ -936,15 +944,31 @@ function createGlowTexture(){
     16,16,16
   );
 
-  g.addColorStop(0,'rgba(255,255,255,1)');
-  g.addColorStop(.25,'rgba(255,255,255,.9)');
-  g.addColorStop(.6,'rgba(255,255,255,.25)');
-  g.addColorStop(1,'rgba(255,255,255,0)');
+  g.addColorStop(
+    0,
+    'rgba(255,255,255,1)'
+  );
+
+  g.addColorStop(
+    .25,
+    'rgba(255,255,255,.9)'
+  );
+
+  g.addColorStop(
+    .6,
+    'rgba(255,255,255,.25)'
+  );
+
+  g.addColorStop(
+    1,
+    'rgba(255,255,255,0)'
+  );
 
   ctx.fillStyle=g;
   ctx.fillRect(0,0,32,32);
 
   const texture=new THREE.CanvasTexture(c);
+
   texture.generateMipmaps=false;
   texture.minFilter=THREE.LinearFilter;
   texture.magFilter=THREE.LinearFilter;
@@ -959,7 +983,9 @@ function createGlowTexture(){
 let previewCtx;
 
 function initPreview(){
+
   previewCtx=dom.preview.getContext('2d');
+
   drawPreview([]);
 }
 
@@ -973,31 +999,47 @@ function spawnShape(type,x,y,z){
   const size=3;
 
   switch(type){
+
     case'sphere':
-      geo=new THREE.SphereGeometry(1.65,12,12);
+      geo=new THREE.SphereGeometry(
+        1.65,12,12
+      );
       break;
 
     case'pyramid':
-      geo=new THREE.ConeGeometry(2.1,3,4);
+      geo=new THREE.ConeGeometry(
+        2.1,3,4
+      );
       break;
 
     case'torus':
-      geo=new THREE.TorusGeometry(1.5,.5,8,16);
+      geo=new THREE.TorusGeometry(
+        1.5,.5,8,16
+      );
       break;
 
     case'cylinder':
-      geo=new THREE.CylinderGeometry(1.5,1.5,3,12);
+      geo=new THREE.CylinderGeometry(
+        1.5,1.5,3,12
+      );
       break;
 
     case'icosahedron':
-      geo=new THREE.IcosahedronGeometry(1.9);
+      geo=new THREE.IcosahedronGeometry(
+        1.9
+      );
       break;
 
     default:
-      geo=new THREE.BoxGeometry(size,size,size);
+      geo=new THREE.BoxGeometry(
+        size,size,size
+      );
   }
 
-  const color=Math.random()>.5?0xffffff:0x888888;
+  const color=
+    Math.random()>.5
+      ?0xffffff
+      :0x888888;
 
   const mesh=new THREE.Mesh(
     geo,
@@ -1031,6 +1073,7 @@ function spawnShape(type,x,y,z){
 }
 
 function disposeBlock(block){
+
   if(!block)return;
 
   builderGroup.remove(block);
@@ -1057,6 +1100,7 @@ function clearBlocks(){
   });
 
   selectedBlock=null;
+
   updateSelectionUI();
 }
 
@@ -1069,7 +1113,9 @@ function highlightBlock(block,on){
   if(!block)return;
 
   block.material.color.setHex(
-    on?CONFIG.colors.yellow:block.userData.originalColor
+    on
+      ?CONFIG.colors.yellow
+      :block.userData.originalColor
   );
 }
 
@@ -1083,9 +1129,14 @@ function snapBlock(block){
 
   const s=CONFIG.snapSize;
 
-  block.position.x=Math.round(block.position.x/s)*s;
-  block.position.y=Math.round(block.position.y/s)*s;
-  block.position.z=Math.round(block.position.z/s)*s;
+  block.position.x=
+    Math.round(block.position.x/s)*s;
+
+  block.position.y=
+    Math.round(block.position.y/s)*s;
+
+  block.position.z=
+    Math.round(block.position.z/s)*s;
 }
 
 /* =========================================================
@@ -1097,13 +1148,16 @@ function updateSelectionUI(){
   if(selectedBlock){
 
     dom.selection.textContent=
-      'TARGET: '+selectedBlock.userData.type.toUpperCase();
+      'TARGET: '+
+      selectedBlock.userData.type.toUpperCase();
 
     dom.ring.style.display='block';
 
   }else{
 
-    dom.selection.textContent='TARGET: NESSUN OGGETTO';
+    dom.selection.textContent=
+      'TARGET: NESSUN OGGETTO';
+
     dom.ring.style.display='none';
   }
 }
@@ -1119,6 +1173,7 @@ function generateShape(type){
   for(let i=0;i<PARTICLE_COUNT;i++){
 
     const j=i*3;
+
     let x=0,y=0,z=0;
 
     if(type==='jupiter'||type==='saturn'){
@@ -1129,7 +1184,10 @@ function generateShape(type){
       if(i<PARTICLE_COUNT*body){
 
         const a=Math.random()*Math.PI*2;
-        const b=Math.acos(Math.random()*2-1);
+        const b=Math.acos(
+          Math.random()*2-1
+        );
+
         const r=saturn?5:7;
 
         x=r*Math.sin(b)*Math.cos(a);
@@ -1139,7 +1197,10 @@ function generateShape(type){
       }else{
 
         const a=Math.random()*Math.PI*2;
-        const r=(saturn?7:9)+Math.random()*(saturn?6:4);
+
+        const r=
+          (saturn?7:9)+
+          Math.random()*(saturn?6:4);
 
         x=Math.cos(a)*r;
         z=Math.sin(a)*r;
@@ -1149,17 +1210,38 @@ function generateShape(type){
     }else if(type==='galaxy'){
 
       const arm=i%4;
-      const r=Math.pow(Math.random(),1.5)*15;
-      const a=r*.4+arm*Math.PI/2;
+      const r=Math.pow(
+        Math.random(),
+        1.5
+      )*15;
 
-      x=Math.cos(a)*r+(Math.random()-.5)*.7;
-      z=Math.sin(a)*r+(Math.random()-.5)*.7;
-      y=(Math.random()-.5)*Math.max(.2,1.8-r*.1);
+      const a=
+        r*.4+
+        arm*Math.PI/2;
+
+      x=
+        Math.cos(a)*r+
+        (Math.random()-.5)*.7;
+
+      z=
+        Math.sin(a)*r+
+        (Math.random()-.5)*.7;
+
+      y=
+        (Math.random()-.5)*
+        Math.max(
+          .2,
+          1.8-r*.1
+        );
 
     }else if(type==='DNA'){
 
-      const t=i/PARTICLE_COUNT*Math.PI*12;
-      const strand=i%2?-1:1;
+      const t=
+        i/PARTICLE_COUNT*
+        Math.PI*12;
+
+      const strand=
+        i%2?-1:1;
 
       x=Math.sin(t)*4*strand;
       y=i/PARTICLE_COUNT*16-8;
@@ -1171,36 +1253,76 @@ function generateShape(type){
       const t=Math.random()*s-s/2;
       const side=i%12;
 
-      if(side===0){x=s/2;y=t;z=s/2}
-      else if(side===1){x=-s/2;y=t;z=s/2}
-      else if(side===2){x=t;y=s/2;z=s/2}
-      else if(side===3){x=t;y=-s/2;z=s/2}
-      else if(side===4){x=s/2;y=t;z=-s/2}
-      else if(side===5){x=-s/2;y=t;z=-s/2}
-      else if(side===6){x=t;y=s/2;z=-s/2}
-      else if(side===7){x=t;y=-s/2;z=-s/2}
-      else if(side===8){x=s/2;y=s/2;z=t}
-      else if(side===9){x=-s/2;y=s/2;z=t}
-      else if(side===10){x=s/2;y=-s/2;z=t}
-      else{x=-s/2;y=-s/2;z=t}
+      if(side===0){
+        x=s/2;y=t;z=s/2;
+      }else if(side===1){
+        x=-s/2;y=t;z=s/2;
+      }else if(side===2){
+        x=t;y=s/2;z=s/2;
+      }else if(side===3){
+        x=t;y=-s/2;z=s/2;
+      }else if(side===4){
+        x=s/2;y=t;z=-s/2;
+      }else if(side===5){
+        x=-s/2;y=t;z=-s/2;
+      }else if(side===6){
+        x=t;y=s/2;z=-s/2;
+      }else if(side===7){
+        x=t;y=-s/2;z=-s/2;
+      }else if(side===8){
+        x=s/2;y=s/2;z=t;
+      }else if(side===9){
+        x=-s/2;y=s/2;z=t;
+      }else if(side===10){
+        x=s/2;y=-s/2;z=t;
+      }else{
+        x=-s/2;y=-s/2;z=t;
+      }
 
     }else if(type==='heart'){
 
       const t=Math.random()*Math.PI*2;
 
-      x=16*Math.pow(Math.sin(t),3)*.55;
-      y=(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*.55;
-      z=(Math.random()-.5)*3*.55;
+      x=
+        16*
+        Math.pow(Math.sin(t),3)*
+        .55;
+
+      y=
+        (
+          13*Math.cos(t)-
+          5*Math.cos(2*t)-
+          2*Math.cos(3*t)-
+          Math.cos(4*t)
+        )*.55;
+
+      z=
+        (Math.random()-.5)*
+        3*.55;
 
     }else if(type==='flower'){
 
       const u=Math.random()*Math.PI*2;
       const v=Math.random()*Math.PI;
-      const r=9*Math.sin(6*u)*Math.sin(v);
 
-      x=r*Math.sin(v)*Math.cos(u);
-      y=r*Math.sin(v)*Math.sin(u);
-      z=r*Math.cos(v);
+      const r=
+        9*
+        Math.sin(6*u)*
+        Math.sin(v);
+
+      x=
+        r*
+        Math.sin(v)*
+        Math.cos(u);
+
+      y=
+        r*
+        Math.sin(v)*
+        Math.sin(u);
+
+      z=
+        r*
+        Math.cos(v);
 
     }else if(type==='buddha'){
 
@@ -1219,20 +1341,42 @@ function generateShape(type){
         const w=(1-h/9)*6.5;
         const a=Math.random()*Math.PI*2;
 
-        x=Math.cos(a)*w*Math.random();
-        z=Math.sin(a)*w*Math.random();
+        x=
+          Math.cos(a)*
+          w*
+          Math.random();
+
+        z=
+          Math.sin(a)*
+          w*
+          Math.random();
+
         y=-6+h;
       }
 
     }else if(type==='fireworks'){
 
       const a=Math.random()*Math.PI*2;
-      const b=Math.acos(Math.random()*2-1);
+
+      const b=Math.acos(
+        Math.random()*2-1
+      );
+
       const r=2+Math.random()*12;
 
-      x=r*Math.sin(b)*Math.cos(a);
-      y=r*Math.sin(b)*Math.sin(a);
-      z=r*Math.cos(b);
+      x=
+        r*
+        Math.sin(b)*
+        Math.cos(a);
+
+      y=
+        r*
+        Math.sin(b)*
+        Math.sin(a);
+
+      z=
+        r*
+        Math.cos(b);
     }
 
     p[j]=x;
@@ -1263,14 +1407,23 @@ function drawPreview(hands){
     ctx.fillStyle='rgba(255,255,255,.35)';
     ctx.font='9px "Share Tech Mono"';
     ctx.textAlign='center';
-    ctx.fillText('SEARCHING HANDS...',w/2,h/2);
+
+    ctx.fillText(
+      'SEARCHING HANDS...',
+      w/2,
+      h/2
+    );
 
     return;
   }
 
   hands.forEach((landmarks,i)=>{
 
-    ctx.strokeStyle=i===0?'#00ffcc':'#ff00aa';
+    ctx.strokeStyle=
+      i===0
+        ?'#00ffcc'
+        :'#ff00aa';
+
     ctx.lineWidth=1.5;
 
     HAND_CONNECTIONS.forEach(pair=>{
@@ -1279,23 +1432,35 @@ function drawPreview(hands){
       const b=landmarks[pair[1]];
 
       ctx.beginPath();
-      ctx.moveTo(a.x*w,a.y*h);
-      ctx.lineTo(b.x*w,b.y*h);
+
+      ctx.moveTo(
+        a.x*w,
+        a.y*h
+      );
+
+      ctx.lineTo(
+        b.x*w,
+        b.y*h
+      );
+
       ctx.stroke();
     });
 
     landmarks.forEach((p,index)=>{
 
-      ctx.fillStyle=(index===4||index===8)
-        ?'#ffe66d'
-        :(i===0?'#00ffcc':'#ff00aa');
+      ctx.fillStyle=
+        index===4||index===8
+          ?'#ffe66d'
+          :(i===0?'#00ffcc':'#ff00aa');
 
       ctx.beginPath();
 
       ctx.arc(
-        p.x*w,p.y*h,
+        p.x*w,
+        p.y*h,
         index===4||index===8?3:1.7,
-        0,Math.PI*2
+        0,
+        Math.PI*2
       );
 
       ctx.fill();
@@ -1309,7 +1474,11 @@ function drawPreview(hands){
 
 async function initHandTracking(){
 
-  setConnection('CAM: CONNECTING','yellow');
+  setConnection(
+    'CAM: CONNECTING',
+    'yellow'
+  );
+
   dom.mp.textContent='SEARCHING';
 
   const hands=new Hands({
@@ -1326,19 +1495,26 @@ async function initHandTracking(){
 
   let processing=false;
   let lastProcess=0;
-  const interval=1000/CONFIG.handFPS;
+
+  const interval=
+    1000/CONFIG.handFPS;
 
   hands.onResults(results=>{
 
     processing=false;
 
-    const landmarks=results.multiHandLandmarks||[];
-    const handed=results.multiHandedness||[];
+    const landmarks=
+      results.multiHandLandmarks||[];
+
+    const handed=
+      results.multiHandedness||[];
 
     drawPreview(landmarks);
 
     dom.mp.textContent=
-      landmarks.length?'TRACKING':'SEARCHING';
+      landmarks.length
+        ?'TRACKING'
+        :'SEARCHING';
 
     const mapped={
       Left:null,
@@ -1348,7 +1524,8 @@ async function initHandTracking(){
     handed.forEach((item,i)=>{
 
       if(item?.label&&landmarks[i]){
-        mapped[item.label]=landmarks[i];
+        mapped[item.label]=
+          landmarks[i];
       }
     });
 
@@ -1357,74 +1534,104 @@ async function initHandTracking(){
       const lm=mapped[ctrl.side];
 
       if(lm){
-        updateController(ctrl,lm);
+        updateController(
+          ctrl,
+          lm
+        );
       }else{
         loseController(ctrl);
       }
     });
 
-    updateParticleTargets(controllers);
+    updateParticleTargets();
   });
 
-  const cameraUtils=new Camera(dom.video,{
+  const cameraUtils=new Camera(
+    dom.video,
+    {
+      onFrame:async()=>{
 
-    onFrame:async()=>{
+        if(processing)return;
 
-      if(processing)return;
+        const now=performance.now();
 
-      const now=performance.now();
+        if(now-lastProcess<interval)return;
+        if(dom.video.readyState<2)return;
 
-      if(now-lastProcess<interval)return;
-      if(dom.video.readyState<2)return;
+        lastProcess=now;
+        processing=true;
 
-      lastProcess=now;
-      processing=true;
+        try{
 
-      try{
+          await hands.send({
+            image:dom.video
+          });
 
-        await hands.send({
-          image:dom.video
-        });
+        }catch(e){
 
-      }catch(e){
+          processing=false;
 
-        processing=false;
+          setConnection(
+            'CAM: ERROR',
+            'red'
+          );
 
-        setConnection('CAM: ERROR','red');
-        dom.mp.textContent='ERROR';
-      }
-    },
+          dom.mp.textContent='ERROR';
+        }
+      },
 
-    width:CONFIG.cameraWidth,
-    height:CONFIG.cameraHeight
-  });
+      width:CONFIG.cameraWidth,
+      height:CONFIG.cameraHeight
+    }
+  );
 
   try{
 
     cameraUtils.start();
 
-    setConnection('CAM: STARTING','yellow');
+    setConnection(
+      'CAM: STARTING',
+      'yellow'
+    );
 
   }catch(e){
 
-    setConnection('CAM: FAILED','red');
+    setConnection(
+      'CAM: FAILED',
+      'red'
+    );
 
-    console.warn('Camera error',e);
+    console.warn(
+      'Camera error',
+      e
+    );
   }
 
-  dom.video.addEventListener('loadeddata',()=>{
+  dom.video.addEventListener(
+    'loadeddata',
+    ()=>{
+      setConnection(
+        'CAM: ONLINE',
+        'green'
+      );
 
-    setConnection('CAM: ONLINE','green');
-    dom.previewStatus.textContent='ONLINE';
+      dom.previewStatus.textContent=
+        'ONLINE';
+    }
+  );
 
-  });
+  dom.video.addEventListener(
+    'error',
+    ()=>{
+      setConnection(
+        'CAM: ERROR',
+        'red'
+      );
 
-  dom.video.addEventListener('error',()=>{
-
-    setConnection('CAM: ERROR','red');
-    dom.previewStatus.textContent='ERROR';
-
-  });
+      dom.previewStatus.textContent=
+        'ERROR';
+    }
+  );
 }
 
 /* =========================================================
@@ -1441,12 +1648,20 @@ function updateController(ctrl,landmarks){
   const thumb=landmarks[4];
   const index=landmarks[8];
 
-  const centerX=(thumb.x+index.x)*.5;
-  const centerY=(thumb.y+index.y)*.5;
-  const centerZ=(thumb.z+index.z)*.5;
+  const centerX=
+    (thumb.x+index.x)*.5;
 
-  const ndcX=(1-centerX)*2-1;
-  const ndcY=-(centerY*2-1);
+  const centerY=
+    (thumb.y+index.y)*.5;
+
+  const centerZ=
+    (thumb.z+index.z)*.5;
+
+  const ndcX=
+    (1-centerX)*2-1;
+
+  const ndcY=
+    -(centerY*2-1);
 
   const v=new THREE.Vector3(
     ndcX,
@@ -1456,19 +1671,31 @@ function updateController(ctrl,landmarks){
 
   v.unproject(camera);
 
-  const dir=v.sub(camera.position).normalize();
-  const targetZ=-centerZ*20;
+  const dir=
+    v.sub(camera.position)
+     .normalize();
+
+  const targetZ=
+    -centerZ*20;
 
   if(Math.abs(dir.z)>.0001){
 
     const dist=
-      (targetZ-camera.position.z)/dir.z;
+      (targetZ-camera.position.z)/
+      dir.z;
 
-    ctrl.target.copy(camera.position)
-      .add(dir.multiplyScalar(dist));
+    ctrl.target.copy(
+      camera.position
+    ).add(
+      dir.multiplyScalar(dist)
+    );
 
     ctrl.lastPos.copy(ctrl.pos);
 
+    /*
+      SENSIBILITÀ AUMENTATA:
+      0.34 invece di 0.28.
+    */
     ctrl.pos.lerp(
       ctrl.target,
       CONFIG.handSmooth
@@ -1477,8 +1704,13 @@ function updateController(ctrl,landmarks){
     ctrl.velocity.copy(ctrl.pos)
       .sub(ctrl.lastPos);
 
-    ctrl.mesh.position.copy(ctrl.pos);
-    ctrl.pointLight.position.copy(ctrl.pos);
+    ctrl.mesh.position.copy(
+      ctrl.pos
+    );
+
+    ctrl.pointLight.position.copy(
+      ctrl.pos
+    );
 
     ctrl.mesh.visible=true;
     ctrl.pointLight.visible=true;
@@ -1499,17 +1731,25 @@ function updateController(ctrl,landmarks){
   );
 
   updateHandHUD(ctrl);
-  updateBuilderHand(ctrl);
+  updateBuilderHand(
+    ctrl,
+    landmarks
+  );
 }
 
-function updatePinch(ctrl,thumb,index){
+function updatePinch(
+  ctrl,
+  thumb,
+  index
+){
 
   const distance=Math.hypot(
     thumb.x-index.x,
     thumb.y-index.y
   );
 
-  ctrl.wasPinching=ctrl.isPinching;
+  ctrl.wasPinching=
+    ctrl.isPinching;
 
   if(ctrl.isPinching){
 
@@ -1533,7 +1773,8 @@ function updatePinch(ctrl,thumb,index){
 function loseController(ctrl){
 
   const elapsed=
-    performance.now()-ctrl.lastSeen;
+    performance.now()-
+    ctrl.lastSeen;
 
   ctrl.active=false;
 
@@ -1544,31 +1785,54 @@ function loseController(ctrl){
   if(elapsed>350){
 
     ctrl.isPinching=false;
+
     releaseBlock(ctrl);
 
-    setHandState(ctrl,'LOST');
+    setHandState(
+      ctrl,
+      'LOST'
+    );
 
   }else{
 
-    setHandState(ctrl,'LOST');
+    setHandState(
+      ctrl,
+      'LOST'
+    );
   }
 
   ctrl.trail.visible=false;
 }
 
-function setHandState(ctrl,state){
+function setHandState(
+  ctrl,
+  state
+){
 
-  ctrl.statusEl.textContent=state;
-  ctrl.statusEl.className='telemetry-val';
+  ctrl.statusEl.textContent=
+    state;
 
-  if(state==='TRACKING')
-    ctrl.statusEl.classList.add('state-tracking');
+  ctrl.statusEl.className=
+    'telemetry-val';
 
-  else if(state==='LOST')
-    ctrl.statusEl.classList.add('state-lost');
+  if(state==='TRACKING'){
 
-  else
-    ctrl.statusEl.classList.add('state-searching');
+    ctrl.statusEl.classList.add(
+      'state-tracking'
+    );
+
+  }else if(state==='LOST'){
+
+    ctrl.statusEl.classList.add(
+      'state-lost'
+    );
+
+  }else{
+
+    ctrl.statusEl.classList.add(
+      'state-searching'
+    );
+  }
 
   ctrl.dotEl.classList.toggle(
     'on',
@@ -1576,7 +1840,8 @@ function setHandState(ctrl,state){
   );
 
   if(state==='TRACKING'){
-    dom.previewStatus.textContent='TRACKING';
+    dom.previewStatus.textContent=
+      'TRACKING';
   }
 }
 
@@ -1586,23 +1851,37 @@ function setHandState(ctrl,state){
 
 function updateHandHUD(ctrl){
 
-  setHandState(ctrl,'TRACKING');
+  setHandState(
+    ctrl,
+    'TRACKING'
+  );
 
   ctrl.grabEl.textContent=
-    ctrl.isPinching?'PINCH':'OPEN';
+    ctrl.isPinching
+      ?'PINCH'
+      :'OPEN';
 
   ctrl.grabEl.style.color=
-    ctrl.isPinching?'#ffe66d':'#fff';
+    ctrl.isPinching
+      ?'#ffe66d'
+      :'#fff';
 }
 
 /* =========================================================
    RAY
    ========================================================= */
 
-function updateRay(ctrl,wrist,targetZ){
+function updateRay(
+  ctrl,
+  wrist,
+  targetZ
+){
 
-  const x=(1-wrist.x)*2-1;
-  const y=-(wrist.y*2-1);
+  const x=
+    (1-wrist.x)*2-1;
+
+  const y=
+    -(wrist.y*2-1);
 
   const v=new THREE.Vector3(
     x,
@@ -1612,18 +1891,25 @@ function updateRay(ctrl,wrist,targetZ){
 
   v.unproject(camera);
 
-  const dir=v.sub(camera.position).normalize();
+  const dir=
+    v.sub(camera.position)
+     .normalize();
 
   if(Math.abs(dir.z)<.0001)return;
 
   const dist=
-    (targetZ-camera.position.z)/dir.z;
+    (targetZ-camera.position.z)/
+    dir.z;
 
-  const p=camera.position.clone()
-    .add(dir.multiplyScalar(dist));
+  const p=
+    camera.position.clone()
+      .add(
+        dir.multiplyScalar(dist)
+      );
 
   const attr=
-    ctrl.rayLine.geometry.attributes.position;
+    ctrl.rayLine.geometry
+      .attributes.position;
 
   attr.setXYZ(
     0,
@@ -1664,7 +1950,8 @@ function updateTrail(ctrl){
   ctrl.trailPoints.length=12;
 
   const attr=
-    ctrl.trailGeometry.attributes.position;
+    ctrl.trailGeometry
+      .attributes.position;
 
   for(let i=0;i<12;i++){
 
@@ -1681,6 +1968,7 @@ function updateTrail(ctrl){
   }
 
   attr.needsUpdate=true;
+
   ctrl.trail.visible=true;
 }
 
@@ -1690,13 +1978,13 @@ function updateTrail(ctrl){
 
 function updateParticleTargets(){
 
-  if(currentMode!=='PARTICLES')return;
+  if(currentMode!=='PARTICLES')
+    return;
 
   let activeHand=null;
 
   if(controllers[0].active)
     activeHand=controllers[0];
-
   else if(controllers[1].active)
     activeHand=controllers[1];
 
@@ -1750,9 +2038,13 @@ function updateParticleTargets(){
    BUILDER HAND CONTROL
    ========================================================= */
 
-function updateBuilderHand(ctrl){
+function updateBuilderHand(
+  ctrl,
+  landmarks
+){
 
-  if(currentMode!=='BUILDER')return;
+  if(currentMode!=='BUILDER')
+    return;
 
   if(ctrl.isPinching){
 
@@ -1762,8 +2054,15 @@ function updateBuilderHand(ctrl){
 
     if(ctrl.grabbedBlock){
 
-      const block=ctrl.grabbedBlock;
+      const block=
+        ctrl.grabbedBlock;
 
+      /*
+        MOVIMENTO 3D PURO:
+        l'oggetto segue la mano,
+        ma NON ruota più in base
+        alla direzione del movimento.
+      */
       block.position.copy(
         ctrl.pos.clone()
           .sub(ctrl.grabOffset)
@@ -1775,11 +2074,13 @@ function updateBuilderHand(ctrl){
         0
       );
 
-      block.rotation.y+=
-        ctrl.velocity.x*.12;
-
-      block.rotation.x-=
-        ctrl.velocity.y*.08;
+      /*
+        IMPORTANTE:
+        nessuna modifica a
+        block.rotation.x/y/z.
+        L'orientamento resta quello
+        originale mentre lo sposti.
+      */
 
       selectedBlock=block;
 
@@ -1840,22 +2141,22 @@ function selectNearestBlock(ctrl){
 
 function releaseBlock(ctrl){
 
-  const block=ctrl.grabbedBlock;
+  const block=
+    ctrl.grabbedBlock;
 
   if(!block)return;
 
   block.userData.isGrabbed=false;
 
   /*
-    NESSUN IMPULSO.
-    Quando l'oggetto viene lasciato,
-    la velocità viene azzerata e la gravità
-    lo fa cadere immediatamente.
+    Il lancio rimane attivo:
+    quando lasci il blocco,
+    conserva la velocità della mano.
   */
-  block.userData.velocity.set(
-    0,
-    0,
-    0
+  block.userData.velocity.copy(
+    ctrl.velocity
+  ).multiplyScalar(
+    CONFIG.throwPower
   );
 
   snapBlock(block);
@@ -1878,7 +2179,8 @@ function releaseBlock(ctrl){
 
 function updateParticles(delta){
 
-  if(currentMode!=='PARTICLES')return;
+  if(currentMode!=='PARTICLES')
+    return;
 
   const lerp=Math.min(
     CONFIG.particleSmooth*delta,
@@ -1886,16 +2188,23 @@ function updateParticles(delta){
   );
 
   particleGroup.rotation.x+=
-    (targetRotX-particleGroup.rotation.x)*lerp;
+    (targetRotX-
+      particleGroup.rotation.x)*
+    lerp;
 
   particleGroup.rotation.y+=
-    (targetRotY+.002-particleGroup.rotation.y)*lerp;
+    (targetRotY+.002-
+      particleGroup.rotation.y)*
+    lerp;
 
   particleGroup.rotation.z+=
-    (targetRotZ-particleGroup.rotation.z)*lerp;
+    (targetRotZ-
+      particleGroup.rotation.z)*
+    lerp;
 
   currentScale+=
-    (targetScale-currentScale)*lerp;
+    (targetScale-currentScale)*
+    lerp;
 
   particleGroup.scale.setScalar(
     currentScale
@@ -1907,7 +2216,8 @@ function updateParticles(delta){
   );
 
   const positions=
-    particleGeometry.attributes.position.array;
+    particleGeometry
+      .attributes.position.array;
 
   const pinch=
     controllers[0].isPinching||
@@ -1943,8 +2253,9 @@ function updateParticles(delta){
 
     const speed=
       pinch&&(i&1)===0
-        ?.55
-        :.18+shapePulse*.08;
+        ? .55
+        : .18+
+          shapePulse*.08;
 
     positions[j]+=
       (tx-positions[j])*
@@ -1971,13 +2282,12 @@ function updateParticles(delta){
 
 function updateBuilder(delta){
 
-  if(currentMode!=='BUILDER')return;
+  if(currentMode!=='BUILDER')
+    return;
 
-  /*
-    delta qui è espresso in secondi.
-    9.81 = accelerazione gravitazionale terrestre.
-  */
-  const gravity=CONFIG.builderGravity;
+  const gravity=
+    CONFIG.builderGravity*
+    delta;
 
   for(const block of blocks){
 
@@ -1987,8 +2297,7 @@ function updateBuilder(delta){
     const velocity=
       block.userData.velocity;
 
-    velocity.y-=
-      gravity*delta;
+    velocity.y-=gravity;
 
     block.position.addScaledVector(
       velocity,
@@ -2004,12 +2313,14 @@ function updateBuilder(delta){
       block.position.y=floorY;
 
       velocity.y=0;
+
       velocity.x*=.92;
       velocity.z*=.92;
     }
   }
 
   resolveCollisions();
+
   updateSelectionRing();
 }
 
@@ -2037,14 +2348,18 @@ function resolveCollisions(){
         block.position.z/cell
       );
 
-    const key=x+','+z;
+    const key=
+      x+','+z;
 
     let list=grid.get(key);
 
     if(!list){
 
       list=[];
-      grid.set(key,list);
+      grid.set(
+        key,
+        list
+      );
     }
 
     list.push(block);
@@ -2067,13 +2382,15 @@ function resolveCollisions(){
             (cz+oz)
           );
 
-        if(!otherList)continue;
+        if(!otherList)
+          continue;
 
         for(const a of list){
 
           for(const b of otherList){
 
-            if(a===b)continue;
+            if(a===b)
+              continue;
 
             const dx=
               a.position.x-
@@ -2086,7 +2403,8 @@ function resolveCollisions(){
             if(
               dx*dx+
               dz*dz>8.5
-            )continue;
+            )
+              continue;
 
             const top=
               b.position.y+
@@ -2099,6 +2417,7 @@ function resolveCollisions(){
             ){
 
               a.position.y=top;
+
               a.userData.velocity.y=0;
             }
           }
@@ -2120,6 +2439,7 @@ function updateSelectionRing(){
   ){
 
     dom.ring.style.display='none';
+
     return;
   }
 
@@ -2151,7 +2471,8 @@ function updateSelectionRing(){
 
 function switchMode(mode){
 
-  if(currentMode===mode)return;
+  if(currentMode===mode)
+    return;
 
   currentMode=mode;
 
@@ -2225,7 +2546,8 @@ function bindEvents(){
     ()=>switchMode('PARTICLES')
   );
 
-  document.querySelectorAll('.spawn-btn')
+  document
+    .querySelectorAll('.spawn-btn')
     .forEach(btn=>{
 
       btn.addEventListener(
@@ -2245,9 +2567,10 @@ function bindEvents(){
 
   dom.shapeSelect.addEventListener(
     'change',
-    e=>generateShape(
-      e.target.value
-    )
+    e=>
+      generateShape(
+        e.target.value
+      )
   );
 
   dom.colorPicker.addEventListener(
@@ -2287,18 +2610,28 @@ function bindEvents(){
    CONNECTION HUD
    ========================================================= */
 
-function setConnection(text,type){
+function setConnection(
+  text,
+  type
+){
 
   dom.connection.textContent=text;
 
-  if(type==='green')
-    dom.connection.style.color='#00ffcc';
+  if(type==='green'){
 
-  else if(type==='red')
-    dom.connection.style.color='#ff5577';
+    dom.connection.style.color=
+      '#00ffcc';
 
-  else
-    dom.connection.style.color='#ffe66d';
+  }else if(type==='red'){
+
+    dom.connection.style.color=
+      '#ff5577';
+
+  }else{
+
+    dom.connection.style.color=
+      '#ffe66d';
+  }
 }
 
 /* =========================================================
@@ -2330,25 +2663,16 @@ function updateFPS(now){
 
 function animate(){
 
-  requestAnimationFrame(animate);
+  requestAnimationFrame(
+    animate
+  );
 
-  const now=performance.now();
+  const now=
+    performance.now();
 
-  /*
-    delta normalizzato per il sistema particellare.
-  */
   const delta=Math.min(
     (now-lastFrame)/16.67,
     2
-  );
-
-  /*
-    Tempo reale in secondi per la gravità.
-    Questo permette di usare realmente 9.81 m/s².
-  */
-  const deltaSeconds=Math.min(
-    (now-lastFrame)/1000,
-    .05
   );
 
   lastFrame=now;
@@ -2357,7 +2681,7 @@ function animate(){
 
   if(currentMode==='BUILDER'){
 
-    updateBuilder(deltaSeconds);
+    updateBuilder(delta);
 
   }else{
 
@@ -2376,7 +2700,8 @@ function animate(){
 
 function onResize(){
 
-  if(!camera||!renderer)return;
+  if(!camera||!renderer)
+    return;
 
   camera.aspect=
     innerWidth/innerHeight;
@@ -2404,7 +2729,9 @@ window.addEventListener(
 
     bindEvents();
 
-    switchMode('PARTICLES');
+    switchMode(
+      'PARTICLES'
+    );
 
     setConnection(
       'CAM: INIT',
