@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.7 // VISION PRO RAYCASTER</title>
+  <title>STARK KINETIC LAB v10.0 // MARK VII HOLOGRAPHIC SUITE</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,98 +15,102 @@
     #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
     #video-input { display: none; }
 
-    /* Header Superiore Minimal */
     .stark-header {
       position: absolute; top: 0; left: 0; width: 100%; height: 60px;
-      background: rgba(15, 15, 15, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08); z-index: 10;
+      background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(25px);
+      border-bottom: 1px solid rgba(0, 243, 255, 0.2); z-index: 10;
       display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
     }
     .stark-title {
-      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
-      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 14px;
+      letter-spacing: 3px; color: #00f3ff; text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
       display: flex; align-items: center; gap: 12px;
     }
     .security-badge {
-      font-size: 9px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #ffffff; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px;
+      font-size: 9px; background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.4);
+      color: #00f3ff; padding: 3px 10px; border-radius: 20px; letter-spacing: 1px;
     }
 
-    /* DOCK IN BASSO AL CENTRO CON EFFETTO LIQUID GLASS */
     .mode-dock {
       position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 10px; z-index: 20; background: rgba(25, 25, 25, 0.45);
-      padding: 10px 18px; border-radius: 35px; backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-      border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      display: flex; gap: 12px; z-index: 20; background: rgba(15, 20, 25, 0.6);
+      padding: 10px 20px; border-radius: 35px; backdrop-filter: blur(35px);
+      border: 1px solid rgba(0, 243, 255, 0.3); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(0, 243, 255, 0.4);
     }
     .tab-btn {
-      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.15);
-      color: rgba(255, 255, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
-      padding: 10px 22px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-      border-radius: 25px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+      background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2);
+      color: rgba(255, 255, 255, 0.7); font-family: 'Orbitron', sans-serif; font-size: 10px;
+      padding: 10px 24px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      border-radius: 25px;
     }
     .tab-btn:hover, .tab-btn.active {
-      background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.9); color: #ffffff;
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6); transform: translateY(-2px);
+      background: rgba(0, 243, 255, 0.25); border-color: #00f3ff; color: #ffffff;
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.8); transform: translateY(-2px);
     }
 
-    /* Pannello Sinistro Glass & Arrotondato */
     .ui-overlay {
-      position: absolute; top: 75px; left: 20px; z-index: 10; width: 290px; padding: 18px;
-      background: rgba(12, 12, 12, 0.6); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-      border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 26px;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: absolute; top: 75px; left: 20px; z-index: 10; width: 300px; padding: 18px;
+      background: rgba(10, 12, 15, 0.75); backdrop-filter: blur(30px);
+      border: 1px solid rgba(0, 243, 255, 0.25); border-radius: 26px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(0, 243, 255, 0.2);
       display: flex; flex-direction: column; gap: 14px;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
-      color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      color: #00f3ff; border-bottom: 1px solid rgba(0, 243, 255, 0.2);
       padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
     }
     .control-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 9px; color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
+    label { font-size: 9px; color: rgba(0, 243, 255, 0.7); letter-spacing: 1px; }
 
     select, input[type="color"], .stark-btn {
-      width: 100%; height: 38px; background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.18); color: #ffffff; padding: 0 12px;
+      width: 100%; height: 38px; background: rgba(0, 243, 255, 0.05);
+      border: 1px solid rgba(0, 243, 255, 0.3); color: #ffffff; padding: 0 12px;
       font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
       letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.25s ease;
-      border-radius: 19px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-radius: 19px;
     }
     select:hover, .stark-btn:hover {
-      background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.85); color: #ffffff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+      background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; color: #ffffff;
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
     }
-    select option { background: #151515; color: #ffffff; }
+    select option { background: #0b0f15; color: #ffffff; }
 
     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .telemetry-box {
-      font-size: 10px; background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.12); padding: 10px; border-radius: 18px;
+      font-size: 10px; background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(0, 243, 255, 0.2); padding: 10px; border-radius: 18px;
       display: flex; flex-direction: column; gap: 6px;
     }
-    .hand-card { border-left: 2px solid #ffffff; padding-left: 8px; display: flex; flex-direction: column; gap: 2px; }
-    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.5); }
-    .telemetry-val { color: #ffffff; font-weight: bold; }
+    .hand-card { border-left: 2px solid #00f3ff; padding-left: 8px; display: flex; flex-direction: column; gap: 2px; }
+    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.6); }
+    .telemetry-val { color: #00f3ff; font-weight: bold; }
 
-    /* Box Anteprima Camera Ingrandito */
     .camera-preview-container {
       position: absolute; bottom: 25px; right: 20px; z-index: 10;
-      width: 240px; height: 180px; background: rgba(12, 12, 12, 0.7);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 22px;
+      width: 240px; height: 180px; background: rgba(10, 12, 15, 0.8);
+      backdrop-filter: blur(20px); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 22px;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; overflow: hidden;
     }
     #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.9; }
     .preview-hud-tag {
       position: absolute; top: 6px; left: 8px; font-size: 8px; font-weight: bold;
-      letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.75);
-      padding: 2px 6px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
+      letter-spacing: 1px; color: #00f3ff; background: rgba(0, 0, 0, 0.8);
+      padding: 2px 6px; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 10px;
     }
   </style>
 
+  <!-- Three.js e Addons per Post-Processing (Bloom) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
+  <!-- MediaPipe Hands -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 </head>
@@ -116,8 +120,8 @@
 
   <div class="stark-header">
     <div class="stark-title">
-      <span>STARK LAB</span>
-      <span class="security-badge">VISION PRO RAYCAST (AUTO-START)</span>
+      <span>STARK KINETIC LAB</span>
+      <span class="security-badge">MARK VII HUD ACTIVE</span>
     </div>
   </div>
 
@@ -128,8 +132,8 @@
 
   <div class="ui-overlay">
     <div class="panel-header">
-      <span id="panel-title-text">PARTICLE MATRIX</span>
-      <span style="color: #ffffff; font-weight: bold; font-size: 9px;">[ONLINE]</span>
+      <span id="panel-title-text">PLASMA MATRIX</span>
+      <span style="color: #00f3ff; font-weight: bold; font-size: 9px;">[ONLINE]</span>
     </div>
     
     <div id="controls-builder" style="display: none;">
@@ -143,7 +147,7 @@
           <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
           <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
         </div>
-        <button class="stark-btn" style="margin-top: 8px; border-color: rgba(255,255,255,0.4);" onclick="clearBlocks()">RESET SCENA</button>
+        <button class="stark-btn" style="margin-top: 8px; border-color: rgba(0,243,255,0.5);" onclick="clearBlocks()">RESET SCENA</button>
       </div>
     </div>
 
@@ -164,7 +168,7 @@
       </div>
       <div class="control-group" style="margin-top: 8px;">
         <label>PLASMA COLOR</label>
-        <input type="color" id="color-picker" value="#ffffff">
+        <input type="color" id="color-picker" value="#00f3ff">
       </div>
     </div>
 
@@ -202,21 +206,12 @@
   <script>
     class SciFiSoundSystem {
       constructor() {
-        this.ctx = null; this.humOsc = null; this.humGain = null;
-        this.enabled = true; this.initialized = false;
+        this.ctx = null; this.enabled = true; this.initialized = false;
       }
       init() {
         if (this.initialized) return;
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         this.ctx = new AudioCtx();
-        this.humOsc = this.ctx.createOscillator();
-        this.humGain = this.ctx.createGain();
-        this.humOsc.type = 'sine';
-        this.humOsc.frequency.setValueAtTime(50, this.ctx.currentTime);
-        this.humGain.gain.setValueAtTime(0.01, this.ctx.currentTime);
-        this.humOsc.connect(this.humGain);
-        this.humGain.connect(this.ctx.destination);
-        this.humOsc.start();
         this.initialized = true;
       }
       playPinch() {
@@ -225,13 +220,13 @@
         const gain = this.ctx.createGain();
         osc.type = 'sine';
         const now = this.ctx.currentTime;
-        osc.frequency.setValueAtTime(200, now);
-        osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
-        gain.gain.setValueAtTime(0.15, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start(now); osc.stop(now + 0.08);
+        osc.start(now); osc.stop(now + 0.1);
       }
     }
 
@@ -243,8 +238,8 @@
     }
 
     let currentMode = 'PARTICLES';
-    const PARTICLE_COUNT = 6000;
-    let scene, camera, renderer;
+    const PARTICLE_COUNT = 7000;
+    let scene, camera, renderer, composer;
     let builderGroup;
     let blocks = [];
 
@@ -268,14 +263,13 @@
     let targetCamZ = 32, targetRotX = 0, targetRotY = 0, targetRotZ = 0;
     let previewCanvas, previewCtx;
 
-    // Connessioni standard delle articolazioni della mano (MediaPipe)
     const HAND_CONNECTIONS = [
-      [0,1], [1,2], [2,3], [3,4],         // Pollice
-      [0,5], [5,6], [6,7], [7,8],         // Indice
-      [5,9], [9,10], [10,11], [11,12],    // Medio
-      [9,13], [13,14], [14,15], [15,16],  // Anulare
-      [13,17], [17,18], [18,19], [19,20], // Mignolo
-      [0,17]                              // Palmo base
+      [0,1], [1,2], [2,3], [3,4],         
+      [0,5], [5,6], [6,7], [7,8],         
+      [5,9], [9,10], [10,11], [11,12],    
+      [9,13], [13,14], [14,15], [15,16],  
+      [13,17], [17,18], [18,19], [19,20], 
+      [0,17]                              
     ];
 
     function initThree() {
@@ -292,40 +286,51 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       container.appendChild(renderer.domElement);
 
+      // Post-Processing per l'effetto Bloom Olografico Stark
+      const renderScene = new RenderPass(scene, camera);
+      const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+      bloomPass.threshold = 0.1;
+      bloomPass.strength = 1.2;
+      bloomPass.radius = 0.5;
+
+      composer = new THREE.EffectComposer(renderer);
+      composer.addPass(renderScene);
+      composer.addPass(bloomPass);
+
       builderGroup = new THREE.Group();
       builderGroup.visible = false;
       scene.add(builderGroup);
 
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+      const ambientLight = new THREE.AmbientLight(0x00f3ff, 0.8);
       scene.add(ambientLight);
 
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      const dirLight = new THREE.DirectionalLight(0x00f3ff, 0.9);
       dirLight.position.set(10, 25, 15);
       scene.add(dirLight);
 
       const planeGeo = new THREE.PlaneGeometry(60, 60);
-      const planeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.2 });
+      const planeMat = new THREE.MeshStandardMaterial({ color: 0x05080f, roughness: 0.8, metalness: 0.2 });
       const floor = new THREE.Mesh(planeGeo, planeMat);
       floor.rotation.x = -Math.PI / 2;
       floor.position.y = -6;
       builderGroup.add(floor);
 
-      const gridHelper = new THREE.GridHelper(60, 30, 0xffffff, 0x333333);
+      const gridHelper = new THREE.GridHelper(60, 30, 0x00f3ff, 0x112233);
       gridHelper.position.y = -5.98;
       builderGroup.add(gridHelper);
 
       controllers.forEach((ctrl, idx) => {
         const dotGeo = new THREE.SphereGeometry(0.18, 12, 12);
-        const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const dotMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
         ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
         ctrl.mesh.visible = false;
         builderGroup.add(ctrl.mesh);
 
-        ctrl.pointLight = new THREE.PointLight(0xffffff, 0.8, 10);
+        ctrl.pointLight = new THREE.PointLight(0x00f3ff, 1.0, 10);
         builderGroup.add(ctrl.pointLight);
 
         const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0)]);
-        const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
+        const lineMat = new THREE.LineBasicMaterial({ color: 0x00f3ff, transparent: true, opacity: 0.5 });
         ctrl.rayLine = new THREE.Line(lineGeo, lineMat);
         ctrl.rayLine.visible = false;
         builderGroup.add(ctrl.rayLine);
@@ -350,14 +355,9 @@
       const particleColors = new Float32Array(PARTICLE_COUNT * 3);
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
-        let randomColor;
-        const rand = Math.random();
-        if (rand < 0.7) randomColor = new THREE.Color('#ffffff');
-        else if (rand < 0.9) randomColor = new THREE.Color('#aaaaaa');
-        else randomColor = new THREE.Color('#555555');
-        particleColors[idx] = randomColor.r;
-        particleColors[idx + 1] = randomColor.g;
-        particleColors[idx + 2] = randomColor.b;
+        particleColors[idx] = 0.0;
+        particleColors[idx + 1] = 0.95;
+        particleColors[idx + 2] = 1.0;
       }
       particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
@@ -367,7 +367,7 @@
       pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(16, 16, 14, 0, Math.PI * 2); pCtx.fill();
 
       particleMaterial = new THREE.PointsMaterial({
-        size: 0.25, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
+        size: 0.28, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
         transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
       });
 
@@ -393,15 +393,14 @@
       else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
       else geo = new THREE.BoxGeometry(size, size, size);
 
-      const randomColorHex = Math.random() > 0.5 ? 0xffffff : 0x888888;
-      const mat = new THREE.MeshStandardMaterial({ color: randomColorHex, roughness: 0.3, metalness: 0.2 });
+      const mat = new THREE.MeshStandardMaterial({ color: 0x00f3ff, roughness: 0.2, metalness: 0.8, emissive: 0x005577 });
 
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.x = x !== undefined ? x : (Math.random() - 0.5) * 8;
       mesh.position.y = y !== undefined ? y : 6; 
       mesh.position.z = z !== undefined ? z : (Math.random() - 0.5) * 4;
 
-      mesh.userData = { originalColor: randomColorHex, velocity: new THREE.Vector3(0, 0, 0), isGrabbed: false, size: size };
+      mesh.userData = { originalColor: 0x00f3ff, velocity: new THREE.Vector3(0, 0, 0), isGrabbed: false, size: size };
 
       builderGroup.add(mesh);
       blocks.push(mesh);
@@ -425,7 +424,7 @@
       document.getElementById('tab-particles').classList.toggle('active', mode === 'PARTICLES');
       document.getElementById('controls-builder').style.display = mode === 'BUILDER' ? 'block' : 'none';
       document.getElementById('controls-particles').style.display = mode === 'PARTICLES' ? 'block' : 'none';
-      document.getElementById('panel-title-text').innerText = mode === 'BUILDER' ? '3D BUILDER MATRIX' : 'PARTICLE MATRIX';
+      document.getElementById('panel-title-text').innerText = mode === 'BUILDER' ? '3D BUILDER MATRIX' : 'PLASMA MATRIX';
 
       builderGroup.visible = (mode === 'BUILDER');
       particleGroup.visible = (mode === 'PARTICLES');
@@ -515,14 +514,13 @@
 
     function drawHandSkeletonPreview(ctx, multiHandLandmarks, w, h) {
       ctx.clearRect(0, 0, w, h);
-      
-      ctx.fillStyle = 'rgba(10, 15, 20, 0.85)';
+      ctx.fillStyle = 'rgba(5, 8, 12, 0.9)';
       ctx.fillRect(0, 0, w, h);
 
       if (multiHandLandmarks && multiHandLandmarks.length > 0) {
         multiHandLandmarks.forEach(landmarks => {
           ctx.lineWidth = 2;
-          ctx.strokeStyle = '#00ffcc';
+          ctx.strokeStyle = '#00f3ff';
           for (let [startIdx, endIdx] of HAND_CONNECTIONS) {
             const p1 = landmarks[startIdx];
             const p2 = landmarks[endIdx];
@@ -533,17 +531,17 @@
           }
 
           landmarks.forEach((pt, index) => {
-            ctx.fillStyle = (index === 4 || index === 8) ? '#ff00aa' : '#ffffff';
+            ctx.fillStyle = (index === 4 || index === 8) ? '#ffffff' : '#00f3ff';
             ctx.beginPath();
-            ctx.arc(pt.x * w, pt.y * h, index === 4 || index === 8 ? 3.5 : 2, 0, 2 * Math.PI);
+            ctx.arc(pt.x * w, pt.y * h, index === 4 || index === 8 ? 4 : 2, 0, 2 * Math.PI);
             ctx.fill();
           });
         });
       } else {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.fillStyle = 'rgba(0, 243, 255, 0.5)';
         ctx.font = '9px "Share Tech Mono"';
         ctx.textAlign = 'center';
-        ctx.fillText("CERCA MANO...", w / 2, h / 2);
+        ctx.fillText("ATTESA SEGNALE...", w / 2, h / 2);
       }
     }
 
@@ -554,8 +552,8 @@
       hands.setOptions({
         maxNumHands: 2, 
         modelComplexity: 1,
-        minDetectionConfidence: 0.4, 
-        minTrackingConfidence: 0.4
+        minDetectionConfidence: 0.5, 
+        minTrackingConfidence: 0.5
       });
 
       hands.onResults((results) => {
@@ -612,7 +610,7 @@
             ctrl.isPinching = (pinchDist < 0.085);
             if (!wasPinching && ctrl.isPinching) sounds.playPinch();
 
-            ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
+            ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#00f3ff";
 
             if (currentMode === 'BUILDER') {
               if (ctrl.isPinching) {
@@ -620,7 +618,7 @@
                   const blockTarget = ctrl.pos.clone().sub(ctrl.grabOffset);
                   ctrl.grabbedBlock.position.copy(blockTarget);
                   ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
-                  ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#ffffff";
+                  ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#00f3ff";
                 } else {
                   let closest = null, minDist = 4.0;
                   for (let block of blocks) {
@@ -640,7 +638,7 @@
                   ctrl.grabbedBlock.userData.isGrabbed = false;
                   ctrl.grabbedBlock = null;
                 }
-                ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#aaaaaa";
+                ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#668899";
               }
             }
           } else {
@@ -652,7 +650,7 @@
               ctrl.grabbedBlock.userData.isGrabbed = false;
               ctrl.grabbedBlock = null;
             }
-            ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#666666"; ctrl.grabEl.innerText = "N/A";
+            ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#445566"; ctrl.grabEl.innerText = "N/A";
           }
         }
 
@@ -666,8 +664,6 @@
           if (numHands === 2) {
             const landmarks2 = results.multiHandLandmarks[1];
             const distBetweenHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
-            
-            // MODIFICATO: Range di distanza e mappatura ampliati (zoom naturale senza attaccare le mani)
             targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(distBetweenHands, 0.2, 0.8, 0.8, 2.5), 0.6, 3.0);
           } else {
             const span = Math.hypot(wrist1.x - landmarks1[12].x, wrist1.y - landmarks1[12].y);
@@ -759,13 +755,15 @@
         particleGeometry.attributes.position.needsUpdate = true;
       }
 
-      renderer.render(scene, camera);
+      // Rendering tramite il composer con effetto Bloom attivo
+      composer.render();
     }
 
     function onWindowResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+      composer.setSize(window.innerWidth, window.innerHeight);
     }
 
     document.getElementById('shape-select').addEventListener('change', (e) => generateShape(e.target.value));
@@ -773,7 +771,6 @@
       particleMaterial.color.set(e.target.value);
     });
 
-    // Avvio sicuro all'effettivo caricamento della pagina
     window.addEventListener('load', () => {
       initThree();
       initHandTracking();
