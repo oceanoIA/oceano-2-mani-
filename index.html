@@ -13,9 +13,18 @@
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body { overflow: hidden; background-color: #000000; font-family: 'Share Tech Mono', monospace; color: #ffffff; }
     #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
-    #video-input { display: none; }
 
-    /* Header Superiore stile TikTok / Video originale */
+    /* Riquadro webcam in basso a destra richiesto */
+    #video-container {
+      position: absolute; bottom: 25px; right: 25px; width: 160px; height: 120px;
+      z-index: 30; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.8); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+    #video-input {
+      width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);
+    }
+
+    /* Header Superiore */
     .stark-header {
       position: absolute; top: 0; left: 0; width: 100%; height: 50px;
       z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
@@ -30,7 +39,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* DOCK IN BASSO AL CENTRO IDENTICO AL VIDEO */
+    /* Dock in basso al centro */
     .mode-dock {
       position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
       display: flex; gap: 6px; z-index: 20; background: rgba(18, 18, 18, 0.45);
@@ -53,7 +62,11 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <video id="video-input" autoplay playsinline muted></video>
+  <!-- Schermino video in basso a destra -->
+  <div id="video-container">
+    <video id="video-input" autoplay playsinline muted></video>
+  </div>
+
   <div id="canvas-container"></div>
 
   <div class="stark-header">
@@ -297,7 +310,7 @@
       });
       
       cameraUtils.start().catch(err => {
-        console.warn("Impossibile accedere direttamente alla webcam, controlla i permessi del browser.", err);
+        console.warn("Errore di attivazione webcam:", err);
       });
     }
 
