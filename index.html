@@ -20,22 +20,22 @@
       position: absolute; top: 0; left: 0; width: 100%; height: 50px;
       background: rgba(10, 10, 10, 0.3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 10;
-      display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
     }
     .nebula-title {
-      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 12px;
-      letter-spacing: 3px; color: #ffffff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      display: flex; align-items: center; gap: 10px;
+      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
+      letter-spacing: 3px; color: #ffffff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+      display: flex; align-items: center; gap: 12px;
     }
     .nebula-subtitle {
       font-size: 9px; color: rgba(255, 255, 255, 0.4); letter-spacing: 1px;
     }
 
-    /* Dock Centrale in Basso (Stile Video) */
+    /* Dock Centrale in Basso (Identico al video) */
     .mode-dock {
       position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 12px; z-index: 20; background: rgba(20, 20, 20, 0.5);
-      padding: 8px 16px; border-radius: 40px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      display: flex; gap: 8px; z-index: 20; background: rgba(20, 20, 20, 0.45);
+      padding: 8px 16px; border-radius: 35px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
       border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     .dock-btn {
@@ -45,8 +45,8 @@
       border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 4px;
     }
     .dock-btn:hover, .dock-btn.active {
-      background: rgba(255, 255, 255, 0.15); color: #ffffff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.2); color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25); transform: translateY(-2px);
     }
     .dock-btn span.icon { font-size: 14px; }
 
@@ -67,7 +67,7 @@
 
     /* Telemetria minimal in alto a sinistra */
     .telemetry-hud {
-      position: absolute; top: 65px; left: 20px; z-index: 10;
+      position: absolute; top: 65px; left: 24px; z-index: 10;
       font-size: 9px; color: rgba(255, 255, 255, 0.4); display: flex; flex-direction: column; gap: 4px;
       background: rgba(0, 0, 0, 0.4); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05);
     }
@@ -85,16 +85,15 @@
   <div class="nebula-header">
     <div class="nebula-title">
       <span>NEBULA</span>
-      <span class="nebula-subtitle">Interactive Particle System</span>
+      <span class="nebula-subtitle">Particle Interactive System</span>
     </div>
   </div>
 
   <div class="telemetry-hud">
-    <div>HAND TRACKING: <span id="hand-status" class="telemetry-val">RICERCA...</span></div>
+    <div>WEBCAM TRACKING: <span id="hand-status" class="telemetry-val">CERCA...</span></div>
     <div>GESTURE: <span id="gesture-status" class="telemetry-val">LIBERA</span></div>
   </div>
 
-  <!-- Dock inferiore con le icone identiche al video -->
   <div class="mode-dock">
     <button class="dock-btn active" onclick="changeShape('sphere', this)">
       <span class="icon">⚪</span><span>Sphere</span>
@@ -114,7 +113,7 @@
   </div>
 
   <div class="camera-preview-container">
-    <span class="preview-tag">WEBCAM</span>
+    <span class="preview-tag">FEED OPTICAL</span>
     <canvas id="hand-preview-canvas" width="180" height="135"></canvas>
   </div>
 
@@ -150,21 +149,19 @@
       }
       particleGeometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
 
-      // Colori sfumati multicolore in stile nebulosa
+      // Colori sfumati multicolore in stile nebulosa (come nel video)
       const particleColors = new Float32Array(PARTICLE_COUNT * 3);
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
         const col = new THREE.Color();
-        // Sfumatura tra ciano, magenta, viola e bianco
-        const hue = Math.random() * 0.3 + 0.55; // Toni blu/viola/magenta
-        col.setHSL(hue, 0.8, 0.6);
+        const hue = Math.random() * 0.4 + 0.5; // Toni ciano/viola/magenta
+        col.setHSL(hue, 0.85, 0.65);
         particleColors[idx] = col.r;
         particleColors[idx + 1] = col.g;
         particleColors[idx + 2] = col.b;
       }
       particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
-      // Texture particella tonda e morbida
       const pCanvas = document.createElement('canvas');
       pCanvas.width = 32; pCanvas.height = 32;
       const pCtx = pCanvas.getContext('2d');
@@ -174,14 +171,14 @@
       pCtx.fillStyle = grad; pCtx.fillRect(0, 0, 32, 32);
 
       particleMaterial = new THREE.PointsMaterial({
-        size: 0.3, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
-        transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false
+        size: 0.28, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
+        transparent: true, opacity: 0.92, blending: THREE.AdditiveBlending, depthWrite: false
       });
 
       particleSystem = new THREE.Points(particleGeometry, particleMaterial);
       scene.add(particleSystem);
 
-      generateShape('sphere');
+      generateShape('saturn'); // Partiamo con Saturno, iconico nel video
       previewCanvas = document.getElementById('hand-preview-canvas');
       previewCtx = previewCanvas.getContext('2d');
 
@@ -208,14 +205,14 @@
           y = r * Math.sin(phi) * Math.sin(theta);
           z = r * Math.cos(phi);
         } else if (type === 'saturn') {
-          if (i < PARTICLE_COUNT * 0.6) {
+          if (i < PARTICLE_COUNT * 0.5) {
             const u = Math.random(), v = Math.random();
             const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
-            const r = 4.5;
+            const r = 4.2;
             x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.sin(phi) * Math.sin(theta); z = r * Math.cos(phi);
           } else {
-            const angle = Math.random() * Math.PI * 2, dist = 6.5 + Math.random() * 5.0;
-            x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.2;
+            const angle = Math.random() * Math.PI * 2, dist = 6.0 + Math.random() * 6.5;
+            x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.15;
           }
         } else if (type === 'heart') {
           const t = Math.random() * Math.PI * 2, u = (Math.random() - 0.5) * 3;
@@ -228,7 +225,7 @@
           x = r * Math.sin(v) * Math.cos(u); y = r * Math.sin(v) * Math.sin(u); z = r * Math.cos(v);
         } else if (type === 'fireworks') {
           const theta = Math.random() * Math.PI * 2, phi = Math.acos((Math.random() * 2) - 1);
-          const speed = 3 + Math.random() * 9;
+          const speed = 3 + Math.random() * 10;
           x = speed * Math.sin(phi) * Math.cos(theta); y = speed * Math.sin(phi) * Math.sin(theta); z = speed * Math.cos(phi);
         }
 
@@ -260,20 +257,20 @@
         const gestureStatusEl = document.getElementById('gesture-status');
 
         if (numHands > 0) {
-          handStatusEl.innerText = "ONLINE (" + numHands + ")";
+          handStatusEl.innerText = "ATTIVA (" + numHands + ")";
           handStatusEl.style.color = "#00ffcc";
 
           const landmarks1 = results.multiHandLandmarks[0];
-          const h1Center = landmarks1[9], wrist1 = landmarks1[0];
+          const h1Center = landmarks1[9];
           
-          // Rotazione basata sul movimento della mano
-          targetRotX = (h1Center.y - 0.5) * 3.0;
-          targetRotY = (h1Center.x - 0.5) * 4.0;
+          // Movimento rotazionale guidato dalla mano
+          targetRotX = (h1Center.y - 0.5) * 3.5;
+          targetRotY = (h1Center.x - 0.5) * 4.5;
 
-          // Rilevamento del pizzico (distanza pollice-indice) tra i primi punti
+          // Rilevamento del pizzico (pollice e indice)
           const thumbTip = landmarks1[4], indexTip = landmarks1[8];
           const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
-          isPinching = (pinchDist < 0.07);
+          isPinching = (pinchDist < 0.075);
 
           if (isPinching) {
             gestureStatusEl.innerText = "PINCH (COLLAPSE)";
@@ -283,7 +280,7 @@
             gestureStatusEl.style.color = "#ffffff";
           }
 
-          // Gestione di due mani per lo zoom / scala
+          // Zoom con due mani
           if (numHands === 2) {
             const landmarks2 = results.multiHandLandmarks[1];
             const distHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
@@ -314,7 +311,6 @@
     function animate() {
       requestAnimationFrame(animate);
 
-      // Interpolazione fluida della rotazione e della scala
       particleSystem.rotation.x += (targetRotX - particleSystem.rotation.x) * 0.1;
       particleSystem.rotation.y += (targetRotY + 0.002 - particleSystem.rotation.y) * 0.1;
       handScale += (targetScale - handScale) * 0.1;
@@ -326,9 +322,8 @@
         let tz = targetPositions[i+2] * handScale;
         let lerpSpeed = 0.08;
 
-        // Effetto quando si chiude la mano a pizzico (le particelle si stringono)
         if (isPinching && (i / 3) % 2 === 0) {
-          tx *= 0.05; ty *= 0.05; tz *= 0.05;
+          tx *= 0.04; ty *= 0.04; tz *= 0.04;
           lerpSpeed = 0.15;
         }
 
