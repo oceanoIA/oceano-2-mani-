@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.3 // iOS GLASS</title>
+  <title>STARK KINETIC LAB v9.4 // IOS BOTTOM LIQUID GLASS</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,81 +15,94 @@
     #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
     #video-input { display: none; }
 
+    /* Header Superiore Minimal */
     .stark-header {
-      position: absolute; top: 0; left: 0; width: 100%; height: 50px;
-      background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15); z-index: 10;
+      position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+      background: rgba(15, 15, 15, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08); z-index: 10;
       display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
     }
     .stark-title {
       font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
-      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
       display: flex; align-items: center; gap: 12px;
     }
     .security-badge {
-      font-size: 9px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #ffffff; padding: 2px 6px; border-radius: 4px; letter-spacing: 1px;
-    }
-    .mode-tabs { display: flex; gap: 8px; }
-    .tab-btn {
-      background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: rgba(255, 255, 255, 0.6); font-family: 'Orbitron', sans-serif; font-size: 10px;
-      padding: 5px 14px; cursor: pointer; transition: all 0.25s ease; border-radius: 6px;
-    }
-    .tab-btn:hover, .tab-btn.active {
-      background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      font-size: 9px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px;
     }
 
+    /* DOCK IN BASSO AL CENTRO (Linea Rossa) con Effetto Liquid Glass iOS e pulsanti tondi/arrotondati */
+    .mode-dock {
+      position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 10px; z-index: 20; background: rgba(25, 25, 25, 0.45);
+      padding: 10px 18px; border-radius: 35px; backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+      border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
+      padding: 10px 22px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      border-radius: 25px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    }
+    .tab-btn:hover, .tab-btn.active {
+      background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.9); color: #ffffff;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6); transform: translateY(-2px);
+    }
+
+    /* Pannello Sinistro Glass & Arrotondato */
     .ui-overlay {
-      position: absolute; top: 65px; left: 20px; z-index: 10; width: 280px; padding: 16px;
-      background: rgba(15, 15, 15, 0.75); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); display: flex; flex-direction: column; gap: 12px;
+      position: absolute; top: 75px; left: 20px; z-index: 10; width: 290px; padding: 18px;
+      background: rgba(12, 12, 12, 0.6); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 26px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      display: flex; flex-direction: column; gap: 14px;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
-      color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      padding-bottom: 6px; display: flex; justify-content: space-between;
+      color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
     }
     .control-group { display: flex; flex-direction: column; gap: 6px; }
     label { font-size: 9px; color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
 
     select, input[type="color"], .stark-btn {
-      width: 100%; height: 32px; background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; padding: 0 8px;
+      width: 100%; height: 38px; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.18); color: #ffffff; padding: 0 12px;
       font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
-      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.2s ease; border-radius: 6px;
+      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.25s ease;
+      border-radius: 19px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
     select:hover, .stark-btn:hover {
-      background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.85); color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
     }
-    select option { background: #111111; color: #ffffff; }
+    select option { background: #151515; color: #ffffff; }
 
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .telemetry-box {
-      font-size: 10px; background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px; border-radius: 8px;
+      font-size: 10px; background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.12); padding: 10px; border-radius: 18px;
       display: flex; flex-direction: column; gap: 6px;
     }
-    .hand-card { border-left: 2px solid #ffffff; padding-left: 6px; display: flex; flex-direction: column; gap: 2px; }
+    .hand-card { border-left: 2px solid #ffffff; padding-left: 8px; display: flex; flex-direction: column; gap: 2px; }
     .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.5); }
     .telemetry-val { color: #ffffff; font-weight: bold; }
 
+    /* Box Anteprima Camera Arrotondato */
     .camera-preview-container {
-      position: absolute; bottom: 20px; right: 20px; z-index: 10;
-      width: 180px; height: 135px; background: rgba(15, 15, 15, 0.8);
-      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); display: flex; flex-direction: column; overflow: hidden;
+      position: absolute; bottom: 25px; right: 20px; z-index: 10;
+      width: 180px; height: 135px; background: rgba(12, 12, 12, 0.7);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 22px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; overflow: hidden;
     }
-    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.85; }
+    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.9; }
     .preview-hud-tag {
-      position: absolute; top: 4px; left: 6px; font-size: 8px; font-weight: bold;
-      letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.7);
-      padding: 1px 4px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 3px;
+      position: absolute; top: 6px; left: 8px; font-size: 8px; font-weight: bold;
+      letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.75);
+      padding: 2px 6px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
     }
   </style>
 
@@ -105,18 +118,20 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">MONOCHROME // GLASS</span>
+      <span class="security-badge">IOS LIQUID GLASS</span>
     </div>
-    <div class="mode-tabs">
-      <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
-      <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: PLASMA MATRIX</button>
-    </div>
+  </div>
+
+  <!-- DOCK MODALITÀ IN BASSO AL CENTRO CON EFFETTO ACQUA / VETRO -->
+  <div class="mode-dock">
+    <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
+    <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: PLASMA MATRIX</button>
   </div>
 
   <div class="ui-overlay">
     <div class="panel-header">
       <span id="panel-title-text">PARTICLE MATRIX</span>
-      <span style="color: #ffffff; font-weight: bold;">[ACTIVE]</span>
+      <span style="color: #ffffff; font-weight: bold; font-size: 9px;">[ONLINE]</span>
     </div>
     
     <div id="controls-builder" style="display: none;">
@@ -130,7 +145,7 @@
           <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
           <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
         </div>
-        <button class="stark-btn" style="margin-top: 6px; border-color: rgba(255,255,255,0.4); color: #ffffff;" onclick="clearBlocks()">RESET SCENA</button>
+        <button class="stark-btn" style="margin-top: 8px; border-color: rgba(255,255,255,0.4);" onclick="clearBlocks()">RESET SCENA</button>
       </div>
     </div>
 
@@ -149,7 +164,7 @@
           <option value="DNA">DNA DOUBLE HELIX</option>
         </select>
       </div>
-      <div class="control-group" style="margin-top: 6px;">
+      <div class="control-group" style="margin-top: 8px;">
         <label>PLASMA COLOR</label>
         <input type="color" id="color-picker" value="#ffffff">
       </div>
@@ -168,7 +183,7 @@
           <span id="h1-grab" class="telemetry-val">LIBERA</span>
         </div>
       </div>
-      <div class="hand-card" style="margin-top: 4px;">
+      <div class="hand-card" style="margin-top: 6px;">
         <div class="telemetry-row">
           <span>MANO 2:</span>
           <span id="h2-status" class="telemetry-val">CERCA...</span>
