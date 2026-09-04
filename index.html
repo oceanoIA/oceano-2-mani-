@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.4 // EXPANDED MATRIX</title>
+  <title>STARK KINETIC LAB v9.2 // DUAL HANDS & MULTICOLOR</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,11 +41,10 @@
     }
 
     .ui-overlay {
-      position: absolute; top: 65px; left: 20px; z-index: 10; width: 300px; padding: 16px;
+      position: absolute; top: 65px; left: 20px; z-index: 10; width: 280px; padding: 16px;
       background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
       border: 1px solid rgba(0, 243, 255, 0.25);
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; gap: 12px;
-      max-height: calc(100vh - 85px); overflow-y: auto;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
@@ -67,7 +66,7 @@
     }
     select option { background: #000000; color: #00f3ff; }
 
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 180px; overflow-y: auto; }
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 
     .telemetry-box {
       font-size: 10px; background: rgba(0, 0, 0, 0.5);
@@ -104,7 +103,7 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">GESTURES: V (SHAPE) & M (MODE)</span>
+      <span class="security-badge">DUAL HANDS // MULTICOLOR</span>
     </div>
     <div class="mode-tabs">
       <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
@@ -120,7 +119,7 @@
     
     <div id="controls-builder" style="display: none;">
       <div class="control-group">
-        <label>SPAWN OGGETTI 3D (16 FORME)</label>
+        <label>SPAWN OGGETTI 3D</label>
         <div class="btn-grid">
           <button class="stark-btn" onclick="spawnShape('cube')">+ CUBO</button>
           <button class="stark-btn" onclick="spawnShape('sphere')">+ SFERA</button>
@@ -128,17 +127,6 @@
           <button class="stark-btn" onclick="spawnShape('torus')">+ TORUS</button>
           <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
           <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
-          <!-- 10 Nuove Forme Builder -->
-          <button class="stark-btn" onclick="spawnShape('star')">+ STELLA</button>
-          <button class="stark-btn" onclick="spawnShape('diamond')">+ DIAMANTE</button>
-          <button class="stark-btn" onclick="spawnShape('hourglass')">+ CLESSIDRA</button>
-          <button class="stark-btn" onclick="spawnShape('tripleTorus')">+ TRIPLE TORUS</button>
-          <button class="stark-btn" onclick="spawnShape('merkaba')">+ MERKABA</button>
-          <button class="stark-btn" onclick="spawnShape('hexPrism')">+ PRISMA ESAG.</button>
-          <button class="stark-btn" onclick="spawnShape('octahedron')">+ OTTAEDRO</button>
-          <button class="stark-btn" onclick="spawnShape('dodecahedron')">+ DODECAEDRO</button>
-          <button class="stark-btn" onclick="spawnShape('starTorus')">+ TORUS STELLATO</button>
-          <button class="stark-btn" onclick="spawnShape('spring')">+ MOLLA</button>
         </div>
         <button class="stark-btn" style="margin-top: 6px; border-color: #ff3366; color: #ff3366;" onclick="clearBlocks()">RESET SCENA</button>
       </div>
@@ -146,7 +134,7 @@
 
     <div id="controls-particles" style="display: block;">
       <div class="control-group">
-        <label>HOLOGRAM TEMPLATE (19 FORME)</label>
+        <label>HOLOGRAM TEMPLATE</label>
         <select id="shape-select">
           <option value="jupiter">JUPITER & RINGS</option>
           <option value="galaxy">GALAXY SPIRAL</option>
@@ -157,17 +145,6 @@
           <option value="fireworks">ENERGY EXPLOSION</option>
           <option value="saturn">SATURN RING SYSTEM</option>
           <option value="DNA">DNA DOUBLE HELIX</option>
-          <!-- 10 Nuovi Ologrammi -->
-          <option value="nebula">NEBULA SPIRAL</option>
-          <option value="tripleDNA">TRIPLE DNA HELIX</option>
-          <option value="quantumVortex">QUANTUM VORTEX</option>
-          <option value="atomicMatrix">ATOMIC MATRIX</option>
-          <option value="supernova">SUPERNOVA BLAST</option>
-          <option value="solarCorona">SOLAR CORONA</option>
-          <option value="energyHourglass">ENERGY HOURGLASS</option>
-          <option value="gravitationalWaves">GRAVITATIONAL WAVES</option>
-          <option value="spacePortal">SPACE PORTAL</option>
-          <option value="crystalFractal">CRYSTAL FRACTAL</option>
         </select>
       </div>
       <div class="control-group" style="margin-top: 6px;">
@@ -185,8 +162,8 @@
           <span id="h1-status" class="telemetry-val">CERCA...</span>
         </div>
         <div class="telemetry-row">
-          <span>GESTO 1:</span>
-          <span id="h1-gesture" class="telemetry-val">NESSUNO</span>
+          <span>STATO 1:</span>
+          <span id="h1-grab" class="telemetry-val">LIBERA</span>
         </div>
       </div>
       <div class="hand-card" style="margin-top: 4px;">
@@ -195,8 +172,8 @@
           <span id="h2-status" class="telemetry-val">CERCA...</span>
         </div>
         <div class="telemetry-row">
-          <span>GESTO 2:</span>
-          <span id="h2-gesture" class="telemetry-val">NESSUNO</span>
+          <span>STATO 2:</span>
+          <span id="h2-grab" class="telemetry-val">LIBERA</span>
         </div>
       </div>
     </div>
@@ -238,18 +215,26 @@
         this.humOsc.start();
         this.initialized = true;
       }
-      playBeep(freq = 600) {
+      playPinch() {
         if (!this.enabled || !this.initialized) return;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
         const now = this.ctx.currentTime;
-        osc.frequency.setValueAtTime(freq, now);
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start(now); osc.stop(now + 0.15);
+        osc.start(now); osc.stop(now + 0.08);
+      }
+      updateHum(speed) {
+        if (!this.enabled || !this.initialized) return;
+        const targetGain = Math.min(0.01 + speed * 0.05, 0.1);
+        const targetFreq = 50 + speed * 100;
+        this.humGain.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.05);
+        this.humOsc.frequency.setTargetAtTime(targetFreq, this.ctx.currentTime, 0.05);
       }
     }
 
@@ -266,9 +251,18 @@
     let builderGroup;
     let blocks = [];
 
+    // Controller per DUE mani con pallini bianchi e luminosi
     const controllers = [
-      { mesh: null, pointLight: null, pos: new THREE.Vector3(), statusEl: null, gestureEl: null, active: false },
-      { mesh: null, pointLight: null, pos: new THREE.Vector3(), statusEl: null, gestureEl: null, active: false }
+      {
+        mesh: null, pointLight: null,
+        grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
+        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
+      },
+      {
+        mesh: null, pointLight: null,
+        grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
+        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
+      }
     ];
 
     let particleGroup, particleGeometry, particleMaterial;
@@ -277,13 +271,6 @@
     let handExpansionScale = 1.0, targetScale = 1.0;
     let targetCamZ = 32, targetRotX = 0, targetRotY = 0, targetRotZ = 0;
     let previewCanvas, previewCtx;
-
-    const shapeList = [
-      'jupiter', 'galaxy', 'hypercube', 'heart', 'flower', 'buddha', 'fireworks', 'saturn', 'DNA',
-      'nebula', 'tripleDNA', 'quantumVortex', 'atomicMatrix', 'supernova', 'solarCorona', 'energyHourglass', 'gravitationalWaves', 'spacePortal', 'crystalFractal'
-    ];
-    let currentShapeIndex = 0;
-    let lastGestureActionTime = 0;
 
     function initThree() {
       const container = document.getElementById('canvas-container');
@@ -310,6 +297,7 @@
       dirLight.position.set(10, 25, 15);
       scene.add(dirLight);
 
+      // Piano d'appoggio visibile con griglia futurista
       const planeGeo = new THREE.PlaneGeometry(60, 60);
       const planeMat = new THREE.MeshStandardMaterial({ color: 0x0a0f18, roughness: 0.8, metalness: 0.2 });
       const floor = new THREE.Mesh(planeGeo, planeMat);
@@ -321,6 +309,7 @@
       gridHelper.position.y = -5.98;
       builderGroup.add(gridHelper);
 
+      // Inizializzazione dei due pallini per le mani (ultra-piccoli e bianchi)
       controllers.forEach((ctrl, idx) => {
         const dotGeo = new THREE.SphereGeometry(0.15, 16, 16);
         const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
@@ -332,7 +321,7 @@
         builderGroup.add(ctrl.pointLight);
 
         ctrl.statusEl = document.getElementById(`h${idx + 1}-status`);
-        ctrl.gestureEl = document.getElementById(`h${idx + 1}-gesture`);
+        ctrl.grabEl = document.getElementById(`h${idx + 1}-grab`);
       });
 
       spawnShape('cube', 0, 2, 0);
@@ -351,7 +340,7 @@
       const particleColors = new Float32Array(PARTICLE_COUNT * 3);
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
-        let randomColor = new THREE.Color('#ffffff');
+        let randomColor;
         const rand = Math.random();
         if (rand < 0.6) randomColor = new THREE.Color('#ffffff');
         else if (rand < 0.8) randomColor = new THREE.Color('#2bf2b0');
@@ -393,19 +382,9 @@
       else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 16, 32);
       else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 32);
       else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
-      // Nuove geometrie 3D Builder
-      else if (type === 'star') geo = new THREE.OctahedronGeometry(size / 1.5, 1);
-      else if (type === 'diamond') geo = new THREE.OctahedronGeometry(size / 1.5);
-      else if (type === 'hourglass') geo = new THREE.ConeGeometry(size / 2, size, 16);
-      else if (type === 'tripleTorus') geo = new THREE.TorusKnotGeometry(size / 2.5, size / 8, 64, 16);
-      else if (type === 'merkaba') geo = new THREE.TetrahedronGeometry(size / 1.5);
-      else if (type === 'hexPrism') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 6);
-      else if (type === 'octahedron') geo = new THREE.OctahedronGeometry(size / 1.5);
-      else if (type === 'dodecahedron') geo = new THREE.DodecahedronGeometry(size / 1.6);
-      else if (type === 'starTorus') geo = new THREE.TorusKnotGeometry(size / 2, size / 10, 64, 32, 2, 3);
-      else if (type === 'spring') geo = new THREE.TorusKnotGeometry(size / 2, size / 12, 64, 16, 1, 5);
       else geo = new THREE.BoxGeometry(size, size, size);
 
+      // Colore diverso e casuale per ogni oggetto 3D creato
       const randomColorHex = Math.floor(Math.random() * 16777215);
       const mat = new THREE.MeshStandardMaterial({
         color: randomColorHex, roughness: 0.3, metalness: 0.2
@@ -416,7 +395,12 @@
       mesh.position.y = y !== undefined ? y : 6; 
       mesh.position.z = z !== undefined ? z : (Math.random() - 0.5) * 4;
 
-      mesh.userData = { originalColor: randomColorHex, velocity: new THREE.Vector3(0, 0, 0), size: size };
+      mesh.userData = {
+        originalColor: randomColorHex,
+        velocity: new THREE.Vector3(0, 0, 0),
+        isGrabbed: false,
+        size: size
+      };
 
       builderGroup.add(mesh);
       blocks.push(mesh);
@@ -425,6 +409,16 @@
     function clearBlocks() {
       for (let b of blocks) builderGroup.remove(b);
       blocks = [];
+      controllers.forEach(c => { c.grabbedBlock = null; });
+    }
+
+    function setBlockHighlight(block, mode) {
+      if (!block) return;
+      if (mode === 'grab') {
+        block.material.color.setHex(0xffffff);
+      } else {
+        block.material.color.setHex(block.userData.originalColor);
+      }
     }
 
     function switchMode(mode) {
@@ -437,45 +431,6 @@
 
       builderGroup.visible = (mode === 'BUILDER');
       particleGroup.visible = (mode === 'PARTICLES');
-    }
-
-    function nextShape() {
-      currentShapeIndex = (currentShapeIndex + 1) % shapeList.length;
-      const nextName = shapeList[currentShapeIndex];
-      document.getElementById('shape-select').value = nextName;
-      generateShape(nextName);
-      sounds.playBeep(800);
-    }
-
-    function toggleAppMode() {
-      if (currentMode === 'PARTICLES') {
-        switchMode('BUILDER');
-      } else {
-        switchMode('PARTICLES');
-      }
-      sounds.playBeep(400);
-    }
-
-    function recognizeGesture(lm) {
-      const indexUp = lm[8].y < lm[6].y;
-      const middleUp = lm[12].y < lm[10].y;
-      const ringDown = lm[16].y > lm[14].y;
-      const pinkyDown = lm[20].y > lm[18].y;
-
-      if (indexUp && middleUp && ringDown && pinkyDown) {
-        return 'V_SIGN';
-      }
-
-      const indexClosed = lm[8].y > lm[5].y;
-      const middleClosed = lm[12].y > lm[9].y;
-      const ringClosed = lm[16].y > lm[13].y;
-      const pinkyClosed = lm[20].y > lm[17].y;
-
-      if (indexClosed && middleClosed && ringClosed && pinkyClosed) {
-        return 'M_SIGN';
-      }
-
-      return 'NONE';
     }
 
     function generateShape(type) {
@@ -555,42 +510,6 @@
           const speed = 2 + Math.random() * 12;
           x = speed * Math.sin(phi) * Math.cos(theta); y = speed * Math.sin(phi) * Math.sin(theta); z = speed * Math.cos(phi);
         }
-        // 10 Nuovi Ologrammi Plasma
-        else if (type === 'nebula') {
-          const a = Math.random() * Math.PI * 6, r = Math.random() * 12;
-          x = Math.cos(a) * r; z = Math.sin(a) * r; y = (Math.random() - 0.5) * 8;
-        } else if (type === 'tripleDNA') {
-          const t = (i / PARTICLE_COUNT) * Math.PI * 14;
-          const strand = (i % 3 === 0) ? 0 : (i % 3 === 1) ? 2.09 : 4.18;
-          x = Math.sin(t + strand) * 5; y = ((i / PARTICLE_COUNT) * 18) - 9; z = Math.cos(t + strand) * 5;
-        } else if (type === 'quantumVortex') {
-          const h = (Math.random() - 0.5) * 16, r = Math.abs(h) * 0.5 + 1, a = h * 3 + Math.random();
-          x = Math.cos(a) * r; z = Math.sin(a) * r; y = h;
-        } else if (type === 'atomicMatrix') {
-          const shell = (i % 3) * 3 + 3, a = Math.random() * Math.PI * 2, b = Math.random() * Math.PI;
-          x = Math.sin(b) * Math.cos(a) * shell; y = Math.sin(b) * Math.sin(a) * shell; z = Math.cos(b) * shell;
-        } else if (type === 'supernova') {
-          const u = Math.random() * Math.PI * 2, v = Math.acos(Math.random() * 2 - 1), r = 4 + Math.random() * 10;
-          x = r * Math.sin(v) * Math.cos(u); y = r * Math.sin(v) * Math.sin(u); z = r * Math.cos(v);
-        } else if (type === 'solarCorona') {
-          const a = Math.random() * Math.PI * 2, r = 3 + Math.random() * 9, flare = Math.sin(a * 8) * 2;
-          x = Math.cos(a) * (r + flare); z = Math.sin(a) * (r + flare); y = (Math.random() - 0.5) * 4;
-        } else if (type === 'energyHourglass') {
-          const h = (Math.random() - 0.5) * 14, r = Math.abs(h) * 0.7 + 0.5, a = Math.random() * Math.PI * 2;
-          x = Math.cos(a) * r; z = Math.sin(a) * r; y = h;
-        } else if (type === 'gravitationalWaves') {
-          const xPos = (Math.random() - 0.5) * 20, zPos = (Math.random() - 0.5) * 20;
-          const dist = Math.hypot(xPos, zPos);
-          x = xPos; z = zPos; y = Math.sin(dist * 1.5) * 3;
-        } else if (type === 'spacePortal') {
-          const a = Math.random() * Math.PI * 2, r = 3 + Math.random() * 8;
-          x = Math.cos(a) * r; z = Math.sin(a) * r; y = (Math.random() - 0.5) * 0.5;
-        } else if (type === 'crystalFractal') {
-          const u = Math.random(), v = Math.random();
-          x = (u - 0.5) * 12 * Math.sin(v * Math.PI);
-          y = (v - 0.5) * 12;
-          z = (u - 0.5) * 12 * Math.cos(v * Math.PI);
-        }
 
         p[idx] = x; p[idx + 1] = y; p[idx + 2] = z;
       }
@@ -600,6 +519,7 @@
       const videoElement = document.getElementById('video-input');
       const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
 
+      // Configurato per tracciare fino a 2 mani contemporaneamente
       hands.setOptions({
         maxNumHands: 2, modelComplexity: 1,
         minDetectionConfidence: 0.65, minTrackingConfidence: 0.65
@@ -612,7 +532,6 @@
         previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
 
         const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
-        const now = Date.now();
 
         for (let i = 0; i < 2; i++) {
           const ctrl = controllers[i];
@@ -623,8 +542,9 @@
             drawConnectors(previewCtx, landmarks, HAND_CONNECTIONS, { color: '#ffffff', lineWidth: 1 });
             drawLandmarks(previewCtx, landmarks, { color: '#00f3ff', lineWidth: 1, radius: 1.5 });
 
-            const indexTip = landmarks[8];
-            const pX = indexTip.x, pY = indexTip.y, pZ = indexTip.z;
+            const thumbTip = landmarks[4], indexTip = landmarks[8];
+            const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
+            const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
 
             const ndcX = (1 - pX) * 2 - 1, ndcY = -(pY * 2 - 1);
             const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
@@ -634,33 +554,62 @@
             const distanceToPlane = (targetZ - camera.position.z) / dir.z;
             const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
 
+            ctrl.lastPos.copy(ctrl.pos);
             ctrl.pos.copy(targetPos);
+            ctrl.velocity.copy(ctrl.pos).sub(ctrl.lastPos);
+
             ctrl.mesh.visible = true;
             ctrl.mesh.position.copy(ctrl.pos);
             ctrl.pointLight.position.copy(ctrl.pos);
 
-            const gesture = recognizeGesture(landmarks);
-            ctrl.gestureEl.innerText = gesture;
+            const wasPinching = ctrl.isPinching;
+            ctrl.isPinching = (pinchDist < 0.07);
+            if (!wasPinching && ctrl.isPinching) sounds.playPinch();
 
-            if (gesture === 'V_SIGN' && now - lastGestureActionTime > 1200) {
-              nextShape();
-              lastGestureActionTime = now;
-            } else if (gesture === 'M_SIGN' && now - lastGestureActionTime > 1500) {
-              toggleAppMode();
-              lastGestureActionTime = now;
+            ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
+
+            if (currentMode === 'BUILDER') {
+              if (ctrl.isPinching) {
+                if (ctrl.grabbedBlock) {
+                  const blockTarget = ctrl.pos.clone().sub(ctrl.grabOffset);
+                  ctrl.grabbedBlock.position.copy(blockTarget);
+                  ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
+                  ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#ffffff";
+                } else {
+                  let closest = null, minDist = 4.0;
+                  for (let block of blocks) {
+                    const d = ctrl.pos.distanceTo(block.position);
+                    if (d < minDist) { minDist = d; closest = block; }
+                  }
+                  if (closest) {
+                    ctrl.grabbedBlock = closest;
+                    closest.userData.isGrabbed = true;
+                    ctrl.grabOffset.copy(ctrl.pos).sub(closest.position);
+                    setBlockHighlight(closest, 'grab');
+                  }
+                }
+              } else {
+                if (ctrl.grabbedBlock) {
+                  setBlockHighlight(ctrl.grabbedBlock, 'normal');
+                  ctrl.grabbedBlock.userData.isGrabbed = false;
+                  ctrl.grabbedBlock = null;
+                }
+                ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#00f3ff";
+              }
             }
-
-            ctrl.statusEl.innerText = "ATTIVA";
-            ctrl.statusEl.style.color = "#ffffff";
           } else {
             ctrl.active = false;
             ctrl.mesh.visible = false;
-            ctrl.statusEl.innerText = "CERCA...";
-            ctrl.statusEl.style.color = "#ff3366";
-            ctrl.gestureEl.innerText = "N/A";
+            if (ctrl.grabbedBlock) {
+              setBlockHighlight(ctrl.grabbedBlock, 'normal');
+              ctrl.grabbedBlock.userData.isGrabbed = false;
+              ctrl.grabbedBlock = null;
+            }
+            ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#ff3366"; ctrl.grabEl.innerText = "N/A";
           }
         }
 
+        // Controllo particelle con entrambe le mani (se attive)
         if (currentMode === 'PARTICLES' && numHands > 0) {
           const landmarks1 = results.multiHandLandmarks[0];
           const h1Center = landmarks1[9], wrist1 = landmarks1[0];
@@ -693,32 +642,35 @@
 
       if (currentMode === 'BUILDER') {
         const gravity = -0.06;
+
         blocks.forEach(block => {
-          block.userData.velocity.y += gravity;
-          block.position.add(block.userData.velocity);
+          if (!block.userData.isGrabbed) {
+            block.userData.velocity.y += gravity;
+            block.position.add(block.userData.velocity);
 
-          const floorY = -6 + (block.userData.size / 2);
-          if (block.position.y < floorY) {
-            block.position.y = floorY;
-            block.userData.velocity.set(0, 0, 0);
-          }
+            const floorY = -6 + (block.userData.size / 2);
+            if (block.position.y < floorY) {
+              block.position.y = floorY;
+              block.userData.velocity.set(0, 0, 0);
+            }
 
-          blocks.forEach(other => {
-            if (block !== other) {
-              const dx = block.position.x - other.position.x;
-              const dz = block.position.z - other.position.z;
-              const distXZ = Math.sqrt(dx * dx + dz * dz);
-              const limitDist = block.userData.size * 0.8;
+            blocks.forEach(other => {
+              if (block !== other && !other.userData.isGrabbed) {
+                const dx = block.position.x - other.position.x;
+                const dz = block.position.z - other.position.z;
+                const distXZ = Math.sqrt(dx * dx + dz * dz);
+                const limitDist = block.userData.size * 0.8;
 
-              if (distXZ < limitDist) {
-                const topOfOther = other.position.y + (other.userData.size / 2) + (block.userData.size / 2);
-                if (block.position.y <= topOfOther && block.position.y > other.position.y) {
-                  block.position.y = topOfOther;
-                  block.userData.velocity.set(0, 0, 0);
+                if (distXZ < limitDist) {
+                  const topOfOther = other.position.y + (other.userData.size / 2) + (block.userData.size / 2);
+                  if (block.position.y <= topOfOther && block.position.y > other.position.y) {
+                    block.position.y = topOfOther;
+                    block.userData.velocity.set(0, 0, 0);
+                  }
                 }
               }
-            }
-          });
+            });
+          }
         });
       }
 
@@ -730,15 +682,23 @@
         handExpansionScale += (targetScale - handExpansionScale) * 0.15;
         camera.position.z += (targetCamZ - camera.position.z) * 0.15;
 
+        const isPinchingAny = (controllers[0].active && controllers[0].isPinching) || (controllers[1].active && controllers[1].isPinching);
         const positions = particleGeometry.attributes.position.array;
+
         for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
           let tx = targetPositions[i] * handExpansionScale;
           let ty = targetPositions[i+1] * handExpansionScale;
           let tz = targetPositions[i+2] * handExpansionScale;
+          let lerpSpeed = 0.15;
 
-          positions[i] += (tx - positions[i]) * 0.15;
-          positions[i+1] += (ty - positions[i+1]) * 0.15;
-          positions[i+2] += (tz - positions[i+2]) * 0.15;
+          if (isPinchingAny && (i / 3) % 2 === 0) {
+            tx *= 0.01; ty *= 0.01; tz *= 0.01;
+            lerpSpeed = 0.5;
+          }
+
+          positions[i] += (tx - positions[i]) * lerpSpeed;
+          positions[i+1] += (ty - positions[i+1]) * lerpSpeed;
+          positions[i+2] += (tz - positions[i+2]) * lerpSpeed;
         }
         particleGeometry.attributes.position.needsUpdate = true;
       }
