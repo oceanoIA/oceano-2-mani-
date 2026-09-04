@@ -476,7 +476,7 @@ const CONFIG = {
   cameraHeight: 240,
 
   /* SENSIBILITÀ MANI: 70% */
-  handSmooth: 1.0,
+  handSmooth: 0.70,
 
   pinchOn: 0.075,
   pinchOff: 0.105,
@@ -710,11 +710,6 @@ function initThree(){
     1000
   );
 
-  /*
-    VISUALE INIZIALE:
-    perfettamente centrata ma con un
-    leggero angolo dall'alto per dare profondità.
-  */
   camera.position.set(0,2.2,28);
   camera.lookAt(0,0,0);
 
@@ -1011,10 +1006,6 @@ function spawnShape(type,x,y,z){
     z??(Math.random()-.5)*4
   );
 
-  /*
-    ROTAZIONE INIZIALE FISSA.
-    Gli oggetti non verranno ruotati dalla mano.
-  */
   mesh.rotation.set(0,0,0);
 
   mesh.userData={
@@ -1569,11 +1560,6 @@ function updateController(ctrl,landmarks){
 
     ctrl.lastPos.copy(ctrl.pos);
 
-    /*
-      SENSIBILITÀ 70%:
-      la mano segue molto più direttamente
-      il movimento reale.
-    */
     ctrl.pos.lerp(
       ctrl.target,
       CONFIG.handSmooth
@@ -1834,6 +1820,10 @@ function updateParticleTargets(){
 
   const p=activeHand.pos;
 
+  /*
+    ROTAZIONE ORIZZONTALE:
+    invariata.
+  */
   targetRotY=
     THREE.MathUtils.clamp(
       p.x*.035,
@@ -1841,11 +1831,35 @@ function updateParticleTargets(){
       1.2
     );
 
+  /*
+    ROTAZIONE VERTICALE POTENZIATA:
+    movimento verticale della mano
+    -> rotazione X del modello.
+
+    Con due mani viene usata la media
+    verticale delle due mani, così quando
+    entrambe salgono Saturn reagisce
+    molto più chiaramente.
+  */
+  let verticalY=p.y;
+
+  if(
+    controllers[0].active&&
+    controllers[1].active
+  ){
+
+    verticalY=
+      (
+        controllers[0].pos.y+
+        controllers[1].pos.y
+      )*.5;
+  }
+
   targetRotX=
     THREE.MathUtils.clamp(
-      -p.y*.025,
-      -1.0,
-      1.0
+      -verticalY*.10,
+      -2.5,
+      2.5
     );
 
   if(
@@ -1901,11 +1915,6 @@ function updateBuilderHand(ctrl){
           .sub(ctrl.grabOffset)
       );
 
-      /*
-        NESSUNA ROTAZIONE.
-        L'oggetto resta dritto e
-        mantiene il proprio orientamento.
-      */
       block.userData.velocity.set(
         0,
         0,
@@ -1978,11 +1987,6 @@ function releaseBlock(ctrl){
 
   block.userData.isGrabbed=false;
 
-  /*
-    SPINTA QUASI NULLA:
-    niente lancio dall'altra parte della mappa.
-    Riceve solo una piccolissima inerzia.
-  */
   block.userData.velocity.copy(
     ctrl.velocity
   ).multiplyScalar(
@@ -2133,11 +2137,6 @@ function updateBuilder(delta){
     const velocity=
       block.userData.velocity;
 
-    /*
-      Gravità sempre attiva.
-      Dopo la piccolissima spinta
-      l'oggetto cade naturalmente.
-    */
     velocity.y-=gravity;
 
     block.position.addScaledVector(
@@ -2155,16 +2154,9 @@ function updateBuilder(delta){
 
       velocity.y=0;
 
-      /*
-        Piccolo attrito sul terreno.
-      */
       velocity.x*=.92;
       velocity.z*=.92;
 
-      /*
-        Elimina rapidamente anche
-        la piccola spinta residua.
-      */
       if(Math.abs(velocity.x)<.003)
         velocity.x=0;
 
