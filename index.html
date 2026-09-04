@@ -31,7 +31,7 @@
       font-size: 9px; color: rgba(255, 255, 255, 0.4); letter-spacing: 1px;
     }
 
-    /* Dock Centrale in Basso (Identico al video) */
+    /* Dock Centrale in Basso */
     .mode-dock {
       position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
       display: flex; gap: 8px; z-index: 20; background: rgba(20, 20, 20, 0.45);
@@ -50,19 +50,19 @@
     }
     .dock-btn span.icon { font-size: 14px; }
 
-    /* Box Anteprima Webcam in Basso a Destra */
+    /* Box Anteprima Webcam in Basso a Destra con lo Scheletro */
     .camera-preview-container {
       position: absolute; bottom: 25px; right: 25px; z-index: 10;
-      width: 180px; height: 135px; background: rgba(10, 10, 10, 0.6);
+      width: 180px; height: 135px; background: rgba(10, 10, 10, 0.7);
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); overflow: hidden; display: flex; flex-direction: column;
     }
-    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.85; }
+    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
     .preview-tag {
       position: absolute; top: 6px; left: 8px; font-size: 7px; font-weight: bold;
-      letter-spacing: 1px; color: rgba(255, 255, 255, 0.7); background: rgba(0, 0, 0, 0.6);
-      padding: 2px 5px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 1px; color: #00ffcc; background: rgba(0, 0, 0, 0.7);
+      padding: 2px 5px; border-radius: 6px; border: 1px solid rgba(0, 255, 204, 0.3);
     }
 
     /* Telemetria minimal in alto a sinistra */
@@ -113,7 +113,7 @@
   </div>
 
   <div class="camera-preview-container">
-    <span class="preview-tag">FEED OPTICAL</span>
+    <span class="preview-tag">SKELETON HUD</span>
     <canvas id="hand-preview-canvas" width="180" height="135"></canvas>
   </div>
 
@@ -128,6 +128,17 @@
     let targetRotX = 0, targetRotY = 0, targetRotZ = 0;
     let previewCanvas, previewCtx;
     let isPinching = false;
+    let lastHandResults = null;
+
+    // Connessioni standard delle articolazioni della mano (MediaPipe)
+    const HAND_CONNECTIONS = [
+      [0,1], [1,2], [2,3], [3,4],         // Pollice
+      [0,5], [5,6], [6,7], [7,8],         // Indice
+      [5,9], [9,10], [10,11], [11,12],    // Medio
+      [9,13], [13,14], [14,15], [15,16],  // Anulare
+      [13,17], [17,18], [18,19], [19,20], // Mignolo
+      [0,17]                              // Palmo base
+    ];
 
     function initThree() {
       const container = document.getElementById('canvas-container');
@@ -149,12 +160,11 @@
       }
       particleGeometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
 
-      // Colori sfumati multicolore in stile nebulosa (come nel video)
       const particleColors = new Float32Array(PARTICLE_COUNT * 3);
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
         const col = new THREE.Color();
-        const hue = Math.random() * 0.4 + 0.5; // Toni ciano/viola/magenta
+        const hue = Math.random() * 0.4 + 0.5;
         col.setHSL(hue, 0.85, 0.65);
         particleColors[idx] = col.r;
         particleColors[idx + 1] = col.g;
@@ -178,7 +188,7 @@
       particleSystem = new THREE.Points(particleGeometry, particleMaterial);
       scene.add(particleSystem);
 
-      generateShape('saturn'); // Partiamo con Saturno, iconico nel video
+      generateShape('saturn');
       previewCanvas = document.getElementById('hand-preview-canvas');
       previewCtx = previewCanvas.getContext('2d');
 
@@ -245,13 +255,7 @@
       });
 
       hands.onResults((results) => {
-        if (!previewCtx) return;
-        previewCtx.save();
-        previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-        if (results.image) {
-          previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
-        }
-
+        lastHandResults = results;
         const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
         const handStatusEl = document.getElementById('hand-status');
         const gestureStatusEl = document.getElementById('gesture-status');
@@ -263,11 +267,9 @@
           const landmarks1 = results.multiHandLandmarks[0];
           const h1Center = landmarks1[9];
           
-          // Movimento rotazionale guidato dalla mano
           targetRotX = (h1Center.y - 0.5) * 3.5;
           targetRotY = (h1Center.x - 0.5) * 4.5;
 
-          // Rilevamento del pizzico (pollice e indice)
           const thumbTip = landmarks1[4], indexTip = landmarks1[8];
           const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
           isPinching = (pinchDist < 0.075);
@@ -280,7 +282,6 @@
             gestureStatusEl.style.color = "#ffffff";
           }
 
-          // Zoom con due mani
           if (numHands === 2) {
             const landmarks2 = results.multiHandLandmarks[1];
             const distHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
@@ -294,7 +295,6 @@
           gestureStatusEl.innerText = "LIBERA";
           isPinching = false;
         }
-        previewCtx.restore();
       });
 
       const cameraUtils = new Camera(videoElement, {
@@ -308,8 +308,54 @@
       cameraUtils.start().catch(err => console.log("Camera error:", err));
     }
 
+    // Funzione per disegnare lo scheletro vettoriale nel riquadro in basso a destra
+    function drawHandSkeletonPreview() {
+      if (!previewCtx || !previewCanvas) return;
+      previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+      
+      // Sfondo scuro high-tech nel riquadro
+      previewCtx.fillStyle = 'rgba(5, 10, 15, 0.9)';
+      previewCtx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+      if (lastHandResults && lastHandResults.multiHandLandmarks) {
+        const w = previewCanvas.width;
+        const h = previewCanvas.height;
+
+        lastHandResults.multiHandLandmarks.forEach(landmarks => {
+          // Disegna le linee delle articolazioni (scheletro)
+          previewCtx.lineWidth = 2;
+          previewCtx.strokeStyle = '#00ffcc';
+          for (let [startIdx, endIdx] of HAND_CONNECTIONS) {
+            const p1 = landmarks[startIdx];
+            const p2 = landmarks[endIdx];
+            previewCtx.beginPath();
+            previewCtx.moveTo(p1.x * w, p1.y * h);
+            previewCtx.lineTo(p2.x * w, p2.y * h);
+            previewCtx.stroke();
+          }
+
+          // Disegna i nodi (pallini) sulle articolazioni
+          landmarks.forEach((pt, index) => {
+            previewCtx.fillStyle = (index === 4 || index === 8) ? '#ff00aa' : '#ffffff';
+            previewCtx.beginPath();
+            previewCtx.arc(pt.x * w, pt.y * h, index === 4 || index === 8 ? 3.5 : 2, 0, 2 * Math.PI);
+            previewCtx.fill();
+          });
+        });
+      } else {
+        // Testo guida se nessuna mano è rilevata nel box
+        previewCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        previewCtx.font = '9px "Share Tech Mono"';
+        previewCtx.textAlign = 'center';
+        previewCtx.fillText("MOSTRA LA MANO", previewCanvas.width / 2, previewCanvas.height / 2);
+      }
+    }
+
     function animate() {
       requestAnimationFrame(animate);
+
+      // Disegna lo scheletro nel box HUD
+      drawHandSkeletonPreview();
 
       particleSystem.rotation.x += (targetRotX - particleSystem.rotation.x) * 0.1;
       particleSystem.rotation.y += (targetRotY + 0.002 - particleSystem.rotation.y) * 0.1;
