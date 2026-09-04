@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.0 // MINIMAL FUTURISTIC</title>
+  <title>STARK KINETIC LAB v9.6 // VISION PRO RAYCASTER</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,90 +11,104 @@
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body { overflow: hidden; background-color: #000000; font-family: 'Share Tech Mono', monospace; color: #00f3ff; }
+    body { overflow: hidden; background-color: #000000; font-family: 'Share Tech Mono', monospace; color: #ffffff; }
     #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
     #video-input { display: none; }
 
+    /* Header Superiore Minimal */
     .stark-header {
-      position: absolute; top: 0; left: 0; width: 100%; height: 50px;
-      background: rgba(0, 0, 0, 0.85); border-bottom: 1px solid rgba(0, 243, 255, 0.2); z-index: 10;
+      position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+      background: rgba(15, 15, 15, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08); z-index: 10;
       display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
     }
     .stark-title {
       font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
-      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
       display: flex; align-items: center; gap: 12px;
     }
     .security-badge {
-      font-size: 9px; background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.4);
-      color: #00f3ff; padding: 2px 6px; border-radius: 2px; letter-spacing: 1px;
-    }
-    .mode-tabs { display: flex; gap: 8px; }
-    .tab-btn {
-      background: #000000; border: 1px solid rgba(0, 243, 255, 0.3);
-      color: rgba(0, 243, 255, 0.6); font-family: 'Orbitron', sans-serif; font-size: 10px;
-      padding: 5px 14px; cursor: pointer; transition: all 0.2s ease;
-    }
-    .tab-btn:hover, .tab-btn.active {
-      background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; color: #ffffff;
-      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+      font-size: 9px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px;
     }
 
+    /* DOCK IN BASSO AL CENTRO CON EFFETTO LIQUID GLASS */
+    .mode-dock {
+      position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 10px; z-index: 20; background: rgba(25, 25, 25, 0.45);
+      padding: 10px 18px; border-radius: 35px; backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+      border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
+      padding: 10px 22px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      border-radius: 25px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    }
+    .tab-btn:hover, .tab-btn.active {
+      background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.9); color: #ffffff;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6); transform: translateY(-2px);
+    }
+
+    /* Pannello Sinistro Glass & Arrotondato */
     .ui-overlay {
-      position: absolute; top: 65px; left: 20px; z-index: 10; width: 280px; padding: 16px;
-      background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
-      border: 1px solid rgba(0, 243, 255, 0.25);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; gap: 12px;
+      position: absolute; top: 75px; left: 20px; z-index: 10; width: 290px; padding: 18px;
+      background: rgba(12, 12, 12, 0.6); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 26px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      display: flex; flex-direction: column; gap: 14px;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
-      color: #ffffff; border-bottom: 1px solid rgba(0, 243, 255, 0.2);
-      padding-bottom: 5px; display: flex; justify-content: space-between;
+      color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
     }
     .control-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 9px; color: rgba(0, 243, 255, 0.7); letter-spacing: 1px; }
+    label { font-size: 9px; color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
 
     select, input[type="color"], .stark-btn {
-      width: 100%; height: 32px; background: #000000;
-      border: 1px solid rgba(0, 243, 255, 0.3); color: #00f3ff; padding: 0 8px;
+      width: 100%; height: 38px; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.18); color: #ffffff; padding: 0 12px;
       font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
-      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.2s ease;
+      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.25s ease;
+      border-radius: 19px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
     select:hover, .stark-btn:hover {
-      background: rgba(0, 243, 255, 0.15); border-color: #00f3ff; color: #ffffff;
-      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+      background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.85); color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
     }
-    select option { background: #000000; color: #00f3ff; }
+    select option { background: #151515; color: #ffffff; }
 
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .telemetry-box {
-      font-size: 10px; background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(0, 243, 255, 0.15); padding: 8px;
+      font-size: 10px; background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.12); padding: 10px; border-radius: 18px;
       display: flex; flex-direction: column; gap: 6px;
     }
-    .hand-card { border-left: 2px solid #ffffff; padding-left: 6px; display: flex; flex-direction: column; gap: 2px; }
-    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.6); }
-    .telemetry-val { color: #00f3ff; font-weight: bold; }
+    .hand-card { border-left: 2px solid #ffffff; padding-left: 8px; display: flex; flex-direction: column; gap: 2px; }
+    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.5); }
+    .telemetry-val { color: #ffffff; font-weight: bold; }
 
+    /* Box Anteprima Camera Arrotondato */
     .camera-preview-container {
-      position: absolute; bottom: 20px; right: 20px; z-index: 10;
-      width: 180px; height: 135px; background: rgba(0, 0, 0, 0.9);
-      border: 1px solid rgba(0, 243, 255, 0.3);
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column;
+      position: absolute; bottom: 25px; right: 20px; z-index: 10;
+      width: 180px; height: 135px; background: rgba(12, 12, 12, 0.7);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 22px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; overflow: hidden;
     }
-    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.85; }
+    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.9; }
     .preview-hud-tag {
-      position: absolute; top: 4px; left: 6px; font-size: 8px; font-weight: bold;
-      letter-spacing: 1px; color: #00f3ff; background: rgba(0, 0, 0, 0.8);
-      padding: 1px 4px; border: 1px solid rgba(0, 243, 255, 0.2);
+      position: absolute; top: 6px; left: 8px; font-size: 8px; font-weight: bold;
+      letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.75);
+      padding: 2px 6px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
     }
   </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <video id="video-input"></video>
@@ -103,23 +117,24 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">MINIMAL BLACK</span>
+      <span class="security-badge">VISION PRO RAYCAST</span>
     </div>
-    <div class="mode-tabs">
-      <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
-      <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: PLASMA MATRIX</button>
-    </div>
+  </div>
+
+  <div class="mode-dock">
+    <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
+    <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: PLASMA MATRIX</button>
   </div>
 
   <div class="ui-overlay">
     <div class="panel-header">
       <span id="panel-title-text">PARTICLE MATRIX</span>
-      <span style="color: #00f3ff; font-weight: bold;">[ACTIVE]</span>
+      <span style="color: #ffffff; font-weight: bold; font-size: 9px;">[ONLINE]</span>
     </div>
     
     <div id="controls-builder" style="display: none;">
       <div class="control-group">
-        <label>SPAWN OGGETTI 3D ESTESI</label>
+        <label>SPAWN OGGETTI 3D</label>
         <div class="btn-grid">
           <button class="stark-btn" onclick="spawnShape('cube')">+ CUBO</button>
           <button class="stark-btn" onclick="spawnShape('sphere')">+ SFERA</button>
@@ -128,7 +143,7 @@
           <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
           <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
         </div>
-        <button class="stark-btn" style="margin-top: 6px; border-color: #ff3366; color: #ff3366;" onclick="clearBlocks()">RESET SCENA</button>
+        <button class="stark-btn" style="margin-top: 8px; border-color: rgba(255,255,255,0.4);" onclick="clearBlocks()">RESET SCENA</button>
       </div>
     </div>
 
@@ -147,7 +162,7 @@
           <option value="DNA">DNA DOUBLE HELIX</option>
         </select>
       </div>
-      <div class="control-group" style="margin-top: 6px;">
+      <div class="control-group" style="margin-top: 8px;">
         <label>PLASMA COLOR</label>
         <input type="color" id="color-picker" value="#ffffff">
       </div>
@@ -162,8 +177,18 @@
           <span id="h1-status" class="telemetry-val">CERCA...</span>
         </div>
         <div class="telemetry-row">
-          <span>STATO:</span>
+          <span>STATO 1:</span>
           <span id="h1-grab" class="telemetry-val">LIBERA</span>
+        </div>
+      </div>
+      <div class="hand-card" style="margin-top: 6px;">
+        <div class="telemetry-row">
+          <span>MANO 2:</span>
+          <span id="h2-status" class="telemetry-val">CERCA...</span>
+        </div>
+        <div class="telemetry-row">
+          <span>STATO 2:</span>
+          <span id="h2-grab" class="telemetry-val">LIBERA</span>
         </div>
       </div>
     </div>
@@ -175,21 +200,10 @@
   </div>
 
   <script>
-    const HAND_CONNECTIONS = [
-      [0,1],[1,2],[2,3],[3,4],
-      [0,5],[5,6],[6,7],[7,8],
-      [5,9],[9,10],[10,11],[11,12],
-      [9,13],[13,14],[14,15],[15,16],
-      [13,17],[17,18],[18,19],[19,20],[0,17]
-    ];
-
     class SciFiSoundSystem {
       constructor() {
-        this.ctx = null;
-        this.humOsc = null;
-        this.humGain = null;
-        this.enabled = true;
-        this.initialized = false;
+        this.ctx = null; this.humOsc = null; this.humGain = null;
+        this.enabled = true; this.initialized = false;
       }
       init() {
         if (this.initialized) return;
@@ -219,13 +233,6 @@
         gain.connect(this.ctx.destination);
         osc.start(now); osc.stop(now + 0.08);
       }
-      updateHum(speed) {
-        if (!this.enabled || !this.initialized) return;
-        const targetGain = Math.min(0.01 + speed * 0.05, 0.1);
-        const targetFreq = 50 + speed * 100;
-        this.humGain.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.05);
-        this.humOsc.frequency.setTargetAtTime(targetFreq, this.ctx.currentTime, 0.05);
-      }
     }
 
     const sounds = new SciFiSoundSystem();
@@ -236,15 +243,19 @@
     }
 
     let currentMode = 'PARTICLES';
-    const PARTICLE_COUNT = 12000;
+    const PARTICLE_COUNT = 6000;
     let scene, camera, renderer;
     let builderGroup;
     let blocks = [];
 
-    // Pallino ultra-piccolo, bianco e brillante come richiesto
     const controllers = [
       {
-        id: 0, mesh: null, pointLight: null, color: 0xffffff,
+        mesh: null, pointLight: null, rayLine: null,
+        grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
+        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
+      },
+      {
+        mesh: null, pointLight: null, rayLine: null,
         grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
         velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
       }
@@ -260,15 +271,15 @@
     function initThree() {
       const container = document.getElementById('canvas-container');
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x000000); // Sfondo rigorosamente nero minimalista
+      scene.background = new THREE.Color(0x000000);
 
       camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
       camera.position.set(0, 4, 28);
       camera.lookAt(0, 0, 0);
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+      renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       container.appendChild(renderer.domElement);
 
       builderGroup = new THREE.Group();
@@ -282,29 +293,40 @@
       dirLight.position.set(10, 25, 15);
       scene.add(dirLight);
 
-      const planeGeo = new THREE.PlaneGeometry(100, 100);
-      const planeMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
+      const planeGeo = new THREE.PlaneGeometry(60, 60);
+      const planeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.2 });
       const floor = new THREE.Mesh(planeGeo, planeMat);
       floor.rotation.x = -Math.PI / 2;
       floor.position.y = -6;
       builderGroup.add(floor);
 
+      const gridHelper = new THREE.GridHelper(60, 30, 0xffffff, 0x333333);
+      gridHelper.position.y = -5.98;
+      builderGroup.add(gridHelper);
+
       controllers.forEach((ctrl, idx) => {
-        // Sfera ridotta al minimo raggio (0.15) e bianca accesa
-        const dotGeo = new THREE.SphereGeometry(0.15, 16, 16);
+        // Puntino finale luminoso
+        const dotGeo = new THREE.SphereGeometry(0.18, 12, 12);
         const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
         ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
         ctrl.mesh.visible = false;
         builderGroup.add(ctrl.mesh);
 
-        ctrl.pointLight = new THREE.PointLight(0xffffff, 1.0, 10);
+        ctrl.pointLight = new THREE.PointLight(0xffffff, 0.8, 10);
         builderGroup.add(ctrl.pointLight);
+
+        // Linea / Raggio laser (stile Vision Pro) che parte da vicino alla camera/polso verso il puntino
+        const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0)]);
+        const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
+        ctrl.rayLine = new THREE.Line(lineGeo, lineMat);
+        ctrl.rayLine.visible = false;
+        builderGroup.add(ctrl.rayLine);
 
         ctrl.statusEl = document.getElementById(`h${idx + 1}-status`);
         ctrl.grabEl = document.getElementById(`h${idx + 1}-grab`);
       });
 
-      spawnShape('cube', 0, 2, 0, 0x00f3ff);
+      spawnShape('cube', 0, 2, 0);
 
       particleGroup = new THREE.Group();
       particleGroup.visible = true;
@@ -322,15 +344,9 @@
         const idx = i * 3;
         let randomColor;
         const rand = Math.random();
-        if (rand < 0.6) {
-          randomColor = new THREE.Color('#ffffff');
-        } else if (rand < 0.8) {
-          randomColor = new THREE.Color('#2bf2b0');
-        } else if (rand < 0.9) {
-          randomColor = new THREE.Color('#ffdf73');
-        } else {
-          randomColor = new THREE.Color('#7a53ff');
-        }
+        if (rand < 0.7) randomColor = new THREE.Color('#ffffff');
+        else if (rand < 0.9) randomColor = new THREE.Color('#aaaaaa');
+        else randomColor = new THREE.Color('#555555');
         particleColors[idx] = randomColor.r;
         particleColors[idx + 1] = randomColor.g;
         particleColors[idx + 2] = randomColor.b;
@@ -338,15 +354,13 @@
       particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
       const pCanvas = document.createElement('canvas');
-      pCanvas.width = 64; pCanvas.height = 64;
+      pCanvas.width = 32; pCanvas.height = 32;
       const pCtx = pCanvas.getContext('2d');
-      pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(32, 32, 28, 0, Math.PI * 2); pCtx.fill();
+      pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(16, 16, 14, 0, Math.PI * 2); pCtx.fill();
 
       particleMaterial = new THREE.PointsMaterial({
-        size: 0.2,
-        vertexColors: true,
-        map: new THREE.CanvasTexture(pCanvas), transparent: true,
-        opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
+        size: 0.25, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
+        transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
       });
 
       const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
@@ -359,33 +373,27 @@
       window.addEventListener('resize', onWindowResize);
     }
 
-    function spawnShape(type, x, y, z, colorHex) {
+    function spawnShape(type, x, y, z) {
       sounds.init();
       let geo;
       const size = 3.0;
 
-      if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 32, 32);
+      if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 16, 16);
       else if (type === 'pyramid') geo = new THREE.ConeGeometry(size / 1.4, size, 4);
-      else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 16, 32);
-      else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 32);
+      else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 12, 24);
+      else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 16);
       else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
       else geo = new THREE.BoxGeometry(size, size, size);
 
-      const mat = new THREE.MeshStandardMaterial({
-        color: colorHex || 0x00f3ff,
-        roughness: 0.3, metalness: 0.2
-      });
+      const randomColorHex = Math.random() > 0.5 ? 0xffffff : 0x888888;
+      const mat = new THREE.MeshStandardMaterial({ color: randomColorHex, roughness: 0.3, metalness: 0.2 });
 
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.x = x !== undefined ? x : (Math.random() - 0.5) * 8;
       mesh.position.y = y !== undefined ? y : 6; 
       mesh.position.z = z !== undefined ? z : (Math.random() - 0.5) * 4;
 
-      mesh.userData = {
-        originalColor: mat.color.getHex(),
-        velocity: new THREE.Vector3(0, 0, 0),
-        isGrabbed: false
-      };
+      mesh.userData = { originalColor: randomColorHex, velocity: new THREE.Vector3(0, 0, 0), isGrabbed: false, size: size };
 
       builderGroup.add(mesh);
       blocks.push(mesh);
@@ -399,11 +407,8 @@
 
     function setBlockHighlight(block, mode) {
       if (!block) return;
-      if (mode === 'grab') {
-        block.material.color.setHex(0xffffff);
-      } else {
-        block.material.color.setHex(block.userData.originalColor);
-      }
+      if (mode === 'grab') block.material.color.setHex(0xffffff);
+      else block.material.color.setHex(block.userData.originalColor);
     }
 
     function switchMode(mode) {
@@ -500,13 +505,39 @@
       }
     }
 
+    // Funzione contorno stile Vision Pro per l'anteprima in basso a destra
+    function drawVisionProHandContour(ctx, landmarks, w, h) {
+      const contourIndices = [0, 1, 2, 3, 4, 8, 12, 16, 20, 17, 0];
+      ctx.beginPath();
+      let first = true;
+      for (let idx of contourIndices) {
+        const pt = landmarks[idx];
+        const x = pt.x * w;
+        const y = pt.y * h;
+        if (first) {
+          ctx.moveTo(x, y);
+          first = false;
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.stroke();
+    }
+
     function initHandTracking() {
       const videoElement = document.getElementById('video-input');
       const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
 
       hands.setOptions({
-        maxNumHands: 1, modelComplexity: 1,
-        minDetectionConfidence: 0.65, minTrackingConfidence: 0.65
+        maxNumHands: 2, 
+        modelComplexity: 0,
+        minDetectionConfidence: 0.5, 
+        minTrackingConfidence: 0.5
       });
 
       hands.onResults((results) => {
@@ -515,91 +546,115 @@
         previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
 
-        const detected = results.multiHandLandmarks && results.multiHandLandmarks.length > 0;
-        const ctrl = controllers[0];
+        const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
 
-        if (detected) {
-          ctrl.active = true;
-          const landmarks = results.multiHandLandmarks[0];
+        for (let i = 0; i < 2; i++) {
+          const ctrl = controllers[i];
+          if (i < numHands) {
+            ctrl.active = true;
+            const landmarks = results.multiHandLandmarks[i];
 
-          drawConnectors(previewCtx, landmarks, HAND_CONNECTIONS, { color: '#ffffff', lineWidth: 1 });
-          drawLandmarks(previewCtx, landmarks, { color: '#00f3ff', lineWidth: 1, radius: 1.5 });
+            // Disegna il guanto/contorno nell'anteprima
+            drawVisionProHandContour(previewCtx, landmarks, previewCanvas.width, previewCanvas.height);
 
-          const thumbTip = landmarks[4], indexTip = landmarks[8];
-          const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
-          const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+            const thumbTip = landmarks[4], indexTip = landmarks[8], wrist = landmarks[0];
+            const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
+            const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
 
-          const ndcX = (1 - pX) * 2 - 1, ndcY = -(pY * 2 - 1);
-          const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
-          vector.unproject(camera);
-          const dir = vector.sub(camera.position).normalize();
-          const targetZ = -pZ * 20;
-          const distanceToPlane = (targetZ - camera.position.z) / dir.z;
-          const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
+            const ndcX = (1 - pX) * 2 - 1, ndcY = -(pY * 2 - 1);
+            const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
+            vector.unproject(camera);
+            const dir = vector.sub(camera.position).normalize();
+            const targetZ = -pZ * 20;
+            const distanceToPlane = (targetZ - camera.position.z) / dir.z;
+            const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
 
-          ctrl.lastPos.copy(ctrl.pos);
-          ctrl.pos.copy(targetPos); // Inseguimento immediato e preciso senza ritardi
+            ctrl.lastPos.copy(ctrl.pos);
+            ctrl.pos.copy(targetPos);
+            ctrl.velocity.copy(ctrl.pos).sub(ctrl.lastPos);
 
-          ctrl.velocity.copy(ctrl.pos).sub(ctrl.lastPos);
-          sounds.updateHum(ctrl.velocity.length());
+            ctrl.mesh.visible = true;
+            ctrl.mesh.position.copy(ctrl.pos);
+            ctrl.pointLight.position.copy(ctrl.pos);
 
-          ctrl.mesh.visible = true;
-          ctrl.mesh.position.copy(ctrl.pos);
-          ctrl.pointLight.position.copy(ctrl.pos);
+            // Calcolo posizione di partenza della linea (dal polso proiettato nello spazio 3D)
+            const wristNdcX = (1 - wrist.x) * 2 - 1, wristNdcY = -(wrist.y * 2 - 1);
+            const wVector = new THREE.Vector3(wristNdcX, wristNdcY, 0.5);
+            wVector.unproject(camera);
+            const wDir = wVector.sub(camera.position).normalize();
+            const wDist = (targetZ - camera.position.z) / wDir.z;
+            const wristPos3D = camera.position.clone().add(wDir.multiplyScalar(wDist));
 
-          const wasPinching = ctrl.isPinching;
-          ctrl.isPinching = (pinchDist < 0.07);
-          if (!wasPinching && ctrl.isPinching) sounds.playPinch();
+            // Aggiorna la linea laser visibile nello spazio 3D
+            const posAttr = ctrl.rayLine.geometry.attributes.position;
+            posAttr.setXYZ(0, wristPos3D.x, wristPos3D.y, wristPos3D.z);
+            posAttr.setXYZ(1, ctrl.pos.x, ctrl.pos.y, ctrl.pos.z);
+            posAttr.needsUpdate = true;
+            ctrl.rayLine.visible = true;
 
-          ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
+            const wasPinching = ctrl.isPinching;
+            ctrl.isPinching = (pinchDist < 0.07);
+            if (!wasPinching && ctrl.isPinching) sounds.playPinch();
 
-          if (currentMode === 'BUILDER') {
-            if (ctrl.isPinching) {
-              if (ctrl.grabbedBlock) {
-                const blockTarget = ctrl.pos.clone().sub(ctrl.grabOffset);
-                ctrl.grabbedBlock.position.copy(blockTarget); // Presa istantanea dell'oggetto
-                ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#ffffff";
+            ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
+
+            if (currentMode === 'BUILDER') {
+              if (ctrl.isPinching) {
+                if (ctrl.grabbedBlock) {
+                  const blockTarget = ctrl.pos.clone().sub(ctrl.grabOffset);
+                  ctrl.grabbedBlock.position.copy(blockTarget);
+                  ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
+                  ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#ffffff";
+                } else {
+                  let closest = null, minDist = 4.0;
+                  for (let block of blocks) {
+                    const d = ctrl.pos.distanceTo(block.position);
+                    if (d < minDist) { minDist = d; closest = block; }
+                  }
+                  if (closest) {
+                    ctrl.grabbedBlock = closest;
+                    closest.userData.isGrabbed = true;
+                    ctrl.grabOffset.copy(ctrl.pos).sub(closest.position);
+                    setBlockHighlight(closest, 'grab');
+                  }
+                }
               } else {
-                let closest = null, minDist = 4.0;
-                for (let block of blocks) {
-                  const d = ctrl.pos.distanceTo(block.position);
-                  if (d < minDist) { minDist = d; closest = block; }
+                if (ctrl.grabbedBlock) {
+                  setBlockHighlight(ctrl.grabbedBlock, 'normal');
+                  ctrl.grabbedBlock.userData.isGrabbed = false;
+                  ctrl.grabbedBlock = null;
                 }
-                if (closest) {
-                  ctrl.grabbedBlock = closest;
-                  closest.userData.isGrabbed = true;
-                  ctrl.grabOffset.copy(ctrl.pos).sub(closest.position);
-                  setBlockHighlight(closest, 'grab');
-                }
+                ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#aaaaaa";
               }
-            } else {
-              if (ctrl.grabbedBlock) {
-                setBlockHighlight(ctrl.grabbedBlock, 'normal');
-                ctrl.grabbedBlock.userData.isGrabbed = false;
-                ctrl.grabbedBlock = null;
-              }
-              ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#00f3ff";
             }
+          } else {
+            ctrl.active = false;
+            ctrl.mesh.visible = false;
+            ctrl.rayLine.visible = false;
+            if (ctrl.grabbedBlock) {
+              setBlockHighlight(ctrl.grabbedBlock, 'normal');
+              ctrl.grabbedBlock.userData.isGrabbed = false;
+              ctrl.grabbedBlock = null;
+            }
+            ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#666666"; ctrl.grabEl.innerText = "N/A";
           }
+        }
 
-          if (currentMode === 'PARTICLES') {
-            const h1Center = landmarks[9], wrist = landmarks[0];
-            targetRotZ = -Math.atan2(h1Center.y - wrist.y, h1Center.x - wrist.x) - Math.PI / 2;
-            targetRotX = (h1Center.y - 0.5) * Math.PI * 2.0;
-            targetRotY = (h1Center.x - 0.5) * Math.PI * 3.0;
-            const span = Math.hypot(wrist.x - landmarks[12].x, wrist.y - landmarks[12].y);
+        if (currentMode === 'PARTICLES' && numHands > 0) {
+          const landmarks1 = results.multiHandLandmarks[0];
+          const h1Center = landmarks1[9], wrist1 = landmarks1[0];
+          targetRotZ = -Math.atan2(h1Center.y - wrist1.y, h1Center.x - wrist1.x) - Math.PI / 2;
+          targetRotX = (h1Center.y - 0.5) * Math.PI * 2.0;
+          targetRotY = (h1Center.x - 0.5) * Math.PI * 3.0;
+
+          if (numHands === 2) {
+            const landmarks2 = results.multiHandLandmarks[1];
+            const distBetweenHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
+            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(distBetweenHands, 0.1, 0.7, 0.5, 2.5), 0.4, 3.0);
+          } else {
+            const span = Math.hypot(wrist1.x - landmarks1[12].x, wrist1.y - landmarks1[12].y);
             targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(span, 0.2, 0.5, 0.5, 2.0), 0.4, 2.2);
           }
-
-        } else {
-          ctrl.active = false;
-          ctrl.mesh.visible = false;
-          if (ctrl.grabbedBlock) {
-            setBlockHighlight(ctrl.grabbedBlock, 'normal');
-            ctrl.grabbedBlock.userData.isGrabbed = false;
-            ctrl.grabbedBlock = null;
-          }
-          ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#ff3366"; ctrl.grabEl.innerText = "N/A";
         }
 
         previewCtx.restore();
@@ -607,13 +662,47 @@
 
       const cameraUtils = new Camera(videoElement, {
         onFrame: async () => { await hands.send({ image: videoElement }); },
-        width: 640, height: 480
+        width: 480, height: 360
       });
       cameraUtils.start();
     }
 
     function animate() {
       requestAnimationFrame(animate);
+
+      if (currentMode === 'BUILDER') {
+        const gravity = -0.06;
+
+        blocks.forEach(block => {
+          if (!block.userData.isGrabbed) {
+            block.userData.velocity.y += gravity;
+            block.position.add(block.userData.velocity);
+
+            const floorY = -6 + (block.userData.size / 2);
+            if (block.position.y < floorY) {
+              block.position.y = floorY;
+              block.userData.velocity.set(0, 0, 0);
+            }
+
+            blocks.forEach(other => {
+              if (block !== other && !other.userData.isGrabbed) {
+                const dx = block.position.x - other.position.x;
+                const dz = block.position.z - other.position.z;
+                const distXZ = Math.sqrt(dx * dx + dz * dz);
+                const limitDist = block.userData.size * 0.8;
+
+                if (distXZ < limitDist) {
+                  const topOfOther = other.position.y + (other.userData.size / 2) + (block.userData.size / 2);
+                  if (block.position.y <= topOfOther && block.position.y > other.position.y) {
+                    block.position.y = topOfOther;
+                    block.userData.velocity.set(0, 0, 0);
+                  }
+                }
+              }
+            });
+          }
+        });
+      }
 
       if (currentMode === 'PARTICLES') {
         particleGroup.rotation.x += (targetRotX - particleGroup.rotation.x) * 0.15;
@@ -623,7 +712,7 @@
         handExpansionScale += (targetScale - handExpansionScale) * 0.15;
         camera.position.z += (targetCamZ - camera.position.z) * 0.15;
 
-        const isPinching = controllers[0].active && controllers[0].isPinching;
+        const isPinchingAny = (controllers[0].active && controllers[0].isPinching) || (controllers[1].active && controllers[1].isPinching);
         const positions = particleGeometry.attributes.position.array;
 
         for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
@@ -632,7 +721,7 @@
           let tz = targetPositions[i+2] * handExpansionScale;
           let lerpSpeed = 0.15;
 
-          if (isPinching && (i / 3) % 2 === 0) {
+          if (isPinchingAny && (i / 3) % 2 === 0) {
             tx *= 0.01; ty *= 0.01; tz *= 0.01;
             lerpSpeed = 0.5;
           }
