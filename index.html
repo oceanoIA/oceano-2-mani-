@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.4 // RAINBOW GLASS</title>
+  <title>STARK KINETIC LAB v9.3 // iOS GLASS</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -105,7 +105,7 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">IOS GLASS // RAINBOW</span>
+      <span class="security-badge">MONOCHROME // GLASS</span>
     </div>
     <div class="mode-tabs">
       <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
@@ -238,7 +238,7 @@
     }
 
     let currentMode = 'PARTICLES';
-    const PARTICLE_COUNT = 15000; // Aumentate a 15000 per renderlo densissimo e ricco
+    const PARTICLE_COUNT = 6000;
     let scene, camera, renderer;
     let builderGroup;
     let blocks = [];
@@ -326,18 +326,17 @@
       }
       particleGeometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
 
-      // Palette arcobaleno dai toni spenti / pastello ed eleganti
       const particleColors = new Float32Array(PARTICLE_COUNT * 3);
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
-        const color = new THREE.Color();
-        // Distribuiamo le tinte lungo lo spettro HSL con saturazione moderata e luminosità media (colori spenti/eleganti)
-        const hue = i / PARTICLE_COUNT;
-        color.setHSL(hue, 0.45, 0.55);
-        
-        particleColors[idx] = color.r;
-        particleColors[idx + 1] = color.g;
-        particleColors[idx + 2] = color.b;
+        let randomColor;
+        const rand = Math.random();
+        if (rand < 0.7) randomColor = new THREE.Color('#ffffff');
+        else if (rand < 0.9) randomColor = new THREE.Color('#aaaaaa');
+        else randomColor = new THREE.Color('#555555');
+        particleColors[idx] = randomColor.r;
+        particleColors[idx + 1] = randomColor.g;
+        particleColors[idx + 2] = randomColor.b;
       }
       particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
@@ -347,9 +346,8 @@
       pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(16, 16, 14, 0, Math.PI * 2); pCtx.fill();
 
       particleMaterial = new THREE.PointsMaterial({
-        size: 0.14, // Dimensione ridotta per le palline piccolissime
-        vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
-        transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false
+        size: 0.25, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
+        transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
       });
 
       const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
