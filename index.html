@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.5 // VISION PRO HAND CONTOUR</title>
+  <title>STARK KINETIC LAB v9.6 // VISION PRO RAYCASTER</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -117,7 +117,7 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">VISION PRO GESTURE</span>
+      <span class="security-badge">VISION PRO RAYCAST</span>
     </div>
   </div>
 
@@ -250,12 +250,12 @@
 
     const controllers = [
       {
-        mesh: null, pointLight: null,
+        mesh: null, pointLight: null, rayLine: null,
         grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
         velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
       },
       {
-        mesh: null, pointLight: null,
+        mesh: null, pointLight: null, rayLine: null,
         grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
         velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
       }
@@ -305,7 +305,8 @@
       builderGroup.add(gridHelper);
 
       controllers.forEach((ctrl, idx) => {
-        const dotGeo = new THREE.SphereGeometry(0.15, 8, 8);
+        // Puntino finale luminoso
+        const dotGeo = new THREE.SphereGeometry(0.18, 12, 12);
         const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
         ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
         ctrl.mesh.visible = false;
@@ -313,6 +314,13 @@
 
         ctrl.pointLight = new THREE.PointLight(0xffffff, 0.8, 10);
         builderGroup.add(ctrl.pointLight);
+
+        // Linea / Raggio laser (stile Vision Pro) che parte da vicino alla camera/polso verso il puntino
+        const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0)]);
+        const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
+        ctrl.rayLine = new THREE.Line(lineGeo, lineMat);
+        ctrl.rayLine.visible = false;
+        builderGroup.add(ctrl.rayLine);
 
         ctrl.statusEl = document.getElementById(`h${idx + 1}-status`);
         ctrl.grabEl = document.getElementById(`h${idx + 1}-grab`);
@@ -497,12 +505,9 @@
       }
     }
 
-    // Funzione dedicata per disegnare il contorno esterno della mano (Stile Vision Pro)
+    // Funzione contorno stile Vision Pro per l'anteprima in basso a destra
     function drawVisionProHandContour(ctx, landmarks, w, h) {
-      // Punti chiave del contorno esterno e delle punte delle dita:
-      // Indice esterno: Polso(0) -> 1 -> 2 -> 3 -> 4(pollice) -> punta indice(8) -> punta medio(12) -> punta anulare(16) -> punta mignolo(20) -> lato mignolo(17) -> Polso(0)
       const contourIndices = [0, 1, 2, 3, 4, 8, 12, 16, 20, 17, 0];
-      
       ctx.beginPath();
       let first = true;
       for (let idx of contourIndices) {
@@ -517,8 +522,6 @@
         }
       }
       ctx.closePath();
-
-      // Riempimento semi-trasparente scuro/grigio con bordo bianco luminoso (stile olografico)
       ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
       ctx.fill();
       ctx.lineWidth = 2;
@@ -551,10 +554,10 @@
             ctrl.active = true;
             const landmarks = results.multiHandLandmarks[i];
 
-            // SOSTITUITO: Disegna il contorno stile Vision Pro anziché lo scheletro a linee/pallini
+            // Disegna il guanto/contorno nell'anteprima
             drawVisionProHandContour(previewCtx, landmarks, previewCanvas.width, previewCanvas.height);
 
-            const thumbTip = landmarks[4], indexTip = landmarks[8];
+            const thumbTip = landmarks[4], indexTip = landmarks[8], wrist = landmarks[0];
             const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
             const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
 
@@ -573,6 +576,21 @@
             ctrl.mesh.visible = true;
             ctrl.mesh.position.copy(ctrl.pos);
             ctrl.pointLight.position.copy(ctrl.pos);
+
+            // Calcolo posizione di partenza della linea (dal polso proiettato nello spazio 3D)
+            const wristNdcX = (1 - wrist.x) * 2 - 1, wristNdcY = -(wrist.y * 2 - 1);
+            const wVector = new THREE.Vector3(wristNdcX, wristNdcY, 0.5);
+            wVector.unproject(camera);
+            const wDir = wVector.sub(camera.position).normalize();
+            const wDist = (targetZ - camera.position.z) / wDir.z;
+            const wristPos3D = camera.position.clone().add(wDir.multiplyScalar(wDist));
+
+            // Aggiorna la linea laser visibile nello spazio 3D
+            const posAttr = ctrl.rayLine.geometry.attributes.position;
+            posAttr.setXYZ(0, wristPos3D.x, wristPos3D.y, wristPos3D.z);
+            posAttr.setXYZ(1, ctrl.pos.x, ctrl.pos.y, ctrl.pos.z);
+            posAttr.needsUpdate = true;
+            ctrl.rayLine.visible = true;
 
             const wasPinching = ctrl.isPinching;
             ctrl.isPinching = (pinchDist < 0.07);
@@ -612,6 +630,7 @@
           } else {
             ctrl.active = false;
             ctrl.mesh.visible = false;
+            ctrl.rayLine.visible = false;
             if (ctrl.grabbedBlock) {
               setBlockHighlight(ctrl.grabbedBlock, 'normal');
               ctrl.grabbedBlock.userData.isGrabbed = false;
