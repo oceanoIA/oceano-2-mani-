@@ -2,341 +2,286 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>STARK LAB v10 PRO // KINETIC VISION SYSTEM</title>
+<title>STARK KINETIC LAB // VISION PRO</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 
 <style>
-:root {
-  --white: #ffffff;
-  --silver: #bcbcbc;
-  --gray: #777777;
-  --dark: #0b0b0b;
-  --glass: rgba(18,18,18,.58);
-  --glass-light: rgba(255,255,255,.07);
-  --border: rgba(255,255,255,.16);
-  --border-bright: rgba(255,255,255,.38);
-  --shadow: rgba(0,0,0,.72);
-}
-
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 html,
 body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #000;
-  color: var(--white);
-  font-family: "Share Tech Mono", monospace;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+    font-family: "Share Tech Mono", monospace;
 }
 
 body {
-  position: fixed;
-  inset: 0;
+    position: relative;
 }
 
 /* =========================================================
-   CANVAS
+   THREE CANVAS
 ========================================================= */
 
 #canvas-container {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  overflow: hidden;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
 }
 
 #canvas-container canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-#video-input {
-  display: none;
+    display: block;
 }
 
 /* =========================================================
-   BACKGROUND HUD
+   CAMERA
 ========================================================= */
 
-.hud-grid {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  opacity: .16;
-  background-image:
-    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-  background-size: 70px 70px;
-  mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
-}
-
-.scanline {
-  position: fixed;
-  left: 0;
-  right: 0;
-  height: 1px;
-  top: 0;
-  z-index: 3;
-  pointer-events: none;
-  background: rgba(255,255,255,.06);
-  animation: scan 7s linear infinite;
-}
-
-@keyframes scan {
-  from { transform: translateY(-5vh); }
-  to { transform: translateY(105vh); }
+#video-input {
+    display: none;
 }
 
 /* =========================================================
-   HEADER
+   TOP BAR
 ========================================================= */
 
 .stark-header {
-  position: fixed;
-  top: 16px;
-  left: 18px;
-  right: 18px;
-  height: 58px;
-  z-index: 20;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    z-index: 50;
 
-  padding: 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-  background: rgba(15,15,15,.52);
-  backdrop-filter: blur(30px) saturate(120%);
-  -webkit-backdrop-filter: blur(30px) saturate(120%);
+    padding: 0 24px;
 
-  border: 1px solid var(--border);
-  border-radius: 20px;
+    background: rgba(10, 10, 10, .48);
 
-  box-shadow:
-    0 18px 45px rgba(0,0,0,.55),
-    inset 0 1px 0 rgba(255,255,255,.14);
-}
+    border-bottom: 1px solid rgba(255,255,255,.12);
 
-.stark-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
 
-.brand-mark {
-  width: 30px;
-  height: 30px;
-  border: 1px solid rgba(255,255,255,.65);
-  border-radius: 50%;
-  position: relative;
-  box-shadow: 0 0 20px rgba(255,255,255,.12);
-}
-
-.brand-mark::before,
-.brand-mark::after {
-  content: "";
-  position: absolute;
-  inset: 7px;
-  border: 1px solid rgba(255,255,255,.6);
-  border-radius: 50%;
-}
-
-.brand-mark::after {
-  inset: 12px;
-  background: white;
-  border: none;
-  box-shadow: 0 0 12px white;
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.35),
+        inset 0 -1px rgba(255,255,255,.05);
 }
 
 .stark-title {
-  font-family: Orbitron, sans-serif;
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-family: "Orbitron", sans-serif;
+    font-size: 13px;
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    text-shadow: 0 0 14px rgba(255,255,255,.35);
 }
 
-.stark-subtitle {
-  color: #777;
-  font-size: 8px;
-  letter-spacing: 1.5px;
-  margin-top: 3px;
+.security-badge {
+    padding: 4px 9px;
+
+    border-radius: 999px;
+
+    font-size: 8px;
+    letter-spacing: 1px;
+
+    color: rgba(255,255,255,.75);
+
+    background: rgba(255,255,255,.06);
+
+    border: 1px solid rgba(255,255,255,.16);
+
+    box-shadow:
+        inset 0 1px rgba(255,255,255,.08);
 }
 
 .system-status {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 9px;
-  color: #aaa;
-  letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    font-size: 9px;
+    color: rgba(255,255,255,.55);
 }
 
 .status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 12px rgba(255,255,255,.8);
-  animation: pulse 1.5s infinite;
-}
+    width: 7px;
+    height: 7px;
 
-@keyframes pulse {
-  0%,100% { opacity: .35; }
-  50% { opacity: 1; }
+    border-radius: 50%;
+
+    background: #fff;
+
+    box-shadow: 0 0 12px #fff;
 }
 
 /* =========================================================
-   LEFT CONTROL PANEL
+   LEFT PANEL
 ========================================================= */
 
 .ui-overlay {
-  position: fixed;
-  top: 91px;
-  left: 18px;
-  z-index: 20;
+    position: fixed;
 
-  width: 305px;
-  max-height: calc(100vh - 180px);
-  overflow-y: auto;
+    top: 84px;
+    left: 20px;
 
-  padding: 17px;
+    z-index: 40;
 
-  background: var(--glass);
-  backdrop-filter: blur(32px) saturate(125%);
-  -webkit-backdrop-filter: blur(32px) saturate(125%);
+    width: 300px;
 
-  border: 1px solid var(--border);
-  border-radius: 24px;
+    padding: 18px;
 
-  box-shadow:
-    0 25px 60px var(--shadow),
-    inset 0 1px 0 rgba(255,255,255,.15);
+    background: rgba(12,12,12,.57);
 
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
+    border: 1px solid rgba(255,255,255,.16);
 
-  scrollbar-width: none;
-}
+    border-radius: 25px;
 
-.ui-overlay::-webkit-scrollbar {
-  display: none;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.7),
+        inset 0 1px rgba(255,255,255,.16);
 }
 
 .panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-  padding-bottom: 11px;
-  border-bottom: 1px solid rgba(255,255,255,.10);
+    padding-bottom: 10px;
+    margin-bottom: 13px;
 
-  font-family: Orbitron, sans-serif;
-  font-size: 10px;
-  letter-spacing: 1.4px;
+    border-bottom: 1px solid rgba(255,255,255,.11);
+
+    font-family: "Orbitron", sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
 }
 
-.online-label {
-  color: #fff;
-  font-size: 8px;
-  letter-spacing: 1px;
+.online {
+    color: #fff;
+    font-size: 8px;
 }
+
+/* =========================================================
+   CONTROLS
+========================================================= */
 
 .control-group {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    margin-bottom: 12px;
 }
 
 label {
-  color: #777;
-  font-size: 8px;
-  letter-spacing: 1.4px;
+    color: rgba(255,255,255,.5);
+
+    font-size: 8px;
+    letter-spacing: 1.3px;
 }
 
 select,
 input[type="color"],
 .stark-btn {
-  width: 100%;
-  height: 39px;
+    width: 100%;
+    height: 38px;
 
-  border: 1px solid var(--border);
-  border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.15);
 
-  outline: none;
+    border-radius: 19px;
 
-  background: rgba(255,255,255,.045);
-  color: #fff;
+    background: rgba(255,255,255,.055);
 
-  font-family: Orbitron, sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .7px;
+    color: #fff;
 
-  transition:
-    background .18s ease,
-    border-color .18s ease,
-    transform .18s ease,
-    box-shadow .18s ease;
+    font-family: "Orbitron", sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: .7px;
+
+    outline: none;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease,
+        transform .18s ease,
+        box-shadow .18s ease;
 }
 
 select {
-  padding: 0 11px;
-  cursor: pointer;
+    padding: 0 12px;
+    cursor: pointer;
 }
 
 select option {
-  background: #111;
-  color: #fff;
+    background: #111;
+    color: #fff;
 }
 
 input[type="color"] {
-  padding: 4px;
-  cursor: pointer;
+    padding: 4px;
+    cursor: pointer;
 }
 
 .stark-btn {
-  padding: 0 10px;
-  cursor: pointer;
+    padding: 0 10px;
+    cursor: pointer;
 }
 
 .stark-btn:hover {
-  background: rgba(255,255,255,.14);
-  border-color: var(--border-bright);
-  box-shadow: 0 0 20px rgba(255,255,255,.09);
+    background: rgba(255,255,255,.15);
+
+    border-color: rgba(255,255,255,.55);
+
+    box-shadow:
+        0 0 20px rgba(255,255,255,.14),
+        inset 0 1px rgba(255,255,255,.25);
+
+    transform: translateY(-1px);
 }
 
 .stark-btn:active {
-  transform: scale(.97);
+    transform: scale(.97);
 }
 
 .btn-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 7px;
-}
+    display: grid;
 
-.danger-btn {
-  border-color: rgba(255,255,255,.3);
+    grid-template-columns: 1fr 1fr;
+
+    gap: 7px;
 }
 
 /* =========================================================
@@ -344,136 +289,109 @@ input[type="color"] {
 ========================================================= */
 
 .telemetry-box {
-  padding: 11px;
+    margin-top: 12px;
 
-  background: rgba(0,0,0,.36);
-  border: 1px solid rgba(255,255,255,.10);
-  border-radius: 17px;
+    padding: 11px;
 
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
+    background: rgba(0,0,0,.4);
 
-.telemetry-title {
-  color: #666;
-  font-size: 8px;
-  letter-spacing: 1.2px;
-}
+    border: 1px solid rgba(255,255,255,.1);
 
-.telemetry-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  font-size: 9px;
-  color: #666;
-}
-
-.telemetry-val {
-  color: #fff;
-  font-weight: bold;
+    border-radius: 17px;
 }
 
 .hand-card {
-  padding-left: 9px;
-  border-left: 2px solid #fff;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+    padding-left: 9px;
+
+    border-left: 2px solid rgba(255,255,255,.75);
 }
 
-.performance {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 6px;
+.hand-card + .hand-card {
+    margin-top: 10px;
 }
 
-.perf-cell {
-  padding: 7px 5px;
-  text-align: center;
+.telemetry-row {
+    display: flex;
+    justify-content: space-between;
 
-  border-radius: 10px;
-  background: rgba(255,255,255,.035);
-  border: 1px solid rgba(255,255,255,.07);
+    font-size: 9px;
+
+    color: rgba(255,255,255,.42);
 }
 
-.perf-number {
-  display: block;
-  color: #fff;
-  font-family: Orbitron, sans-serif;
-  font-size: 10px;
-}
-
-.perf-label {
-  display: block;
-  color: #666;
-  font-size: 6px;
-  margin-top: 3px;
+.telemetry-val {
+    color: #fff;
+    font-weight: 700;
 }
 
 /* =========================================================
-   MODE DOCK
+   BOTTOM DOCK
 ========================================================= */
 
 .mode-dock {
-  position: fixed;
-  left: 50%;
-  bottom: 22px;
-  transform: translateX(-50%);
+    position: fixed;
 
-  z-index: 30;
+    left: 50%;
+    bottom: 24px;
 
-  display: flex;
-  gap: 7px;
+    transform: translateX(-50%);
 
-  padding: 8px;
+    z-index: 60;
 
-  background: rgba(18,18,18,.56);
-  backdrop-filter: blur(35px) saturate(130%);
-  -webkit-backdrop-filter: blur(35px) saturate(130%);
+    display: flex;
+    gap: 8px;
 
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 25px;
+    padding: 9px;
 
-  box-shadow:
-    0 22px 50px rgba(0,0,0,.7),
-    inset 0 1px 0 rgba(255,255,255,.2);
+    background: rgba(22,22,22,.5);
+
+    border: 1px solid rgba(255,255,255,.2);
+
+    border-radius: 999px;
+
+    backdrop-filter: blur(35px);
+    -webkit-backdrop-filter: blur(35px);
+
+    box-shadow:
+        0 22px 55px rgba(0,0,0,.75),
+        inset 0 1px rgba(255,255,255,.25);
 }
 
 .tab-btn {
-  min-width: 165px;
-  height: 39px;
+    height: 38px;
 
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 18px;
+    padding: 0 20px;
 
-  background: rgba(255,255,255,.035);
-  color: #666;
+    border: 1px solid rgba(255,255,255,.12);
 
-  font-family: Orbitron, sans-serif;
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: .8px;
+    border-radius: 999px;
 
-  cursor: pointer;
+    background: rgba(255,255,255,.035);
 
-  transition: all .2s ease;
+    color: rgba(255,255,255,.52);
+
+    font-family: "Orbitron", sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s ease;
 }
 
-.tab-btn:hover {
-  color: #fff;
-  background: rgba(255,255,255,.09);
-}
-
+.tab-btn:hover,
 .tab-btn.active {
-  color: #fff;
-  background: rgba(255,255,255,.17);
-  border-color: rgba(255,255,255,.48);
+    color: #fff;
 
-  box-shadow:
-    0 0 24px rgba(255,255,255,.11),
-    inset 0 1px 2px rgba(255,255,255,.25);
+    background: rgba(255,255,255,.16);
+
+    border-color: rgba(255,255,255,.65);
+
+    box-shadow:
+        0 0 25px rgba(255,255,255,.16),
+        inset 0 1px rgba(255,255,255,.4);
+
+    transform: translateY(-1px);
 }
 
 /* =========================================================
@@ -481,70 +399,86 @@ input[type="color"] {
 ========================================================= */
 
 .camera-preview-container {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
+    position: fixed;
 
-  width: 245px;
-  height: 184px;
+    right: 20px;
+    bottom: 24px;
 
-  z-index: 20;
+    z-index: 40;
 
-  overflow: hidden;
+    width: 250px;
+    height: 188px;
 
-  background: rgba(10,10,10,.65);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
+    overflow: hidden;
 
-  border: 1px solid rgba(255,255,255,.19);
-  border-radius: 21px;
+    background: rgba(8,8,8,.65);
 
-  box-shadow: 0 20px 50px rgba(0,0,0,.7);
+    border: 1px solid rgba(255,255,255,.18);
+
+    border-radius: 22px;
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.65),
+        inset 0 1px rgba(255,255,255,.12);
 }
 
 #hand-preview-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
+    width: 100%;
+    height: 100%;
 
-  object-fit: cover;
-  transform: scaleX(-1);
+    display: block;
+
+    transform: scaleX(-1);
+
+    opacity: .9;
 }
 
 .preview-hud-tag {
-  position: absolute;
-  top: 8px;
-  left: 9px;
+    position: absolute;
 
-  padding: 4px 7px;
+    top: 8px;
+    left: 9px;
 
-  border-radius: 9px;
-  border: 1px solid rgba(255,255,255,.18);
+    padding: 3px 7px;
 
-  background: rgba(0,0,0,.72);
+    border-radius: 999px;
 
-  color: #fff;
-  font-size: 7px;
-  letter-spacing: 1px;
+    background: rgba(0,0,0,.65);
+
+    border: 1px solid rgba(255,255,255,.14);
+
+    color: rgba(255,255,255,.8);
+
+    font-size: 7px;
+    letter-spacing: 1px;
 }
 
 /* =========================================================
-   CORNER HUD
+   FPS
 ========================================================= */
 
-.corner-hud {
-  position: fixed;
-  right: 280px;
-  top: 94px;
+#fps-counter {
+    position: fixed;
 
-  z-index: 10;
+    right: 20px;
+    top: 80px;
 
-  color: rgba(255,255,255,.35);
-  font-size: 7px;
-  letter-spacing: 1px;
-  line-height: 1.8;
+    z-index: 50;
 
-  pointer-events: none;
+    padding: 6px 9px;
+
+    border-radius: 999px;
+
+    background: rgba(0,0,0,.4);
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    font-size: 8px;
+
+    color: rgba(255,255,255,.55);
 }
 
 /* =========================================================
@@ -553,59 +487,51 @@ input[type="color"] {
 
 @media (max-width: 700px) {
 
-  .stark-header {
-    top: 8px;
-    left: 8px;
-    right: 8px;
-    height: 50px;
-    border-radius: 16px;
-  }
+    .stark-header {
+        padding: 0 12px;
+    }
 
-  .stark-title {
-    font-size: 10px;
-  }
+    .security-badge,
+    .system-status {
+        display: none;
+    }
 
-  .stark-subtitle {
-    display: none;
-  }
+    .ui-overlay {
+        top: 75px;
+        left: 10px;
 
-  .system-status {
-    font-size: 7px;
-  }
+        width: 245px;
 
-  .ui-overlay {
-    top: 67px;
-    left: 8px;
-    width: 245px;
-    max-height: calc(100vh - 150px);
-    padding: 12px;
-    border-radius: 19px;
-  }
+        padding: 13px;
+    }
 
-  .camera-preview-container {
-    width: 145px;
-    height: 108px;
-    right: 8px;
-    bottom: 82px;
-    border-radius: 15px;
-  }
+    .camera-preview-container {
+        right: 10px;
+        bottom: 85px;
 
-  .mode-dock {
-    bottom: 8px;
-    padding: 6px;
-    width: calc(100% - 16px);
-  }
+        width: 150px;
+        height: 112px;
+    }
 
-  .tab-btn {
-    min-width: 0;
-    flex: 1;
-    height: 36px;
-    font-size: 7px;
-  }
+    .mode-dock {
+        bottom: 15px;
 
-  .corner-hud {
-    display: none;
-  }
+        width: calc(100% - 20px);
+
+        justify-content: center;
+    }
+
+    .tab-btn {
+        flex: 1;
+
+        padding: 0 8px;
+
+        font-size: 7px;
+    }
+
+    #fps-counter {
+        display: none;
+    }
 }
 </style>
 </head>
@@ -614,379 +540,527 @@ input[type="color"] {
 
 <div id="canvas-container"></div>
 
-<div class="hud-grid"></div>
-<div class="scanline"></div>
-
 <video id="video-input" autoplay playsinline muted></video>
 
-<!-- HEADER -->
+<!-- ======================================================
+     HEADER
+====================================================== -->
+
 <header class="stark-header">
 
-  <div class="stark-brand">
+    <div class="stark-title">
+        <span>STARK LAB</span>
 
-    <div class="brand-mark"></div>
-
-    <div>
-      <div class="stark-title">STARK LAB</div>
-      <div class="stark-subtitle">
-        KINETIC VISION // NEURAL INTERFACE
-      </div>
+        <span class="security-badge">
+            VISION PRO // KINETIC ENGINE
+        </span>
     </div>
 
-  </div>
-
-  <div class="system-status">
-    <span class="status-dot"></span>
-    <span id="system-status-text">SYSTEM ONLINE</span>
-  </div>
+    <div class="system-status">
+        <span class="status-dot"></span>
+        SYSTEM ONLINE
+    </div>
 
 </header>
 
+<div id="fps-counter">
+    FPS: --
+</div>
 
-<!-- LEFT PANEL -->
+<!-- ======================================================
+     LEFT PANEL
+====================================================== -->
+
 <section class="ui-overlay">
 
-  <div class="panel-header">
+    <div class="panel-header">
+        <span id="panel-title-text">
+            PARTICLE MATRIX
+        </span>
 
-    <span id="panel-title-text">
-      PARTICLE MATRIX
-    </span>
+        <span class="online">
+            [ ONLINE ]
+        </span>
+    </div>
 
-    <span class="online-label">
-      [ ONLINE ]
-    </span>
+    <!-- BUILDER -->
 
-  </div>
+    <div id="controls-builder" style="display:none">
 
+        <div class="control-group">
 
-  <!-- BUILDER -->
-  <div id="controls-builder" style="display:none">
+            <label>
+                3D OBJECT LIBRARY
+            </label>
 
-    <div class="control-group">
+            <div class="btn-grid">
 
-      <label>
-        SPAWN 3D OBJECT
-      </label>
+                <button class="stark-btn" onclick="spawnShape('cube')">
+                    + CUBO
+                </button>
 
-      <div class="btn-grid">
+                <button class="stark-btn" onclick="spawnShape('sphere')">
+                    + SFERA
+                </button>
 
-        <button class="stark-btn" data-shape="cube">+ CUBO</button>
-        <button class="stark-btn" data-shape="sphere">+ SFERA</button>
+                <button class="stark-btn" onclick="spawnShape('pyramid')">
+                    + PIRAMIDE
+                </button>
 
-        <button class="stark-btn" data-shape="pyramid">+ PIRAMIDE</button>
-        <button class="stark-btn" data-shape="torus">+ TORUS</button>
+                <button class="stark-btn" onclick="spawnShape('torus')">
+                    + TORUS
+                </button>
 
-        <button class="stark-btn" data-shape="cylinder">+ CILINDRO</button>
-        <button class="stark-btn" data-shape="icosahedron">+ ICOSAEDRO</button>
+                <button class="stark-btn" onclick="spawnShape('cylinder')">
+                    + CILINDRO
+                </button>
 
-        <button class="stark-btn" data-shape="cone">+ CONO</button>
-        <button class="stark-btn" data-shape="octahedron">+ OTT.</button>
+                <button class="stark-btn" onclick="spawnShape('cone')">
+                    + CONO
+                </button>
 
-        <button class="stark-btn" data-shape="dodecahedron">+ DODECA</button>
-        <button class="stark-btn" data-shape="tetrahedron">+ TETRA</button>
+                <button class="stark-btn" onclick="spawnShape('icosahedron')">
+                    + ICOSAEDRO
+                </button>
 
-        <button class="stark-btn" data-shape="torusknot">+ KNOT</button>
-        <button class="stark-btn" data-shape="ring">+ RING</button>
+                <button class="stark-btn" onclick="spawnShape('octahedron')">
+                    + OTT AEDRO
+                </button>
 
-      </div>
+                <button class="stark-btn" onclick="spawnShape('tetrahedron')">
+                    + TETRAEDRO
+                </button>
+
+                <button class="stark-btn" onclick="spawnShape('ring')">
+                    + RING
+                </button>
+
+                <button class="stark-btn" onclick="spawnShape('capsule')">
+                    + CAPSULA
+                </button>
+
+                <button class="stark-btn" onclick="spawnShape('diamond')">
+                    + DIAMANTE
+                </button>
+
+            </div>
+
+            <button
+                class="stark-btn"
+                style="margin-top:8px"
+                onclick="clearBlocks()"
+            >
+                RESET SCENA
+            </button>
+
+        </div>
 
     </div>
 
-    <button id="clear-scene" class="stark-btn danger-btn">
-      RESET SCENA
+    <!-- PARTICLES -->
+
+    <div id="controls-particles">
+
+        <div class="control-group">
+
+            <label>
+                HOLOGRAM TEMPLATE
+            </label>
+
+            <select id="shape-select">
+
+                <option value="jupiter">
+                    JUPITER & RINGS
+                </option>
+
+                <option value="saturn">
+                    SATURN RING SYSTEM
+                </option>
+
+                <option value="galaxy">
+                    GALAXY SPIRAL
+                </option>
+
+                <option value="nebula">
+                    NEBULA CLOUD
+                </option>
+
+                <option value="hypercube">
+                    HYPERCUBE MATRIX
+                </option>
+
+                <option value="heart">
+                    HEART MATRIX
+                </option>
+
+                <option value="flower">
+                    NEURAL FLOWER
+                </option>
+
+                <option value="dna">
+                    DNA DOUBLE HELIX
+                </option>
+
+                <option value="torus">
+                    ENERGY TORUS
+                </option>
+
+                <option value="sphere">
+                    QUANTUM SPHERE
+                </option>
+
+                <option value="atom">
+                    ATOMIC CORE
+                </option>
+
+                <option value="blackhole">
+                    BLACK HOLE
+                </option>
+
+                <option value="wave">
+                    ENERGY WAVE
+                </option>
+
+                <option value="fireworks">
+                    ENERGY EXPLOSION
+                </option>
+
+                <option value="buddha">
+                    BUDDHA HOLOGRAM
+                </option>
+
+                <option value="satellite">
+                    ORBITAL MATRIX
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="control-group">
+
+            <label>
+                PLASMA COLOR
+            </label>
+
+            <input
+                type="color"
+                id="color-picker"
+                value="#ffffff"
+            >
+
+        </div>
+
+    </div>
+
+    <button
+        id="audio-toggle-btn"
+        class="stark-btn"
+        onclick="toggleAudio()"
+    >
+        🔊 AUDIO: ATTIVO
     </button>
 
-  </div>
+    <!-- TELEMETRY -->
 
+    <div class="telemetry-box">
 
-  <!-- PARTICLES -->
-  <div id="controls-particles">
+        <div class="hand-card">
 
-    <div class="control-group">
+            <div class="telemetry-row">
+                <span>MANO 1</span>
+                <span id="h1-status" class="telemetry-val">
+                    CERCA...
+                </span>
+            </div>
 
-      <label>
-        HOLOGRAM TEMPLATE
-      </label>
+            <div class="telemetry-row">
+                <span>STATO</span>
+                <span id="h1-grab" class="telemetry-val">
+                    LIBERA
+                </span>
+            </div>
 
-      <select id="shape-select">
+        </div>
 
-        <option value="jupiter">JUPITER & RINGS</option>
-        <option value="saturn">SATURN SYSTEM</option>
-        <option value="galaxy">GALAXY SPIRAL</option>
-        <option value="blackhole">BLACK HOLE</option>
+        <div class="hand-card">
 
-        <option value="atom">ATOM FIELD</option>
-        <option value="dna">DNA DOUBLE HELIX</option>
-        <option value="hypercube">HYPERCUBE MATRIX</option>
+            <div class="telemetry-row">
+                <span>MANO 2</span>
+                <span id="h2-status" class="telemetry-val">
+                    CERCA...
+                </span>
+            </div>
 
-        <option value="heart">HEART MATRIX</option>
-        <option value="flower">NEURAL FLOWER</option>
-        <option value="neural">NEURAL NETWORK</option>
+            <div class="telemetry-row">
+                <span>STATO</span>
+                <span id="h2-grab" class="telemetry-val">
+                    LIBERA
+                </span>
+            </div>
 
-        <option value="buddha">BUDDHA HOLOGRAM</option>
-        <option value="fireworks">ENERGY EXPLOSION</option>
-
-        <option value="vortex">SPACE VORTEX</option>
-        <option value="sphere">QUANTUM SPHERE</option>
-        <option value="wave">ENERGY WAVE</option>
-        <option value="tornado">PARTICLE TORNADO</option>
-
-      </select>
-
-    </div>
-
-
-    <div class="control-group">
-
-      <label>
-        PLASMA COLOR
-      </label>
-
-      <input type="color" id="color-picker" value="#ffffff">
+        </div>
 
     </div>
-
-  </div>
-
-
-  <button id="audio-toggle-btn" class="stark-btn">
-    🔊 AUDIO: ATTIVO
-  </button>
-
-
-  <!-- TELEMETRY -->
-  <div class="telemetry-box">
-
-    <div class="telemetry-title">
-      HAND TRACKING TELEMETRY
-    </div>
-
-    <div class="hand-card">
-
-      <div class="telemetry-row">
-        <span>MANO 1</span>
-        <span id="h1-status" class="telemetry-val">CERCA...</span>
-      </div>
-
-      <div class="telemetry-row">
-        <span>PINCH</span>
-        <span id="h1-grab" class="telemetry-val">LIBERA</span>
-      </div>
-
-    </div>
-
-
-    <div class="hand-card">
-
-      <div class="telemetry-row">
-        <span>MANO 2</span>
-        <span id="h2-status" class="telemetry-val">CERCA...</span>
-      </div>
-
-      <div class="telemetry-row">
-        <span>PINCH</span>
-        <span id="h2-grab" class="telemetry-val">LIBERA</span>
-      </div>
-
-    </div>
-
-
-    <div class="performance">
-
-      <div class="perf-cell">
-        <span id="fps-value" class="perf-number">--</span>
-        <span class="perf-label">FPS</span>
-      </div>
-
-      <div class="perf-cell">
-        <span id="particle-value" class="perf-number">6000</span>
-        <span class="perf-label">PARTICLES</span>
-      </div>
-
-      <div class="perf-cell">
-        <span id="latency-value" class="perf-number">--</span>
-        <span class="perf-label">TRACK MS</span>
-      </div>
-
-    </div>
-
-  </div>
 
 </section>
 
+<!-- ======================================================
+     CAMERA PREVIEW
+====================================================== -->
 
-<!-- CAMERA -->
 <div class="camera-preview-container">
 
-  <span class="preview-hud-tag">
-    OPTICAL SKELETON
-  </span>
+    <span class="preview-hud-tag">
+        OPTICAL SKELETON // LIVE
+    </span>
 
-  <canvas
-    id="hand-preview-canvas"
-    width="245"
-    height="184">
-  </canvas>
+    <canvas
+        id="hand-preview-canvas"
+        width="250"
+        height="188"
+    ></canvas>
 
 </div>
 
+<!-- ======================================================
+     MODE DOCK
+====================================================== -->
 
-<div class="corner-hud">
-  STARK // KINETIC CORE<br>
-  V10.0 PRO<br>
-  GPU PARTICLE ENGINE<br>
-  HAND INTERFACE READY
-</div>
-
-
-<!-- MODE DOCK -->
 <nav class="mode-dock">
 
-  <button
-    id="tab-builder"
-    class="tab-btn">
-    SYS 01 // 3D BUILDER
-  </button>
+    <button
+        id="tab-builder"
+        class="tab-btn"
+        onclick="switchMode('BUILDER')"
+    >
+        SYS 01: 3D BUILDER
+    </button>
 
-  <button
-    id="tab-particles"
-    class="tab-btn active">
-    SYS 02 // PLASMA MATRIX
-  </button>
+    <button
+        id="tab-particles"
+        class="tab-btn active"
+        onclick="switchMode('PARTICLES')"
+    >
+        SYS 02: PLASMA MATRIX
+    </button>
 
 </nav>
 
 
 <script>
+
+/* =========================================================
+   GLOBAL ENGINE
+========================================================= */
+
 "use strict";
-
-/* =========================================================
-   CONFIG
-========================================================= */
-
-const CONFIG = {
-
-  particles: 6000,
-
-  /*
-    Non impostiamo un limite FPS artificiale.
-    requestAnimationFrame usa il refresh rate dello schermo.
-  */
-
-  hand: {
-    width: 480,
-    height: 360,
-
-    /*
-      Sensibilità aumentata rispetto alla versione precedente.
-    */
-    sensitivity: 1.52,
-
-    pinchThreshold: 0.085,
-
-    smoothing: 0.42
-  },
-
-  particle: {
-    lerp: 0.28,
-    pinchLerp: 0.65,
-    maxPixelRatio: 1.35
-  },
-
-  builder: {
-    gravity: -0.045
-  }
-
-};
-
-
-/* =========================================================
-   GLOBAL STATE
-========================================================= */
-
-let currentMode = "PARTICLES";
 
 let scene;
 let camera;
 let renderer;
 
-let builderGroup;
 let particleGroup;
-
 let particleGeometry;
 let particleMaterial;
+
+let builderGroup;
+
 let particleSystem;
 
 let previewCanvas;
 let previewCtx;
 
-let lastFrameTime = performance.now();
-let fpsFrames = 0;
-let fpsLastUpdate = performance.now();
-let currentFPS = 0;
+let currentMode = "PARTICLES";
 
-let lastHandUpdate = performance.now();
+const PARTICLE_COUNT = 6000;
 
 const targetPositions =
-  new Float32Array(CONFIG.particles * 3);
+    new Float32Array(PARTICLE_COUNT * 3);
 
 const currentPositions =
-  new Float32Array(CONFIG.particles * 3);
+    new Float32Array(PARTICLE_COUNT * 3);
 
 let targetScale = 1;
-let handExpansionScale = 1;
+let handScale = 1;
 
 let targetRotX = 0;
 let targetRotY = 0;
 let targetRotZ = 0;
 
-const blocks = [];
+let blocks = [];
 
 
 /* =========================================================
-   HAND CONTROLLERS
+   AUDIO
+========================================================= */
+
+class SciFiSoundSystem {
+
+    constructor() {
+
+        this.ctx = null;
+        this.enabled = true;
+        this.initialized = false;
+
+    }
+
+    init() {
+
+        if (this.initialized) {
+
+            if (this.ctx &&
+                this.ctx.state === "suspended") {
+
+                this.ctx.resume().catch(() => {});
+
+            }
+
+            return;
+
+        }
+
+        try {
+
+            const AudioContext =
+                window.AudioContext ||
+                window.webkitAudioContext;
+
+            if (!AudioContext) return;
+
+            this.ctx = new AudioContext();
+
+            this.initialized = true;
+
+        } catch (error) {
+
+            console.warn("Audio non disponibile:", error);
+
+        }
+
+    }
+
+    playPinch() {
+
+        if (!this.enabled ||
+            !this.initialized ||
+            !this.ctx) return;
+
+        try {
+
+            const osc =
+                this.ctx.createOscillator();
+
+            const gain =
+                this.ctx.createGain();
+
+            const now =
+                this.ctx.currentTime;
+
+            osc.type = "sine";
+
+            osc.frequency.setValueAtTime(
+                220,
+                now
+            );
+
+            osc.frequency.exponentialRampToValueAtTime(
+                900,
+                now + 0.07
+            );
+
+            gain.gain.setValueAtTime(
+                0.12,
+                now
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                now + 0.08
+            );
+
+            osc.connect(gain);
+
+            gain.connect(this.ctx.destination);
+
+            osc.start(now);
+
+            osc.stop(now + 0.08);
+
+        } catch (_) {}
+
+    }
+
+}
+
+const sounds =
+    new SciFiSoundSystem();
+
+
+function toggleAudio() {
+
+    sounds.enabled =
+        !sounds.enabled;
+
+    const btn =
+        document.getElementById(
+            "audio-toggle-btn"
+        );
+
+    btn.innerText =
+        sounds.enabled
+            ? "🔊 AUDIO: ATTIVO"
+            : "🔇 AUDIO: DISATTIVATO";
+
+}
+
+
+/* =========================================================
+   CONTROLLERS
 ========================================================= */
 
 const controllers = [
 
-  createController(1),
+    createController(),
 
-  createController(2)
+    createController()
 
 ];
 
 
-function createController(id) {
+function createController() {
 
-  return {
+    return {
 
-    id,
+        mesh: null,
 
-    mesh: null,
+        pointLight: null,
 
-    pointLight: null,
+        rayLine: null,
 
-    rayLine: null,
+        grabbedBlock: null,
 
-    grabbedBlock: null,
+        grabOffset:
+            new THREE.Vector3(),
 
-    grabOffset: new THREE.Vector3(),
+        pos:
+            new THREE.Vector3(),
 
-    pos: new THREE.Vector3(),
+        lastPos:
+            new THREE.Vector3(),
 
-    lastPos: new THREE.Vector3(),
+        velocity:
+            new THREE.Vector3(),
 
-    velocity: new THREE.Vector3(),
+        isPinching: false,
 
-    isPinching: false,
+        active: false,
 
-    active: false,
+        statusEl: null,
 
-    statusEl: null,
+        grabEl: null
 
-    grabEl: null
-
-  };
+    };
 
 }
 
@@ -997,1772 +1071,1531 @@ function createController(id) {
 
 const HAND_CONNECTIONS = [
 
-  [0,1],[1,2],[2,3],[3,4],
+    [0,1],
+    [1,2],
+    [2,3],
+    [3,4],
 
-  [0,5],[5,6],[6,7],[7,8],
+    [0,5],
+    [5,6],
+    [6,7],
+    [7,8],
 
-  [5,9],[9,10],[10,11],[11,12],
+    [5,9],
+    [9,10],
+    [10,11],
+    [11,12],
 
-  [9,13],[13,14],[14,15],[15,16],
+    [9,13],
+    [13,14],
+    [14,15],
+    [15,16],
 
-  [13,17],[17,18],[18,19],[19,20],
+    [13,17],
+    [17,18],
+    [18,19],
+    [19,20],
 
-  [0,17]
+    [0,17]
 
 ];
 
 
 /* =========================================================
-   AUDIO
-========================================================= */
-
-class SciFiSoundSystem {
-
-  constructor() {
-
-    this.ctx = null;
-
-    this.humOsc = null;
-
-    this.humGain = null;
-
-    this.enabled = true;
-
-    this.initialized = false;
-
-  }
-
-
-  init() {
-
-    if (this.initialized) {
-
-      if (this.ctx &&
-          this.ctx.state === "suspended") {
-
-        this.ctx.resume();
-
-      }
-
-      return;
-
-    }
-
-    const AudioCtx =
-      window.AudioContext ||
-      window.webkitAudioContext;
-
-    if (!AudioCtx) return;
-
-    this.ctx = new AudioCtx();
-
-    this.humOsc =
-      this.ctx.createOscillator();
-
-    this.humGain =
-      this.ctx.createGain();
-
-    this.humOsc.type = "sine";
-
-    this.humOsc.frequency.value = 50;
-
-    this.humGain.gain.value = 0.008;
-
-    this.humOsc.connect(this.humGain);
-
-    this.humGain.connect(this.ctx.destination);
-
-    this.humOsc.start();
-
-    this.initialized = true;
-
-  }
-
-
-  playPinch() {
-
-    if (!this.enabled ||
-        !this.initialized ||
-        !this.ctx) return;
-
-    const osc =
-      this.ctx.createOscillator();
-
-    const gain =
-      this.ctx.createGain();
-
-    const now =
-      this.ctx.currentTime;
-
-    osc.type = "sine";
-
-    osc.frequency.setValueAtTime(
-      240,
-      now
-    );
-
-    osc.frequency.exponentialRampToValueAtTime(
-      900,
-      now + 0.07
-    );
-
-    gain.gain.setValueAtTime(
-      0.10,
-      now
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      0.001,
-      now + 0.07
-    );
-
-    osc.connect(gain);
-
-    gain.connect(this.ctx.destination);
-
-    osc.start(now);
-
-    osc.stop(now + 0.07);
-
-  }
-
-}
-
-
-const sounds =
-  new SciFiSoundSystem();
-
-
-/* =========================================================
-   THREE.JS INITIALIZATION
+   THREE INITIALIZATION
 ========================================================= */
 
 function initThree() {
 
-  const container =
-    document.getElementById(
-      "canvas-container"
-    );
-
-
-  scene =
-    new THREE.Scene();
-
-
-  scene.background =
-    new THREE.Color(0x000000);
-
-
-  camera =
-    new THREE.PerspectiveCamera(
-
-      55,
-
-      window.innerWidth /
-      window.innerHeight,
-
-      0.1,
-
-      1000
-
-    );
-
-
-  camera.position.set(
-    0,
-    3.5,
-    28
-  );
-
-
-  camera.lookAt(
-    0,
-    0,
-    0
-  );
-
-
-  renderer =
-    new THREE.WebGLRenderer({
-
-      antialias: false,
-
-      powerPreference:
-        "high-performance",
-
-      alpha: false
-
-    });
-
-
-  renderer.setPixelRatio(
-    Math.min(
-      window.devicePixelRatio || 1,
-      CONFIG.particle.maxPixelRatio
-    )
-  );
-
-
-  renderer.setSize(
-    window.innerWidth,
-    window.innerHeight,
-    false
-  );
-
-
-  renderer.outputEncoding =
-    THREE.sRGBEncoding;
-
-
-  container.appendChild(
-    renderer.domElement
-  );
-
-
-  /* =======================================================
-     BUILDER
-  ======================================================= */
-
-  builderGroup =
-    new THREE.Group();
-
-  builderGroup.visible = false;
-
-  scene.add(builderGroup);
-
-
-  const ambient =
-    new THREE.AmbientLight(
-      0xffffff,
-      0.85
-    );
-
-  scene.add(ambient);
-
-
-  const directional =
-    new THREE.DirectionalLight(
-      0xffffff,
-      1
-    );
-
-  directional.position.set(
-    10,
-    20,
-    15
-  );
-
-  scene.add(directional);
-
-
-  const floorGeo =
-    new THREE.PlaneGeometry(
-      70,
-      70
-    );
-
-
-  const floorMat =
-    new THREE.MeshStandardMaterial({
-
-      color: 0x101010,
-
-      roughness: 0.85,
-
-      metalness: 0.15
-
-    });
-
-
-  const floor =
-    new THREE.Mesh(
-      floorGeo,
-      floorMat
-    );
-
-
-  floor.rotation.x =
-    -Math.PI / 2;
-
-  floor.position.y =
-    -6;
-
-  builderGroup.add(floor);
-
-
-  const grid =
-    new THREE.GridHelper(
-      70,
-      35,
-      0xffffff,
-      0x333333
-    );
-
-
-  grid.position.y =
-    -5.98;
-
-  builderGroup.add(grid);
-
-
-  /* =======================================================
-     HAND CURSORS
-  ======================================================= */
-
-  controllers.forEach(
-    (ctrl, index) => {
-
-      const dotGeo =
-        new THREE.SphereGeometry(
-          0.20,
-          8,
-          8
+    const container =
+        document.getElementById(
+            "canvas-container"
         );
 
+    scene =
+        new THREE.Scene();
 
-      const dotMat =
-        new THREE.MeshBasicMaterial({
-          color: 0xffffff
-        });
+    scene.background =
+        new THREE.Color(0x000000);
 
 
-      ctrl.mesh =
-        new THREE.Mesh(
-          dotGeo,
-          dotMat
+    camera =
+        new THREE.PerspectiveCamera(
+            55,
+            window.innerWidth /
+            window.innerHeight,
+            0.1,
+            1000
         );
 
+    camera.position.set(
+        0,
+        3,
+        28
+    );
 
-      ctrl.mesh.visible =
-        false;
-
-
-      builderGroup.add(
-        ctrl.mesh
-      );
-
-
-      ctrl.pointLight =
-        new THREE.PointLight(
-          0xffffff,
-          0.7,
-          9
-        );
+    camera.lookAt(0,0,0);
 
 
-      builderGroup.add(
-        ctrl.pointLight
-      );
+    renderer =
+        new THREE.WebGLRenderer({
 
+            antialias: true,
 
-      const lineGeo =
-        new THREE.BufferGeometry()
-          .setFromPoints([
-
-            new THREE.Vector3(),
-            new THREE.Vector3()
-
-          ]);
-
-
-      const lineMat =
-        new THREE.LineBasicMaterial({
-
-          color: 0xffffff,
-
-          transparent: true,
-
-          opacity: 0.32
+            powerPreference:
+                "high-performance"
 
         });
 
 
-      ctrl.rayLine =
-        new THREE.Line(
-          lineGeo,
-          lineMat
+    renderer.setPixelRatio(
+        Math.min(
+            window.devicePixelRatio || 1,
+            1.5
+        )
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    container.appendChild(
+        renderer.domElement
+    );
+
+
+    /* =====================================================
+       LIGHTING
+    ===================================================== */
+
+    const ambient =
+        new THREE.AmbientLight(
+            0xffffff,
+            0.75
         );
 
+    scene.add(ambient);
 
-      ctrl.rayLine.visible =
+
+    const directional =
+        new THREE.DirectionalLight(
+            0xffffff,
+            0.8
+        );
+
+    directional.position.set(
+        10,
+        20,
+        15
+    );
+
+    scene.add(directional);
+
+
+    /* =====================================================
+       BUILDER
+    ===================================================== */
+
+    builderGroup =
+        new THREE.Group();
+
+    builderGroup.visible =
         false;
 
+    scene.add(
+        builderGroup
+    );
 
-      builderGroup.add(
-        ctrl.rayLine
-      );
+
+    createBuilderEnvironment();
+
+    createControllers();
 
 
-      ctrl.statusEl =
+    /* =====================================================
+       PARTICLES
+    ===================================================== */
+
+    createParticleSystem();
+
+
+    /* =====================================================
+       PREVIEW
+    ===================================================== */
+
+    previewCanvas =
         document.getElementById(
-          `h${index + 1}-status`
+            "hand-preview-canvas"
+        );
+
+    previewCtx =
+        previewCanvas.getContext(
+            "2d"
         );
 
 
-      ctrl.grabEl =
-        document.getElementById(
-          `h${index + 1}-grab`
-        );
-
-    }
-  );
-
-
-  /* =======================================================
-     PARTICLES
-  ======================================================= */
-
-  particleGroup =
-    new THREE.Group();
-
-
-  scene.add(
-    particleGroup
-  );
-
-
-  particleGeometry =
-    new THREE.BufferGeometry();
-
-
-  for (
-    let i = 0;
-    i < CONFIG.particles * 3;
-    i++
-  ) {
-
-    const value =
-      (Math.random() - 0.5) * 40;
-
-    currentPositions[i] =
-      value;
-
-    targetPositions[i] =
-      value;
-
-  }
-
-
-  particleGeometry.setAttribute(
-
-    "position",
-
-    new THREE.BufferAttribute(
-      currentPositions,
-      3
-    )
-
-  );
-
-
-  /* =======================================================
-     PARTICLE COLORS
-  ======================================================= */
-
-  const colors =
-    new Float32Array(
-      CONFIG.particles * 3
+    window.addEventListener(
+        "resize",
+        onWindowResize
     );
-
-
-  for (
-    let i = 0;
-    i < CONFIG.particles;
-    i++
-  ) {
-
-    const idx =
-      i * 3;
-
-    const random =
-      Math.random();
-
-    let value;
-
-    if (random < 0.68)
-      value = 1;
-
-    else if (random < 0.90)
-      value = 0.65;
-
-    else
-      value = 0.32;
-
-
-    colors[idx] =
-      value;
-
-    colors[idx + 1] =
-      value;
-
-    colors[idx + 2] =
-      value;
-
-  }
-
-
-  particleGeometry.setAttribute(
-
-    "color",
-
-    new THREE.BufferAttribute(
-      colors,
-      3
-    )
-
-  );
-
-
-  /* =======================================================
-     PARTICLE TEXTURE
-  ======================================================= */
-
-  const canvas =
-    document.createElement(
-      "canvas"
-    );
-
-
-  canvas.width = 16;
-  canvas.height = 16;
-
-
-  const ctx =
-    canvas.getContext(
-      "2d"
-    );
-
-
-  ctx.fillStyle =
-    "#ffffff";
-
-
-  ctx.beginPath();
-
-
-  ctx.arc(
-    8,
-    8,
-    7,
-    0,
-    Math.PI * 2
-  );
-
-
-  ctx.fill();
-
-
-  const texture =
-    new THREE.CanvasTexture(
-      canvas
-    );
-
-
-  texture.generateMipmaps =
-    false;
-
-
-  particleMaterial =
-    new THREE.PointsMaterial({
-
-      size: 0.22,
-
-      vertexColors: true,
-
-      map: texture,
-
-      transparent: true,
-
-      opacity: 0.92,
-
-      blending:
-        THREE.AdditiveBlending,
-
-      depthWrite: false
-
-    });
-
-
-  particleSystem =
-    new THREE.Points(
-      particleGeometry,
-      particleMaterial
-    );
-
-
-  particleGroup.add(
-    particleSystem
-  );
-
-
-  generateShape(
-    "jupiter"
-  );
-
-
-  previewCanvas =
-    document.getElementById(
-      "hand-preview-canvas"
-    );
-
-
-  previewCtx =
-    previewCanvas.getContext(
-      "2d",
-      {
-        alpha: false
-      }
-    );
-
-
-  window.addEventListener(
-    "resize",
-    onWindowResize,
-    {
-      passive: true
-    }
-  );
 
 }
 
 
 /* =========================================================
-   BUILDER SHAPES
+   BUILDER ENVIRONMENT
+========================================================= */
+
+function createBuilderEnvironment() {
+
+    const floorGeometry =
+        new THREE.PlaneGeometry(
+            60,
+            60
+        );
+
+    const floorMaterial =
+        new THREE.MeshStandardMaterial({
+
+            color: 0x111111,
+
+            roughness: .85,
+
+            metalness: .15
+
+        });
+
+    const floor =
+        new THREE.Mesh(
+            floorGeometry,
+            floorMaterial
+        );
+
+    floor.rotation.x =
+        -Math.PI / 2;
+
+    floor.position.y =
+        -6;
+
+    builderGroup.add(
+        floor
+    );
+
+
+    const grid =
+        new THREE.GridHelper(
+            60,
+            30,
+            0xffffff,
+            0x333333
+        );
+
+    grid.position.y =
+        -5.98;
+
+    builderGroup.add(
+        grid
+    );
+
+}
+
+
+/* =========================================================
+   HAND CONTROLLERS
+========================================================= */
+
+function createControllers() {
+
+    controllers.forEach(
+        (ctrl, index) => {
+
+            const geo =
+                new THREE.SphereGeometry(
+                    .18,
+                    10,
+                    10
+                );
+
+            const mat =
+                new THREE.MeshBasicMaterial({
+                    color: 0xffffff
+                });
+
+            ctrl.mesh =
+                new THREE.Mesh(
+                    geo,
+                    mat
+                );
+
+            ctrl.mesh.visible =
+                false;
+
+            builderGroup.add(
+                ctrl.mesh
+            );
+
+
+            ctrl.pointLight =
+                new THREE.PointLight(
+                    0xffffff,
+                    .7,
+                    9
+                );
+
+            builderGroup.add(
+                ctrl.pointLight
+            );
+
+
+            const lineGeometry =
+                new THREE.BufferGeometry();
+
+            lineGeometry.setFromPoints([
+
+                new THREE.Vector3(),
+
+                new THREE.Vector3()
+
+            ]);
+
+
+            const lineMaterial =
+                new THREE.LineBasicMaterial({
+
+                    color: 0xffffff,
+
+                    transparent: true,
+
+                    opacity: .35
+
+                });
+
+
+            ctrl.rayLine =
+                new THREE.Line(
+                    lineGeometry,
+                    lineMaterial
+                );
+
+            ctrl.rayLine.visible =
+                false;
+
+            builderGroup.add(
+                ctrl.rayLine
+            );
+
+
+            ctrl.statusEl =
+                document.getElementById(
+                    `h${index + 1}-status`
+                );
+
+            ctrl.grabEl =
+                document.getElementById(
+                    `h${index + 1}-grab`
+                );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PARTICLE SYSTEM
+========================================================= */
+
+function createParticleSystem() {
+
+    particleGroup =
+        new THREE.Group();
+
+    scene.add(
+        particleGroup
+    );
+
+
+    particleGeometry =
+        new THREE.BufferGeometry();
+
+
+    for (
+        let i = 0;
+        i < PARTICLE_COUNT * 3;
+        i++
+    ) {
+
+        currentPositions[i] =
+            (Math.random() - .5) * 35;
+
+        targetPositions[i] =
+            currentPositions[i];
+
+    }
+
+
+    particleGeometry.setAttribute(
+
+        "position",
+
+        new THREE.BufferAttribute(
+            currentPositions,
+            3
+        )
+
+    );
+
+
+    const colors =
+        new Float32Array(
+            PARTICLE_COUNT * 3
+        );
+
+
+    for (
+        let i = 0;
+        i < PARTICLE_COUNT;
+        i++
+    ) {
+
+        const n =
+            Math.random();
+
+        const value =
+            n < .7
+                ? 1
+                : n < .9
+                    ? .65
+                    : .35;
+
+        const idx =
+            i * 3;
+
+        colors[idx] =
+            value;
+
+        colors[idx + 1] =
+            value;
+
+        colors[idx + 2] =
+            value;
+
+    }
+
+
+    particleGeometry.setAttribute(
+
+        "color",
+
+        new THREE.BufferAttribute(
+            colors,
+            3
+        )
+
+    );
+
+
+    const textureCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+    textureCanvas.width = 32;
+    textureCanvas.height = 32;
+
+
+    const ctx =
+        textureCanvas.getContext(
+            "2d"
+        );
+
+    ctx.beginPath();
+
+    ctx.arc(
+        16,
+        16,
+        14,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.fill();
+
+
+    const texture =
+        new THREE.CanvasTexture(
+            textureCanvas
+        );
+
+
+    particleMaterial =
+        new THREE.PointsMaterial({
+
+            size: .23,
+
+            vertexColors: true,
+
+            map: texture,
+
+            transparent: true,
+
+            opacity: .92,
+
+            blending:
+                THREE.AdditiveBlending,
+
+            depthWrite: false
+
+        });
+
+
+    particleSystem =
+        new THREE.Points(
+            particleGeometry,
+            particleMaterial
+        );
+
+
+    particleGroup.add(
+        particleSystem
+    );
+
+
+    generateShape(
+        "jupiter"
+    );
+
+}
+
+
+/* =========================================================
+   SPAWN 3D OBJECT
 ========================================================= */
 
 function spawnShape(
-  type,
-  x,
-  y,
-  z
+    type,
+    x,
+    y,
+    z
 ) {
 
-  let geometry;
+    let geometry;
 
-  const size = 2.8;
-
-
-  switch (type) {
-
-    case "sphere":
-
-      geometry =
-        new THREE.SphereGeometry(
-          size / 1.7,
-          16,
-          16
-        );
-
-      break;
+    const size = 3;
 
 
-    case "pyramid":
+    switch(type) {
 
-      geometry =
-        new THREE.ConeGeometry(
-          size / 1.4,
-          size,
-          4
-        );
+        case "sphere":
 
-      break;
+            geometry =
+                new THREE.SphereGeometry(
+                    1.65,
+                    16,
+                    16
+                );
 
-
-    case "cone":
-
-      geometry =
-        new THREE.ConeGeometry(
-          size / 1.7,
-          size,
-          20
-        );
-
-      break;
+            break;
 
 
-    case "cylinder":
+        case "pyramid":
 
-      geometry =
-        new THREE.CylinderGeometry(
-          size / 2,
-          size / 2,
-          size,
-          16
-        );
+            geometry =
+                new THREE.ConeGeometry(
+                    2.1,
+                    3,
+                    4
+                );
 
-      break;
-
-
-    case "torus":
-
-      geometry =
-        new THREE.TorusGeometry(
-          size / 2,
-          size / 6,
-          12,
-          24
-        );
-
-      break;
+            break;
 
 
-    case "torusknot":
+        case "cone":
 
-      geometry =
-        new THREE.TorusKnotGeometry(
-          1.25,
-          .34,
-          48,
-          8
-        );
+            geometry =
+                new THREE.ConeGeometry(
+                    1.7,
+                    3.2,
+                    16
+                );
 
-      break;
-
-
-    case "icosahedron":
-
-      geometry =
-        new THREE.IcosahedronGeometry(
-          size / 1.6
-        );
-
-      break;
+            break;
 
 
-    case "octahedron":
+        case "torus":
 
-      geometry =
-        new THREE.OctahedronGeometry(
-          size / 1.7
-        );
+            geometry =
+                new THREE.TorusGeometry(
+                    1.5,
+                    .45,
+                    10,
+                    24
+                );
 
-      break;
-
-
-    case "dodecahedron":
-
-      geometry =
-        new THREE.DodecahedronGeometry(
-          size / 1.65
-        );
-
-      break;
+            break;
 
 
-    case "tetrahedron":
+        case "cylinder":
 
-      geometry =
-        new THREE.TetrahedronGeometry(
-          size / 1.5
-        );
+            geometry =
+                new THREE.CylinderGeometry(
+                    1.5,
+                    1.5,
+                    3,
+                    16
+                );
 
-      break;
-
-
-    case "ring":
-
-      geometry =
-        new THREE.RingGeometry(
-          1,
-          1.8,
-          32
-        );
-
-      break;
+            break;
 
 
-    default:
+        case "icosahedron":
 
-      geometry =
-        new THREE.BoxGeometry(
-          size,
-          size,
-          size
-        );
+            geometry =
+                new THREE.IcosahedronGeometry(
+                    1.8,
+                    0
+                );
 
-  }
+            break;
 
 
-  const material =
-    new THREE.MeshStandardMaterial({
+        case "octahedron":
 
-      color:
+            geometry =
+                new THREE.OctahedronGeometry(
+                    1.9,
+                    0
+                );
+
+            break;
+
+
+        case "tetrahedron":
+
+            geometry =
+                new THREE.TetrahedronGeometry(
+                    2,
+                    0
+                );
+
+            break;
+
+
+        case "ring":
+
+            geometry =
+                new THREE.TorusGeometry(
+                    1.7,
+                    .22,
+                    8,
+                    32
+                );
+
+            break;
+
+
+        case "capsule":
+
+            geometry =
+                new THREE.CapsuleGeometry(
+                    1,
+                    1.5,
+                    8,
+                    16
+                );
+
+            break;
+
+
+        case "diamond":
+
+            geometry =
+                new THREE.OctahedronGeometry(
+                    2.1,
+                    0
+                );
+
+            break;
+
+
+        default:
+
+            geometry =
+                new THREE.BoxGeometry(
+                    size,
+                    size,
+                    size
+                );
+
+    }
+
+
+    const color =
         Math.random() > .5
-          ? 0xffffff
-          : 0x888888,
-
-      roughness: .28,
-
-      metalness: .35
-
-    });
+            ? 0xffffff
+            : 0x888888;
 
 
-  const mesh =
-    new THREE.Mesh(
-      geometry,
-      material
+    const material =
+        new THREE.MeshStandardMaterial({
+
+            color,
+
+            roughness: .3,
+
+            metalness: .35
+
+        });
+
+
+    const mesh =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+
+    mesh.position.set(
+
+        x !== undefined
+            ? x
+            : (Math.random() - .5) * 8,
+
+        y !== undefined
+            ? y
+            : 5 + Math.random() * 3,
+
+        z !== undefined
+            ? z
+            : (Math.random() - .5) * 5
+
     );
 
 
-  mesh.position.set(
+    mesh.userData = {
 
-    x !== undefined
-      ? x
-      : (Math.random() - .5) * 9,
+        originalColor:
+            color,
 
-    y !== undefined
-      ? y
-      : 6,
+        velocity:
+            new THREE.Vector3(),
 
-    z !== undefined
-      ? z
-      : (Math.random() - .5) * 5
+        isGrabbed:
+            false,
 
-  );
+        size:
+            size
 
-
-  mesh.userData = {
-
-    originalColor:
-      material.color.getHex(),
-
-    velocity:
-      new THREE.Vector3(),
-
-    isGrabbed:
-      false,
-
-    size
-
-  };
+    };
 
 
-  builderGroup.add(
-    mesh
-  );
+    builderGroup.add(
+        mesh
+    );
 
-
-  blocks.push(
-    mesh
-  );
+    blocks.push(
+        mesh
+    );
 
 }
 
+
+/* =========================================================
+   CLEAR BUILDER
+========================================================= */
 
 function clearBlocks() {
 
-  for (
-    const block of blocks
-  ) {
+    blocks.forEach(
+        block => {
 
-    builderGroup.remove(
-      block
+            builderGroup.remove(
+                block
+            );
+
+            if (block.geometry)
+                block.geometry.dispose();
+
+            if (block.material)
+                block.material.dispose();
+
+        }
     );
 
-    if (block.geometry)
-      block.geometry.dispose();
-
-    if (block.material)
-      block.material.dispose();
-
-  }
+    blocks.length = 0;
 
 
-  blocks.length = 0;
+    controllers.forEach(
+        ctrl => {
 
+            ctrl.grabbedBlock =
+                null;
 
-  controllers.forEach(
-    ctrl => {
-
-      ctrl.grabbedBlock =
-        null;
-
-    }
-  );
-
-}
-
-
-function setBlockHighlight(
-  block,
-  grabbed
-) {
-
-  if (!block) return;
-
-
-  block.material.color.setHex(
-
-    grabbed
-      ? 0xffffff
-      : block.userData.originalColor
-
-  );
+        }
+    );
 
 }
 
 
 /* =========================================================
-   MODE SWITCH
+   HIGHLIGHT
+========================================================= */
+
+function setBlockHighlight(
+    block,
+    grabbed
+) {
+
+    if (!block) return;
+
+    block.material.color.setHex(
+
+        grabbed
+            ? 0xffffff
+            : block.userData.originalColor
+
+    );
+
+}
+
+
+/* =========================================================
+   MODE
 ========================================================= */
 
 function switchMode(
-  mode
+    mode
 ) {
 
-  currentMode =
-    mode;
+    currentMode =
+        mode;
 
 
-  const builder =
-    mode === "BUILDER";
+    const builder =
+        mode === "BUILDER";
+
+    document
+        .getElementById(
+            "tab-builder"
+        )
+        .classList.toggle(
+            "active",
+            builder
+        );
 
 
-  document
-    .getElementById(
-      "tab-builder"
-    )
-    .classList.toggle(
-      "active",
-      builder
-    );
+    document
+        .getElementById(
+            "tab-particles"
+        )
+        .classList.toggle(
+            "active",
+            !builder
+        );
 
 
-  document
-    .getElementById(
-      "tab-particles"
-    )
-    .classList.toggle(
-      "active",
-      !builder
-    );
+    document
+        .getElementById(
+            "controls-builder"
+        )
+        .style.display =
+            builder
+                ? "block"
+                : "none";
 
 
-  document
-    .getElementById(
-      "controls-builder"
-    )
-    .style.display =
-      builder
-        ? "block"
-        : "none";
+    document
+        .getElementById(
+            "controls-particles"
+        )
+        .style.display =
+            builder
+                ? "none"
+                : "block";
 
 
-  document
-    .getElementById(
-      "controls-particles"
-    )
-    .style.display =
-      builder
-        ? "none"
-        : "block";
+    document
+        .getElementById(
+            "panel-title-text"
+        )
+        .innerText =
+            builder
+                ? "3D BUILDER MATRIX"
+                : "PARTICLE MATRIX";
 
 
-  document
-    .getElementById(
-      "panel-title-text"
-    )
-    .textContent =
-      builder
-        ? "3D BUILDER MATRIX"
-        : "PARTICLE MATRIX";
+    builderGroup.visible =
+        builder;
 
-
-  builderGroup.visible =
-    builder;
-
-
-  particleGroup.visible =
-    !builder;
+    particleGroup.visible =
+        !builder;
 
 }
 
 
 /* =========================================================
-   PARTICLE SHAPE ENGINE
+   PARTICLE SHAPES
 ========================================================= */
 
 function generateShape(
-  type
+    type
 ) {
 
-  const p =
-    targetPositions;
+    const p =
+        targetPositions;
 
 
-  const count =
-    CONFIG.particles;
+    for (
+        let i = 0;
+        i < PARTICLE_COUNT;
+        i++
+    ) {
+
+        const idx =
+            i * 3;
+
+        let x = 0;
+        let y = 0;
+        let z = 0;
 
 
-  for (
-    let i = 0;
-    i < count;
-    i++
-  ) {
+        /* JUPITER */
 
-    const idx =
-      i * 3;
+        if (type === "jupiter") {
+
+            if (i < PARTICLE_COUNT * .76) {
+
+                const u =
+                    Math.random();
+
+                const v =
+                    Math.random();
+
+                const theta =
+                    u * Math.PI * 2;
+
+                const phi =
+                    Math.acos(
+                        2 * v - 1
+                    );
+
+                const r =
+                    7;
+
+                x =
+                    r *
+                    Math.sin(phi) *
+                    Math.cos(theta);
+
+                y =
+                    r *
+                    Math.cos(phi) *
+                    .85;
+
+                z =
+                    r *
+                    Math.sin(phi) *
+                    Math.sin(theta);
+
+            } else {
+
+                const a =
+                    Math.random() *
+                    Math.PI *
+                    2;
+
+                const r =
+                    9 +
+                    Math.random() * 4;
+
+                x =
+                    Math.cos(a) * r;
+
+                z =
+                    Math.sin(a) * r;
+
+                y =
+                    (Math.random() - .5) * .2;
+
+            }
+
+        }
 
 
-    let x = 0;
-    let y = 0;
-    let z = 0;
+        /* SATURN */
+
+        else if (type === "saturn") {
+
+            if (i < PARTICLE_COUNT * .55) {
+
+                const a =
+                    Math.random() *
+                    Math.PI * 2;
+
+                const b =
+                    Math.acos(
+                        2 * Math.random() - 1
+                    );
+
+                const r = 5;
+
+                x =
+                    r *
+                    Math.sin(b) *
+                    Math.cos(a);
+
+                y =
+                    r *
+                    Math.cos(b);
+
+                z =
+                    r *
+                    Math.sin(b) *
+                    Math.sin(a);
+
+            } else {
+
+                const a =
+                    Math.random() *
+                    Math.PI * 2;
+
+                const r =
+                    7 +
+                    Math.random() * 6;
+
+                x =
+                    Math.cos(a) * r;
+
+                z =
+                    Math.sin(a) * r;
+
+                y =
+                    (Math.random() - .5) * .18;
+
+            }
+
+        }
 
 
-    /* -----------------------------------------------------
-       JUPITER
-    ----------------------------------------------------- */
+        /* GALAXY */
 
-    if (type === "jupiter") {
+        else if (type === "galaxy") {
 
-      if (
-        i < count * .73
-      ) {
+            const arms = 4;
 
-        const u =
-          Math.random();
+            const arm =
+                i % arms;
 
-        const v =
-          Math.random();
+            const r =
+                Math.pow(
+                    Math.random(),
+                    1.5
+                ) * 15;
 
-        const theta =
-          u * Math.PI * 2;
+            const theta =
+                r * .42 +
+                arm *
+                (Math.PI * 2 / arms);
 
-        const phi =
-          Math.acos(
-            2 * v - 1
-          );
+            x =
+                Math.cos(theta) * r +
+                (Math.random() - .5) * .7;
 
-        const r = 7;
+            z =
+                Math.sin(theta) * r +
+                (Math.random() - .5) * .7;
 
-        x =
-          r *
-          Math.sin(phi) *
-          Math.cos(theta);
+            y =
+                (Math.random() - .5) *
+                (2 - r * .1);
 
-        y =
-          r *
-          Math.cos(phi) *
-          .85;
+        }
 
-        z =
-          r *
-          Math.sin(phi) *
-          Math.sin(theta);
 
-      } else {
+        /* NEBULA */
 
-        const angle =
-          Math.random() *
-          Math.PI * 2;
+        else if (type === "nebula") {
 
-        const dist =
-          9 +
-          Math.random() * 4;
+            const a =
+                Math.random() *
+                Math.PI * 2;
 
-        x =
-          Math.cos(angle) *
-          dist;
+            const r =
+                Math.pow(
+                    Math.random(),
+                    .55
+                ) * 13;
 
-        z =
-          Math.sin(angle) *
-          dist;
+            x =
+                Math.cos(a) * r;
 
-        y =
-          (Math.random() - .5) *
-          .2;
+            z =
+                Math.sin(a) * r;
 
-      }
+            y =
+                Math.sin(a * 3) * 2 +
+                (Math.random() - .5) * 3;
+
+        }
+
+
+        /* HYPERCUBE */
+
+        else if (type === "hypercube") {
+
+            const s = 7;
+
+            const edge =
+                i % 12;
+
+            const t =
+                Math.random() * s -
+                s / 2;
+
+            if (edge === 0) {
+
+                x = s/2;
+                y = t;
+                z = s/2;
+
+            } else if (edge === 1) {
+
+                x = -s/2;
+                y = t;
+                z = s/2;
+
+            } else if (edge === 2) {
+
+                x = t;
+                y = s/2;
+                z = s/2;
+
+            } else if (edge === 3) {
+
+                x = t;
+                y = -s/2;
+                z = s/2;
+
+            } else if (edge === 4) {
+
+                x = s/2;
+                y = t;
+                z = -s/2;
+
+            } else if (edge === 5) {
+
+                x = -s/2;
+                y = t;
+                z = -s/2;
+
+            } else if (edge === 6) {
+
+                x = t;
+                y = s/2;
+                z = -s/2;
+
+            } else if (edge === 7) {
+
+                x = t;
+                y = -s/2;
+                z = -s/2;
+
+            } else if (edge === 8) {
+
+                x = s/2;
+                y = s/2;
+                z = t;
+
+            } else if (edge === 9) {
+
+                x = -s/2;
+                y = s/2;
+                z = t;
+
+            } else if (edge === 10) {
+
+                x = s/2;
+                y = -s/2;
+                z = t;
+
+            } else {
+
+                x = -s/2;
+                y = -s/2;
+                z = t;
+
+            }
+
+        }
+
+
+        /* HEART */
+
+        else if (type === "heart") {
+
+            const t =
+                Math.random() *
+                Math.PI * 2;
+
+            const depth =
+                (Math.random() - .5) * 3;
+
+            x =
+                16 *
+                Math.pow(
+                    Math.sin(t),
+                    3
+                );
+
+            y =
+                13 *
+                Math.cos(t) -
+                5 *
+                Math.cos(2*t) -
+                2 *
+                Math.cos(3*t) -
+                Math.cos(4*t);
+
+            z =
+                depth;
+
+            x *= .5;
+            y *= .5;
+            z *= .5;
+
+        }
+
+
+        /* FLOWER */
+
+        else if (type === "flower") {
+
+            const u =
+                Math.random() *
+                Math.PI * 2;
+
+            const v =
+                Math.random() *
+                Math.PI;
+
+            const r =
+                8 *
+                Math.sin(6*u);
+
+            x =
+                r *
+                Math.sin(v) *
+                Math.cos(u);
+
+            y =
+                r *
+                Math.sin(v) *
+                Math.sin(u);
+
+            z =
+                r *
+                Math.cos(v);
+
+        }
+
+
+        /* DNA */
+
+        else if (type === "dna") {
+
+            const t =
+                (i / PARTICLE_COUNT) *
+                Math.PI * 16;
+
+            const strand =
+                i % 2 === 0
+                    ? 1
+                    : -1;
+
+            x =
+                Math.sin(t) *
+                4 *
+                strand;
+
+            y =
+                (i / PARTICLE_COUNT) *
+                17 - 8.5;
+
+            z =
+                Math.cos(t) *
+                4 *
+                strand;
+
+        }
+
+
+        /* TORUS */
+
+        else if (type === "torus") {
+
+            const a =
+                Math.random() *
+                Math.PI * 2;
+
+            const b =
+                Math.random() *
+                Math.PI * 2;
+
+            const R = 6;
+            const r = 2;
+
+            x =
+                (R + r * Math.cos(b)) *
+                Math.cos(a);
+
+            y =
+                r * Math.sin(b);
+
+            z =
+                (R + r * Math.cos(b)) *
+                Math.sin(a);
+
+        }
+
+
+        /* SPHERE */
+
+        else if (type === "sphere") {
+
+            const a =
+                Math.random() *
+                Math.PI * 2;
+
+            const b =
+                Math.acos(
+                    2 * Math.random() - 1
+                );
+
+            const r =
+                Math.cbrt(
+                    Math.random()
+                ) * 8;
+
+            x =
+                r *
+                Math.sin(b) *
+                Math.cos(a);
+
+            y =
+                r *
+                Math.cos(b);
+
+            z =
+                r *
+                Math.sin(b) *
+                Math.sin(a);
+
+        }
+
+
+        /* ATOM */
+
+        else if (type === "atom") {
+
+            if (i < PARTICLE_COUNT * .18) {
+
+                const r =
+                    Math.random() * 2;
+
+                x =
+                    (Math.random()-.5)*r;
+
+                y =
+                    (Math.random()-.5)*r;
+
+                z =
+                    (Math.random()-.5)*r;
+
+            } else {
+
+                const a =
+                    Math.random() *
+                    Math.PI * 2;
+
+                const r =
+                    7 +
+                    Math.random() * 3;
+
+                x =
+                    Math.cos(a) * r;
+
+                y =
+                    Math.sin(a) * r;
+
+                z =
+                    Math.sin(a * 2) * 2;
+
+            }
+
+        }
+
+
+        /* BLACK HOLE */
+
+        else if (type === "blackhole") {
+
+            const a =
+                Math.random() *
+                Math.PI * 2;
+
+            const r =
+                2.5 +
+                Math.random() * 9;
+
+            x =
+                Math.cos(a) * r;
+
+            z =
+                Math.sin(a) * r;
+
+            y =
+                (Math.random()-.5) *
+                (r * .18);
+
+        }
+
+
+        /* WAVE */
+
+        else if (type === "wave") {
+
+            const side =
+                Math.sqrt(
+                    PARTICLE_COUNT
+                );
+
+            const gx =
+                (i % side) / side;
+
+            const gz =
+                Math.floor(i / side) /
+                side;
+
+            x =
+                (gx-.5) * 22;
+
+            z =
+                (gz-.5) * 14;
+
+            y =
+                Math.sin(
+                    x * .65 +
+                    z * .45
+                ) * 2.5;
+
+        }
+
+
+        /* FIREWORKS */
+
+        else if (type === "fireworks") {
+
+            const theta =
+                Math.random() *
+                Math.PI * 2;
+
+            const phi =
+                Math.acos(
+                    Math.random()*2-1
+                );
+
+            const radius =
+                2 +
+                Math.random()*12;
+
+            x =
+                radius *
+                Math.sin(phi) *
+                Math.cos(theta);
+
+            y =
+                radius *
+                Math.cos(phi);
+
+            z =
+                radius *
+                Math.sin(phi) *
+                Math.sin(theta);
+
+        }
+
+
+        /* BUDDHA */
+
+        else if (type === "buddha") {
+
+            const h =
+                Math.random() * 10;
+
+            const width =
+                (1-h/10) * 6;
+
+            const a =
+                Math.random() *
+                Math.PI * 2;
+
+            x =
+                Math.cos(a) *
+                width *
+                Math.random();
+
+            z =
+                Math.sin(a) *
+                width *
+                Math.random();
+
+            y =
+                -5 + h;
+
+        }
+
+
+        /* SATELLITE */
+
+        else if (type === "satellite") {
+
+            const layer =
+                i % 6;
+
+            const a =
+                Math.random() *
+                Math.PI * 2;
+
+            const r =
+                4 +
+                layer * 1.5;
+
+            x =
+                Math.cos(a) * r;
+
+            z =
+                Math.sin(a) * r;
+
+            y =
+                (Math.random()-.5) * .25;
+
+        }
+
+
+        p[idx] =
+            x;
+
+        p[idx+1] =
+            y;
+
+        p[idx+2] =
+            z;
 
     }
-
-
-    /* -----------------------------------------------------
-       SATURN
-    ----------------------------------------------------- */
-
-    else if (type === "saturn") {
-
-      if (i < count * .52) {
-
-        const u =
-          Math.random();
-
-        const v =
-          Math.random();
-
-        const theta =
-          u * Math.PI * 2;
-
-        const phi =
-          Math.acos(
-            2 * v - 1
-          );
-
-        const r = 5;
-
-        x =
-          r *
-          Math.sin(phi) *
-          Math.cos(theta);
-
-        y =
-          r *
-          Math.cos(phi);
-
-        z =
-          r *
-          Math.sin(phi) *
-          Math.sin(theta);
-
-      } else {
-
-        const angle =
-          Math.random() *
-          Math.PI * 2;
-
-        const dist =
-          7 +
-          Math.random() * 6;
-
-        x =
-          Math.cos(angle) *
-          dist;
-
-        z =
-          Math.sin(angle) *
-          dist;
-
-        y =
-          (Math.random() - .5) *
-          .18;
-
-      }
-
-    }
-
-
-    /* -----------------------------------------------------
-       GALAXY
-    ----------------------------------------------------- */
-
-    else if (type === "galaxy") {
-
-      const arms = 5;
-
-      const arm =
-        i % arms;
-
-      const r =
-        Math.pow(
-          Math.random(),
-          1.5
-        ) * 16;
-
-      const theta =
-        r * .42 +
-        arm *
-        (Math.PI * 2 / arms);
-
-      x =
-        Math.cos(theta) *
-        r +
-        (Math.random() - .5) *
-        .7;
-
-      z =
-        Math.sin(theta) *
-        r +
-        (Math.random() - .5) *
-        .7;
-
-      y =
-        (Math.random() - .5) *
-        (2 - r * .09);
-
-    }
-
-
-    /* -----------------------------------------------------
-       BLACK HOLE
-    ----------------------------------------------------- */
-
-    else if (type === "blackhole") {
-
-      const angle =
-        Math.random() *
-        Math.PI * 2;
-
-      const radius =
-        2.2 +
-        Math.random() * 10;
-
-      x =
-        Math.cos(angle) *
-        radius;
-
-      z =
-        Math.sin(angle) *
-        radius;
-
-      y =
-        (Math.random() - .5) *
-        .5 *
-        (radius / 10);
-
-    }
-
-
-    /* -----------------------------------------------------
-       ATOM
-    ----------------------------------------------------- */
-
-    else if (type === "atom") {
-
-      const orbit =
-        i % 3;
-
-      const angle =
-        Math.random() *
-        Math.PI * 2;
-
-      const radius =
-        7 +
-        Math.random() * .4;
-
-      if (orbit === 0) {
-
-        x =
-          Math.cos(angle) *
-          radius;
-
-        y =
-          Math.sin(angle) *
-          radius;
-
-        z =
-          (Math.random() - .5) *
-          .15;
-
-      }
-
-      else if (orbit === 1) {
-
-        x =
-          Math.cos(angle) *
-          radius;
-
-        z =
-          Math.sin(angle) *
-          radius;
-
-        y =
-          (Math.random() - .5) *
-          .15;
-
-      }
-
-      else {
-
-        y =
-          Math.cos(angle) *
-          radius;
-
-        z =
-          Math.sin(angle) *
-          radius;
-
-        x =
-          (Math.random() - .5) *
-          .15;
-
-      }
-
-    }
-
-
-    /* -----------------------------------------------------
-       DNA
-    ----------------------------------------------------- */
-
-    else if (type === "dna") {
-
-      const t =
-        (i / count) *
-        Math.PI *
-        14;
-
-      const strand =
-        i % 2 === 0
-          ? 1
-          : -1;
-
-      x =
-        Math.sin(t) *
-        4 *
-        strand;
-
-      y =
-        (i / count) *
-        17 -
-        8.5;
-
-      z =
-        Math.cos(t) *
-        4 *
-        strand;
-
-    }
-
-
-    /* -----------------------------------------------------
-       HYPERCUBE
-    ----------------------------------------------------- */
-
-    else if (type === "hypercube") {
-
-      const s = 7;
-
-      const edge =
-        i % 12;
-
-      const t =
-        Math.random() *
-        s -
-        s / 2;
-
-
-      if (edge === 0) {
-
-        x=s/2; y=t; z=s/2;
-
-      } else if (edge === 1) {
-
-        x=-s/2; y=t; z=s/2;
-
-      } else if (edge === 2) {
-
-        x=t; y=s/2; z=s/2;
-
-      } else if (edge === 3) {
-
-        x=t; y=-s/2; z=s/2;
-
-      } else if (edge === 4) {
-
-        x=s/2; y=t; z=-s/2;
-
-      } else if (edge === 5) {
-
-        x=-s/2; y=t; z=-s/2;
-
-      } else if (edge === 6) {
-
-        x=t; y=s/2; z=-s/2;
-
-      } else if (edge === 7) {
-
-        x=t; y=-s/2; z=-s/2;
-
-      } else if (edge === 8) {
-
-        x=s/2; y=s/2; z=t;
-
-      } else if (edge === 9) {
-
-        x=-s/2; y=s/2; z=t;
-
-      } else if (edge === 10) {
-
-        x=s/2; y=-s/2; z=t;
-
-      } else {
-
-        x=-s/2; y=-s/2; z=t;
-
-      }
-
-    }
-
-
-    /* -----------------------------------------------------
-       HEART
-    ----------------------------------------------------- */
-
-    else if (type === "heart") {
-
-      const t =
-        Math.random() *
-        Math.PI *
-        2;
-
-      const depth =
-        (Math.random() - .5) *
-        3;
-
-      x =
-        16 *
-        Math.pow(
-          Math.sin(t),
-          3
-        );
-
-      y =
-        13 * Math.cos(t) -
-        5 * Math.cos(2*t) -
-        2 * Math.cos(3*t) -
-        Math.cos(4*t);
-
-      z =
-        depth;
-
-      x *= .55;
-      y *= .55;
-      z *= .55;
-
-    }
-
-
-    /* -----------------------------------------------------
-       FLOWER
-    ----------------------------------------------------- */
-
-    else if (type === "flower") {
-
-      const u =
-        Math.random() *
-        Math.PI *
-        2;
-
-      const v =
-        Math.random() *
-        Math.PI;
-
-      const r =
-        9 *
-        Math.sin(6*u) *
-        Math.sin(v);
-
-      x =
-        r *
-        Math.sin(v) *
-        Math.cos(u);
-
-      y =
-        r *
-        Math.sin(v) *
-        Math.sin(u);
-
-      z =
-        r *
-        Math.cos(v);
-
-    }
-
-
-    /* -----------------------------------------------------
-       NEURAL NETWORK
-    ----------------------------------------------------- */
-
-    else if (type === "neural") {
-
-      /*
-        Nodi + collegamenti simulati.
-      */
-
-      const nodes = 28;
-
-      const layer =
-        i % nodes;
-
-      const angle =
-        layer *
-        (Math.PI * 2 / nodes);
-
-      const radius =
-        5 +
-        Math.random() *
-        5;
-
-      const pulse =
-        Math.sin(
-          i * .07
-        ) * .8;
-
-      x =
-        Math.cos(angle) *
-        radius +
-        (Math.random() - .5) *
-        .7;
-
-      y =
-        pulse +
-        (Math.random() - .5) *
-        8;
-
-      z =
-        Math.sin(angle) *
-        radius +
-        (Math.random() - .5) *
-        .7;
-
-    }
-
-
-    /* -----------------------------------------------------
-       BUDDHA
-    ----------------------------------------------------- */
-
-    else if (type === "buddha") {
-
-      const r =
-        Math.random();
-
-      if (r < .35) {
-
-        const a =
-          Math.random() *
-          Math.PI *
-          2;
-
-        const radius =
-          2 +
-          Math.random() *
-          8;
-
-        x =
-          Math.cos(a) *
-          radius;
-
-        z =
-          Math.sin(a) *
-          radius;
-
-        y =
-          -7 +
-          (Math.random() - .5) *
-          1.2;
-
-      } else {
-
-        const h =
-          Math.random() *
-          9;
-
-        const width =
-          (1 - h / 9) *
-          6.5;
-
-        const a =
-          Math.random() *
-          Math.PI *
-          2;
-
-        x =
-          Math.cos(a) *
-          width *
-          Math.random();
-
-        z =
-          Math.sin(a) *
-          width *
-          Math.random();
-
-        y =
-          -6 +
-          h;
-
-      }
-
-    }
-
-
-    /* -----------------------------------------------------
-       FIREWORKS
-    ----------------------------------------------------- */
-
-    else if (type === "fireworks") {
-
-      const theta =
-        Math.random() *
-        Math.PI *
-        2;
-
-      const phi =
-        Math.acos(
-          Math.random() * 2 - 1
-        );
-
-      const speed =
-        2 +
-        Math.random() *
-        13;
-
-      x =
-        speed *
-        Math.sin(phi) *
-        Math.cos(theta);
-
-      y =
-        speed *
-        Math.sin(phi) *
-        Math.sin(theta);
-
-      z =
-        speed *
-        Math.cos(phi);
-
-    }
-
-
-    /* -----------------------------------------------------
-       VORTEX
-    ----------------------------------------------------- */
-
-    else if (type === "vortex") {
-
-      const t =
-        Math.random() *
-        Math.PI *
-        14;
-
-      const radius =
-        Math.random() *
-        12;
-
-      x =
-        Math.cos(t) *
-        radius;
-
-      z =
-        Math.sin(t) *
-        radius;
-
-      y =
-        (t - Math.PI * 7) *
-        .28;
-
-    }
-
-
-    /* -----------------------------------------------------
-       QUANTUM SPHERE
-    ----------------------------------------------------- */
-
-    else if (type === "sphere") {
-
-      const u =
-        Math.random();
-
-      const v =
-        Math.random();
-
-      const theta =
-        u *
-        Math.PI *
-        2;
-
-      const phi =
-        Math.acos(
-          2*v - 1
-        );
-
-      const r =
-        7 +
-        (Math.random() - .5) *
-        .4;
-
-      x =
-        r *
-        Math.sin(phi) *
-        Math.cos(theta);
-
-      y =
-        r *
-        Math.cos(phi);
-
-      z =
-        r *
-        Math.sin(phi) *
-        Math.sin(theta);
-
-    }
-
-
-    /* -----------------------------------------------------
-       WAVE
-    ----------------------------------------------------- */
-
-    else if (type === "wave") {
-
-      x =
-        (Math.random() - .5) *
-        25;
-
-      z =
-        (Math.random() - .5) *
-        15;
-
-      y =
-        Math.sin(
-          x * .8
-        ) *
-        2.2 +
-        Math.cos(
-          z * .7
-        ) *
-        1.5;
-
-    }
-
-
-    /* -----------------------------------------------------
-       TORNADO
-    ----------------------------------------------------- */
-
-    else if (type === "tornado") {
-
-      const h =
-        Math.random() *
-        16 -
-        8;
-
-      const radius =
-        1.2 +
-        ((h + 8) / 16) *
-        7;
-
-      const angle =
-        Math.random() *
-        Math.PI *
-        2 +
-        h * 1.7;
-
-      x =
-        Math.cos(angle) *
-        radius;
-
-      z =
-        Math.sin(angle) *
-        radius;
-
-      y =
-        h;
-
-    }
-
-
-    p[idx] =
-      x;
-
-    p[idx + 1] =
-      y;
-
-    p[idx + 2] =
-      z;
-
-  }
 
 }
 
@@ -2772,392 +2605,120 @@ function generateShape(
 ========================================================= */
 
 function drawHandSkeletonPreview(
-  ctx,
-  hands,
-  width,
-  height
+    ctx,
+    hands,
+    width,
+    height
 ) {
 
-  ctx.clearRect(
-    0,
-    0,
-    width,
-    height
-  );
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
 
-
-  ctx.fillStyle =
-    "#090909";
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-
-  if (
-    !hands ||
-    !hands.length
-  ) {
 
     ctx.fillStyle =
-      "rgba(255,255,255,.35)";
+        "rgba(8,12,16,.9)";
 
-    ctx.font =
-      '9px "Share Tech Mono"';
-
-    ctx.textAlign =
-      "center";
-
-    ctx.fillText(
-      "SEARCHING OPTICAL HAND...",
-      width / 2,
-      height / 2
-    );
-
-    return;
-
-  }
-
-
-  for (
-    const landmarks of hands
-  ) {
-
-    ctx.lineWidth = 2;
-
-    ctx.strokeStyle =
-      "#ffffff";
-
-
-    for (
-      const connection
-      of HAND_CONNECTIONS
-    ) {
-
-      const p1 =
-        landmarks[
-          connection[0]
-        ];
-
-      const p2 =
-        landmarks[
-          connection[1]
-        ];
-
-
-      ctx.beginPath();
-
-      ctx.moveTo(
-        p1.x * width,
-        p1.y * height
-      );
-
-      ctx.lineTo(
-        p2.x * width,
-        p2.y * height
-      );
-
-      ctx.stroke();
-
-    }
-
-
-    for (
-      let i = 0;
-      i < landmarks.length;
-      i++
-    ) {
-
-      const pt =
-        landmarks[i];
-
-
-      ctx.fillStyle =
-        (
-          i === 4 ||
-          i === 8
-        )
-          ? "#ffffff"
-          : "#888888";
-
-
-      ctx.beginPath();
-
-      ctx.arc(
-        pt.x * width,
-        pt.y * height,
-        (
-          i === 4 ||
-          i === 8
-        )
-          ? 3
-          : 1.7,
+    ctx.fillRect(
         0,
-        Math.PI * 2
-      );
-
-      ctx.fill();
-
-    }
-
-  }
-
-}
-
-
-/* =========================================================
-   LANDMARK → 3D
-========================================================= */
-
-function handToWorld(
-  landmarks,
-  ctrl
-) {
-
-  const thumb =
-    landmarks[4];
-
-  const index =
-    landmarks[8];
-
-
-  const px =
-    (thumb.x + index.x) *
-    .5;
-
-  const py =
-    (thumb.y + index.y) *
-    .5;
-
-  const pz =
-    (thumb.z + index.z) *
-    .5;
-
-
-  const sensitivity =
-    CONFIG.hand.sensitivity;
-
-
-  const ndcX =
-    ((1 - px) * 2 - 1) *
-    sensitivity;
-
-
-  const ndcY =
-    (-(py * 2 - 1)) *
-    sensitivity;
-
-
-  const vector =
-    new THREE.Vector3(
-      ndcX,
-      ndcY,
-      .5
+        0,
+        width,
+        height
     );
 
 
-  vector.unproject(
-    camera
-  );
+    if (!hands || !hands.length) {
 
+        ctx.fillStyle =
+            "rgba(255,255,255,.35)";
 
-  const dir =
-    vector
-      .sub(camera.position)
-      .normalize();
+        ctx.font =
+            '9px "Share Tech Mono"';
 
+        ctx.textAlign =
+            "center";
 
-  const targetZ =
-    -pz * 22;
-
-
-  const distance =
-    (targetZ -
-      camera.position.z) /
-    dir.z;
-
-
-  const target =
-    camera.position
-      .clone()
-      .add(
-        dir.multiplyScalar(
-          distance
-        )
-      );
-
-
-  /*
-    Smoothing moderato:
-    abbastanza basso da essere immediato,
-    abbastanza alto da eliminare il tremolio.
-  */
-
-  ctrl.lastPos.copy(
-    ctrl.pos
-  );
-
-
-  ctrl.pos.lerp(
-    target,
-    CONFIG.hand.smoothing
-  );
-
-
-  ctrl.velocity
-    .copy(ctrl.pos)
-    .sub(ctrl.lastPos);
-
-
-  return ctrl.pos;
-
-}
-
-
-/* =========================================================
-   BUILDER HAND INTERACTION
-========================================================= */
-
-function updateBuilderGrab(
-  ctrl
-) {
-
-  if (
-    !ctrl.active
-  ) return;
-
-
-  if (
-    ctrl.isPinching
-  ) {
-
-    if (
-      ctrl.grabbedBlock
-    ) {
-
-      const target =
-        ctrl.pos
-          .clone()
-          .sub(
-            ctrl.grabOffset
-          );
-
-
-      ctrl.grabbedBlock.position.copy(
-        target
-      );
-
-
-      ctrl.grabbedBlock.userData.velocity.set(
-        0,
-        0,
-        0
-      );
-
-
-      ctrl.grabEl.textContent =
-        "AGGANCIATO";
-
-
-      return;
-
-    }
-
-
-    let closest =
-      null;
-
-    let minDistance =
-      4.2;
-
-
-    for (
-      const block of blocks
-    ) {
-
-      const distance =
-        ctrl.pos.distanceTo(
-          block.position
+        ctx.fillText(
+            "CERCA MANO...",
+            width/2,
+            height/2
         );
 
-
-      if (
-        distance <
-        minDistance
-      ) {
-
-        minDistance =
-          distance;
-
-        closest =
-          block;
-
-      }
+        return;
 
     }
 
 
-    if (
-      closest
-    ) {
+    hands.forEach(
+        landmarks => {
 
-      ctrl.grabbedBlock =
-        closest;
+            ctx.lineWidth = 1.7;
 
-      closest.userData.isGrabbed =
-        true;
-
-      ctrl.grabOffset
-        .copy(ctrl.pos)
-        .sub(
-          closest.position
-        );
-
-      setBlockHighlight(
-        closest,
-        true
-      );
-
-    }
-
-  }
-
-  else {
-
-    if (
-      ctrl.grabbedBlock
-    ) {
-
-      setBlockHighlight(
-        ctrl.grabbedBlock,
-        false
-      );
-
-      ctrl.grabbedBlock.userData.isGrabbed =
-        false;
-
-      /*
-        Piccola "inerzia" quando si lascia
-        l'oggetto.
-      */
-
-      ctrl.grabbedBlock.userData.velocity
-        .copy(ctrl.velocity)
-        .multiplyScalar(.65);
-
-      ctrl.grabbedBlock =
-        null;
-
-    }
+            ctx.strokeStyle =
+                "#ffffff";
 
 
-    ctrl.grabEl.textContent =
-      "LIBERA";
+            HAND_CONNECTIONS.forEach(
+                ([a,b]) => {
 
-  }
+                    const p1 =
+                        landmarks[a];
+
+                    const p2 =
+                        landmarks[b];
+
+                    ctx.beginPath();
+
+                    ctx.moveTo(
+                        p1.x * width,
+                        p1.y * height
+                    );
+
+                    ctx.lineTo(
+                        p2.x * width,
+                        p2.y * height
+                    );
+
+                    ctx.stroke();
+
+                }
+            );
+
+
+            landmarks.forEach(
+                (pt,index) => {
+
+                    ctx.fillStyle =
+                        (
+                            index === 4 ||
+                            index === 8
+                        )
+                            ? "#ffffff"
+                            : "#777777";
+
+                    ctx.beginPath();
+
+                    ctx.arc(
+                        pt.x * width,
+                        pt.y * height,
+                        index === 4 ||
+                        index === 8
+                            ? 3
+                            : 1.7,
+                        0,
+                        Math.PI*2
+                    );
+
+                    ctx.fill();
+
+                }
+            );
+
+        }
+    );
 
 }
 
@@ -3166,50 +2727,114 @@ function updateBuilderGrab(
    HAND TRACKING
 ========================================================= */
 
+let handProcessing = false;
+
 function initHandTracking() {
 
-  const video =
-    document.getElementById(
-      "video-input"
-    );
+    const video =
+        document.getElementById(
+            "video-input"
+        );
 
 
-  const hands =
-    new Hands({
+    const hands =
+        new Hands({
 
-      locateFile:
-        file =>
-          `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+            locateFile:
+                file =>
+                    `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+
+        });
+
+
+    /*
+     * MODEL COMPLEXITY 0:
+     * molto più veloce.
+     */
+
+    hands.setOptions({
+
+        maxNumHands: 2,
+
+        modelComplexity: 0,
+
+        minDetectionConfidence: .42,
+
+        minTrackingConfidence: .42
 
     });
 
 
-  hands.setOptions({
-
-    maxNumHands: 2,
-
-    modelComplexity: 0,
-
-    minDetectionConfidence: .38,
-
-    minTrackingConfidence: .38
-
-  });
+    hands.onResults(
+        handleHandResults
+    );
 
 
-  hands.onResults(
-    results => {
+    const cameraUtils =
+        new Camera(
+            video,
+            {
 
-      lastHandUpdate =
-        performance.now();
+                onFrame:
+                    async () => {
+
+                        if (
+                            handProcessing ||
+                            video.readyState < 2
+                        ) {
+                            return;
+                        }
+
+                        handProcessing = true;
+
+                        try {
+
+                            await hands.send({
+                                image: video
+                            });
+
+                        } catch(error) {
+
+                            console.warn(
+                                "MediaPipe:",
+                                error
+                            );
+
+                        } finally {
+
+                            handProcessing =
+                                false;
+
+                        }
+
+                    },
+
+                width: 480,
+
+                height: 360
+
+            }
+        );
 
 
-      if (
-        !previewCtx
-      ) return;
+    cameraUtils.start();
+
+}
 
 
-      drawHandSkeletonPreview(
+/* =========================================================
+   HAND RESULTS
+========================================================= */
+
+function handleHandResults(
+    results
+) {
+
+    if (!previewCtx)
+        return;
+
+
+    drawHandSkeletonPreview(
 
         previewCtx,
 
@@ -3219,353 +2844,567 @@ function initHandTracking() {
 
         previewCanvas.height
 
-      );
+    );
 
 
-      const detected =
+    const detected =
         results.multiHandLandmarks
-          ? results.multiHandLandmarks.length
-          : 0;
+            || [];
 
 
-      for (
+    const numHands =
+        detected.length;
+
+
+    for (
         let i = 0;
         i < 2;
         i++
-      ) {
+    ) {
 
         const ctrl =
-          controllers[i];
+            controllers[i];
 
 
-        if (
-          i < detected
-        ) {
+        if (i >= numHands) {
 
-          const landmarks =
-            results.multiHandLandmarks[i];
+            ctrl.active =
+                false;
 
+            ctrl.mesh.visible =
+                false;
 
-          ctrl.active =
-            true;
+            ctrl.rayLine.visible =
+                false;
 
 
-          handToWorld(
-            landmarks,
-            ctrl
-          );
+            if (ctrl.grabbedBlock) {
 
+                setBlockHighlight(
+                    ctrl.grabbedBlock,
+                    false
+                );
 
-          ctrl.mesh.visible =
-            currentMode === "BUILDER";
+                ctrl.grabbedBlock
+                    .userData
+                    .isGrabbed =
+                        false;
 
-
-          ctrl.mesh.position.copy(
-            ctrl.pos
-          );
-
-
-          ctrl.pointLight.position.copy(
-            ctrl.pos
-          );
-
-
-          const thumb =
-            landmarks[4];
-
-          const index =
-            landmarks[8];
-
-
-          const pinchDistance =
-            Math.hypot(
-
-              thumb.x -
-              index.x,
-
-              thumb.y -
-              index.y
-
-            );
-
-
-          const previousPinch =
-            ctrl.isPinching;
-
-
-          ctrl.isPinching =
-            pinchDistance <
-            CONFIG.hand.pinchThreshold;
-
-
-          if (
-            !previousPinch &&
-            ctrl.isPinching
-          ) {
-
-            sounds.playPinch();
-
-          }
-
-
-          ctrl.statusEl.textContent =
-            "ATTIVA";
-
-          ctrl.statusEl.style.color =
-            "#fff";
-
-
-          ctrl.grabEl.textContent =
-            ctrl.isPinching
-              ? "PINCH"
-              : "LIBERA";
-
-
-          if (
-            currentMode === "BUILDER"
-          ) {
-
-            updateBuilderGrab(
-              ctrl
-            );
-
-          }
-
-
-        }
-
-        else {
-
-          ctrl.active =
-            false;
-
-
-          ctrl.isPinching =
-            false;
-
-
-          ctrl.mesh.visible =
-            false;
-
-
-          ctrl.rayLine.visible =
-            false;
-
-
-          if (
-            ctrl.grabbedBlock
-          ) {
-
-            setBlockHighlight(
-              ctrl.grabbedBlock,
-              false
-            );
-
-            ctrl.grabbedBlock.userData.isGrabbed =
-              false;
-
-            ctrl.grabbedBlock =
-              null;
-
-          }
-
-
-          ctrl.statusEl.textContent =
-            "CERCA...";
-
-          ctrl.statusEl.style.color =
-            "#666";
-
-
-          ctrl.grabEl.textContent =
-            "N/A";
-
-        }
-
-      }
-
-
-      /* ===================================================
-         PARTICLE HAND CONTROL
-      =================================================== */
-
-      if (
-        currentMode === "PARTICLES" &&
-        detected > 0
-      ) {
-
-        const hand1 =
-          results.multiHandLandmarks[0];
-
-
-        const center =
-          hand1[9];
-
-        const wrist =
-          hand1[0];
-
-
-        targetRotZ =
-          -Math.atan2(
-
-            center.y -
-            wrist.y,
-
-            center.x -
-            wrist.x
-
-          ) -
-          Math.PI / 2;
-
-
-        targetRotX =
-          (center.y - .5) *
-          Math.PI *
-          3.8;
-
-
-        targetRotY =
-          (center.x - .5) *
-          Math.PI *
-          5.0;
-
-
-        if (
-          detected === 2
-        ) {
-
-          const hand2 =
-            results.multiHandLandmarks[1];
-
-
-          const distance =
-            Math.hypot(
-
-              hand1[9].x -
-              hand2[9].x,
-
-              hand1[9].y -
-              hand2[9].y
-
-            );
-
-
-          targetScale =
-            THREE.MathUtils.clamp(
-
-              THREE.MathUtils.mapLinear(
-
-                distance,
-
-                .18,
-                .78,
-
-                .65,
-                2.8
-
-              ),
-
-              .55,
-              3.2
-
-            );
-
-        }
-
-        else {
-
-          const span =
-            Math.hypot(
-
-              wrist.x -
-              hand1[12].x,
-
-              wrist.y -
-              hand1[12].y
-
-            );
-
-
-          targetScale =
-            THREE.MathUtils.clamp(
-
-              THREE.MathUtils.mapLinear(
-
-                span,
-
-                .13,
-                .45,
-
-                .65,
-                2.5
-
-              ),
-
-              .55,
-              2.7
-
-            );
-
-        }
-
-      }
-
-    }
-  );
-
-
-  /* =======================================================
-     CAMERA
-  ======================================================= */
-
-  const cameraUtils =
-    new Camera(
-      video,
-      {
-
-        onFrame:
-          async () => {
-
-            if (
-              video.readyState >= 2
-            ) {
-
-              await hands.send({
-                image: video
-              });
+                ctrl.grabbedBlock =
+                    null;
 
             }
 
-          },
 
-        width:
-          CONFIG.hand.width,
+            ctrl.statusEl.innerText =
+                "CERCA...";
 
-        height:
-          CONFIG.hand.height
+            ctrl.grabEl.innerText =
+                "N/A";
 
-      }
-    );
+            continue;
+
+        }
 
 
-  cameraUtils.start()
-    .catch(
-      error => {
+        ctrl.active =
+            true;
 
-        console.warn(
-          "Camera startup retry...",
-          error
+
+        const landmarks =
+            detected[i];
+
+
+        const thumb =
+            landmarks[4];
+
+        const index =
+            landmarks[8];
+
+        const wrist =
+            landmarks[0];
+
+
+        const pinchDistance =
+            Math.hypot(
+
+                thumb.x-index.x,
+
+                thumb.y-index.y
+
+            );
+
+
+        /*
+         * SENSIBILITÀ AUMENTATA
+         */
+
+        const sensitivity =
+            1.55;
+
+
+        const centerX =
+            (thumb.x + index.x) / 2;
+
+        const centerY =
+            (thumb.y + index.y) / 2;
+
+        const centerZ =
+            (thumb.z + index.z) / 2;
+
+
+        const ndcX =
+            ((1-centerX)*2-1) *
+            sensitivity;
+
+        const ndcY =
+            (-(centerY*2-1)) *
+            sensitivity;
+
+
+        const vector =
+            new THREE.Vector3(
+                ndcX,
+                ndcY,
+                .5
+            );
+
+
+        vector.unproject(
+            camera
         );
 
 
-        setTimeout(
-          () =>
-            cameraUtils.start(),
-          1500
+        const direction =
+            vector
+                .sub(camera.position)
+                .normalize();
+
+
+        const targetZ =
+            -centerZ * 20;
+
+
+        const distance =
+            (
+                targetZ -
+                camera.position.z
+            ) /
+            direction.z;
+
+
+        const targetPosition =
+            camera.position
+                .clone()
+                .add(
+                    direction.multiplyScalar(
+                        distance
+                    )
+                );
+
+
+        ctrl.lastPos.copy(
+            ctrl.pos
         );
 
-      }
-    );
+        ctrl.pos.copy(
+            targetPosition
+        );
+
+
+        ctrl.velocity
+            .copy(ctrl.pos)
+            .sub(ctrl.lastPos);
+
+
+        ctrl.mesh.visible =
+            true;
+
+        ctrl.mesh.position.copy(
+            ctrl.pos
+        );
+
+        ctrl.pointLight.position.copy(
+            ctrl.pos
+        );
+
+
+        /* RAY */
+
+        const wristX =
+            (1-wrist.x)*2-1;
+
+        const wristY =
+            -(wrist.y*2-1);
+
+
+        const wristVector =
+            new THREE.Vector3(
+                wristX,
+                wristY,
+                .5
+            );
+
+
+        wristVector.unproject(
+            camera
+        );
+
+
+        const wristDirection =
+            wristVector
+                .sub(camera.position)
+                .normalize();
+
+
+        const wristDistance =
+            (
+                targetZ -
+                camera.position.z
+            ) /
+            wristDirection.z;
+
+
+        const wristPosition =
+            camera.position
+                .clone()
+                .add(
+                    wristDirection
+                        .multiplyScalar(
+                            wristDistance
+                        )
+                );
+
+
+        const line =
+            ctrl.rayLine
+                .geometry
+                .attributes
+                .position;
+
+
+        line.setXYZ(
+            0,
+            wristPosition.x,
+            wristPosition.y,
+            wristPosition.z
+        );
+
+
+        line.setXYZ(
+            1,
+            ctrl.pos.x,
+            ctrl.pos.y,
+            ctrl.pos.z
+        );
+
+
+        line.needsUpdate =
+            true;
+
+
+        ctrl.rayLine.visible =
+            true;
+
+
+        /* PINCH */
+
+        const previousPinch =
+            ctrl.isPinching;
+
+
+        /*
+         * SOGLIA PIÙ SENSIBILE
+         */
+
+        ctrl.isPinching =
+            pinchDistance < .095;
+
+
+        if (
+            !previousPinch &&
+            ctrl.isPinching
+        ) {
+
+            sounds.playPinch();
+
+        }
+
+
+        ctrl.statusEl.innerText =
+            "ATTIVA";
+
+
+        if (
+            currentMode ===
+            "BUILDER"
+        ) {
+
+            updateBuilderHand(
+                ctrl
+            );
+
+        }
+
+
+    }
+
+
+    /* =====================================================
+       PARTICLE ROTATION
+    ===================================================== */
+
+    if (
+        currentMode ===
+        "PARTICLES" &&
+        numHands > 0
+    ) {
+
+        const hand =
+            detected[0];
+
+
+        const center =
+            hand[9];
+
+
+        const wrist =
+            hand[0];
+
+
+        targetRotZ =
+            -Math.atan2(
+
+                center.y-wrist.y,
+
+                center.x-wrist.x
+
+            ) -
+            Math.PI/2;
+
+
+        /*
+         * MOVIMENTO PIÙ REATTIVO
+         */
+
+        targetRotX =
+            (center.y-.5) *
+            Math.PI *
+            4.2;
+
+
+        targetRotY =
+            (center.x-.5) *
+            Math.PI *
+            5.2;
+
+
+        if (numHands === 2) {
+
+            const hand2 =
+                detected[1];
+
+
+            const distance =
+                Math.hypot(
+
+                    center.x -
+                    hand2[9].x,
+
+                    center.y -
+                    hand2[9].y
+
+                );
+
+
+            targetScale =
+                THREE.MathUtils.clamp(
+
+                    THREE.MathUtils.mapLinear(
+
+                        distance,
+
+                        .16,
+                        .75,
+
+                        .65,
+                        2.8
+
+                    ),
+
+                    .55,
+                    3
+
+                );
+
+        } else {
+
+            const span =
+                Math.hypot(
+
+                    wrist.x -
+                    hand[12].x,
+
+                    wrist.y -
+                    hand[12].y
+
+                );
+
+
+            targetScale =
+                THREE.MathUtils.clamp(
+
+                    THREE.MathUtils.mapLinear(
+
+                        span,
+
+                        .13,
+                        .42,
+
+                        .65,
+                        2.4
+
+                    ),
+
+                    .55,
+                    2.6
+
+                );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   BUILDER HAND
+========================================================= */
+
+function updateBuilderHand(
+    ctrl
+) {
+
+    if (ctrl.isPinching) {
+
+        if (ctrl.grabbedBlock) {
+
+            const target =
+                ctrl.pos
+                    .clone()
+                    .sub(
+                        ctrl.grabOffset
+                    );
+
+
+            ctrl.grabbedBlock
+                .position
+                .copy(
+                    target
+                );
+
+
+            ctrl.grabbedBlock
+                .userData
+                .velocity
+                .set(0,0,0);
+
+
+            ctrl.grabEl.innerText =
+                "AGGANCIATO";
+
+
+            return;
+
+        }
+
+
+        let closest =
+            null;
+
+        let closestDistance =
+            3.2;
+
+
+        for (
+            let i = 0;
+            i < blocks.length;
+            i++
+        ) {
+
+            const block =
+                blocks[i];
+
+
+            const distance =
+                ctrl.pos.distanceTo(
+                    block.position
+                );
+
+
+            if (
+                distance <
+                closestDistance
+            ) {
+
+                closestDistance =
+                    distance;
+
+                closest =
+                    block;
+
+            }
+
+        }
+
+
+        if (closest) {
+
+            ctrl.grabbedBlock =
+                closest;
+
+            closest.userData.isGrabbed =
+                true;
+
+
+            ctrl.grabOffset
+                .copy(ctrl.pos)
+                .sub(
+                    closest.position
+                );
+
+
+            setBlockHighlight(
+                closest,
+                true
+            );
+
+        }
+
+    } else {
+
+        if (ctrl.grabbedBlock) {
+
+            setBlockHighlight(
+                ctrl.grabbedBlock,
+                false
+            );
+
+            ctrl.grabbedBlock
+                .userData
+                .isGrabbed =
+                    false;
+
+            ctrl.grabbedBlock =
+                null;
+
+        }
+
+        ctrl.grabEl.innerText =
+            "LIBERA";
+
+    }
 
 }
 
@@ -3574,150 +3413,57 @@ function initHandTracking() {
    BUILDER PHYSICS
 ========================================================= */
 
-function updateBuilderPhysics() {
+function updateBuilder() {
 
-  const gravity =
-    CONFIG.builder.gravity;
-
-
-  for (
-    let i = 0;
-    i < blocks.length;
-    i++
-  ) {
-
-    const block =
-      blocks[i];
-
-
-    if (
-      block.userData.isGrabbed
-    ) continue;
-
-
-    const velocity =
-      block.userData.velocity;
-
-
-    velocity.y += gravity;
-
-
-    block.position.add(
-      velocity
-    );
-
-
-    const floorY =
-      -6 +
-      block.userData.size / 2;
-
-
-    if (
-      block.position.y <
-      floorY
-    ) {
-
-      block.position.y =
-        floorY;
-
-      velocity.y =
-        0;
-
-    }
-
-  }
-
-
-  /*
-    Collisioni semplificate.
-    Non facciamo il doppio controllo completo
-    per ogni coppia.
-  */
-
-  for (
-    let i = 0;
-    i < blocks.length;
-    i++
-  ) {
-
-    const a =
-      blocks[i];
-
-
-    if (
-      a.userData.isGrabbed
-    ) continue;
+    const gravity =
+        -.045;
 
 
     for (
-      let j = i + 1;
-      j < blocks.length;
-      j++
+        let i = 0;
+        i < blocks.length;
+        i++
     ) {
 
-      const b =
-        blocks[j];
+        const block =
+            blocks[i];
 
-
-      if (
-        b.userData.isGrabbed
-      ) continue;
-
-
-      const dx =
-        a.position.x -
-        b.position.x;
-
-
-      const dz =
-        a.position.z -
-        b.position.z;
-
-
-      const distanceSq =
-        dx * dx +
-        dz * dz;
-
-
-      const limit =
-        a.userData.size *
-        .72;
-
-
-      if (
-        distanceSq <
-        limit * limit
-      ) {
 
         if (
-          a.position.y >
-          b.position.y
+            block.userData.isGrabbed
+        ) {
+            continue;
+        }
+
+
+        block.userData.velocity.y +=
+            gravity;
+
+
+        block.position.add(
+            block.userData.velocity
+        );
+
+
+        const floor =
+            -6 +
+            block.userData.size / 2;
+
+
+        if (
+            block.position.y <
+            floor
         ) {
 
-          const targetY =
-            b.position.y +
-            b.userData.size;
+            block.position.y =
+                floor;
 
-          if (
-            a.position.y <
-            targetY
-          ) {
-
-            a.position.y =
-              targetY;
-
-            a.userData.velocity.y =
-              0;
-
-          }
+            block.userData.velocity.y =
+                0;
 
         }
 
-      }
-
     }
-
-  }
 
 }
 
@@ -3728,187 +3474,165 @@ function updateBuilderPhysics() {
 
 function updateParticles() {
 
-  particleGroup.rotation.x +=
-    (
-      targetRotX -
-      particleGroup.rotation.x
-    ) * .18;
+    particleGroup.rotation.x +=
+        (
+            targetRotX -
+            particleGroup.rotation.x
+        ) * .22;
 
 
-  particleGroup.rotation.y +=
-    (
-      targetRotY +
-      .002 -
-      particleGroup.rotation.y
-    ) * .18;
+    particleGroup.rotation.y +=
+        (
+            targetRotY +
+            .003 -
+            particleGroup.rotation.y
+        ) * .22;
 
 
-  particleGroup.rotation.z +=
-    (
-      targetRotZ -
-      particleGroup.rotation.z
-    ) * .18;
+    particleGroup.rotation.z +=
+        (
+            targetRotZ -
+            particleGroup.rotation.z
+        ) * .22;
 
 
-  handExpansionScale +=
-    (
-      targetScale -
-      handExpansionScale
-    ) * .22;
+    handScale +=
+        (
+            targetScale -
+            handScale
+        ) * .20;
 
 
-  const positions =
-    particleGeometry
-      .attributes
-      .position
-      .array;
+    const positions =
+        particleGeometry
+            .attributes
+            .position
+            .array;
 
 
-  const pinch =
-    (
-      controllers[0].active &&
-      controllers[0].isPinching
-    ) ||
-    (
-      controllers[1].active &&
-      controllers[1].isPinching
-    );
+    const pinching =
+        (
+            controllers[0].active &&
+            controllers[0].isPinching
+        ) ||
+        (
+            controllers[1].active &&
+            controllers[1].isPinching
+        );
 
 
-  /*
-    Ottimizzazione:
-    niente Math.round, niente oggetti temporanei,
-    nessun Vector3 creato dentro il loop.
-  */
+    /*
+     * Aggiornamento particelle ottimizzato.
+     */
 
-  const normalLerp =
-    CONFIG.particle.lerp;
-
-
-  const pinchLerp =
-    CONFIG.particle.pinchLerp;
-
-
-  for (
-    let i = 0;
-    i < CONFIG.particles * 3;
-    i += 3
-  ) {
-
-    let tx =
-      targetPositions[i] *
-      handExpansionScale;
-
-
-    let ty =
-      targetPositions[i + 1] *
-      handExpansionScale;
-
-
-    let tz =
-      targetPositions[i + 2] *
-      handExpansionScale;
-
-
-    let speed =
-      normalLerp;
-
-
-    if (
-      pinch &&
-      ((i / 3) & 1) === 0
+    for (
+        let i = 0;
+        i < PARTICLE_COUNT * 3;
+        i += 3
     ) {
 
-      tx *= .025;
-      ty *= .025;
-      tz *= .025;
+        let tx =
+            targetPositions[i] *
+            handScale;
 
-      speed =
-        pinchLerp;
+        let ty =
+            targetPositions[i+1] *
+            handScale;
+
+        let tz =
+            targetPositions[i+2] *
+            handScale;
+
+
+        if (
+            pinching &&
+            ((i / 3) % 3 === 0)
+        ) {
+
+            tx *= .015;
+            ty *= .015;
+            tz *= .015;
+
+        }
+
+
+        positions[i] +=
+            (
+                tx -
+                positions[i]
+            ) * .20;
+
+
+        positions[i+1] +=
+            (
+                ty -
+                positions[i+1]
+            ) * .20;
+
+
+        positions[i+2] +=
+            (
+                tz -
+                positions[i+2]
+            ) * .20;
 
     }
 
 
-    positions[i] +=
-      (tx - positions[i]) *
-      speed;
-
-
-    positions[i + 1] +=
-      (ty - positions[i + 1]) *
-      speed;
-
-
-    positions[i + 2] +=
-      (tz - positions[i + 2]) *
-      speed;
-
-  }
-
-
-  particleGeometry
-    .attributes
-    .position
-    .needsUpdate = true;
+    particleGeometry
+        .attributes
+        .position
+        .needsUpdate =
+            true;
 
 }
 
 
 /* =========================================================
-   FPS
+   FPS COUNTER
 ========================================================= */
 
-function updatePerformance(
-  now
-) {
+let fpsFrames = 0;
+let fpsLastTime = performance.now();
 
-  fpsFrames++;
+function updateFPS() {
 
+    fpsFrames++;
 
-  if (
-    now -
-    fpsLastUpdate >=
-    500
-  ) {
-
-    currentFPS =
-      Math.round(
-
-        fpsFrames *
-        1000 /
-        (now -
-          fpsLastUpdate)
-
-      );
+    const now =
+        performance.now();
 
 
-    fpsFrames =
-      0;
-
-
-    fpsLastUpdate =
-      now;
-
-
-    document
-      .getElementById(
-        "fps-value"
-      )
-      .textContent =
-      currentFPS;
-
-
-    document
-      .getElementById(
-        "latency-value"
-      )
-      .textContent =
-      Math.round(
+    if (
         now -
-        lastHandUpdate
-      );
+        fpsLastTime >=
+        500
+    ) {
 
-  }
+        const fps =
+            Math.round(
+
+                fpsFrames *
+                1000 /
+                (now-fpsLastTime)
+
+            );
+
+
+        document
+            .getElementById(
+                "fps-counter"
+            )
+            .innerText =
+                `FPS: ${fps}`;
+
+
+        fpsFrames = 0;
+
+        fpsLastTime =
+            now;
+
+    }
 
 }
 
@@ -3917,40 +3641,34 @@ function updatePerformance(
    MAIN LOOP
 ========================================================= */
 
-function animate(
-  now
-) {
+function animate() {
 
-  requestAnimationFrame(
-    animate
-  );
+    requestAnimationFrame(
+        animate
+    );
 
 
-  updatePerformance(
-    now
-  );
+    if (
+        currentMode ===
+        "BUILDER"
+    ) {
+
+        updateBuilder();
+
+    } else {
+
+        updateParticles();
+
+    }
 
 
-  if (
-    currentMode ===
-    "BUILDER"
-  ) {
-
-    updateBuilderPhysics();
-
-  }
-
-  else {
-
-    updateParticles();
-
-  }
+    updateFPS();
 
 
-  renderer.render(
-    scene,
-    camera
-  );
+    renderer.render(
+        scene,
+        camera
+    );
 
 }
 
@@ -3961,36 +3679,28 @@ function animate(
 
 function onWindowResize() {
 
-  camera.aspect =
-    window.innerWidth /
-    window.innerHeight;
+    camera.aspect =
+        window.innerWidth /
+        window.innerHeight;
 
 
-  camera.updateProjectionMatrix();
+    camera.updateProjectionMatrix();
 
 
-  renderer.setPixelRatio(
-
-    Math.min(
-
-      window.devicePixelRatio || 1,
-
-      CONFIG.particle.maxPixelRatio
-
-    )
-
-  );
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
 
 
-  renderer.setSize(
+    renderer.setPixelRatio(
 
-    window.innerWidth,
+        Math.min(
+            window.devicePixelRatio || 1,
+            1.5
+        )
 
-    window.innerHeight,
-
-    false
-
-  );
+    );
 
 }
 
@@ -3999,207 +3709,99 @@ function onWindowResize() {
    UI EVENTS
 ========================================================= */
 
-function initUI() {
-
-  document
+document
     .getElementById(
-      "tab-builder"
+        "shape-select"
     )
     .addEventListener(
-      "click",
-      () => {
+        "change",
+        event => {
 
-        switchMode(
-          "BUILDER"
-        );
-
-      }
-    );
-
-
-  document
-    .getElementById(
-      "tab-particles"
-    )
-    .addEventListener(
-      "click",
-      () => {
-
-        switchMode(
-          "PARTICLES"
-        );
-
-      }
-    );
-
-
-  document
-    .querySelectorAll(
-      "[data-shape]"
-    )
-    .forEach(
-      button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            sounds.init();
-
-            spawnShape(
-              button.dataset.shape
+            generateShape(
+                event.target.value
             );
 
-          }
-        );
-
-      }
+        }
     );
 
 
-  document
+document
     .getElementById(
-      "clear-scene"
+        "color-picker"
     )
     .addEventListener(
-      "click",
-      () => {
+        "input",
+        event => {
 
-        sounds.init();
+            if (
+                particleMaterial
+            ) {
 
-        clearBlocks();
+                particleMaterial.color
+                    .set(
+                        event.target.value
+                    );
 
-      }
-    );
-
-
-  document
-    .getElementById(
-      "shape-select"
-    )
-    .addEventListener(
-      "change",
-      event => {
-
-        generateShape(
-          event.target.value
-        );
-
-      }
-    );
-
-
-  document
-    .getElementById(
-      "color-picker"
-    )
-    .addEventListener(
-      "input",
-      event => {
-
-        if (
-          particleMaterial
-        ) {
-
-          particleMaterial.color.set(
-            event.target.value
-          );
+            }
 
         }
-
-      }
     );
 
 
-  document
-    .getElementById(
-      "audio-toggle-btn"
-    )
-    .addEventListener(
-      "click",
-      () => {
+/*
+ * L'audio viene inizializzato SOLO
+ * dopo un'interazione dell'utente.
+ *
+ * Questo evita che blocchi l'avvio
+ * della scena.
+ */
+
+window.addEventListener(
+    "pointerdown",
+    () => {
 
         sounds.init();
 
-        sounds.enabled =
-          !sounds.enabled;
-
-
-        document
-          .getElementById(
-            "audio-toggle-btn"
-          )
-          .textContent =
-          sounds.enabled
-            ? "🔊 AUDIO: ATTIVO"
-            : "🔇 AUDIO: DISATTIVATO";
-
-      }
-    );
-
-}
+    },
+    {
+        once: true
+    }
+);
 
 
 /* =========================================================
-   SAFE START
+   START
 ========================================================= */
 
 window.addEventListener(
-  "load",
-  () => {
+    "load",
+    () => {
 
-    try {
+        try {
 
-      initThree();
+            initThree();
 
-      initUI();
+            initHandTracking();
 
-      initHandTracking();
+            animate();
 
-      animate(
-        performance.now()
-      );
+        } catch(error) {
 
-      /*
-        Cubo iniziale.
-      */
+            console.error(
+                "STARK ENGINE ERROR:",
+                error
+            );
 
-      spawnShape(
-        "cube",
-        0,
-        2,
-        0
-      );
+            document
+                .getElementById(
+                    "panel-title-text"
+                )
+                .innerText =
+                    "ENGINE ERROR";
 
-
-      document
-        .getElementById(
-          "system-status-text"
-        )
-        .textContent =
-        "SYSTEM ONLINE";
-
+        }
 
     }
-
-    catch (error) {
-
-      console.error(
-        "STARK LAB BOOT ERROR:",
-        error
-      );
-
-
-      document
-        .getElementById(
-          "system-status-text"
-        )
-        .textContent =
-        "SYSTEM ERROR";
-
-    }
-
-  }
 );
 
 </script>
