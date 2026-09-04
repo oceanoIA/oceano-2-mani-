@@ -487,8 +487,10 @@ const CONFIG = {
 
   builderGravity: 0.06,
 
-  /* SPINTA MINIMA AL RILASCIO */
-  throwPower: 0.10,
+  /*
+    BLOCCO COMPLETO DELLO SCIVOLAMENTO
+  */
+  throwPower: 0,
 
   snapSize: 1.5,
 
@@ -499,6 +501,12 @@ const CONFIG = {
     Il valore 0.50 è volutamente alto.
   */
   axisSensitivity: 0.50,
+
+  /*
+    PIANO LEGGERMENTE INCLINATO
+  */
+  floorTiltX: -0.08,
+  floorTiltZ: 0.04,
 
   colors: {
     white: 0xffffff,
@@ -765,15 +773,33 @@ function initBuilder(){
     })
   );
 
-  floor.rotation.x=-Math.PI/2;
+  /*
+    PIANO INCLINATO
+    Leggera inclinazione visiva.
+  */
+  floor.rotation.x=
+    -Math.PI/2+
+    CONFIG.floorTiltX;
+
+  floor.rotation.z=
+    CONFIG.floorTiltZ;
+
   floor.position.y=-6;
+
   builderGroup.add(floor);
 
   const grid=new THREE.GridHelper(
     60,30,0xffffff,0x333333
   );
 
+  grid.rotation.x=
+    CONFIG.floorTiltX;
+
+  grid.rotation.z=
+    CONFIG.floorTiltZ;
+
   grid.position.y=-5.98;
+
   builderGroup.add(grid);
 
   spawnShape('cube',0,2,0);
@@ -1903,15 +1929,7 @@ function updateBuilderHand(ctrl){
       /*
         SENSIBILITÀ BUILDER ALTA.
 
-        Usiamo lo stesso valore CONFIG.axisSensitivity,
-        ma come incremento del guadagno.
-
         0.50 -> gain 1.50
-
-        Quindi:
-        - X è molto sensibile
-        - Y è molto sensibile
-        - Z segue la stessa intensità
 
         La mano NON modifica la rotazione
         dell'oggetto.
@@ -1938,6 +1956,10 @@ function updateBuilderHand(ctrl){
         ctrl.grabStartBlock.z+dz
       );
 
+      /*
+        DURANTE IL GRAB:
+        nessuna velocità residua.
+      */
       block.userData.velocity.set(
         0,
         0,
@@ -1999,6 +2021,16 @@ function selectNearestBlock(ctrl){
 
   nearest.userData.isGrabbed=true;
 
+  /*
+    Appena preso:
+    blocchiamo qualsiasi movimento precedente.
+  */
+  nearest.userData.velocity.set(
+    0,
+    0,
+    0
+  );
+
   selectedBlock=nearest;
 
   highlightBlock(
@@ -2018,10 +2050,15 @@ function releaseBlock(ctrl){
 
   block.userData.isGrabbed=false;
 
-  block.userData.velocity.copy(
-    ctrl.velocity
-  ).multiplyScalar(
-    CONFIG.throwPower
+  /*
+    ZERO ASSOLUTO DI VELOCITÀ AL RILASCIO.
+    Il cubo non riceve nessuna spinta
+    dalla mano.
+  */
+  block.userData.velocity.set(
+    0,
+    0,
+    0
   );
 
   snapBlock(block);
@@ -2168,7 +2205,18 @@ function updateBuilder(delta){
     const velocity=
       block.userData.velocity;
 
+    /*
+      GRAVITÀ SOLO VERTICALE.
+      Nessuna componente X/Z.
+    */
     velocity.y-=gravity;
+
+    /*
+      Anche se un valore esterno dovesse
+      comparire, X/Z vengono forzati a zero.
+    */
+    velocity.x=0;
+    velocity.z=0;
 
     block.position.addScaledVector(
       velocity,
@@ -2184,15 +2232,8 @@ function updateBuilder(delta){
       block.position.y=floorY;
 
       velocity.y=0;
-
-      velocity.x*=.92;
-      velocity.z*=.92;
-
-      if(Math.abs(velocity.x)<.003)
-        velocity.x=0;
-
-      if(Math.abs(velocity.z)<.003)
-        velocity.z=0;
+      velocity.x=0;
+      velocity.z=0;
     }
   }
 
@@ -2291,7 +2332,21 @@ function resolveCollisions(){
 
               a.position.y=top;
 
-              a.userData.velocity.y=0;
+              /*
+                BLOCCO TOTALE DEL MOVIMENTO
+                quando il blocco è appoggiato.
+              */
+              a.userData.velocity.set(
+                0,
+                0,
+                0
+              );
+
+              b.userData.velocity.set(
+                0,
+                0,
+                0
+              );
             }
           }
         }
