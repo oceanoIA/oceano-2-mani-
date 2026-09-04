@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.2 // OPTIMIZED</title>
+  <title>STARK KINETIC LAB v9.3 // iOS GLASS</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,83 +11,85 @@
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body { overflow: hidden; background-color: #000000; font-family: 'Share Tech Mono', monospace; color: #00f3ff; }
+    body { overflow: hidden; background-color: #000000; font-family: 'Share Tech Mono', monospace; color: #ffffff; }
     #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
     #video-input { display: none; }
 
     .stark-header {
       position: absolute; top: 0; left: 0; width: 100%; height: 50px;
-      background: rgba(0, 0, 0, 0.85); border-bottom: 1px solid rgba(0, 243, 255, 0.2); z-index: 10;
+      background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15); z-index: 10;
       display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
     }
     .stark-title {
       font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
-      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
       display: flex; align-items: center; gap: 12px;
     }
     .security-badge {
-      font-size: 9px; background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.4);
-      color: #00f3ff; padding: 2px 6px; border-radius: 2px; letter-spacing: 1px;
+      font-size: 9px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff; padding: 2px 6px; border-radius: 4px; letter-spacing: 1px;
     }
     .mode-tabs { display: flex; gap: 8px; }
     .tab-btn {
-      background: #000000; border: 1px solid rgba(0, 243, 255, 0.3);
-      color: rgba(0, 243, 255, 0.6); font-family: 'Orbitron', sans-serif; font-size: 10px;
-      padding: 5px 14px; cursor: pointer; transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.6); font-family: 'Orbitron', sans-serif; font-size: 10px;
+      padding: 5px 14px; cursor: pointer; transition: all 0.25s ease; border-radius: 6px;
     }
     .tab-btn:hover, .tab-btn.active {
-      background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; color: #ffffff;
-      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+      background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
     }
 
     .ui-overlay {
       position: absolute; top: 65px; left: 20px; z-index: 10; width: 280px; padding: 16px;
-      background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
-      border: 1px solid rgba(0, 243, 255, 0.25);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; gap: 12px;
+      background: rgba(15, 15, 15, 0.75); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); display: flex; flex-direction: column; gap: 12px;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
-      color: #ffffff; border-bottom: 1px solid rgba(0, 243, 255, 0.2);
-      padding-bottom: 5px; display: flex; justify-content: space-between;
+      color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding-bottom: 6px; display: flex; justify-content: space-between;
     }
     .control-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 9px; color: rgba(0, 243, 255, 0.7); letter-spacing: 1px; }
+    label { font-size: 9px; color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
 
     select, input[type="color"], .stark-btn {
-      width: 100%; height: 32px; background: #000000;
-      border: 1px solid rgba(0, 243, 255, 0.3); color: #00f3ff; padding: 0 8px;
+      width: 100%; height: 32px; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; padding: 0 8px;
       font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
-      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.2s ease;
+      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.2s ease; border-radius: 6px;
     }
     select:hover, .stark-btn:hover {
-      background: rgba(0, 243, 255, 0.15); border-color: #00f3ff; color: #ffffff;
-      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+      background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
-    select option { background: #000000; color: #00f3ff; }
+    select option { background: #111111; color: #ffffff; }
 
     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 
     .telemetry-box {
-      font-size: 10px; background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(0, 243, 255, 0.15); padding: 8px;
+      font-size: 10px; background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px; border-radius: 8px;
       display: flex; flex-direction: column; gap: 6px;
     }
     .hand-card { border-left: 2px solid #ffffff; padding-left: 6px; display: flex; flex-direction: column; gap: 2px; }
-    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.6); }
-    .telemetry-val { color: #00f3ff; font-weight: bold; }
+    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.5); }
+    .telemetry-val { color: #ffffff; font-weight: bold; }
 
     .camera-preview-container {
       position: absolute; bottom: 20px; right: 20px; z-index: 10;
-      width: 180px; height: 135px; background: rgba(0, 0, 0, 0.9);
-      border: 1px solid rgba(0, 243, 255, 0.3);
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column;
+      width: 180px; height: 135px; background: rgba(15, 15, 15, 0.8);
+      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); display: flex; flex-direction: column; overflow: hidden;
     }
     #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.85; }
     .preview-hud-tag {
       position: absolute; top: 4px; left: 6px; font-size: 8px; font-weight: bold;
-      letter-spacing: 1px; color: #00f3ff; background: rgba(0, 0, 0, 0.8);
-      padding: 1px 4px; border: 1px solid rgba(0, 243, 255, 0.2);
+      letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.7);
+      padding: 1px 4px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 3px;
     }
   </style>
 
@@ -103,7 +105,7 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">DUAL HANDS // TURBO</span>
+      <span class="security-badge">MONOCHROME // GLASS</span>
     </div>
     <div class="mode-tabs">
       <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
@@ -114,7 +116,7 @@
   <div class="ui-overlay">
     <div class="panel-header">
       <span id="panel-title-text">PARTICLE MATRIX</span>
-      <span style="color: #00f3ff; font-weight: bold;">[ACTIVE]</span>
+      <span style="color: #ffffff; font-weight: bold;">[ACTIVE]</span>
     </div>
     
     <div id="controls-builder" style="display: none;">
@@ -128,7 +130,7 @@
           <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
           <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
         </div>
-        <button class="stark-btn" style="margin-top: 6px; border-color: #ff3366; color: #ff3366;" onclick="clearBlocks()">RESET SCENA</button>
+        <button class="stark-btn" style="margin-top: 6px; border-color: rgba(255,255,255,0.4); color: #ffffff;" onclick="clearBlocks()">RESET SCENA</button>
       </div>
     </div>
 
@@ -236,7 +238,7 @@
     }
 
     let currentMode = 'PARTICLES';
-    const PARTICLE_COUNT = 6000; // Dimezzate per garantire fluidità estrema (da 12000 a 6000)
+    const PARTICLE_COUNT = 6000;
     let scene, camera, renderer;
     let builderGroup;
     let blocks = [];
@@ -270,9 +272,9 @@
       camera.position.set(0, 4, 28);
       camera.lookAt(0, 0, 0);
 
-      renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" }); // antialias disattivato per aumentare i fotogrammi per secondo
+      renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Limitato per alleggerire il rendering mobile/desktop
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       container.appendChild(renderer.domElement);
 
       builderGroup = new THREE.Group();
@@ -287,18 +289,18 @@
       scene.add(dirLight);
 
       const planeGeo = new THREE.PlaneGeometry(60, 60);
-      const planeMat = new THREE.MeshStandardMaterial({ color: 0x0a0f18, roughness: 0.8, metalness: 0.2 });
+      const planeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.2 });
       const floor = new THREE.Mesh(planeGeo, planeMat);
       floor.rotation.x = -Math.PI / 2;
       floor.position.y = -6;
       builderGroup.add(floor);
 
-      const gridHelper = new THREE.GridHelper(60, 30, 0x00f3ff, 0x112233);
+      const gridHelper = new THREE.GridHelper(60, 30, 0xffffff, 0x333333);
       gridHelper.position.y = -5.98;
       builderGroup.add(gridHelper);
 
       controllers.forEach((ctrl, idx) => {
-        const dotGeo = new THREE.SphereGeometry(0.15, 8, 8); // Geometria ridotta a 8 segmenti
+        const dotGeo = new THREE.SphereGeometry(0.15, 8, 8);
         const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
         ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
         ctrl.mesh.visible = false;
@@ -329,10 +331,9 @@
         const idx = i * 3;
         let randomColor;
         const rand = Math.random();
-        if (rand < 0.6) randomColor = new THREE.Color('#ffffff');
-        else if (rand < 0.8) randomColor = new THREE.Color('#2bf2b0');
-        else if (rand < 0.9) randomColor = new THREE.Color('#ffdf73');
-        else randomColor = new THREE.Color('#7a53ff');
+        if (rand < 0.7) randomColor = new THREE.Color('#ffffff');
+        else if (rand < 0.9) randomColor = new THREE.Color('#aaaaaa');
+        else randomColor = new THREE.Color('#555555');
         particleColors[idx] = randomColor.r;
         particleColors[idx + 1] = randomColor.g;
         particleColors[idx + 2] = randomColor.b;
@@ -340,7 +341,7 @@
       particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
       const pCanvas = document.createElement('canvas');
-      pCanvas.width = 32; pCanvas.height = 32; // Texture ridotta per prestazioni ottimali
+      pCanvas.width = 32; pCanvas.height = 32;
       const pCtx = pCanvas.getContext('2d');
       pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(16, 16, 14, 0, Math.PI * 2); pCtx.fill();
 
@@ -371,7 +372,7 @@
       else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
       else geo = new THREE.BoxGeometry(size, size, size);
 
-      const randomColorHex = Math.floor(Math.random() * 16777215);
+      const randomColorHex = Math.random() > 0.5 ? 0xffffff : 0x888888;
       const mat = new THREE.MeshStandardMaterial({ color: randomColorHex, roughness: 0.3, metalness: 0.2 });
 
       const mesh = new THREE.Mesh(geo, mat);
@@ -495,7 +496,6 @@
       const videoElement = document.getElementById('video-input');
       const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
 
-      // PERFORMANCE CRITICA: modelComplexity impostato a 0 (più veloce) e confidenze ottimizzate
       hands.setOptions({
         maxNumHands: 2, 
         modelComplexity: 0,
@@ -518,7 +518,7 @@
             const landmarks = results.multiHandLandmarks[i];
 
             drawConnectors(previewCtx, landmarks, HAND_CONNECTIONS, { color: '#ffffff', lineWidth: 1 });
-            drawLandmarks(previewCtx, landmarks, { color: '#00f3ff', lineWidth: 1, radius: 1.5 });
+            drawLandmarks(previewCtx, landmarks, { color: '#888888', lineWidth: 1, radius: 1.5 });
 
             const thumbTip = landmarks[4], indexTip = landmarks[8];
             const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
@@ -572,7 +572,7 @@
                   ctrl.grabbedBlock.userData.isGrabbed = false;
                   ctrl.grabbedBlock = null;
                 }
-                ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#00f3ff";
+                ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#aaaaaa";
               }
             }
           } else {
@@ -583,7 +583,7 @@
               ctrl.grabbedBlock.userData.isGrabbed = false;
               ctrl.grabbedBlock = null;
             }
-            ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#ff3366"; ctrl.grabEl.innerText = "N/A";
+            ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#666666"; ctrl.grabEl.innerText = "N/A";
           }
         }
 
@@ -607,7 +607,6 @@
         previewCtx.restore();
       });
 
-      // RISOLUZIONE RIDOTTA A 480x360 PER ELIMINARE I LAG SULLA WEBCAM
       const cameraUtils = new Camera(videoElement, {
         onFrame: async () => { await hands.send({ image: videoElement }); },
         width: 480, height: 360
