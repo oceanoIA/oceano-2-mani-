@@ -502,15 +502,6 @@ const CONFIG = {
   */
   axisSensitivity: 0.50,
 
-  /*
-    ROTAZIONE DELLA BASE SOLO SULL'ASSE Y
-
-    X = nessuna inclinazione
-    Y = rotazione della base
-    Z = nessuna inclinazione
-  */
-  floorRotationY: 8 * Math.PI / 180,
-
   colors: {
     white: 0xffffff,
     green: 0x00ffcc,
@@ -777,16 +768,14 @@ function initBuilder(){
   );
 
   /*
-    BASE PIATTA.
-
-    NON viene inclinata sull'asse X.
-    NON viene inclinata sull'asse Z.
-
-    Viene ruotata SOLO sull'asse Y.
+    BASE COMPLETAMENTE DRITTA E PIATTA.
+    NESSUNA ROTAZIONE SU Y O Z.
+    L'UNICA ROTAZIONE È QUELLA NECESSARIA
+    PER POSIZIONARE IL PIANO ORIZZONTALMENTE.
   */
   floor.rotation.set(
     -Math.PI/2,
-    CONFIG.floorRotationY,
+    0,
     0
   );
 
@@ -799,12 +788,12 @@ function initBuilder(){
   );
 
   /*
-    La griglia segue esattamente
-    la stessa rotazione della base.
+    GRIGLIA PERFETTAMENTE ALLINEATA
+    CON LA BASE.
   */
   grid.rotation.set(
     -Math.PI/2,
-    CONFIG.floorRotationY,
+    0,
     0
   );
 
