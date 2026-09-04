@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB // ULTRA ZERO-LAG CORE</title>
+  <title>STARK KINETIC LAB v9.6 // VISION PRO RAYCASTER</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,104 +15,94 @@
     #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
     #video-input { display: none; }
 
+    /* Header Superiore Minimal */
     .stark-header {
       position: absolute; top: 0; left: 0; width: 100%; height: 60px;
-      background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(15px);
-      border-bottom: 1px solid rgba(0, 255, 255, 0.2); z-index: 10;
+      background: rgba(15, 15, 15, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08); z-index: 10;
       display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
-      pointer-events: none;
     }
     .stark-title {
       font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
-      letter-spacing: 2px; color: #00ffcc; text-shadow: 0 0 10px rgba(0, 255, 204, 0.6);
+      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
       display: flex; align-items: center; gap: 12px;
     }
     .security-badge {
-      font-size: 9px; background: rgba(0, 255, 204, 0.1); border: 1px solid rgba(0, 255, 204, 0.4);
-      color: #00ffcc; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px;
+      font-size: 9px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px;
     }
 
+    /* DOCK IN BASSO AL CENTRO CON EFFETTO LIQUID GLASS */
     .mode-dock {
       position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 10px; z-index: 20; background: rgba(15, 15, 15, 0.7);
-      padding: 10px 18px; border-radius: 35px; backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 255, 204, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 10px rgba(0,255,204,0.1);
-      pointer-events: auto;
+      display: flex; gap: 10px; z-index: 20; background: rgba(25, 25, 25, 0.45);
+      padding: 10px 18px; border-radius: 35px; backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+      border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
     .tab-btn {
-      background: rgba(0, 255, 204, 0.05); border: 1px solid rgba(0, 255, 204, 0.2);
-      color: rgba(255, 255, 255, 0.7); font-family: 'Orbitron', sans-serif; font-size: 10px;
-      padding: 10px 22px; cursor: pointer; transition: all 0.2s ease;
-      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
+      padding: 10px 22px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      border-radius: 25px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
     }
     .tab-btn:hover, .tab-btn.active {
-      background: rgba(0, 255, 204, 0.25); border-color: #00ffcc; color: #ffffff;
-      box-shadow: 0 0 15px rgba(0, 255, 204, 0.5); transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.9); color: #ffffff;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6); transform: translateY(-2px);
     }
 
+    /* Pannello Sinistro Glass & Arrotondato */
     .ui-overlay {
       position: absolute; top: 75px; left: 20px; z-index: 10; width: 290px; padding: 18px;
-      background: rgba(12, 12, 12, 0.75); backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 255, 204, 0.25); border-radius: 20px;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8);
+      background: rgba(12, 12, 12, 0.6); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 26px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       display: flex; flex-direction: column; gap: 14px;
-      pointer-events: auto;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
-      color: #00ffcc; border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+      color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
     }
     .control-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 9px; color: rgba(0, 255, 204, 0.7); letter-spacing: 1px; }
+    label { font-size: 9px; color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
 
     select, input[type="color"], .stark-btn {
-      width: 100%; height: 38px; background: rgba(0, 255, 204, 0.05);
-      border: 1px solid rgba(0, 255, 204, 0.3); color: #ffffff; padding: 0 12px;
+      width: 100%; height: 38px; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.18); color: #ffffff; padding: 0 12px;
       font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
-      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.15s ease;
-      border-radius: 12px;
+      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.25s ease;
+      border-radius: 19px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
-    select:hover, .stark-btn:hover, .stark-btn.virtual-hover {
-      background: rgba(0, 255, 204, 0.3) !important; border-color: #00ffcc !important;
-      box-shadow: 0 0 12px rgba(0, 255, 204, 0.6); transform: scale(1.02);
+    select:hover, .stark-btn:hover {
+      background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.85); color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
     }
-    select option { background: #111; color: #fff; }
+    select option { background: #151515; color: #ffffff; }
+
     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .telemetry-box {
-      font-size: 10px; background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(0, 255, 204, 0.2); padding: 10px; border-radius: 12px;
+      font-size: 10px; background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.12); padding: 10px; border-radius: 18px;
       display: flex; flex-direction: column; gap: 6px;
     }
-    .hand-card { border-left: 2px solid #00ffcc; padding-left: 8px; display: flex; flex-direction: column; gap: 2px; }
-    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.6); }
-    .telemetry-val { color: #00ffcc; font-weight: bold; }
+    .hand-card { border-left: 2px solid #ffffff; padding-left: 8px; display: flex; flex-direction: column; gap: 2px; }
+    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.5); }
+    .telemetry-val { color: #ffffff; font-weight: bold; }
 
+    /* Box Anteprima Camera Arrotondato */
     .camera-preview-container {
       position: absolute; bottom: 25px; right: 20px; z-index: 10;
-      width: 160px; height: 120px; background: rgba(12, 12, 12, 0.8);
-      backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 204, 0.3); border-radius: 15px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.8); display: flex; flex-direction: column; overflow: hidden;
-      pointer-events: none;
+      width: 180px; height: 135px; background: rgba(12, 12, 12, 0.7);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 22px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; overflow: hidden;
     }
-    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.85; }
+    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.9; }
     .preview-hud-tag {
       position: absolute; top: 6px; left: 8px; font-size: 8px; font-weight: bold;
-      letter-spacing: 1px; color: #00ffcc; background: rgba(0, 0, 0, 0.8);
-      padding: 2px 6px; border: 1px solid rgba(0, 255, 204, 0.4); border-radius: 6px;
-    }
-
-    #virtual-cursor {
-      position: absolute; width: 16px; height: 16px; border: 2px solid #00ffcc;
-      border-radius: 50%; transform: translate(-50%, -50%); z-index: 9999;
-      pointer-events: none; display: none; box-shadow: 0 0 12px #00ffcc;
-      background: rgba(0, 255, 204, 0.3);
-      transition: transform 0.05s linear;
-    }
-    #virtual-cursor.pinching {
-      background: #00ffcc; transform: translate(-50%, -50%) scale(0.6);
-      box-shadow: 0 0 20px #00ffcc;
+      letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.75);
+      padding: 2px 6px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
     }
   </style>
 
@@ -123,12 +113,11 @@
 <body>
   <video id="video-input"></video>
   <div id="canvas-container"></div>
-  <div id="virtual-cursor"></div>
 
   <div class="stark-header">
     <div class="stark-title">
-      <span>STARK QUANTUM LAB</span>
-      <span class="security-badge">ZERO-LAG AIR CORE</span>
+      <span>STARK LAB</span>
+      <span class="security-badge">VISION PRO RAYCAST</span>
     </div>
   </div>
 
@@ -140,7 +129,7 @@
   <div class="ui-overlay">
     <div class="panel-header">
       <span id="panel-title-text">PARTICLE MATRIX</span>
-      <span style="color: #00ffcc; font-weight: bold; font-size: 9px;">[SPEED: MAX]</span>
+      <span style="color: #ffffff; font-weight: bold; font-size: 9px;">[ONLINE]</span>
     </div>
     
     <div id="controls-builder" style="display: none;">
@@ -154,7 +143,7 @@
           <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
           <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
         </div>
-        <button class="stark-btn" style="margin-top: 8px; border-color: rgba(0,255,204,0.5);" onclick="clearBlocks()">RESET SCENA</button>
+        <button class="stark-btn" style="margin-top: 8px; border-color: rgba(255,255,255,0.4);" onclick="clearBlocks()">RESET SCENA</button>
       </div>
     </div>
 
@@ -175,7 +164,7 @@
       </div>
       <div class="control-group" style="margin-top: 8px;">
         <label>PLASMA COLOR</label>
-        <input type="color" id="color-picker" value="#00ffcc">
+        <input type="color" id="color-picker" value="#ffffff">
       </div>
     </div>
 
@@ -206,8 +195,8 @@
   </div>
 
   <div class="camera-preview-container">
-    <span class="preview-hud-tag">OPTICAL FEED</span>
-    <canvas id="hand-preview-canvas" width="160" height="120"></canvas>
+    <span class="preview-hud-tag">FEED OPTICAL</span>
+    <canvas id="hand-preview-canvas" width="180" height="135"></canvas>
   </div>
 
   <script>
@@ -223,7 +212,7 @@
         this.humOsc = this.ctx.createOscillator();
         this.humGain = this.ctx.createGain();
         this.humOsc.type = 'sine';
-        this.humOsc.frequency.setValueAtTime(45, this.ctx.currentTime);
+        this.humOsc.frequency.setValueAtTime(50, this.ctx.currentTime);
         this.humGain.gain.setValueAtTime(0.01, this.ctx.currentTime);
         this.humOsc.connect(this.humGain);
         this.humGain.connect(this.ctx.destination);
@@ -236,13 +225,13 @@
         const gain = this.ctx.createGain();
         osc.type = 'sine';
         const now = this.ctx.currentTime;
-        osc.frequency.setValueAtTime(300, now);
-        osc.frequency.exponentialRampToValueAtTime(1000, now + 0.05);
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start(now); osc.stop(now + 0.05);
+        osc.start(now); osc.stop(now + 0.08);
       }
     }
 
@@ -254,7 +243,7 @@
     }
 
     let currentMode = 'PARTICLES';
-    const PARTICLE_COUNT = 5000; // Ridotto leggermente per performance di calcolo a 60fps solidi
+    const PARTICLE_COUNT = 6000;
     let scene, camera, renderer;
     let builderGroup;
     let blocks = [];
@@ -278,7 +267,6 @@
     let handExpansionScale = 1.0, targetScale = 1.0;
     let targetCamZ = 32, targetRotX = 0, targetRotY = 0, targetRotZ = 0;
     let previewCanvas, previewCtx;
-    let lastWasPinchingUI = false;
 
     function initThree() {
       const container = document.getElementById('canvas-container');
@@ -289,46 +277,47 @@
       camera.position.set(0, 4, 28);
       camera.lookAt(0, 0, 0);
 
-      // WebGL Renderer ottimizzato per zero-lag (disattivato antialiasing pesante per boost hardware)
       renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       container.appendChild(renderer.domElement);
 
       builderGroup = new THREE.Group();
       builderGroup.visible = false;
       scene.add(builderGroup);
 
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
       scene.add(ambientLight);
 
-      const dirLight = new THREE.DirectionalLight(0x00ffcc, 0.6);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
       dirLight.position.set(10, 25, 15);
       scene.add(dirLight);
 
       const planeGeo = new THREE.PlaneGeometry(60, 60);
-      const planeMat = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.9, metalness: 0.1 });
+      const planeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.2 });
       const floor = new THREE.Mesh(planeGeo, planeMat);
       floor.rotation.x = -Math.PI / 2;
       floor.position.y = -6;
       builderGroup.add(floor);
 
-      const gridHelper = new THREE.GridHelper(60, 30, 0x00ffcc, 0x112222);
+      const gridHelper = new THREE.GridHelper(60, 30, 0xffffff, 0x333333);
       gridHelper.position.y = -5.98;
       builderGroup.add(gridHelper);
 
       controllers.forEach((ctrl, idx) => {
-        const dotGeo = new THREE.SphereGeometry(0.15, 8, 8);
-        const dotMat = new THREE.MeshBasicMaterial({ color: 0x00ffcc });
+        // Puntino finale luminoso
+        const dotGeo = new THREE.SphereGeometry(0.18, 12, 12);
+        const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
         ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
         ctrl.mesh.visible = false;
         builderGroup.add(ctrl.mesh);
 
-        ctrl.pointLight = new THREE.PointLight(0x00ffcc, 0.5, 8);
+        ctrl.pointLight = new THREE.PointLight(0xffffff, 0.8, 10);
         builderGroup.add(ctrl.pointLight);
 
+        // Linea / Raggio laser (stile Vision Pro) che parte da vicino alla camera/polso verso il puntino
         const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0)]);
-        const lineMat = new THREE.LineBasicMaterial({ color: 0x00ffcc, transparent: true, opacity: 0.3 });
+        const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
         ctrl.rayLine = new THREE.Line(lineGeo, lineMat);
         ctrl.rayLine.visible = false;
         builderGroup.add(ctrl.rayLine);
@@ -353,21 +342,25 @@
       const particleColors = new Float32Array(PARTICLE_COUNT * 3);
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
-        const col = new THREE.Color('#00ffcc');
-        particleColors[idx] = col.r;
-        particleColors[idx + 1] = col.g;
-        particleColors[idx + 2] = col.b;
+        let randomColor;
+        const rand = Math.random();
+        if (rand < 0.7) randomColor = new THREE.Color('#ffffff');
+        else if (rand < 0.9) randomColor = new THREE.Color('#aaaaaa');
+        else randomColor = new THREE.Color('#555555');
+        particleColors[idx] = randomColor.r;
+        particleColors[idx + 1] = randomColor.g;
+        particleColors[idx + 2] = randomColor.b;
       }
       particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
       const pCanvas = document.createElement('canvas');
-      pCanvas.width = 16; pCanvas.height = 16;
+      pCanvas.width = 32; pCanvas.height = 32;
       const pCtx = pCanvas.getContext('2d');
-      pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(8, 8, 7, 0, Math.PI * 2); pCtx.fill();
+      pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(16, 16, 14, 0, Math.PI * 2); pCtx.fill();
 
       particleMaterial = new THREE.PointsMaterial({
-        size: 0.22, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
-        transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false
+        size: 0.25, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
+        transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
       });
 
       const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
@@ -385,21 +378,22 @@
       let geo;
       const size = 3.0;
 
-      if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 12, 12);
+      if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 16, 16);
       else if (type === 'pyramid') geo = new THREE.ConeGeometry(size / 1.4, size, 4);
-      else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 8, 16);
-      else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 12);
+      else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 12, 24);
+      else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 16);
       else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
       else geo = new THREE.BoxGeometry(size, size, size);
 
-      const mat = new THREE.MeshStandardMaterial({ color: 0x00ffcc, roughness: 0.2, metalness: 0.3 });
+      const randomColorHex = Math.random() > 0.5 ? 0xffffff : 0x888888;
+      const mat = new THREE.MeshStandardMaterial({ color: randomColorHex, roughness: 0.3, metalness: 0.2 });
 
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.x = x !== undefined ? x : (Math.random() - 0.5) * 8;
       mesh.position.y = y !== undefined ? y : 6; 
       mesh.position.z = z !== undefined ? z : (Math.random() - 0.5) * 4;
 
-      mesh.userData = { originalColor: 0x00ffcc, velocity: new THREE.Vector3(0, 0, 0), isGrabbed: false, size: size };
+      mesh.userData = { originalColor: randomColorHex, velocity: new THREE.Vector3(0, 0, 0), isGrabbed: false, size: size };
 
       builderGroup.add(mesh);
       blocks.push(mesh);
@@ -511,15 +505,39 @@
       }
     }
 
+    // Funzione contorno stile Vision Pro per l'anteprima in basso a destra
+    function drawVisionProHandContour(ctx, landmarks, w, h) {
+      const contourIndices = [0, 1, 2, 3, 4, 8, 12, 16, 20, 17, 0];
+      ctx.beginPath();
+      let first = true;
+      for (let idx of contourIndices) {
+        const pt = landmarks[idx];
+        const x = pt.x * w;
+        const y = pt.y * h;
+        if (first) {
+          ctx.moveTo(x, y);
+          first = false;
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.stroke();
+    }
+
     function initHandTracking() {
       const videoElement = document.getElementById('video-input');
       const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
 
       hands.setOptions({
         maxNumHands: 2, 
-        modelComplexity: 0, // Ottimizzato al minimo per zero-lag e risposta istantanea
-        minDetectionConfidence: 0.4, 
-        minTrackingConfidence: 0.4
+        modelComplexity: 0,
+        minDetectionConfidence: 0.5, 
+        minTrackingConfidence: 0.5
       });
 
       hands.onResults((results) => {
@@ -529,61 +547,15 @@
         previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
 
         const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
-        const cursorEl = document.getElementById('virtual-cursor');
-
-        if (numHands > 0) {
-          const landmarks1 = results.multiHandLandmarks[0];
-          const indexTip = landmarks1[8];
-          const thumbTip = landmarks1[4];
-          const middleTip = landmarks1[12];
-          
-          const cursorX = (1 - indexTip.x) * window.innerWidth;
-          const cursorY = indexTip.y * window.innerHeight;
-          
-          cursorEl.style.display = 'block';
-          cursorEl.style.left = `${cursorX}px`;
-          cursorEl.style.top = `${cursorY}px`;
-
-          const pinchDistUI = Math.hypot(thumbTip.x - middleTip.x, thumbTip.y - middleTip.y);
-          const isPinchingUI = (pinchDistUI < 0.08);
-
-          if (isPinchingUI) cursorEl.classList.add('pinching');
-          else cursorEl.classList.remove('pinching');
-
-          const elementUnderCursor = document.elementFromPoint(cursorX, cursorY);
-          document.querySelectorAll('.virtual-hover').forEach(el => el.classList.remove('virtual-hover'));
-
-          if (elementUnderCursor && (elementUnderCursor.tagName === 'BUTTON' || elementUnderCursor.tagName === 'SELECT' || elementUnderCursor.tagName === 'INPUT')) {
-            elementUnderCursor.classList.add('virtual-hover');
-            
-            if (isPinchingUI && !lastWasPinchingUI) {
-              sounds.playPinch();
-              if (elementUnderCursor.tagName === 'SELECT') {
-                const sel = elementUnderCursor;
-                sel.selectedIndex = (sel.selectedIndex + 1) % sel.options.length;
-                sel.dispatchEvent(new Event('change'));
-              } else if (elementUnderCursor.type === 'color') {
-                const colors = ['#00ffcc', '#ff0055', '#00ccff', '#ffaa00', '#aa00ff', '#ffffff'];
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                elementUnderCursor.value = randomColor;
-                elementUnderCursor.dispatchEvent(new Event('input'));
-              } else {
-                elementUnderCursor.click();
-              }
-            }
-          }
-
-          lastWasPinchingUI = isPinchingUI;
-        } else {
-          cursorEl.style.display = 'none';
-          lastWasPinchingUI = false;
-        }
 
         for (let i = 0; i < 2; i++) {
           const ctrl = controllers[i];
           if (i < numHands) {
             ctrl.active = true;
             const landmarks = results.multiHandLandmarks[i];
+
+            // Disegna il guanto/contorno nell'anteprima
+            drawVisionProHandContour(previewCtx, landmarks, previewCanvas.width, previewCanvas.height);
 
             const thumbTip = landmarks[4], indexTip = landmarks[8], wrist = landmarks[0];
             const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
@@ -605,11 +577,26 @@
             ctrl.mesh.position.copy(ctrl.pos);
             ctrl.pointLight.position.copy(ctrl.pos);
 
+            // Calcolo posizione di partenza della linea (dal polso proiettato nello spazio 3D)
+            const wristNdcX = (1 - wrist.x) * 2 - 1, wristNdcY = -(wrist.y * 2 - 1);
+            const wVector = new THREE.Vector3(wristNdcX, wristNdcY, 0.5);
+            wVector.unproject(camera);
+            const wDir = wVector.sub(camera.position).normalize();
+            const wDist = (targetZ - camera.position.z) / wDir.z;
+            const wristPos3D = camera.position.clone().add(wDir.multiplyScalar(wDist));
+
+            // Aggiorna la linea laser visibile nello spazio 3D
+            const posAttr = ctrl.rayLine.geometry.attributes.position;
+            posAttr.setXYZ(0, wristPos3D.x, wristPos3D.y, wristPos3D.z);
+            posAttr.setXYZ(1, ctrl.pos.x, ctrl.pos.y, ctrl.pos.z);
+            posAttr.needsUpdate = true;
+            ctrl.rayLine.visible = true;
+
             const wasPinching = ctrl.isPinching;
             ctrl.isPinching = (pinchDist < 0.07);
             if (!wasPinching && ctrl.isPinching) sounds.playPinch();
 
-            ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#00ffcc";
+            ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
 
             if (currentMode === 'BUILDER') {
               if (ctrl.isPinching) {
@@ -617,7 +604,7 @@
                   const blockTarget = ctrl.pos.clone().sub(ctrl.grabOffset);
                   ctrl.grabbedBlock.position.copy(blockTarget);
                   ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
-                  ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#00ffcc";
+                  ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#ffffff";
                 } else {
                   let closest = null, minDist = 4.0;
                   for (let block of blocks) {
@@ -637,7 +624,7 @@
                   ctrl.grabbedBlock.userData.isGrabbed = false;
                   ctrl.grabbedBlock = null;
                 }
-                ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#888888";
+                ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#aaaaaa";
               }
             }
           } else {
@@ -649,7 +636,7 @@
               ctrl.grabbedBlock.userData.isGrabbed = false;
               ctrl.grabbedBlock = null;
             }
-            ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#555555"; ctrl.grabEl.innerText = "N/A";
+            ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#666666"; ctrl.grabEl.innerText = "N/A";
           }
         }
 
@@ -675,7 +662,7 @@
 
       const cameraUtils = new Camera(videoElement, {
         onFrame: async () => { await hands.send({ image: videoElement }); },
-        width: 320, height: 240 // Risoriuzione ridotta per zero-lag assoluto
+        width: 480, height: 360
       });
       cameraUtils.start();
     }
@@ -685,6 +672,7 @@
 
       if (currentMode === 'BUILDER') {
         const gravity = -0.06;
+
         blocks.forEach(block => {
           if (!block.userData.isGrabbed) {
             block.userData.velocity.y += gravity;
@@ -695,17 +683,34 @@
               block.position.y = floorY;
               block.userData.velocity.set(0, 0, 0);
             }
+
+            blocks.forEach(other => {
+              if (block !== other && !other.userData.isGrabbed) {
+                const dx = block.position.x - other.position.x;
+                const dz = block.position.z - other.position.z;
+                const distXZ = Math.sqrt(dx * dx + dz * dz);
+                const limitDist = block.userData.size * 0.8;
+
+                if (distXZ < limitDist) {
+                  const topOfOther = other.position.y + (other.userData.size / 2) + (block.userData.size / 2);
+                  if (block.position.y <= topOfOther && block.position.y > other.position.y) {
+                    block.position.y = topOfOther;
+                    block.userData.velocity.set(0, 0, 0);
+                  }
+                }
+              }
+            });
           }
         });
       }
 
       if (currentMode === 'PARTICLES') {
-        particleGroup.rotation.x += (targetRotX - particleGroup.rotation.x) * 0.2;
-        particleGroup.rotation.y += (targetRotY + 0.003 - particleGroup.rotation.y) * 0.2;
-        particleGroup.rotation.z += (targetRotZ - particleGroup.rotation.z) * 0.2;
+        particleGroup.rotation.x += (targetRotX - particleGroup.rotation.x) * 0.15;
+        particleGroup.rotation.y += (targetRotY + 0.003 - particleGroup.rotation.y) * 0.15;
+        particleGroup.rotation.z += (targetRotZ - particleGroup.rotation.z) * 0.15;
 
-        handExpansionScale += (targetScale - handExpansionScale) * 0.2;
-        camera.position.z += (targetCamZ - camera.position.z) * 0.2;
+        handExpansionScale += (targetScale - handExpansionScale) * 0.15;
+        camera.position.z += (targetCamZ - camera.position.z) * 0.15;
 
         const isPinchingAny = (controllers[0].active && controllers[0].isPinching) || (controllers[1].active && controllers[1].isPinching);
         const positions = particleGeometry.attributes.position.array;
@@ -714,11 +719,11 @@
           let tx = targetPositions[i] * handExpansionScale;
           let ty = targetPositions[i+1] * handExpansionScale;
           let tz = targetPositions[i+2] * handExpansionScale;
-          let lerpSpeed = 0.2;
+          let lerpSpeed = 0.15;
 
           if (isPinchingAny && (i / 3) % 2 === 0) {
             tx *= 0.01; ty *= 0.01; tz *= 0.01;
-            lerpSpeed = 0.6;
+            lerpSpeed = 0.5;
           }
 
           positions[i] += (tx - positions[i]) * lerpSpeed;
