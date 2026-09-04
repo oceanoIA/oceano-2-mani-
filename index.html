@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.5 // MASSIVE EXPANSION</title>
+  <title>STARK KINETIC LAB v9.4 // EXPANDED MATRIX</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,7 @@
     }
 
     .ui-overlay {
-      position: absolute; top: 65px; left: 20px; z-index: 10; width: 310px; padding: 16px;
+      position: absolute; top: 65px; left: 20px; z-index: 10; width: 300px; padding: 16px;
       background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
       border: 1px solid rgba(0, 243, 255, 0.25);
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; gap: 12px;
@@ -67,7 +67,7 @@
     }
     select option { background: #000000; color: #00f3ff; }
 
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 220px; overflow-y: auto; }
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 180px; overflow-y: auto; }
 
     .telemetry-box {
       font-size: 10px; background: rgba(0, 0, 0, 0.5);
@@ -104,7 +104,7 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">MANUAL GESTURE OVERRIDE ACTIVE</span>
+      <span class="security-badge">GESTURES: V (SHAPE) & M (MODE)</span>
     </div>
     <div class="mode-tabs">
       <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
@@ -120,16 +120,15 @@
     
     <div id="controls-builder" style="display: none;">
       <div class="control-group">
-        <label>SPAWN OGGETTI 3D (36 FORME)</label>
+        <label>SPAWN OGGETTI 3D (16 FORME)</label>
         <div class="btn-grid">
-          <!-- Classiche -->
           <button class="stark-btn" onclick="spawnShape('cube')">+ CUBO</button>
           <button class="stark-btn" onclick="spawnShape('sphere')">+ SFERA</button>
           <button class="stark-btn" onclick="spawnShape('pyramid')">+ PIRAMIDE</button>
           <button class="stark-btn" onclick="spawnShape('torus')">+ TORUS</button>
           <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
           <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
-          <!-- Prima espansione (10) -->
+          <!-- 10 Nuove Forme Builder -->
           <button class="stark-btn" onclick="spawnShape('star')">+ STELLA</button>
           <button class="stark-btn" onclick="spawnShape('diamond')">+ DIAMANTE</button>
           <button class="stark-btn" onclick="spawnShape('hourglass')">+ CLESSIDRA</button>
@@ -140,27 +139,6 @@
           <button class="stark-btn" onclick="spawnShape('dodecahedron')">+ DODECAEDRO</button>
           <button class="stark-btn" onclick="spawnShape('starTorus')">+ TORUS STELLATO</button>
           <button class="stark-btn" onclick="spawnShape('spring')">+ MOLLA</button>
-          <!-- Seconda espansione (20 nuove) -->
-          <button class="stark-btn" onclick="spawnShape('cone')">+ CONO</button>
-          <button class="stark-btn" onclick="spawnShape('ring')">+ ANELLO</button>
-          <button class="stark-btn" onclick="spawnShape('capsule')">+ CAPSULA</button>
-          <button class="stark-btn" onclick="spawnShape('tube')">+ TUBO CURVO</button>
-          <button class="stark-btn" onclick="spawnShape('octahedron2')">+ OTTAEDRO 2</button>
-          <button class="stark-btn" onclick="spawnShape('tetrahedron')">+ TETRAEDRO</button>
-          <button class="stark-btn" onclick="spawnShape('octaStar')">+ STELLA OTTA.</button>
-          <button class="stark-btn" onclick="spawnShape('pyramidHex')">+ PIRAMIDE ESAG.</button>
-          <button class="stark-btn" onclick="spawnShape('pill')">+ PILLOLA 3D</button>
-          <button class="stark-btn" onclick="spawnShape('gemstone')">+ GEMMA</button>
-          <button class="stark-btn" onclick="spawnShape('disc')">+ DISCO</button>
-          <button class="stark-btn" onclick="spawnShape('cubeFrame')">+ STRUTTURA CUBO</button>
-          <button class="stark-btn" onclick="spawnShape('cross')">+ CROCE 3D</button>
-          <button class="stark-btn" onclick="spawnShape('wedge')">+ CUNEO</button>
-          <button class="stark-btn" onclick="spawnShape('ellipsoid')">+ ELLISSOIDE</button>
-          <button class="stark-btn" onclick="spawnShape('torusThick')">+ TORUS SPESSO</button>
-          <button class="stark-btn" onclick="spawnShape('torusThin')">+ TORUS SOTTILE</button>
-          <button class="stark-btn" onclick="spawnShape('pyramidOct')">+ PIRAMIDE OTTA.</button>
-          <button class="stark-btn" onclick="spawnShape('cubeRounded')">+ CUBO SMUSSATO</button>
-          <button class="stark-btn" onclick="spawnShape('helixNode')">+ NODO ELICA</button>
         </div>
         <button class="stark-btn" style="margin-top: 6px; border-color: #ff3366; color: #ff3366;" onclick="clearBlocks()">RESET SCENA</button>
       </div>
@@ -168,9 +146,8 @@
 
     <div id="controls-particles" style="display: block;">
       <div class="control-group">
-        <label>HOLOGRAM TEMPLATE (39 FORME)</label>
+        <label>HOLOGRAM TEMPLATE (19 FORME)</label>
         <select id="shape-select">
-          <!-- Classiche & Prima serie -->
           <option value="jupiter">JUPITER & RINGS</option>
           <option value="galaxy">GALAXY SPIRAL</option>
           <option value="hypercube">HYPERCUBE MATRIX</option>
@@ -180,6 +157,7 @@
           <option value="fireworks">ENERGY EXPLOSION</option>
           <option value="saturn">SATURN RING SYSTEM</option>
           <option value="DNA">DNA DOUBLE HELIX</option>
+          <!-- 10 Nuovi Ologrammi -->
           <option value="nebula">NEBULA SPIRAL</option>
           <option value="tripleDNA">TRIPLE DNA HELIX</option>
           <option value="quantumVortex">QUANTUM VORTEX</option>
@@ -190,27 +168,6 @@
           <option value="gravitationalWaves">GRAVITATIONAL WAVES</option>
           <option value="spacePortal">SPACE PORTAL</option>
           <option value="crystalFractal">CRYSTAL FRACTAL</option>
-          <!-- 20 Nuovi Ologrammi Plasma -->
-          <option value="plasmaSphere">PLASMA SPHERE</option>
-          <option value="cyberspaceGrid">CYBERSPACE GRID</option>
-          <option value="plasmaTorus">PLASMA TORUS</option>
-          <option value="solarFlare">SOLAR FLARE</option>
-          <option value="matrixRain">MATRIX RAIN</option>
-          <option value="warpTunnel">WARP TUNNEL</option>
-          <option value="ionStorm">ION STORM</option>
-          <option value="pulsarStar">PULSAR STAR</option>
-          <option value="quantumCube">QUANTUM CUBE</option>
-          <option value="neuralNet">NEURAL NET</option>
-          <option value="plasmaFlame">PLASMA FLAME</option>
-          <option value="blackHoleAccretion">BLACK HOLE DISK</option>
-          <option value="hyperCone">HYPER CONE</option>
-          <option value="plasmaRing">PLASMA RING</option>
-          <option value="energyShield">ENERGY SHIELD</option>
-          <option value="tachyonField">TACHYON FIELD</option>
-          <option value="singularityPoint">SINGULARITY POINT</option>
-          <option value="plasmaHelix">PLASMA HELIX</option>
-          <option value="cosmicWeb">COSMIC WEB</option>
-          <option value="cyberLotus">CYBER LOTUS</option>
         </select>
       </div>
       <div class="control-group" style="margin-top: 6px;">
@@ -228,8 +185,8 @@
           <span id="h1-status" class="telemetry-val">CERCA...</span>
         </div>
         <div class="telemetry-row">
-          <span>STATO:</span>
-          <span id="h1-gesture" class="telemetry-val">TRACCIAMENTO</span>
+          <span>GESTO 1:</span>
+          <span id="h1-gesture" class="telemetry-val">NESSUNO</span>
         </div>
       </div>
       <div class="hand-card" style="margin-top: 4px;">
@@ -238,8 +195,8 @@
           <span id="h2-status" class="telemetry-val">CERCA...</span>
         </div>
         <div class="telemetry-row">
-          <span>STATO:</span>
-          <span id="h2-gesture" class="telemetry-val">TRACCIAMENTO</span>
+          <span>GESTO 2:</span>
+          <span id="h2-gesture" class="telemetry-val">NESSUNO</span>
         </div>
       </div>
     </div>
@@ -320,6 +277,13 @@
     let handExpansionScale = 1.0, targetScale = 1.0;
     let targetCamZ = 32, targetRotX = 0, targetRotY = 0, targetRotZ = 0;
     let previewCanvas, previewCtx;
+
+    const shapeList = [
+      'jupiter', 'galaxy', 'hypercube', 'heart', 'flower', 'buddha', 'fireworks', 'saturn', 'DNA',
+      'nebula', 'tripleDNA', 'quantumVortex', 'atomicMatrix', 'supernova', 'solarCorona', 'energyHourglass', 'gravitationalWaves', 'spacePortal', 'crystalFractal'
+    ];
+    let currentShapeIndex = 0;
+    let lastGestureActionTime = 0;
 
     function initThree() {
       const container = document.getElementById('canvas-container');
@@ -429,6 +393,7 @@
       else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 16, 32);
       else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 32);
       else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
+      // Nuove geometrie 3D Builder
       else if (type === 'star') geo = new THREE.OctahedronGeometry(size / 1.5, 1);
       else if (type === 'diamond') geo = new THREE.OctahedronGeometry(size / 1.5);
       else if (type === 'hourglass') geo = new THREE.ConeGeometry(size / 2, size, 16);
@@ -439,27 +404,6 @@
       else if (type === 'dodecahedron') geo = new THREE.DodecahedronGeometry(size / 1.6);
       else if (type === 'starTorus') geo = new THREE.TorusKnotGeometry(size / 2, size / 10, 64, 32, 2, 3);
       else if (type === 'spring') geo = new THREE.TorusKnotGeometry(size / 2, size / 12, 64, 16, 1, 5);
-      // Ulteriori 20 forme 3D Builder
-      else if (type === 'cone') geo = new THREE.ConeGeometry(size / 2, size, 32);
-      else if (type === 'ring') geo = new THREE.RingGeometry(size / 4, size / 2, 32);
-      else if (type === 'capsule') geo = new THREE.CapsuleGeometry(size / 3, size / 2, 16, 16);
-      else if (type === 'tube') geo = new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,-1,0), new THREE.Vector3(0,1,0)), 20, size/4, 8, false);
-      else if (type === 'octahedron2') geo = new THREE.OctahedronGeometry(size / 1.4, 2);
-      else if (type === 'tetrahedron') geo = new THREE.TetrahedronGeometry(size / 1.4);
-      else if (type === 'octaStar') geo = new THREE.DodecahedronGeometry(size / 1.5, 1);
-      else if (type === 'pyramidHex') geo = new THREE.ConeGeometry(size / 2, size, 6);
-      else if (type === 'pill') geo = new THREE.CylinderGeometry(size / 3, size / 3, size * 0.8, 16);
-      else if (type === 'gemstone') geo = new THREE.CylinderGeometry(size / 2, size / 4, size, 5);
-      else if (type === 'disc') geo = new THREE.CylinderGeometry(size / 2, size / 2, size / 5, 32);
-      else if (type === 'cubeFrame') geo = new THREE.BoxGeometry(size, size, size);
-      else if (type === 'cross') geo = new THREE.BoxGeometry(size, size / 3, size / 3);
-      else if (type === 'wedge') geo = new THREE.ConeGeometry(size / 2, size, 3);
-      else if (type === 'ellipsoid') geo = new THREE.SphereGeometry(size / 2, 32, 16);
-      else if (type === 'torusThick') geo = new THREE.TorusGeometry(size / 2, size / 3, 16, 32);
-      else if (type === 'torusThin') geo = new THREE.TorusGeometry(size / 2, size / 10, 16, 32);
-      else if (type === 'pyramidOct') geo = new THREE.ConeGeometry(size / 2, size, 8);
-      else if (type === 'cubeRounded') geo = new THREE.BoxGeometry(size * 0.9, size * 0.9, size * 0.9);
-      else if (type === 'helixNode') geo = new THREE.TorusKnotGeometry(size / 2, size / 8, 32, 16, 3, 4);
       else geo = new THREE.BoxGeometry(size, size, size);
 
       const randomColorHex = Math.floor(Math.random() * 16777215);
@@ -493,6 +437,45 @@
 
       builderGroup.visible = (mode === 'BUILDER');
       particleGroup.visible = (mode === 'PARTICLES');
+    }
+
+    function nextShape() {
+      currentShapeIndex = (currentShapeIndex + 1) % shapeList.length;
+      const nextName = shapeList[currentShapeIndex];
+      document.getElementById('shape-select').value = nextName;
+      generateShape(nextName);
+      sounds.playBeep(800);
+    }
+
+    function toggleAppMode() {
+      if (currentMode === 'PARTICLES') {
+        switchMode('BUILDER');
+      } else {
+        switchMode('PARTICLES');
+      }
+      sounds.playBeep(400);
+    }
+
+    function recognizeGesture(lm) {
+      const indexUp = lm[8].y < lm[6].y;
+      const middleUp = lm[12].y < lm[10].y;
+      const ringDown = lm[16].y > lm[14].y;
+      const pinkyDown = lm[20].y > lm[18].y;
+
+      if (indexUp && middleUp && ringDown && pinkyDown) {
+        return 'V_SIGN';
+      }
+
+      const indexClosed = lm[8].y > lm[5].y;
+      const middleClosed = lm[12].y > lm[9].y;
+      const ringClosed = lm[16].y > lm[13].y;
+      const pinkyClosed = lm[20].y > lm[17].y;
+
+      if (indexClosed && middleClosed && ringClosed && pinkyClosed) {
+        return 'M_SIGN';
+      }
+
+      return 'NONE';
     }
 
     function generateShape(type) {
@@ -571,7 +554,9 @@
           const theta = Math.random() * Math.PI * 2, phi = Math.acos((Math.random() * 2) - 1);
           const speed = 2 + Math.random() * 12;
           x = speed * Math.sin(phi) * Math.cos(theta); y = speed * Math.sin(phi) * Math.sin(theta); z = speed * Math.cos(phi);
-        } else if (type === 'nebula') {
+        }
+        // 10 Nuovi Ologrammi Plasma
+        else if (type === 'nebula') {
           const a = Math.random() * Math.PI * 6, r = Math.random() * 12;
           x = Math.cos(a) * r; z = Math.sin(a) * r; y = (Math.random() - 0.5) * 8;
         } else if (type === 'tripleDNA') {
@@ -606,66 +591,6 @@
           y = (v - 0.5) * 12;
           z = (u - 0.5) * 12 * Math.cos(v * Math.PI);
         }
-        // Ulteriori 20 ologrammi Plasma
-        else if (type === 'plasmaSphere') {
-          const u = Math.random(), v = Math.random();
-          const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0), r = 6.0;
-          x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.cos(phi); z = r * Math.sin(phi) * Math.sin(theta);
-        } else if (type === 'cyberspaceGrid') {
-          x = (Math.random() - 0.5) * 18; z = (Math.random() - 0.5) * 18; y = -4 + Math.sin(x) * Math.cos(z) * 2;
-        } else if (type === 'plasmaTorus') {
-          const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI * 2, R = 6, r = 2;
-          x = (R + r * Math.cos(v)) * Math.cos(u); z = (R + r * Math.cos(v)) * Math.sin(u); y = r * Math.sin(v);
-        } else if (type === 'solarFlare') {
-          const a = Math.random() * Math.PI * 2, r = 2 + Math.random() * 10;
-          x = Math.cos(a) * r; y = Math.sin(r * 0.5) * 4; z = Math.sin(a) * r;
-        } else if (type === 'matrixRain') {
-          x = (Math.random() - 0.5) * 16; y = (Math.random() - 0.5) * 16; z = (Math.random() - 0.5) * 16;
-        } else if (type === 'warpTunnel') {
-          const a = Math.random() * Math.PI * 2, zPos = (Math.random() - 0.5) * 20, r = 5;
-          x = Math.cos(a) * r; z = zPos; y = Math.sin(a) * r;
-        } else if (type === 'ionStorm') {
-          const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI, r = Math.random() * 10;
-          x = r * Math.sin(v) * Math.cos(u); y = r * Math.cos(v); z = r * Math.sin(v) * Math.sin(u);
-        } else if (type === 'pulsarStar') {
-          const a = Math.random() * Math.PI * 2, r = Math.random() * 4, beam = (Math.random() - 0.5) * 14;
-          if (Math.random() > 0.3) { x = Math.cos(a) * r; z = Math.sin(a) * r; y = (Math.random() - 0.5) * 2; }
-          else { x = (Math.random() - 0.5) * 1; y = beam; z = (Math.random() - 0.5) * 1; }
-        } else if (type === 'quantumCube') {
-          x = (Math.random() - 0.5) * 8; y = (Math.random() - 0.5) * 8; z = (Math.random() - 0.5) * 8;
-        } else if (type === 'neuralNet') {
-          const a = Math.random() * Math.PI * 2, r = 3 + Math.random() * 7;
-          x = Math.cos(a) * r; y = (Math.random() - 0.5) * 10; z = Math.sin(a) * r;
-        } else if (type === 'plasmaFlame') {
-          const h = Math.random() * 12, r = (12 - h) * 0.4 * Math.random(), a = Math.random() * Math.PI * 2;
-          x = Math.cos(a) * r; y = h - 6; z = Math.sin(a) * r;
-        } else if (type === 'blackHoleAccretion') {
-          const a = Math.random() * Math.PI * 2, r = 2 + Math.random() * 10;
-          x = Math.cos(a) * r; y = (Math.random() - 0.5) * 0.8; z = Math.sin(a) * r;
-        } else if (type === 'hyperCone') {
-          const h = (Math.random() - 0.5) * 10, r = (5 - h * 0.5), a = Math.random() * Math.PI * 2;
-          x = Math.cos(a) * r; y = h; z = Math.sin(a) * r;
-        } else if (type === 'plasmaRing') {
-          const a = Math.random() * Math.PI * 2, r = 7 + (Math.random() - 0.5) * 1;
-          x = Math.cos(a) * r; y = (Math.random() - 0.5) * 1; z = Math.sin(a) * r;
-        } else if (type === 'energyShield') {
-          const u = Math.random(), v = Math.random();
-          const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0), r = 7.5;
-          x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.cos(phi); z = r * Math.sin(phi) * Math.sin(theta);
-        } else if (type === 'tachyonField') {
-          x = (Math.random() - 0.5) * 14; y = (Math.random() - 0.5) * 14; z = (Math.random() - 0.5) * 14;
-        } else if (type === 'singularityPoint') {
-          const r = Math.random() * 2;
-          x = (Math.random() - 0.5) * r; y = (Math.random() - 0.5) * r; z = (Math.random() - 0.5) * r;
-        } else if (type === 'plasmaHelix') {
-          const t = (i / PARTICLE_COUNT) * Math.PI * 10;
-          x = Math.sin(t) * 5; y = ((i / PARTICLE_COUNT) * 14) - 7; z = Math.cos(t) * 5;
-        } else if (type === 'cosmicWeb') {
-          x = (Math.random() - 0.5) * 15; y = (Math.random() - 0.5) * 15; z = (Math.random() - 0.5) * 15;
-        } else if (type === 'cyberLotus') {
-          const u = Math.random() * Math.PI * 2, r = Math.random() * 8;
-          x = Math.cos(u) * r; y = Math.sin(r) * 3; z = Math.sin(u) * r;
-        }
 
         p[idx] = x; p[idx + 1] = y; p[idx + 2] = z;
       }
@@ -687,6 +612,7 @@
         previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
 
         const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
+        const now = Date.now();
 
         for (let i = 0; i < 2; i++) {
           const ctrl = controllers[i];
@@ -713,6 +639,17 @@
             ctrl.mesh.position.copy(ctrl.pos);
             ctrl.pointLight.position.copy(ctrl.pos);
 
+            const gesture = recognizeGesture(landmarks);
+            ctrl.gestureEl.innerText = gesture;
+
+            if (gesture === 'V_SIGN' && now - lastGestureActionTime > 1200) {
+              nextShape();
+              lastGestureActionTime = now;
+            } else if (gesture === 'M_SIGN' && now - lastGestureActionTime > 1500) {
+              toggleAppMode();
+              lastGestureActionTime = now;
+            }
+
             ctrl.statusEl.innerText = "ATTIVA";
             ctrl.statusEl.style.color = "#ffffff";
           } else {
@@ -720,6 +657,7 @@
             ctrl.mesh.visible = false;
             ctrl.statusEl.innerText = "CERCA...";
             ctrl.statusEl.style.color = "#ff3366";
+            ctrl.gestureEl.innerText = "N/A";
           }
         }
 
