@@ -503,10 +503,13 @@ const CONFIG = {
   axisSensitivity: 0.50,
 
   /*
-    PIANO LEGGERMENTE INCLINATO
+    ROTAZIONE DELLA BASE SOLO SULL'ASSE Y
+
+    X = nessuna inclinazione
+    Y = rotazione della base
+    Z = nessuna inclinazione
   */
-  floorTiltX: -0.08,
-  floorTiltZ: 0.04,
+  floorRotationY: 8 * Math.PI / 180,
 
   colors: {
     white: 0xffffff,
@@ -774,15 +777,18 @@ function initBuilder(){
   );
 
   /*
-    PIANO INCLINATO
-    Leggera inclinazione visiva.
-  */
-  floor.rotation.x=
-    -Math.PI/2+
-    CONFIG.floorTiltX;
+    BASE PIATTA.
 
-  floor.rotation.z=
-    CONFIG.floorTiltZ;
+    NON viene inclinata sull'asse X.
+    NON viene inclinata sull'asse Z.
+
+    Viene ruotata SOLO sull'asse Y.
+  */
+  floor.rotation.set(
+    -Math.PI/2,
+    CONFIG.floorRotationY,
+    0
+  );
 
   floor.position.y=-6;
 
@@ -792,11 +798,15 @@ function initBuilder(){
     60,30,0xffffff,0x333333
   );
 
-  grid.rotation.x=
-    CONFIG.floorTiltX;
-
-  grid.rotation.z=
-    CONFIG.floorTiltZ;
+  /*
+    La griglia segue esattamente
+    la stessa rotazione della base.
+  */
+  grid.rotation.set(
+    -Math.PI/2,
+    CONFIG.floorRotationY,
+    0
+  );
 
   grid.position.y=-5.98;
 
@@ -2212,8 +2222,7 @@ function updateBuilder(delta){
     velocity.y-=gravity;
 
     /*
-      Anche se un valore esterno dovesse
-      comparire, X/Z vengono forzati a zero.
+      SCIVOLAMENTO COMPLETAMENTE DISABILITATO.
     */
     velocity.x=0;
     velocity.z=0;
