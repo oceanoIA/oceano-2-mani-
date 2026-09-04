@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v10.0 // VISION PRO ULTIMATE</title>
+  <title>STARK KINETIC LAB v9.7 // VISION PRO RAYCASTER</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -107,13 +107,6 @@
   </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-  
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 </head>
@@ -124,7 +117,7 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">VISION PRO ULTIMATE // BLOOM ACTIVE</span>
+      <span class="security-badge">VISION PRO RAYCAST (AUTO-START)</span>
     </div>
   </div>
 
@@ -141,7 +134,7 @@
     
     <div id="controls-builder" style="display: none;">
       <div class="control-group">
-        <label>SPAWN OGGETTI 3D (O USA PINCH NEL VUOTO)</label>
+        <label>SPAWN OGGETTI 3D</label>
         <div class="btn-grid">
           <button class="stark-btn" onclick="spawnShape('cube')">+ CUBO</button>
           <button class="stark-btn" onclick="spawnShape('sphere')">+ SFERA</button>
@@ -171,7 +164,7 @@
       </div>
       <div class="control-group" style="margin-top: 8px;">
         <label>PLASMA COLOR</label>
-        <input type="color" id="color-picker" value="#00ffff">
+        <input type="color" id="color-picker" value="#ffffff">
       </div>
     </div>
 
@@ -219,8 +212,8 @@
         this.humOsc = this.ctx.createOscillator();
         this.humGain = this.ctx.createGain();
         this.humOsc.type = 'sine';
-        this.humOsc.frequency.setValueAtTime(45, this.ctx.currentTime);
-        this.humGain.gain.setValueAtTime(0.008, this.ctx.currentTime);
+        this.humOsc.frequency.setValueAtTime(50, this.ctx.currentTime);
+        this.humGain.gain.setValueAtTime(0.01, this.ctx.currentTime);
         this.humOsc.connect(this.humGain);
         this.humGain.connect(this.ctx.destination);
         this.humOsc.start();
@@ -230,29 +223,15 @@
         if (!this.enabled || !this.initialized) return;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        const now = this.ctx.currentTime;
-        osc.frequency.setValueAtTime(300, now);
-        osc.frequency.exponentialRampToValueAtTime(900, now + 0.1);
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now); osc.stop(now + 0.1);
-      }
-      playSpawn() {
-        if (!this.enabled || !this.initialized) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
         osc.type = 'sine';
         const now = this.ctx.currentTime;
-        osc.frequency.setValueAtTime(600, now);
-        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start(now); osc.stop(now + 0.15);
+        osc.start(now); osc.stop(now + 0.08);
       }
     }
 
@@ -264,8 +243,8 @@
     }
 
     let currentMode = 'PARTICLES';
-    const PARTICLE_COUNT = 7000;
-    let scene, camera, renderer, composer;
+    const PARTICLE_COUNT = 6000;
+    let scene, camera, renderer;
     let builderGroup;
     let blocks = [];
 
@@ -273,12 +252,12 @@
       {
         mesh: null, pointLight: null, rayLine: null,
         grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
-        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false, spawnCooldown: 0
+        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
       },
       {
         mesh: null, pointLight: null, rayLine: null,
         grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
-        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false, spawnCooldown: 0
+        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
       }
     ];
 
@@ -286,7 +265,7 @@
     let targetPositions = new Float32Array(PARTICLE_COUNT * 3);
     let currentPositions = new Float32Array(PARTICLE_COUNT * 3);
     let handExpansionScale = 1.0, targetScale = 1.0;
-    let targetCamZ = 30, targetRotX = 0, targetRotY = 0, targetRotZ = 0;
+    let targetCamZ = 32, targetRotX = 0, targetRotY = 0, targetRotZ = 0;
     let previewCanvas, previewCtx;
 
     function initThree() {
@@ -303,13 +282,6 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       container.appendChild(renderer.domElement);
 
-      // Post-Processing con Bloom Cinematografico
-      const renderScene = new THREE.RenderPass(scene, camera);
-      const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.4, 0.85);
-      composer = new THREE.EffectComposer(renderer);
-      composer.addPass(renderScene);
-      composer.addPass(bloomPass);
-
       builderGroup = new THREE.Group();
       builderGroup.visible = false;
       scene.add(builderGroup);
@@ -317,33 +289,33 @@
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
       scene.add(ambientLight);
 
-      const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
       dirLight.position.set(10, 25, 15);
       scene.add(dirLight);
 
       const planeGeo = new THREE.PlaneGeometry(60, 60);
-      const planeMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.8, metalness: 0.2 });
+      const planeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.2 });
       const floor = new THREE.Mesh(planeGeo, planeMat);
       floor.rotation.x = -Math.PI / 2;
       floor.position.y = -6;
       builderGroup.add(floor);
 
-      const gridHelper = new THREE.GridHelper(60, 30, 0x00ffff, 0x222222);
+      const gridHelper = new THREE.GridHelper(60, 30, 0xffffff, 0x333333);
       gridHelper.position.y = -5.98;
       builderGroup.add(gridHelper);
 
       controllers.forEach((ctrl, idx) => {
         const dotGeo = new THREE.SphereGeometry(0.18, 12, 12);
-        const dotMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+        const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
         ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
         ctrl.mesh.visible = false;
         builderGroup.add(ctrl.mesh);
 
-        ctrl.pointLight = new THREE.PointLight(0x00ffff, 1.5, 10);
+        ctrl.pointLight = new THREE.PointLight(0xffffff, 0.8, 10);
         builderGroup.add(ctrl.pointLight);
 
         const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0)]);
-        const lineMat = new THREE.LineBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.6 });
+        const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
         ctrl.rayLine = new THREE.Line(lineGeo, lineMat);
         ctrl.rayLine.visible = false;
         builderGroup.add(ctrl.rayLine);
@@ -368,9 +340,14 @@
       const particleColors = new Float32Array(PARTICLE_COUNT * 3);
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
-        particleColors[idx] = 0.0;
-        particleColors[idx + 1] = 1.0;
-        particleColors[idx + 2] = 1.0;
+        let randomColor;
+        const rand = Math.random();
+        if (rand < 0.7) randomColor = new THREE.Color('#ffffff');
+        else if (rand < 0.9) randomColor = new THREE.Color('#aaaaaa');
+        else randomColor = new THREE.Color('#555555');
+        particleColors[idx] = randomColor.r;
+        particleColors[idx + 1] = randomColor.g;
+        particleColors[idx + 2] = randomColor.b;
       }
       particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
@@ -380,7 +357,7 @@
       pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(16, 16, 14, 0, Math.PI * 2); pCtx.fill();
 
       particleMaterial = new THREE.PointsMaterial({
-        size: 0.28, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
+        size: 0.25, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
         transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
       });
 
@@ -396,12 +373,8 @@
 
     function spawnShape(type, x, y, z) {
       sounds.init();
-      sounds.playSpawn();
       let geo;
       const size = 3.0;
-
-      const shapes = ['cube', 'sphere', 'pyramid', 'torus', 'cylinder', 'icosahedron'];
-      if (!type) type = shapes[Math.floor(Math.random() * shapes.length)];
 
       if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 16, 16);
       else if (type === 'pyramid') geo = new THREE.ConeGeometry(size / 1.4, size, 4);
@@ -410,14 +383,15 @@
       else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
       else geo = new THREE.BoxGeometry(size, size, size);
 
-      const mat = new THREE.MeshStandardMaterial({ color: 0x00ffff, roughness: 0.2, metalness: 0.5, emissive: 0x004444 });
+      const randomColorHex = Math.random() > 0.5 ? 0xffffff : 0x888888;
+      const mat = new THREE.MeshStandardMaterial({ color: randomColorHex, roughness: 0.3, metalness: 0.2 });
 
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.x = x !== undefined ? x : (Math.random() - 0.5) * 8;
       mesh.position.y = y !== undefined ? y : 6; 
       mesh.position.z = z !== undefined ? z : (Math.random() - 0.5) * 4;
 
-      mesh.userData = { originalColor: 0x00ffff, velocity: new THREE.Vector3(0, 0, 0), isGrabbed: false, size: size };
+      mesh.userData = { originalColor: randomColorHex, velocity: new THREE.Vector3(0, 0, 0), isGrabbed: false, size: size };
 
       builderGroup.add(mesh);
       blocks.push(mesh);
@@ -431,11 +405,8 @@
 
     function setBlockHighlight(block, mode) {
       if (!block) return;
-      if (mode === 'grab') {
-        block.material.emissive.setHex(0x00ffff);
-      } else {
-        block.material.emissive.setHex(0x004444);
-      }
+      if (mode === 'grab') block.material.color.setHex(0xffffff);
+      else block.material.color.setHex(block.userData.originalColor);
     }
 
     function switchMode(mode) {
@@ -548,10 +519,10 @@
         }
       }
       ctx.closePath();
-      ctx.fillStyle = 'rgba(0, 255, 255, 0.15)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
       ctx.fill();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = 'rgba(0, 255, 255, 0.9)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
       ctx.stroke();
     }
 
@@ -624,7 +595,7 @@
             ctrl.isPinching = (pinchDist < 0.085);
             if (!wasPinching && ctrl.isPinching) sounds.playPinch();
 
-            ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#00ffff";
+            ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
 
             if (currentMode === 'BUILDER') {
               if (ctrl.isPinching) {
@@ -632,7 +603,7 @@
                   const blockTarget = ctrl.pos.clone().sub(ctrl.grabOffset);
                   ctrl.grabbedBlock.position.copy(blockTarget);
                   ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
-                  ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#00ffff";
+                  ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#ffffff";
                 } else {
                   let closest = null, minDist = 4.0;
                   for (let block of blocks) {
@@ -644,12 +615,6 @@
                     closest.userData.isGrabbed = true;
                     ctrl.grabOffset.copy(ctrl.pos).sub(closest.position);
                     setBlockHighlight(closest, 'grab');
-                  } else {
-                    // SPAWN AUTOMATICO CON PINCH NEL VUOTO
-                    if (ctrl.spawnCooldown <= 0) {
-                      spawnShape(null, ctrl.pos.x, ctrl.pos.y, ctrl.pos.z);
-                      ctrl.spawnCooldown = 30; // Evita spawn continui troppo rapidi
-                    }
                   }
                 }
               } else {
@@ -660,7 +625,6 @@
                 }
                 ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#aaaaaa";
               }
-              if (ctrl.spawnCooldown > 0) ctrl.spawnCooldown--;
             }
           } else {
             ctrl.active = false;
@@ -776,14 +740,13 @@
         particleGeometry.attributes.position.needsUpdate = true;
       }
 
-      composer.render();
+      renderer.render(scene, camera);
     }
 
     function onWindowResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-      composer.setSize(window.innerWidth, window.innerHeight);
     }
 
     document.getElementById('shape-select').addEventListener('change', (e) => generateShape(e.target.value));
@@ -791,6 +754,7 @@
       particleMaterial.color.set(e.target.value);
     });
 
+    // Avvio sicuro all'effettivo caricamento della pagina
     window.addEventListener('load', () => {
       initThree();
       initHandTracking();
