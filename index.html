@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PARTICLE FLOW // INTERACTIVE MATRIX</title>
+<title>Particle Flow</title>
 <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
 <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
 <link href="[https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap](https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap)" rel="stylesheet">
@@ -12,38 +12,36 @@
 body { overflow: hidden; background-color: #000000; font-family: 'Share Tech Mono', monospace; color: #ffffff; }
 #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
 #video-input { display: none; }
-/* Header Superiore Minimal */
+/* Header Superiore stile TikTok / Video originale */
 .stark-header {
 position: absolute; top: 0; left: 0; width: 100%; height: 50px;
 z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
 }
 .stark-title {
 font-family: 'Share Tech Mono', monospace; font-size: 13px;
-letter-spacing: 1px; color: rgba(255, 255, 255, 0.85);
+letter-spacing: 1px; color: rgba(255, 255, 255, 0.9);
 display: flex; align-items: center; gap: 12px;
 }
 .security-badge {
-font-size: 10px; background: transparent; color: rgba(255, 255, 255, 0.5);
+font-size: 11px; background: transparent; color: rgba(255, 255, 255, 0.4);
 letter-spacing: 0.5px;
 }
-/* DOCK IN BASSO AL CENTRO MINIMAL */
+/* DOCK IN BASSO AL CENTRO IDENTICO AL VIDEO */
 .mode-dock {
 position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
-display: flex; gap: 8px; z-index: 20; background: rgba(18, 18, 18, 0.6);
+display: flex; gap: 6px; z-index: 20; background: rgba(18, 18, 18, 0.45);
 padding: 6px 12px; border-radius: 20px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-border: 1px solid rgba(255, 255, 255, 0.1);
+border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .tab-btn {
 background: transparent; border: none;
-color: rgba(255, 255, 255, 0.5); font-family: 'Share Tech Mono', monospace; font-size: 11px;
-padding: 6px 12px; cursor: pointer; transition: all 0.2s ease;
-border-radius: 14px;
+color: rgba(255, 255, 255, 0.45); font-family: 'Share Tech Mono', monospace; font-size: 10px;
+padding: 6px 10px; cursor: pointer; transition: all 0.2s ease;
+border-radius: 12px; text-transform: lowercase;
 }
 .tab-btn:hover, .tab-btn.active {
 background: rgba(255, 255, 255, 0.15); color: #ffffff;
 }
-/* Nascondi elementi non presenti nel video originale */
-.ui-overlay, .camera-preview-container { display: none; }
 </style>
 <script src="[https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js](https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js)"></script>
 <script src="[https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js](https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js)" crossorigin="anonymous"></script>
@@ -59,25 +57,25 @@ background: rgba(255, 255, 255, 0.15); color: #ffffff;
 </div>
 </div>
 <div class="mode-dock" id="shape-dock">
-<button class="tab-btn active" onclick="selectTemplate('sphere', this)">Loop</button>
-<button class="tab-btn" onclick="selectTemplate('jupiter', this)">Jup</button>
-<button class="tab-btn" onclick="selectTemplate('galaxy', this)">Gal</button>
-<button class="tab-btn" onclick="selectTemplate('heart', this)">Heart</button>
-<button class="tab-btn" onclick="selectTemplate('saturn', this)">Saturn</button>
-<button class="tab-btn" onclick="selectTemplate('DNA', this)">DNA</button>
-<button class="tab-btn" onclick="selectTemplate('hypercube', this)">Cube</button>
-<button class="tab-btn" onclick="selectTemplate('flower', this)">Flower</button>
+<button class="tab-btn active" onclick="selectTemplate('loop', this)">loop</button>
+<button class="tab-btn" onclick="selectTemplate('jup', this)">jup</button>
+<button class="tab-btn" onclick="selectTemplate('gal', this)">gal</button>
+<button class="tab-btn" onclick="selectTemplate('heart', this)">heart</button>
+<button class="tab-btn" onclick="selectTemplate('saturn', this)">saturn</button>
+<button class="tab-btn" onclick="selectTemplate('dna', this)">dna</button>
+<button class="tab-btn" onclick="selectTemplate('cube', this)">cube</button>
+<button class="tab-btn" onclick="selectTemplate('flower', this)">flower</button>
 </div>
 <script>
-const PARTICLE_COUNT = 8000;
+const PARTICLE_COUNT = 9000;
 let scene, camera, renderer;
 let particleGroup, particleGeometry, particleMaterial;
 let targetPositions = new Float32Array(PARTICLE_COUNT * 3);
 let currentPositions = new Float32Array(PARTICLE_COUNT * 3);
-let handExpansionScale = 1.0, targetScale = 1.0;
+let handScale = 1.0, targetScale = 1.0;
 let targetRotX = 0, targetRotY = 0, targetRotZ = 0;
-let currentTemplateName = 'sphere';
-const templates = ['sphere', 'jupiter', 'galaxy', 'heart', 'saturn', 'DNA', 'hypercube', 'flower'];
+let currentTemplateName = 'loop';
+const templates = ['loop', 'jup', 'gal', 'heart', 'saturn', 'dna', 'cube', 'flower'];
 let templateIndex = 0;
 function initThree() {
 const container = document.getElementById('canvas-container');
@@ -103,7 +101,7 @@ particleGeometry.setAttribute('position', new THREE.BufferAttribute(currentPosit
 const particleColors = new Float32Array(PARTICLE_COUNT * 3);
 for (let i = 0; i < PARTICLE_COUNT; i++) {
 const idx = i * 3;
-const color = new THREE.Color('#00f2fe'); // Colore ciano brillante identico al video
+const color = new THREE.Color('#00f2fe'); // Ciano brillante identico al video
 particleColors[idx] = color.r;
 particleColors[idx + 1] = color.g;
 particleColors[idx + 2] = color.b;
@@ -114,12 +112,12 @@ pCanvas.width = 32; pCanvas.height = 32;
 const pCtx = pCanvas.getContext('2d');
 pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(16, 16, 14, 0, Math.PI * 2); pCtx.fill();
 particleMaterial = new THREE.PointsMaterial({
-size: 0.18, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
+size: 0.17, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
 transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false
 });
 const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
 particleGroup.add(particleSystem);
-generateShape('sphere');
+generateShape('loop');
 window.addEventListener('resize', onWindowResize);
 }
 function selectTemplate(type, btn) {
@@ -134,37 +132,37 @@ const p = targetPositions;
 for (let i = 0; i < PARTICLE_COUNT; i++) {
 const idx = i * 3;
 let x = 0, y = 0, z = 0;
-if (type === 'sphere') {
-// Doppia sfera concentrica (nucleo luminoso centrale + alone esterno)
+if (type === 'loop') {
+// Sfera con nucleo concentrico luminoso identico al video iniziale
 if (i < PARTICLE_COUNT * 0.25) {
 const u = Math.random(), v = Math.random();
 const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
-const r = 2.0 + Math.random() * 0.5;
+const r = 2.2 + Math.random() * 0.4;
 x = r * Math.sin(phi) * Math.cos(theta);
 y = r * Math.sin(phi) * Math.sin(theta);
 z = r * Math.cos(phi);
 } else {
 const u = Math.random(), v = Math.random();
 const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
-const r = 6.0 + Math.random() * 3.0;
+const r = 6.5 + Math.random() * 3.5;
 x = r * Math.sin(phi) * Math.cos(theta);
 y = r * Math.sin(phi) * Math.sin(theta);
 z = r * Math.cos(phi);
 }
-} else if (type === 'jupiter') {
+} else if (type === 'jup') {
 if (i < PARTICLE_COUNT * 0.7) {
 const u = Math.random(), v = Math.random();
 const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
-const r = 4.5;
+const r = 4.8;
 x = r * Math.sin(phi) * Math.cos(theta);
 y = (r * Math.cos(phi)) * 0.8;
 z = r * Math.sin(phi) * Math.sin(theta);
 } else {
-const angle = Math.random() * Math.PI * 2, dist = 6.5 + Math.random() * 4.0;
+const angle = Math.random() * Math.PI * 2, dist = 7.0 + Math.random() * 4.5;
 x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.15;
 }
-} else if (type === 'galaxy') {
-const arms = 3, arm = i % arms, r = Math.pow(Math.random(), 1.3) * 10;
+} else if (type === 'gal') {
+const arms = 3, arm = i % arms, r = Math.pow(Math.random(), 1.3) * 11;
 const theta = r * 0.5 + (arm * (Math.PI * 2 / arms));
 x = Math.cos(theta) * r;
 z = Math.sin(theta) * r;
@@ -178,20 +176,20 @@ z = u; x *= 0.45; y *= 0.45; z *= 0.45;
 if (i < PARTICLE_COUNT * 0.4) {
 const u = Math.random(), v = Math.random();
 const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
-const r = 3.5;
+const r = 3.8;
 x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.cos(phi); z = r * Math.sin(phi) * Math.sin(theta);
 } else {
-const angle = Math.random() * Math.PI * 2, dist = 5.5 + Math.random() * 5.0;
+const angle = Math.random() * Math.PI * 2, dist = 5.8 + Math.random() * 5.5;
 x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.1;
 }
-} else if (type === 'DNA') {
+} else if (type === 'dna') {
 const t = (i / PARTICLE_COUNT) * Math.PI * 10;
 const strand = (i % 2 === 0) ? 1 : -1;
 x = Math.sin(t) * 3.5 * strand;
 y = ((i / PARTICLE_COUNT) * 14) - 7;
 z = Math.cos(t) * 3.5 * strand;
-} else if (type === 'hypercube') {
-const size = 5, side = i % 12, t = Math.random() * size - size/2;
+} else if (type === 'cube') {
+const size = 5.5, side = i % 12, t = Math.random() * size - size/2;
 if (side === 0) { x = size/2; y = t; z = size/2; }
 else if (side === 1) { x = -size/2; y = t; z = size/2; }
 else if (side === 2) { x = t; y = size/2; z = size/2; }
@@ -206,7 +204,7 @@ else if (side === 10) { x = size/2; y = -size/2; z = t; }
 else { x = -size/2; y = -size/2; z = t; }
 } else if (type === 'flower') {
 const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI;
-const r = 7 * Math.sin(5 * u) * Math.sin(v);
+const r = 7.5 * Math.sin(5 * u) * Math.sin(v);
 x = r * Math.sin(v) * Math.cos(u); y = r * Math.sin(v) * Math.sin(u); z = r * Math.cos(v);
 }
 p[idx] = x; p[idx + 1] = y; p[idx + 2] = z;
@@ -230,19 +228,19 @@ const h1Center = landmarks1[9], wrist1 = landmarks1[0];
 targetRotZ = -Math.atan2(h1Center.y - wrist1.y, h1Center.x - wrist1.x) - Math.PI / 2;
 targetRotX = (h1Center.y - 0.5) * Math.PI * 3.0;
 targetRotY = (h1Center.x - 0.5) * Math.PI * 3.0;
-// Rilevamento pugno chiuso (per comprimere o esplodere le particelle)
+// Rilevamento pugno chiuso (per comprimere o rimpicciolire le particelle)
 const thumbTip = landmarks1[4], indexTip = landmarks1[8];
 const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
-if (pinchDist < 0.06) {
-targetScale = 0.2; // Pugno chiuso = contrazione particellare
+if (pinchDist < 0.055) {
+targetScale = 0.15;
 } else {
 targetScale = 1.0;
 }
-// Rilevamento segno della vittoria (2 dita) per cambiare template automaticamente a tempo
+// Rilevamento gesto a due dita (V) per switch automatico dei modelli
 const middleTip = landmarks1[12];
 const isPeaceSign = Math.hypot(indexTip.x - middleTip.x, indexTip.y - middleTip.y) > 0.08 && pinchDist > 0.12;
 const now = Date.now();
-if (isPeaceSign && now - lastGestureTime > 3000) {
+if (isPeaceSign && now - lastGestureTime > 2500) {
 templateIndex = (templateIndex + 1) % templates.length;
 const nextType = templates[templateIndex];
 const buttons = document.querySelectorAll('.shape-dock .tab-btn');
@@ -274,12 +272,12 @@ requestAnimationFrame(animate);
 particleGroup.rotation.x += (targetRotX - particleGroup.rotation.x) * 0.2;
 particleGroup.rotation.y += (targetRotY + 0.002 - particleGroup.rotation.y) * 0.2;
 particleGroup.rotation.z += (targetRotZ - particleGroup.rotation.z) * 0.2;
-handExpansionScale += (targetScale - handExpansionScale) * 0.2;
+handScale += (targetScale - handScale) * 0.2;
 const positions = particleGeometry.attributes.position.array;
 for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
-let tx = targetPositions[i] * handExpansionScale;
-let ty = targetPositions[i+1] * handExpansionScale;
-let tz = targetPositions[i+2] * handExpansionScale;
+let tx = targetPositions[i] * handScale;
+let ty = targetPositions[i+1] * handScale;
+let tz = targetPositions[i+2] * handScale;
 positions[i] += (tx - positions[i]) * 0.25;
 positions[i+1] += (ty - positions[i+1]) * 0.25;
 positions[i+2] += (tz - positions[i+2]) * 0.25;
