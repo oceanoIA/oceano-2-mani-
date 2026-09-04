@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.6 // ULTRA-LOW LATENCY & PINCH GRAB</title>
+  <title>STARK KINETIC LAB v9.5 // MASSIVE EXPANSION</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,7 +104,7 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">ZERO-LAG & PINCH GRAB ACTIVE</span>
+      <span class="security-badge">MANUAL GESTURE OVERRIDE ACTIVE</span>
     </div>
     <div class="mode-tabs">
       <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
@@ -122,12 +122,14 @@
       <div class="control-group">
         <label>SPAWN OGGETTI 3D (36 FORME)</label>
         <div class="btn-grid">
+          <!-- Classiche -->
           <button class="stark-btn" onclick="spawnShape('cube')">+ CUBO</button>
           <button class="stark-btn" onclick="spawnShape('sphere')">+ SFERA</button>
           <button class="stark-btn" onclick="spawnShape('pyramid')">+ PIRAMIDE</button>
           <button class="stark-btn" onclick="spawnShape('torus')">+ TORUS</button>
           <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
           <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
+          <!-- Prima espansione (10) -->
           <button class="stark-btn" onclick="spawnShape('star')">+ STELLA</button>
           <button class="stark-btn" onclick="spawnShape('diamond')">+ DIAMANTE</button>
           <button class="stark-btn" onclick="spawnShape('hourglass')">+ CLESSIDRA</button>
@@ -138,6 +140,7 @@
           <button class="stark-btn" onclick="spawnShape('dodecahedron')">+ DODECAEDRO</button>
           <button class="stark-btn" onclick="spawnShape('starTorus')">+ TORUS STELLATO</button>
           <button class="stark-btn" onclick="spawnShape('spring')">+ MOLLA</button>
+          <!-- Seconda espansione (20 nuove) -->
           <button class="stark-btn" onclick="spawnShape('cone')">+ CONO</button>
           <button class="stark-btn" onclick="spawnShape('ring')">+ ANELLO</button>
           <button class="stark-btn" onclick="spawnShape('capsule')">+ CAPSULA</button>
@@ -167,6 +170,7 @@
       <div class="control-group">
         <label>HOLOGRAM TEMPLATE (39 FORME)</label>
         <select id="shape-select">
+          <!-- Classiche & Prima serie -->
           <option value="jupiter">JUPITER & RINGS</option>
           <option value="galaxy">GALAXY SPIRAL</option>
           <option value="hypercube">HYPERCUBE MATRIX</option>
@@ -186,6 +190,7 @@
           <option value="gravitationalWaves">GRAVITATIONAL WAVES</option>
           <option value="spacePortal">SPACE PORTAL</option>
           <option value="crystalFractal">CRYSTAL FRACTAL</option>
+          <!-- 20 Nuovi Ologrammi Plasma -->
           <option value="plasmaSphere">PLASMA SPHERE</option>
           <option value="cyberspaceGrid">CYBERSPACE GRID</option>
           <option value="plasmaTorus">PLASMA TORUS</option>
@@ -224,7 +229,7 @@
         </div>
         <div class="telemetry-row">
           <span>STATO:</span>
-          <span id="h1-gesture" class="telemetry-val">PINCH: APERTO</span>
+          <span id="h1-gesture" class="telemetry-val">TRACCIAMENTO</span>
         </div>
       </div>
       <div class="hand-card" style="margin-top: 4px;">
@@ -234,7 +239,7 @@
         </div>
         <div class="telemetry-row">
           <span>STATO:</span>
-          <span id="h2-gesture" class="telemetry-val">PINCH: APERTO</span>
+          <span id="h2-gesture" class="telemetry-val">TRACCIAMENTO</span>
         </div>
       </div>
     </div>
@@ -276,6 +281,19 @@
         this.humOsc.start();
         this.initialized = true;
       }
+      playBeep(freq = 600) {
+        if (!this.enabled || !this.initialized) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        const now = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now); osc.stop(now + 0.15);
+      }
     }
 
     const sounds = new SciFiSoundSystem();
@@ -292,15 +310,15 @@
     let blocks = [];
 
     const controllers = [
-      { mesh: null, pointLight: null, pos: new THREE.Vector3(), statusEl: null, gestureEl: null, active: false, grabbedBlock: null, pinching: false },
-      { mesh: null, pointLight: null, pos: new THREE.Vector3(), statusEl: null, gestureEl: null, active: false, grabbedBlock: null, pinching: false }
+      { mesh: null, pointLight: null, pos: new THREE.Vector3(), statusEl: null, gestureEl: null, active: false },
+      { mesh: null, pointLight: null, pos: new THREE.Vector3(), statusEl: null, gestureEl: null, active: false }
     ];
 
     let particleGroup, particleGeometry, particleMaterial;
     let targetPositions = new Float32Array(PARTICLE_COUNT * 3);
     let currentPositions = new Float32Array(PARTICLE_COUNT * 3);
     let handExpansionScale = 1.0, targetScale = 1.0;
-    let targetRotX = 0, targetRotY = 0, targetRotZ = 0;
+    let targetCamZ = 32, targetRotX = 0, targetRotY = 0, targetRotZ = 0;
     let previewCanvas, previewCtx;
 
     function initThree() {
@@ -340,13 +358,13 @@
       builderGroup.add(gridHelper);
 
       controllers.forEach((ctrl, idx) => {
-        const dotGeo = new THREE.SphereGeometry(0.18, 16, 16);
-        const dotMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
+        const dotGeo = new THREE.SphereGeometry(0.15, 16, 16);
+        const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
         ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
         ctrl.mesh.visible = false;
         builderGroup.add(ctrl.mesh);
 
-        ctrl.pointLight = new THREE.PointLight(0x00f3ff, 1.0, 10);
+        ctrl.pointLight = new THREE.PointLight(0xffffff, 0.8, 10);
         builderGroup.add(ctrl.pointLight);
 
         ctrl.statusEl = document.getElementById(`h${idx + 1}-status`);
@@ -421,6 +439,7 @@
       else if (type === 'dodecahedron') geo = new THREE.DodecahedronGeometry(size / 1.6);
       else if (type === 'starTorus') geo = new THREE.TorusKnotGeometry(size / 2, size / 10, 64, 32, 2, 3);
       else if (type === 'spring') geo = new THREE.TorusKnotGeometry(size / 2, size / 12, 64, 16, 1, 5);
+      // Ulteriori 20 forme 3D Builder
       else if (type === 'cone') geo = new THREE.ConeGeometry(size / 2, size, 32);
       else if (type === 'ring') geo = new THREE.RingGeometry(size / 4, size / 2, 32);
       else if (type === 'capsule') geo = new THREE.CapsuleGeometry(size / 3, size / 2, 16, 16);
@@ -586,7 +605,9 @@
           x = (u - 0.5) * 12 * Math.sin(v * Math.PI);
           y = (v - 0.5) * 12;
           z = (u - 0.5) * 12 * Math.cos(v * Math.PI);
-        } else if (type === 'plasmaSphere') {
+        }
+        // Ulteriori 20 ologrammi Plasma
+        else if (type === 'plasmaSphere') {
           const u = Math.random(), v = Math.random();
           const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0), r = 6.0;
           x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.cos(phi); z = r * Math.sin(phi) * Math.sin(theta);
@@ -656,7 +677,7 @@
 
       hands.setOptions({
         maxNumHands: 2, modelComplexity: 1,
-        minDetectionConfidence: 0.6, minTrackingConfidence: 0.6
+        minDetectionConfidence: 0.65, minTrackingConfidence: 0.65
       });
 
       hands.onResults((results) => {
@@ -687,57 +708,16 @@
             const distanceToPlane = (targetZ - camera.position.z) / dir.z;
             const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
 
-            // Risposta istantanea senza ritardi di movimento
             ctrl.pos.copy(targetPos);
             ctrl.mesh.visible = true;
             ctrl.mesh.position.copy(ctrl.pos);
             ctrl.pointLight.position.copy(ctrl.pos);
-
-            // Rilevamento Pinch (Pollice [4] + Indice [8])
-            const thumbTip = landmarks[4];
-            const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
-            const isPinching = pinchDist < 0.055;
-
-            ctrl.pinching = isPinching;
-            ctrl.gestureEl.innerText = isPinching ? "PINCH: PRESA ATTIVA" : "PINCH: APERTO";
-            ctrl.gestureEl.style.color = isPinching ? "#2bf2b0" : "#00f3ff";
-
-            if (currentMode === 'BUILDER') {
-              if (isPinching) {
-                if (!ctrl.grabbedBlock) {
-                  // Cerca l'oggetto più vicino alla mano per afferrarlo
-                  let closestBlock = null;
-                  let minDist = 3.0;
-                  blocks.forEach(block => {
-                    const d = block.position.distanceTo(ctrl.pos);
-                    if (d < minDist) {
-                      minDist = d;
-                      closestBlock = block;
-                    }
-                  });
-                  if (closestBlock) {
-                    ctrl.grabbedBlock = closestBlock;
-                    ctrl.mesh.material.color.set(0x2bf2b0);
-                  }
-                } else {
-                  // Muovi l'oggetto insieme alla mano
-                  ctrl.grabbedBlock.position.copy(ctrl.pos);
-                  ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
-                }
-              } else {
-                if (ctrl.grabbedBlock) {
-                  ctrl.grabbedBlock = null;
-                  ctrl.mesh.material.color.set(0x00f3ff);
-                }
-              }
-            }
 
             ctrl.statusEl.innerText = "ATTIVA";
             ctrl.statusEl.style.color = "#ffffff";
           } else {
             ctrl.active = false;
             ctrl.mesh.visible = false;
-            ctrl.grabbedBlock = null;
             ctrl.statusEl.innerText = "CERCA...";
             ctrl.statusEl.style.color = "#ff3366";
           }
@@ -776,46 +756,41 @@
       if (currentMode === 'BUILDER') {
         const gravity = -0.06;
         blocks.forEach(block => {
-          // Non applicare gravità se l'oggetto è tenuto in mano
-          let isHeld = false;
-          controllers.forEach(ctrl => { if (ctrl.grabbedBlock === block) isHeld = true; });
+          block.userData.velocity.y += gravity;
+          block.position.add(block.userData.velocity);
 
-          if (!isHeld) {
-            block.userData.velocity.y += gravity;
-            block.position.add(block.userData.velocity);
+          const floorY = -6 + (block.userData.size / 2);
+          if (block.position.y < floorY) {
+            block.position.y = floorY;
+            block.userData.velocity.set(0, 0, 0);
+          }
 
-            const floorY = -6 + (block.userData.size / 2);
-            if (block.position.y < floorY) {
-              block.position.y = floorY;
-              block.userData.velocity.set(0, 0, 0);
-            }
+          blocks.forEach(other => {
+            if (block !== other) {
+              const dx = block.position.x - other.position.x;
+              const dz = block.position.z - other.position.z;
+              const distXZ = Math.sqrt(dx * dx + dz * dz);
+              const limitDist = block.userData.size * 0.8;
 
-            blocks.forEach(other => {
-              if (block !== other) {
-                const dx = block.position.x - other.position.x;
-                const dz = block.position.z - other.position.z;
-                const distXZ = Math.sqrt(dx * dx + dz * dz);
-                const limitDist = block.userData.size * 0.8;
-
-                if (distXZ < limitDist) {
-                  const topOfOther = other.position.y + (other.userData.size / 2) + (block.userData.size / 2);
-                  if (block.position.y <= topOfOther && block.position.y > other.position.y) {
-                    block.position.y = topOfOther;
-                    block.userData.velocity.set(0, 0, 0);
-                  }
+              if (distXZ < limitDist) {
+                const topOfOther = other.position.y + (other.userData.size / 2) + (block.userData.size / 2);
+                if (block.position.y <= topOfOther && block.position.y > other.position.y) {
+                  block.position.y = topOfOther;
+                  block.userData.velocity.set(0, 0, 0);
                 }
               }
-            });
-          }
+            }
+          });
         });
       }
 
       if (currentMode === 'PARTICLES') {
-        particleGroup.rotation.x += (targetRotX - particleGroup.rotation.x) * 0.4;
-        particleGroup.rotation.y += (targetRotY + 0.003 - particleGroup.rotation.y) * 0.4;
-        particleGroup.rotation.z += (targetRotZ - particleGroup.rotation.z) * 0.4;
+        particleGroup.rotation.x += (targetRotX - particleGroup.rotation.x) * 0.15;
+        particleGroup.rotation.y += (targetRotY + 0.003 - particleGroup.rotation.y) * 0.15;
+        particleGroup.rotation.z += (targetRotZ - particleGroup.rotation.z) * 0.15;
 
-        handExpansionScale += (targetScale - handExpansionScale) * 0.4;
+        handExpansionScale += (targetScale - handExpansionScale) * 0.15;
+        camera.position.z += (targetCamZ - camera.position.z) * 0.15;
 
         const positions = particleGeometry.attributes.position.array;
         for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
@@ -823,9 +798,9 @@
           let ty = targetPositions[i+1] * handExpansionScale;
           let tz = targetPositions[i+2] * handExpansionScale;
 
-          positions[i] += (tx - positions[i]) * 0.4;
-          positions[i+1] += (ty - positions[i+1]) * 0.4;
-          positions[i+2] += (tz - positions[i+2]) * 0.4;
+          positions[i] += (tx - positions[i]) * 0.15;
+          positions[i+1] += (ty - positions[i+1]) * 0.15;
+          positions[i+2] += (tz - positions[i+2]) * 0.15;
         }
         particleGeometry.attributes.position.needsUpdate = true;
       }
