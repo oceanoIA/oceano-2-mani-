@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.7 // VISION PRO RAYCASTER</title>
+  <title>NEBULA // 3D Particle System</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,94 +16,62 @@
     #video-input { display: none; }
 
     /* Header Superiore Minimal */
-    .stark-header {
-      position: absolute; top: 0; left: 0; width: 100%; height: 60px;
-      background: rgba(15, 15, 15, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08); z-index: 10;
-      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+    .nebula-header {
+      position: absolute; top: 0; left: 0; width: 100%; height: 50px;
+      background: rgba(10, 10, 10, 0.3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 10;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
     }
-    .stark-title {
-      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
-      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-      display: flex; align-items: center; gap: 12px;
+    .nebula-title {
+      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 12px;
+      letter-spacing: 3px; color: #ffffff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      display: flex; align-items: center; gap: 10px;
     }
-    .security-badge {
-      font-size: 9px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #ffffff; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px;
+    .nebula-subtitle {
+      font-size: 9px; color: rgba(255, 255, 255, 0.4); letter-spacing: 1px;
     }
 
-    /* DOCK IN BASSO AL CENTRO CON EFFETTO LIQUID GLASS */
+    /* Dock Centrale in Basso (Stile Video) */
     .mode-dock {
-      position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 10px; z-index: 20; background: rgba(25, 25, 25, 0.45);
-      padding: 10px 18px; border-radius: 35px; backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-      border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 12px; z-index: 20; background: rgba(20, 20, 20, 0.5);
+      padding: 8px 16px; border-radius: 40px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
-    .tab-btn {
-      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.15);
-      color: rgba(255, 255, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
-      padding: 10px 22px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-      border-radius: 25px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    .dock-btn {
+      background: transparent; border: none; color: rgba(255, 255, 255, 0.5);
+      font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 700;
+      padding: 8px 14px; cursor: pointer; transition: all 0.3s ease;
+      border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 4px;
     }
-    .tab-btn:hover, .tab-btn.active {
-      background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.9); color: #ffffff;
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6); transform: translateY(-2px);
+    .dock-btn:hover, .dock-btn.active {
+      background: rgba(255, 255, 255, 0.15); color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); transform: translateY(-2px);
     }
+    .dock-btn span.icon { font-size: 14px; }
 
-    /* Pannello Sinistro Glass & Arrotondato */
-    .ui-overlay {
-      position: absolute; top: 75px; left: 20px; z-index: 10; width: 290px; padding: 18px;
-      background: rgba(12, 12, 12, 0.6); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-      border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 26px;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      display: flex; flex-direction: column; gap: 14px;
-    }
-    .panel-header {
-      font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
-      color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
-    }
-    .control-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 9px; color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
-
-    select, input[type="color"], .stark-btn {
-      width: 100%; height: 38px; background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.18); color: #ffffff; padding: 0 12px;
-      font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
-      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.25s ease;
-      border-radius: 19px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    }
-    select:hover, .stark-btn:hover {
-      background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.85); color: #ffffff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
-    }
-    select option { background: #151515; color: #ffffff; }
-
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-    .telemetry-box {
-      font-size: 10px; background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.12); padding: 10px; border-radius: 18px;
-      display: flex; flex-direction: column; gap: 6px;
-    }
-    .hand-card { border-left: 2px solid #ffffff; padding-left: 8px; display: flex; flex-direction: column; gap: 2px; }
-    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.5); }
-    .telemetry-val { color: #ffffff; font-weight: bold; }
-
-    /* Box Anteprima Camera Ingrandito */
+    /* Box Anteprima Webcam in Basso a Destra */
     .camera-preview-container {
-      position: absolute; bottom: 25px; right: 20px; z-index: 10;
-      width: 240px; height: 180px; background: rgba(12, 12, 12, 0.7);
+      position: absolute; bottom: 25px; right: 25px; z-index: 10;
+      width: 180px; height: 135px; background: rgba(10, 10, 10, 0.6);
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 22px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); overflow: hidden; display: flex; flex-direction: column;
     }
-    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.9; }
-    .preview-hud-tag {
-      position: absolute; top: 6px; left: 8px; font-size: 8px; font-weight: bold;
-      letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.75);
-      padding: 2px 6px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
+    #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.85; }
+    .preview-tag {
+      position: absolute; top: 6px; left: 8px; font-size: 7px; font-weight: bold;
+      letter-spacing: 1px; color: rgba(255, 255, 255, 0.7); background: rgba(0, 0, 0, 0.6);
+      padding: 2px 5px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);
     }
+
+    /* Telemetria minimal in alto a sinistra */
+    .telemetry-hud {
+      position: absolute; top: 65px; left: 20px; z-index: 10;
+      font-size: 9px; color: rgba(255, 255, 255, 0.4); display: flex; flex-direction: column; gap: 4px;
+      background: rgba(0, 0, 0, 0.4); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .telemetry-val { color: #ffffff; font-weight: bold; }
   </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -114,159 +82,53 @@
   <video id="video-input" autoplay playsinline muted></video>
   <div id="canvas-container"></div>
 
-  <div class="stark-header">
-    <div class="stark-title">
-      <span>STARK LAB</span>
-      <span class="security-badge">VISION PRO RAYCAST (AUTO-START)</span>
+  <div class="nebula-header">
+    <div class="nebula-title">
+      <span>NEBULA</span>
+      <span class="nebula-subtitle">Interactive Particle System</span>
     </div>
   </div>
 
+  <div class="telemetry-hud">
+    <div>HAND TRACKING: <span id="hand-status" class="telemetry-val">RICERCA...</span></div>
+    <div>GESTURE: <span id="gesture-status" class="telemetry-val">LIBERA</span></div>
+  </div>
+
+  <!-- Dock inferiore con le icone identiche al video -->
   <div class="mode-dock">
-    <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
-    <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: PLASMA MATRIX</button>
-  </div>
-
-  <div class="ui-overlay">
-    <div class="panel-header">
-      <span id="panel-title-text">PARTICLE MATRIX</span>
-      <span style="color: #ffffff; font-weight: bold; font-size: 9px;">[ONLINE]</span>
-    </div>
-    
-    <div id="controls-builder" style="display: none;">
-      <div class="control-group">
-        <label>SPAWN OGGETTI 3D</label>
-        <div class="btn-grid">
-          <button class="stark-btn" onclick="spawnShape('cube')">+ CUBO</button>
-          <button class="stark-btn" onclick="spawnShape('sphere')">+ SFERA</button>
-          <button class="stark-btn" onclick="spawnShape('pyramid')">+ PIRAMIDE</button>
-          <button class="stark-btn" onclick="spawnShape('torus')">+ TORUS</button>
-          <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
-          <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
-        </div>
-        <button class="stark-btn" style="margin-top: 8px; border-color: rgba(255,255,255,0.4);" onclick="clearBlocks()">RESET SCENA</button>
-      </div>
-    </div>
-
-    <div id="controls-particles" style="display: block;">
-      <div class="control-group">
-        <label>HOLOGRAM TEMPLATE</label>
-        <select id="shape-select">
-          <option value="jupiter">JUPITER & RINGS</option>
-          <option value="galaxy">GALAXY SPIRAL</option>
-          <option value="hypercube">HYPERCUBE MATRIX</option>
-          <option value="heart">HEART MATRIX</option>
-          <option value="flower">NEURAL FLOWER</option>
-          <option value="buddha">BUDDHA HOLOGRAM</option>
-          <option value="fireworks">ENERGY EXPLOSION</option>
-          <option value="saturn">SATURN RING SYSTEM</option>
-          <option value="DNA">DNA DOUBLE HELIX</option>
-        </select>
-      </div>
-      <div class="control-group" style="margin-top: 8px;">
-        <label>PLASMA COLOR</label>
-        <input type="color" id="color-picker" value="#ffffff">
-      </div>
-    </div>
-
-    <button id="audio-toggle-btn" class="stark-btn" onclick="toggleAudio()">🔊 AUDIO: ATTIVO</button>
-
-    <div class="telemetry-box">
-      <div class="hand-card">
-        <div class="telemetry-row">
-          <span>MANO 1:</span>
-          <span id="h1-status" class="telemetry-val">CERCA...</span>
-        </div>
-        <div class="telemetry-row">
-          <span>STATO 1:</span>
-          <span id="h1-grab" class="telemetry-val">LIBERA</span>
-        </div>
-      </div>
-      <div class="hand-card" style="margin-top: 6px;">
-        <div class="telemetry-row">
-          <span>MANO 2:</span>
-          <span id="h2-status" class="telemetry-val">CERCA...</span>
-        </div>
-        <div class="telemetry-row">
-          <span>STATO 2:</span>
-          <span id="h2-grab" class="telemetry-val">LIBERA</span>
-        </div>
-      </div>
-    </div>
+    <button class="dock-btn active" onclick="changeShape('sphere', this)">
+      <span class="icon">⚪</span><span>Sphere</span>
+    </button>
+    <button class="dock-btn" onclick="changeShape('heart', this)">
+      <span class="icon">🤍</span><span>Heart</span>
+    </button>
+    <button class="dock-btn" onclick="changeShape('flower', this)">
+      <span class="icon">🌸</span><span>Flower</span>
+    </button>
+    <button class="dock-btn" onclick="changeShape('saturn', this)">
+      <span class="icon">🪐</span><span>Saturn</span>
+    </button>
+    <button class="dock-btn" onclick="changeShape('fireworks', this)">
+      <span class="icon">✨</span><span>Burst</span>
+    </button>
   </div>
 
   <div class="camera-preview-container">
-    <span class="preview-hud-tag">FEED OPTICAL</span>
-    <canvas id="hand-preview-canvas" width="240" height="180"></canvas>
+    <span class="preview-tag">WEBCAM</span>
+    <canvas id="hand-preview-canvas" width="180" height="135"></canvas>
   </div>
 
   <script>
-    class SciFiSoundSystem {
-      constructor() {
-        this.ctx = null; this.humOsc = null; this.humGain = null;
-        this.enabled = true; this.initialized = false;
-      }
-      init() {
-        if (this.initialized) return;
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        this.ctx = new AudioCtx();
-        this.humOsc = this.ctx.createOscillator();
-        this.humGain = this.ctx.createGain();
-        this.humOsc.type = 'sine';
-        this.humOsc.frequency.setValueAtTime(50, this.ctx.currentTime);
-        this.humGain.gain.setValueAtTime(0.01, this.ctx.currentTime);
-        this.humOsc.connect(this.humGain);
-        this.humGain.connect(this.ctx.destination);
-        this.humOsc.start();
-        this.initialized = true;
-      }
-      playPinch() {
-        if (!this.enabled || !this.initialized) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        const now = this.ctx.currentTime;
-        osc.frequency.setValueAtTime(200, now);
-        osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
-        gain.gain.setValueAtTime(0.15, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now); osc.stop(now + 0.08);
-      }
-    }
-
-    const sounds = new SciFiSoundSystem();
-
-    function toggleAudio() {
-      sounds.enabled = !sounds.enabled;
-      document.getElementById('audio-toggle-btn').innerText = sounds.enabled ? "🔊 AUDIO: ATTIVO" : "🔇 AUDIO: DISATTIVATO";
-    }
-
-    let currentMode = 'PARTICLES';
     const PARTICLE_COUNT = 6000;
     let scene, camera, renderer;
-    let builderGroup;
-    let blocks = [];
-
-    const controllers = [
-      {
-        mesh: null, pointLight: null, rayLine: null,
-        grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
-        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
-      },
-      {
-        mesh: null, pointLight: null, rayLine: null,
-        grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
-        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
-      }
-    ];
-
-    let particleGroup, particleGeometry, particleMaterial;
+    let particleGeometry, particleMaterial, particleSystem;
     let targetPositions = new Float32Array(PARTICLE_COUNT * 3);
     let currentPositions = new Float32Array(PARTICLE_COUNT * 3);
-    let handExpansionScale = 1.0, targetScale = 1.0;
-    let targetCamZ = 32, targetRotX = 0, targetRotY = 0, targetRotZ = 0;
+    
+    let handScale = 1.0, targetScale = 1.0;
+    let targetRotX = 0, targetRotY = 0, targetRotZ = 0;
     let previewCanvas, previewCtx;
+    let isPinching = false;
 
     function initThree() {
       const container = document.getElementById('canvas-container');
@@ -274,151 +136,62 @@
       scene.background = new THREE.Color(0x000000);
 
       camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 4, 28);
-      camera.lookAt(0, 0, 0);
+      camera.position.set(0, 0, 26);
 
-      renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
-
-      builderGroup = new THREE.Group();
-      builderGroup.visible = false;
-      scene.add(builderGroup);
-
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
-      scene.add(ambientLight);
-
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      dirLight.position.set(10, 25, 15);
-      scene.add(dirLight);
-
-      const planeGeo = new THREE.PlaneGeometry(60, 60);
-      const planeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.2 });
-      const floor = new THREE.Mesh(planeGeo, planeMat);
-      floor.rotation.x = -Math.PI / 2;
-      floor.position.y = -6;
-      builderGroup.add(floor);
-
-      const gridHelper = new THREE.GridHelper(60, 30, 0xffffff, 0x333333);
-      gridHelper.position.y = -5.98;
-      builderGroup.add(gridHelper);
-
-      controllers.forEach((ctrl, idx) => {
-        const dotGeo = new THREE.SphereGeometry(0.18, 12, 12);
-        const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-        ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
-        ctrl.mesh.visible = false;
-        builderGroup.add(ctrl.mesh);
-
-        ctrl.pointLight = new THREE.PointLight(0xffffff, 0.8, 10);
-        builderGroup.add(ctrl.pointLight);
-
-        const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0)]);
-        const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
-        ctrl.rayLine = new THREE.Line(lineGeo, lineMat);
-        ctrl.rayLine.visible = false;
-        builderGroup.add(ctrl.rayLine);
-
-        ctrl.statusEl = document.getElementById(`h${idx + 1}-status`);
-        ctrl.grabEl = document.getElementById(`h${idx + 1}-grab`);
-      });
-
-      spawnShape('cube', 0, 2, 0);
-
-      particleGroup = new THREE.Group();
-      particleGroup.visible = true;
-      scene.add(particleGroup);
 
       particleGeometry = new THREE.BufferGeometry();
       for (let i = 0; i < PARTICLE_COUNT * 3; i++) {
-        currentPositions[i] = (Math.random() - 0.5) * 40;
+        currentPositions[i] = (Math.random() - 0.5) * 30;
         targetPositions[i] = currentPositions[i];
       }
       particleGeometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
 
+      // Colori sfumati multicolore in stile nebulosa
       const particleColors = new Float32Array(PARTICLE_COUNT * 3);
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
-        let randomColor;
-        const rand = Math.random();
-        if (rand < 0.7) randomColor = new THREE.Color('#ffffff');
-        else if (rand < 0.9) randomColor = new THREE.Color('#aaaaaa');
-        else randomColor = new THREE.Color('#555555');
-        particleColors[idx] = randomColor.r;
-        particleColors[idx + 1] = randomColor.g;
-        particleColors[idx + 2] = randomColor.b;
+        const col = new THREE.Color();
+        // Sfumatura tra ciano, magenta, viola e bianco
+        const hue = Math.random() * 0.3 + 0.55; // Toni blu/viola/magenta
+        col.setHSL(hue, 0.8, 0.6);
+        particleColors[idx] = col.r;
+        particleColors[idx + 1] = col.g;
+        particleColors[idx + 2] = col.b;
       }
       particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
+      // Texture particella tonda e morbida
       const pCanvas = document.createElement('canvas');
       pCanvas.width = 32; pCanvas.height = 32;
       const pCtx = pCanvas.getContext('2d');
-      pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(16, 16, 14, 0, Math.PI * 2); pCtx.fill();
+      const grad = pCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+      grad.addColorStop(0, 'rgba(255,255,255,1)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      pCtx.fillStyle = grad; pCtx.fillRect(0, 0, 32, 32);
 
       particleMaterial = new THREE.PointsMaterial({
-        size: 0.25, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
-        transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
+        size: 0.3, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
+        transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false
       });
 
-      const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
-      particleGroup.add(particleSystem);
-      generateShape('jupiter');
+      particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+      scene.add(particleSystem);
 
+      generateShape('sphere');
       previewCanvas = document.getElementById('hand-preview-canvas');
       previewCtx = previewCanvas.getContext('2d');
 
       window.addEventListener('resize', onWindowResize);
     }
 
-    function spawnShape(type, x, y, z) {
-      sounds.init();
-      let geo;
-      const size = 3.0;
-
-      if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 16, 16);
-      else if (type === 'pyramid') geo = new THREE.ConeGeometry(size / 1.4, size, 4);
-      else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 12, 24);
-      else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 16);
-      else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
-      else geo = new THREE.BoxGeometry(size, size, size);
-
-      const randomColorHex = Math.random() > 0.5 ? 0xffffff : 0x888888;
-      const mat = new THREE.MeshStandardMaterial({ color: randomColorHex, roughness: 0.3, metalness: 0.2 });
-
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.x = x !== undefined ? x : (Math.random() - 0.5) * 8;
-      mesh.position.y = y !== undefined ? y : 6; 
-      mesh.position.z = z !== undefined ? z : (Math.random() - 0.5) * 4;
-
-      mesh.userData = { originalColor: randomColorHex, velocity: new THREE.Vector3(0, 0, 0), isGrabbed: false, size: size };
-
-      builderGroup.add(mesh);
-      blocks.push(mesh);
-    }
-
-    function clearBlocks() {
-      for (let b of blocks) builderGroup.remove(b);
-      blocks = [];
-      controllers.forEach(c => { c.grabbedBlock = null; });
-    }
-
-    function setBlockHighlight(block, mode) {
-      if (!block) return;
-      if (mode === 'grab') block.material.color.setHex(0xffffff);
-      else block.material.color.setHex(block.userData.originalColor);
-    }
-
-    function switchMode(mode) {
-      currentMode = mode;
-      document.getElementById('tab-builder').classList.toggle('active', mode === 'BUILDER');
-      document.getElementById('tab-particles').classList.toggle('active', mode === 'PARTICLES');
-      document.getElementById('controls-builder').style.display = mode === 'BUILDER' ? 'block' : 'none';
-      document.getElementById('controls-particles').style.display = mode === 'PARTICLES' ? 'block' : 'none';
-      document.getElementById('panel-title-text').innerText = mode === 'BUILDER' ? '3D BUILDER MATRIX' : 'PARTICLE MATRIX';
-
-      builderGroup.visible = (mode === 'BUILDER');
-      particleGroup.visible = (mode === 'PARTICLES');
+    function changeShape(type, btn) {
+      document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+      generateShape(type);
     }
 
     function generateShape(type) {
@@ -427,75 +200,35 @@
         const idx = i * 3;
         let x = 0, y = 0, z = 0;
 
-        if (type === 'jupiter') {
-          if (i < PARTICLE_COUNT * 0.75) {
+        if (type === 'sphere') {
+          const u = Math.random(), v = Math.random();
+          const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
+          const r = 6.0;
+          x = r * Math.sin(phi) * Math.cos(theta);
+          y = r * Math.sin(phi) * Math.sin(theta);
+          z = r * Math.cos(phi);
+        } else if (type === 'saturn') {
+          if (i < PARTICLE_COUNT * 0.6) {
             const u = Math.random(), v = Math.random();
             const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
-            const r = 7.0;
-            x = r * Math.sin(phi) * Math.cos(theta);
-            y = (r * Math.cos(phi)) * 0.85;
-            z = r * Math.sin(phi) * Math.sin(theta);
+            const r = 4.5;
+            x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.sin(phi) * Math.sin(theta); z = r * Math.cos(phi);
           } else {
-            const angle = Math.random() * Math.PI * 2, dist = 9.0 + Math.random() * 4.0;
+            const angle = Math.random() * Math.PI * 2, dist = 6.5 + Math.random() * 5.0;
             x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.2;
           }
-        } else if (type === 'galaxy') {
-          const arms = 4, arm = i % arms, r = Math.pow(Math.random(), 1.5) * 15;
-          const theta = r * 0.4 + (arm * (Math.PI * 2 / arms));
-          x = Math.cos(theta) * r + (Math.random() - 0.5) * 0.7;
-          z = Math.sin(theta) * r + (Math.random() - 0.5) * 0.7;
-          y = (Math.random() - 0.5) * (1.8 - r * 0.1);
-        } else if (type === 'saturn') {
-          if (i < PARTICLE_COUNT * 0.5) {
-            const u = Math.random(), v = Math.random();
-            const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
-            const r = 5.0;
-            x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.cos(phi); z = r * Math.sin(phi) * Math.sin(theta);
-          } else {
-            const angle = Math.random() * Math.PI * 2, dist = 7.0 + Math.random() * 6.0;
-            x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.15;
-          }
-        } else if (type === 'DNA') {
-          const t = (i / PARTICLE_COUNT) * Math.PI * 12;
-          const strand = (i % 2 === 0) ? 1 : -1;
-          x = Math.sin(t) * 4 * strand;
-          y = ((i / PARTICLE_COUNT) * 16) - 8;
-          z = Math.cos(t) * 4 * strand;
-        } else if (type === 'hypercube') {
-          const size = 6, side = i % 12, t = Math.random() * size - size/2;
-          if (side === 0) { x = size/2; y = t; z = size/2; }
-          else if (side === 1) { x = -size/2; y = t; z = size/2; }
-          else if (side === 2) { x = t; y = size/2; z = size/2; }
-          else if (side === 3) { x = t; y = -size/2; z = size/2; }
-          else if (side === 4) { x = size/2; y = t; z = -size/2; }
-          else if (side === 5) { x = -size/2; y = t; z = -size/2; }
-          else if (side === 6) { x = t; y = size/2; z = -size/2; }
-          else if (side === 7) { x = t; y = -size/2; z = -size/2; }
-          else if (side === 8) { x = size/2; y = size/2; z = t; }
-          else if (side === 9) { x = -size/2; y = size/2; z = t; }
-          else if (side === 10) { x = size/2; y = -size/2; z = t; }
-          else { x = -size/2; y = -size/2; z = t; }
         } else if (type === 'heart') {
           const t = Math.random() * Math.PI * 2, u = (Math.random() - 0.5) * 3;
           x = 16 * Math.pow(Math.sin(t), 3);
           y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
-          z = u; x *= 0.55; y *= 0.55; z *= 0.55;
+          z = u; x *= 0.45; y *= 0.45; z *= 0.45;
         } else if (type === 'flower') {
           const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI;
-          const r = 9 * Math.sin(6 * u) * Math.sin(v);
+          const r = 7 * Math.sin(5 * u) * Math.sin(v);
           x = r * Math.sin(v) * Math.cos(u); y = r * Math.sin(v) * Math.sin(u); z = r * Math.cos(v);
-        } else if (type === 'buddha') {
-          const rand = Math.random();
-          if (rand < 0.35) {
-            const a = Math.random() * Math.PI * 2, r = 2 + Math.random() * 8;
-            x = Math.cos(a) * r; z = Math.sin(a) * r; y = -7 + (Math.random() - 0.5) * 1.2;
-          } else {
-            const h = Math.random() * 9, width = (1 - h / 9) * 6.5, a = Math.random() * Math.PI * 2;
-            x = Math.cos(a) * width * Math.random(); z = Math.sin(a) * width * Math.random(); y = -6 + h;
-          }
         } else if (type === 'fireworks') {
           const theta = Math.random() * Math.PI * 2, phi = Math.acos((Math.random() * 2) - 1);
-          const speed = 2 + Math.random() * 12;
+          const speed = 3 + Math.random() * 9;
           x = speed * Math.sin(phi) * Math.cos(theta); y = speed * Math.sin(phi) * Math.sin(theta); z = speed * Math.cos(phi);
         }
 
@@ -503,38 +236,15 @@
       }
     }
 
-    function drawVisionProHandContour(ctx, landmarks, w, h) {
-      const contourIndices = [0, 1, 2, 3, 4, 8, 12, 16, 20, 17, 0];
-      ctx.beginPath();
-      let first = true;
-      for (let idx of contourIndices) {
-        const pt = landmarks[idx];
-        const x = pt.x * w;
-        const y = pt.y * h;
-        if (first) {
-          ctx.moveTo(x, y);
-          first = false;
-        } else {
-          ctx.lineTo(x, y);
-        }
-      }
-      ctx.closePath();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-      ctx.fill();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
-      ctx.stroke();
-    }
-
     function initHandTracking() {
       const videoElement = document.getElementById('video-input');
       const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
 
       hands.setOptions({
-        maxNumHands: 2, 
+        maxNumHands: 2,
         modelComplexity: 1,
-        minDetectionConfidence: 0.4, 
-        minTrackingConfidence: 0.4
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
       });
 
       hands.onResults((results) => {
@@ -546,199 +256,87 @@
         }
 
         const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
+        const handStatusEl = document.getElementById('hand-status');
+        const gestureStatusEl = document.getElementById('gesture-status');
 
-        for (let i = 0; i < 2; i++) {
-          const ctrl = controllers[i];
-          if (i < numHands) {
-            ctrl.active = true;
-            const landmarks = results.multiHandLandmarks[i];
+        if (numHands > 0) {
+          handStatusEl.innerText = "ONLINE (" + numHands + ")";
+          handStatusEl.style.color = "#00ffcc";
 
-            drawVisionProHandContour(previewCtx, landmarks, previewCanvas.width, previewCanvas.height);
-
-            const thumbTip = landmarks[4], indexTip = landmarks[8], wrist = landmarks[0];
-            const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
-            const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
-
-            const sensitivityMultiplier = 1.35;
-            const ndcX = (((1 - pX) * 2 - 1) * sensitivityMultiplier);
-            const ndcY = ((-(pY * 2 - 1)) * sensitivityMultiplier);
-
-            const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
-            vector.unproject(camera);
-            const dir = vector.sub(camera.position).normalize();
-            const targetZ = -pZ * 20;
-            const distanceToPlane = (targetZ - camera.position.z) / dir.z;
-            const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
-
-            ctrl.lastPos.copy(ctrl.pos);
-            ctrl.pos.copy(targetPos);
-            ctrl.velocity.copy(ctrl.pos).sub(ctrl.lastPos);
-
-            ctrl.mesh.visible = true;
-            ctrl.mesh.position.copy(ctrl.pos);
-            ctrl.pointLight.position.copy(ctrl.pos);
-
-            const wristNdcX = (1 - wrist.x) * 2 - 1, wristNdcY = -(wrist.y * 2 - 1);
-            const wVector = new THREE.Vector3(wristNdcX, wristNdcY, 0.5);
-            wVector.unproject(camera);
-            const wDir = wVector.sub(camera.position).normalize();
-            const wDist = (targetZ - camera.position.z) / wDir.z;
-            const wristPos3D = camera.position.clone().add(wDir.multiplyScalar(wDist));
-
-            const posAttr = ctrl.rayLine.geometry.attributes.position;
-            posAttr.setXYZ(0, wristPos3D.x, wristPos3D.y, wristPos3D.z);
-            posAttr.setXYZ(1, ctrl.pos.x, ctrl.pos.y, ctrl.pos.z);
-            posAttr.needsUpdate = true;
-            ctrl.rayLine.visible = true;
-
-            const wasPinching = ctrl.isPinching;
-            ctrl.isPinching = (pinchDist < 0.085);
-            if (!wasPinching && ctrl.isPinching) sounds.playPinch();
-
-            ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
-
-            if (currentMode === 'BUILDER') {
-              if (ctrl.isPinching) {
-                if (ctrl.grabbedBlock) {
-                  const blockTarget = ctrl.pos.clone().sub(ctrl.grabOffset);
-                  ctrl.grabbedBlock.position.copy(blockTarget);
-                  ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
-                  ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#ffffff";
-                } else {
-                  let closest = null, minDist = 4.0;
-                  for (let block of blocks) {
-                    const d = ctrl.pos.distanceTo(block.position);
-                    if (d < minDist) { minDist = d; closest = block; }
-                  }
-                  if (closest) {
-                    ctrl.grabbedBlock = closest;
-                    closest.userData.isGrabbed = true;
-                    ctrl.grabOffset.copy(ctrl.pos).sub(closest.position);
-                    setBlockHighlight(closest, 'grab');
-                  }
-                }
-              } else {
-                if (ctrl.grabbedBlock) {
-                  setBlockHighlight(ctrl.grabbedBlock, 'normal');
-                  ctrl.grabbedBlock.userData.isGrabbed = false;
-                  ctrl.grabbedBlock = null;
-                }
-                ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#aaaaaa";
-              }
-            }
-          } else {
-            ctrl.active = false;
-            ctrl.mesh.visible = false;
-            ctrl.rayLine.visible = false;
-            if (ctrl.grabbedBlock) {
-              setBlockHighlight(ctrl.grabbedBlock, 'normal');
-              ctrl.grabbedBlock.userData.isGrabbed = false;
-              ctrl.grabbedBlock = null;
-            }
-            ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#666666"; ctrl.grabEl.innerText = "N/A";
-          }
-        }
-
-        if (currentMode === 'PARTICLES' && numHands > 0) {
           const landmarks1 = results.multiHandLandmarks[0];
           const h1Center = landmarks1[9], wrist1 = landmarks1[0];
-          targetRotZ = -Math.atan2(h1Center.y - wrist1.y, h1Center.x - wrist1.x) - Math.PI / 2;
-          targetRotX = (h1Center.y - 0.5) * Math.PI * 3.5;
-          targetRotY = (h1Center.x - 0.5) * Math.PI * 4.5;
+          
+          // Rotazione basata sul movimento della mano
+          targetRotX = (h1Center.y - 0.5) * 3.0;
+          targetRotY = (h1Center.x - 0.5) * 4.0;
 
+          // Rilevamento del pizzico (distanza pollice-indice) tra i primi punti
+          const thumbTip = landmarks1[4], indexTip = landmarks1[8];
+          const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+          isPinching = (pinchDist < 0.07);
+
+          if (isPinching) {
+            gestureStatusEl.innerText = "PINCH (COLLAPSE)";
+            gestureStatusEl.style.color = "#ff00aa";
+          } else {
+            gestureStatusEl.innerText = "APERTA";
+            gestureStatusEl.style.color = "#ffffff";
+          }
+
+          // Gestione di due mani per lo zoom / scala
           if (numHands === 2) {
             const landmarks2 = results.multiHandLandmarks[1];
-            const distBetweenHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
-            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(distBetweenHands, 0.08, 0.6, 0.4, 3.5), 0.3, 4.0);
+            const distHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
+            targetScale = THREE.MathUtils.clamp(distHands * 3.5, 0.4, 2.5);
           } else {
-            const span = Math.hypot(wrist1.x - landmarks1[12].x, wrist1.y - landmarks1[12].y);
-            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(span, 0.15, 0.45, 0.4, 2.5), 0.3, 3.0);
+            targetScale = 1.0;
           }
+        } else {
+          handStatusEl.innerText = "CERCA...";
+          handStatusEl.style.color = "#888888";
+          gestureStatusEl.innerText = "LIBERA";
+          isPinching = false;
         }
-
         previewCtx.restore();
       });
 
       const cameraUtils = new Camera(videoElement, {
-        onFrame: async () => { 
+        onFrame: async () => {
           if (videoElement.readyState >= 2) {
-            await hands.send({ image: videoElement }); 
+            await hands.send({ image: videoElement });
           }
         },
-        width: 480, height: 360
+        width: 320, height: 240
       });
-      
-      cameraUtils.start().catch(err => {
-        console.warn("Riflusso di avvio automatico camera...", err);
-        setTimeout(() => cameraUtils.start(), 1500);
-      });
+      cameraUtils.start().catch(err => console.log("Camera error:", err));
     }
 
     function animate() {
       requestAnimationFrame(animate);
 
-      if (currentMode === 'BUILDER') {
-        const gravity = -0.06;
+      // Interpolazione fluida della rotazione e della scala
+      particleSystem.rotation.x += (targetRotX - particleSystem.rotation.x) * 0.1;
+      particleSystem.rotation.y += (targetRotY + 0.002 - particleSystem.rotation.y) * 0.1;
+      handScale += (targetScale - handScale) * 0.1;
 
-        blocks.forEach(block => {
-          if (!block.userData.isGrabbed) {
-            block.userData.velocity.y += gravity;
-            block.position.add(block.userData.velocity);
+      const positions = particleGeometry.attributes.position.array;
+      for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
+        let tx = targetPositions[i] * handScale;
+        let ty = targetPositions[i+1] * handScale;
+        let tz = targetPositions[i+2] * handScale;
+        let lerpSpeed = 0.08;
 
-            const floorY = -6 + (block.userData.size / 2);
-            if (block.position.y < floorY) {
-              block.position.y = floorY;
-              block.userData.velocity.set(0, 0, 0);
-            }
-
-            blocks.forEach(other => {
-              if (block !== other && !other.userData.isGrabbed) {
-                const dx = block.position.x - other.position.x;
-                const dz = block.position.z - other.position.z;
-                const distXZ = Math.sqrt(dx * dx + dz * dz);
-                const limitDist = block.userData.size * 0.8;
-
-                if (distXZ < limitDist) {
-                  const topOfOther = other.position.y + (other.userData.size / 2) + (block.userData.size / 2);
-                  if (block.position.y <= topOfOther && block.position.y > other.position.y) {
-                    block.position.y = topOfOther;
-                    block.userData.velocity.set(0, 0, 0);
-                  }
-                }
-              }
-            });
-          }
-        });
-      }
-
-      if (currentMode === 'PARTICLES') {
-        particleGroup.rotation.x += (targetRotX - particleGroup.rotation.x) * 0.3;
-        particleGroup.rotation.y += (targetRotY + 0.003 - particleGroup.rotation.y) * 0.3;
-        particleGroup.rotation.z += (targetRotZ - particleGroup.rotation.z) * 0.3;
-
-        handExpansionScale += (targetScale - handExpansionScale) * 0.3;
-        camera.position.z += (targetCamZ - camera.position.z) * 0.3;
-
-        const isPinchingAny = (controllers[0].active && controllers[0].isPinching) || (controllers[1].active && controllers[1].isPinching);
-        const positions = particleGeometry.attributes.position.array;
-
-        for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
-          let tx = targetPositions[i] * handExpansionScale;
-          let ty = targetPositions[i+1] * handExpansionScale;
-          let tz = targetPositions[i+2] * handExpansionScale;
-          let lerpSpeed = 0.3;
-
-          if (isPinchingAny && (i / 3) % 2 === 0) {
-            tx *= 0.01; ty *= 0.01; tz *= 0.01;
-            lerpSpeed = 0.7;
-          }
-
-          positions[i] += (tx - positions[i]) * lerpSpeed;
-          positions[i+1] += (ty - positions[i+1]) * lerpSpeed;
-          positions[i+2] += (tz - positions[i+2]) * lerpSpeed;
+        // Effetto quando si chiude la mano a pizzico (le particelle si stringono)
+        if (isPinching && (i / 3) % 2 === 0) {
+          tx *= 0.05; ty *= 0.05; tz *= 0.05;
+          lerpSpeed = 0.15;
         }
-        particleGeometry.attributes.position.needsUpdate = true;
+
+        positions[i] += (tx - positions[i]) * lerpSpeed;
+        positions[i+1] += (ty - positions[i+1]) * lerpSpeed;
+        positions[i+2] += (tz - positions[i+2]) * lerpSpeed;
       }
+      particleGeometry.attributes.position.needsUpdate = true;
 
       renderer.render(scene, camera);
     }
@@ -749,12 +347,6 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    document.getElementById('shape-select').addEventListener('change', (e) => generateShape(e.target.value));
-    document.getElementById('color-picker').addEventListener('input', (e) => {
-      particleMaterial.color.set(e.target.value);
-    });
-
-    // Avvio sicuro all'effettivo caricamento della pagina
     window.addEventListener('load', () => {
       initThree();
       initHandTracking();
