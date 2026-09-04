@@ -322,7 +322,6 @@ input[type=color]{
   .stark-btn{font-size:8px}
 }
 
-/* riduce ulteriormente gli effetti sui dispositivi lenti */
 @media(max-width:700px){
   .ui-overlay,.mode-dock,.stark-header{
     backdrop-filter:blur(5px);
@@ -484,9 +483,10 @@ const CONFIG = {
   particleReaction: 0.08,
   maxBlocks: 28,
 
-  builderGravity: 0.06,
+  /* GRAVITÀ TERRESTRE */
+  builderGravity: 9.81,
+
   snapSize: 1.5,
-  throwPower: 1.8,
 
   colors: {
     white: 0xffffff,
@@ -705,7 +705,13 @@ function initThree(){
     .1,
     1000
   );
-  camera.position.set(0,4,28);
+
+  /*
+    VISUALE INIZIALE:
+    camera più arretrata e perfettamente centrata.
+  */
+  camera.position.set(0,0,34);
+  camera.lookAt(0,0,0);
 
   renderer=new THREE.WebGLRenderer({
     antialias:false,
@@ -720,6 +726,24 @@ function initThree(){
   initControllers();
   initParticles();
   initPreview();
+
+  /*
+    Assicura che dopo il refresh la visuale
+    parta sempre dal centro.
+  */
+  resetCameraView();
+}
+
+/* =========================================================
+   CAMERA VIEW
+   ========================================================= */
+
+function resetCameraView(){
+
+  if(!camera)return;
+
+  camera.position.set(0,0,34);
+  camera.lookAt(0,0,0);
 }
 
 /* =========================================================
@@ -786,6 +810,7 @@ function initControllers(){
     builderGroup.add(ctrl.pointLight);
 
     const lineGeo=new THREE.BufferGeometry();
+
     lineGeo.setAttribute(
       'position',
       new THREE.BufferAttribute(
@@ -805,13 +830,13 @@ function initControllers(){
     ctrl.rayLine.visible=false;
     builderGroup.add(ctrl.rayLine);
 
-    /* trail: solo 12 punti */
     ctrl.trailPoints=Array.from(
       {length:12},
       ()=>new THREE.Vector3()
     );
 
     ctrl.trailGeometry=new THREE.BufferGeometry();
+
     ctrl.trailGeometry.setAttribute(
       'position',
       new THREE.BufferAttribute(
@@ -905,6 +930,7 @@ function createGlowTexture(){
   c.height=32;
 
   const ctx=c.getContext('2d');
+
   const g=ctx.createRadialGradient(
     16,16,1,
     16,16,16
@@ -950,18 +976,23 @@ function spawnShape(type,x,y,z){
     case'sphere':
       geo=new THREE.SphereGeometry(1.65,12,12);
       break;
+
     case'pyramid':
       geo=new THREE.ConeGeometry(2.1,3,4);
       break;
+
     case'torus':
       geo=new THREE.TorusGeometry(1.5,.5,8,16);
       break;
+
     case'cylinder':
       geo=new THREE.CylinderGeometry(1.5,1.5,3,12);
       break;
+
     case'icosahedron':
       geo=new THREE.IcosahedronGeometry(1.9);
       break;
+
     default:
       geo=new THREE.BoxGeometry(size,size,size);
   }
@@ -994,7 +1025,6 @@ function spawnShape(type,x,y,z){
   builderGroup.add(mesh);
   blocks.push(mesh);
 
-  /* evita accumulo infinito */
   if(blocks.length>CONFIG.maxBlocks){
     disposeBlock(blocks.shift());
   }
@@ -1002,10 +1032,14 @@ function spawnShape(type,x,y,z){
 
 function disposeBlock(block){
   if(!block)return;
+
   builderGroup.remove(block);
+
   block.geometry?.dispose();
   block.material?.dispose();
-  if(selectedBlock===block) selectedBlock=null;
+
+  if(selectedBlock===block)
+    selectedBlock=null;
 }
 
 /* =========================================================
@@ -1061,10 +1095,14 @@ function snapBlock(block){
 function updateSelectionUI(){
 
   if(selectedBlock){
+
     dom.selection.textContent=
       'TARGET: '+selectedBlock.userData.type.toUpperCase();
+
     dom.ring.style.display='block';
+
   }else{
+
     dom.selection.textContent='TARGET: NESSUN OGGETTO';
     dom.ring.style.display='none';
   }
@@ -1089,6 +1127,7 @@ function generateShape(type){
       const body=saturn?.5:.75;
 
       if(i<PARTICLE_COUNT*body){
+
         const a=Math.random()*Math.PI*2;
         const b=Math.acos(Math.random()*2-1);
         const r=saturn?5:7;
@@ -1096,7 +1135,9 @@ function generateShape(type){
         x=r*Math.sin(b)*Math.cos(a);
         y=r*Math.cos(b)*(saturn?1:.85);
         z=r*Math.sin(b)*Math.sin(a);
+
       }else{
+
         const a=Math.random()*Math.PI*2;
         const r=(saturn?7:9)+Math.random()*(saturn?6:4);
 
@@ -1118,7 +1159,7 @@ function generateShape(type){
     }else if(type==='DNA'){
 
       const t=i/PARTICLE_COUNT*Math.PI*12;
-      const strand=i%2? -1:1;
+      const strand=i%2?-1:1;
 
       x=Math.sin(t)*4*strand;
       y=i/PARTICLE_COUNT*16-8;
@@ -1164,12 +1205,16 @@ function generateShape(type){
     }else if(type==='buddha'){
 
       if(Math.random()<.35){
+
         const a=Math.random()*Math.PI*2;
         const r=2+Math.random()*8;
+
         x=Math.cos(a)*r;
         z=Math.sin(a)*r;
         y=-7+(Math.random()-.5)*1.2;
+
       }else{
+
         const h=Math.random()*9;
         const w=(1-h/9)*6.5;
         const a=Math.random()*Math.PI*2;
@@ -1188,7 +1233,6 @@ function generateShape(type){
       x=r*Math.sin(b)*Math.cos(a);
       y=r*Math.sin(b)*Math.sin(a);
       z=r*Math.cos(b);
-
     }
 
     p[j]=x;
@@ -1210,14 +1254,17 @@ function drawPreview(hands){
   const h=dom.preview.height;
 
   ctx.clearRect(0,0,w,h);
+
   ctx.fillStyle='rgba(5,10,14,.92)';
   ctx.fillRect(0,0,w,h);
 
   if(!hands?.length){
+
     ctx.fillStyle='rgba(255,255,255,.35)';
     ctx.font='9px "Share Tech Mono"';
     ctx.textAlign='center';
     ctx.fillText('SEARCHING HANDS...',w/2,h/2);
+
     return;
   }
 
@@ -1227,6 +1274,7 @@ function drawPreview(hands){
     ctx.lineWidth=1.5;
 
     HAND_CONNECTIONS.forEach(pair=>{
+
       const a=landmarks[pair[0]];
       const b=landmarks[pair[1]];
 
@@ -1237,16 +1285,19 @@ function drawPreview(hands){
     });
 
     landmarks.forEach((p,index)=>{
+
       ctx.fillStyle=(index===4||index===8)
         ?'#ffe66d'
         :(i===0?'#00ffcc':'#ff00aa');
 
       ctx.beginPath();
+
       ctx.arc(
         p.x*w,p.y*h,
         index===4||index===8?3:1.7,
         0,Math.PI*2
       );
+
       ctx.fill();
     });
   });
@@ -1278,6 +1329,7 @@ async function initHandTracking(){
   const interval=1000/CONFIG.handFPS;
 
   hands.onResults(results=>{
+
     processing=false;
 
     const landmarks=results.multiHandLandmarks||[];
@@ -1285,21 +1337,23 @@ async function initHandTracking(){
 
     drawPreview(landmarks);
 
-    dom.mp.textContent=landmarks.length?'TRACKING':'SEARCHING';
+    dom.mp.textContent=
+      landmarks.length?'TRACKING':'SEARCHING';
 
-    /*
-      MediaPipe ci dice direttamente Left/Right.
-      Non usiamo più solamente indice 0/1.
-    */
-    const mapped={Left:null,Right:null};
+    const mapped={
+      Left:null,
+      Right:null
+    };
 
     handed.forEach((item,i)=>{
-      if(item?.label && landmarks[i]){
+
+      if(item?.label&&landmarks[i]){
         mapped[item.label]=landmarks[i];
       }
     });
 
     controllers.forEach(ctrl=>{
+
       const lm=mapped[ctrl.side];
 
       if(lm){
@@ -1313,6 +1367,7 @@ async function initHandTracking(){
   });
 
   const cameraUtils=new Camera(dom.video,{
+
     onFrame:async()=>{
 
       if(processing)return;
@@ -1326,9 +1381,15 @@ async function initHandTracking(){
       processing=true;
 
       try{
-        await hands.send({image:dom.video});
+
+        await hands.send({
+          image:dom.video
+        });
+
       }catch(e){
+
         processing=false;
+
         setConnection('CAM: ERROR','red');
         dom.mp.textContent='ERROR';
       }
@@ -1339,21 +1400,30 @@ async function initHandTracking(){
   });
 
   try{
+
     cameraUtils.start();
+
     setConnection('CAM: STARTING','yellow');
+
   }catch(e){
+
     setConnection('CAM: FAILED','red');
+
     console.warn('Camera error',e);
   }
 
   dom.video.addEventListener('loadeddata',()=>{
+
     setConnection('CAM: ONLINE','green');
     dom.previewStatus.textContent='ONLINE';
+
   });
 
   dom.video.addEventListener('error',()=>{
+
     setConnection('CAM: ERROR','red');
     dom.previewStatus.textContent='ERROR';
+
   });
 }
 
@@ -1364,6 +1434,7 @@ async function initHandTracking(){
 function updateController(ctrl,landmarks){
 
   const now=performance.now();
+
   ctrl.active=true;
   ctrl.lastSeen=now;
 
@@ -1377,7 +1448,12 @@ function updateController(ctrl,landmarks){
   const ndcX=(1-centerX)*2-1;
   const ndcY=-(centerY*2-1);
 
-  const v=new THREE.Vector3(ndcX,ndcY,.5);
+  const v=new THREE.Vector3(
+    ndcX,
+    ndcY,
+    .5
+  );
+
   v.unproject(camera);
 
   const dir=v.sub(camera.position).normalize();
@@ -1385,17 +1461,18 @@ function updateController(ctrl,landmarks){
 
   if(Math.abs(dir.z)>.0001){
 
-    const dist=(targetZ-camera.position.z)/dir.z;
+    const dist=
+      (targetZ-camera.position.z)/dir.z;
 
     ctrl.target.copy(camera.position)
       .add(dir.multiplyScalar(dist));
 
-    /*
-      smoothing: niente salto quando la mano si muove.
-    */
     ctrl.lastPos.copy(ctrl.pos);
 
-    ctrl.pos.lerp(ctrl.target,CONFIG.handSmooth);
+    ctrl.pos.lerp(
+      ctrl.target,
+      CONFIG.handSmooth
+    );
 
     ctrl.velocity.copy(ctrl.pos)
       .sub(ctrl.lastPos);
@@ -1406,11 +1483,21 @@ function updateController(ctrl,landmarks){
     ctrl.mesh.visible=true;
     ctrl.pointLight.visible=true;
 
-    updateRay(ctrl,landmarks[0],targetZ);
+    updateRay(
+      ctrl,
+      landmarks[0],
+      targetZ
+    );
+
     updateTrail(ctrl);
   }
 
-  updatePinch(ctrl,thumb,index);
+  updatePinch(
+    ctrl,
+    thumb,
+    index
+  );
+
   updateHandHUD(ctrl);
   updateBuilderHand(ctrl);
 }
@@ -1424,38 +1511,45 @@ function updatePinch(ctrl,thumb,index){
 
   ctrl.wasPinching=ctrl.isPinching;
 
-  /*
-    Isteresi:
-    soglia ON più stretta e OFF più larga.
-    Evita flickering.
-  */
   if(ctrl.isPinching){
+
     if(distance>CONFIG.pinchOff)
       ctrl.isPinching=false;
+
   }else{
+
     if(distance<CONFIG.pinchOn)
       ctrl.isPinching=true;
   }
 
-  if(!ctrl.wasPinching&&ctrl.isPinching){
+  if(
+    !ctrl.wasPinching&&
+    ctrl.isPinching
+  ){
     sounds.pinch();
   }
 }
 
 function loseController(ctrl){
 
-  const elapsed=performance.now()-ctrl.lastSeen;
+  const elapsed=
+    performance.now()-ctrl.lastSeen;
 
   ctrl.active=false;
+
   ctrl.mesh.visible=false;
   ctrl.pointLight.visible=false;
   ctrl.rayLine.visible=false;
 
   if(elapsed>350){
+
     ctrl.isPinching=false;
     releaseBlock(ctrl);
+
     setHandState(ctrl,'LOST');
+
   }else{
+
     setHandState(ctrl,'LOST');
   }
 
@@ -1469,12 +1563,17 @@ function setHandState(ctrl,state){
 
   if(state==='TRACKING')
     ctrl.statusEl.classList.add('state-tracking');
+
   else if(state==='LOST')
     ctrl.statusEl.classList.add('state-lost');
+
   else
     ctrl.statusEl.classList.add('state-searching');
 
-  ctrl.dotEl.classList.toggle('on',state==='TRACKING');
+  ctrl.dotEl.classList.toggle(
+    'on',
+    state==='TRACKING'
+  );
 
   if(state==='TRACKING'){
     dom.previewStatus.textContent='TRACKING';
@@ -1505,25 +1604,45 @@ function updateRay(ctrl,wrist,targetZ){
   const x=(1-wrist.x)*2-1;
   const y=-(wrist.y*2-1);
 
-  const v=new THREE.Vector3(x,y,.5);
+  const v=new THREE.Vector3(
+    x,
+    y,
+    .5
+  );
+
   v.unproject(camera);
 
   const dir=v.sub(camera.position).normalize();
 
   if(Math.abs(dir.z)<.0001)return;
 
-  const dist=(targetZ-camera.position.z)/dir.z;
+  const dist=
+    (targetZ-camera.position.z)/dir.z;
 
   const p=camera.position.clone()
     .add(dir.multiplyScalar(dist));
 
-  const attr=ctrl.rayLine.geometry.attributes.position;
+  const attr=
+    ctrl.rayLine.geometry.attributes.position;
 
-  attr.setXYZ(0,p.x,p.y,p.z);
-  attr.setXYZ(1,ctrl.pos.x,ctrl.pos.y,ctrl.pos.z);
+  attr.setXYZ(
+    0,
+    p.x,
+    p.y,
+    p.z
+  );
+
+  attr.setXYZ(
+    1,
+    ctrl.pos.x,
+    ctrl.pos.y,
+    ctrl.pos.z
+  );
+
   attr.needsUpdate=true;
 
-  ctrl.rayLine.visible=currentMode==='BUILDER';
+  ctrl.rayLine.visible=
+    currentMode==='BUILDER';
 }
 
 /* =========================================================
@@ -1533,18 +1652,32 @@ function updateRay(ctrl,wrist,targetZ){
 function updateTrail(ctrl){
 
   if(currentMode!=='PARTICLES'){
+
     ctrl.trail.visible=false;
     return;
   }
 
-  ctrl.trailPoints.unshift(ctrl.pos.clone());
+  ctrl.trailPoints.unshift(
+    ctrl.pos.clone()
+  );
+
   ctrl.trailPoints.length=12;
 
-  const attr=ctrl.trailGeometry.attributes.position;
+  const attr=
+    ctrl.trailGeometry.attributes.position;
 
   for(let i=0;i<12;i++){
-    const p=ctrl.trailPoints[i]||ctrl.pos;
-    attr.setXYZ(i,p.x,p.y,p.z);
+
+    const p=
+      ctrl.trailPoints[i]||
+      ctrl.pos;
+
+    attr.setXYZ(
+      i,
+      p.x,
+      p.y,
+      p.z
+    );
   }
 
   attr.needsUpdate=true;
@@ -1561,49 +1694,55 @@ function updateParticleTargets(){
 
   let activeHand=null;
 
-  if(controllers[0].active)activeHand=controllers[0];
-  else if(controllers[1].active)activeHand=controllers[1];
+  if(controllers[0].active)
+    activeHand=controllers[0];
+
+  else if(controllers[1].active)
+    activeHand=controllers[1];
 
   if(!activeHand)return;
 
-  /*
-    Reazione leggera:
-    non spostiamo tutti i punti in modo costoso.
-    Usiamo la posizione della mano per modificare
-    la rotazione e l'espansione generale.
-  */
   const p=activeHand.pos;
 
   targetRotY=
     THREE.MathUtils.clamp(
-      p.x*.035,-1.2,1.2
+      p.x*.035,
+      -1.2,
+      1.2
     );
 
   targetRotX=
     THREE.MathUtils.clamp(
-      -p.y*.025,-1.0,1.0
+      -p.y*.025,
+      -1.0,
+      1.0
     );
 
-  if(controllers[0].active&&controllers[1].active){
+  if(
+    controllers[0].active&&
+    controllers[1].active
+  ){
 
     const a=controllers[0].pos;
     const b=controllers[1].pos;
 
     const d=a.distanceTo(b);
 
-    targetScale=THREE.MathUtils.clamp(
-      .65+d*.075,
-      .65,
-      2.4
-    );
+    targetScale=
+      THREE.MathUtils.clamp(
+        .65+d*.075,
+        .65,
+        2.4
+      );
 
   }else{
 
-    targetScale=THREE.MathUtils.clamp(
-      1+Math.abs(p.x)*.025,
-      .75,
-      1.5
-    );
+    targetScale=
+      THREE.MathUtils.clamp(
+        1+Math.abs(p.x)*.025,
+        .75,
+        1.5
+      );
   }
 }
 
@@ -1626,19 +1765,29 @@ function updateBuilderHand(ctrl){
       const block=ctrl.grabbedBlock;
 
       block.position.copy(
-        ctrl.pos.clone().sub(ctrl.grabOffset)
+        ctrl.pos.clone()
+          .sub(ctrl.grabOffset)
       );
 
-      block.userData.velocity.set(0,0,0);
+      block.userData.velocity.set(
+        0,
+        0,
+        0
+      );
 
-      /*
-        Rotazione controllata dal movimento della mano.
-      */
-      block.rotation.y+=ctrl.velocity.x*.12;
-      block.rotation.x-=ctrl.velocity.y*.08;
+      block.rotation.y+=
+        ctrl.velocity.x*.12;
+
+      block.rotation.x-=
+        ctrl.velocity.y*.08;
 
       selectedBlock=block;
-      highlightBlock(block,true);
+
+      highlightBlock(
+        block,
+        true
+      );
+
       updateSelectionUI();
     }
 
@@ -1655,9 +1804,13 @@ function selectNearestBlock(ctrl){
 
   for(const block of blocks){
 
-    const d=ctrl.pos.distanceTo(block.position);
+    const d=
+      ctrl.pos.distanceTo(
+        block.position
+      );
 
     if(d<best){
+
       best=d;
       nearest=block;
     }
@@ -1666,14 +1819,22 @@ function selectNearestBlock(ctrl){
   if(!nearest)return;
 
   ctrl.grabbedBlock=nearest;
-  ctrl.grabOffset.copy(ctrl.pos)
-    .sub(nearest.position);
+
+  ctrl.grabOffset.copy(
+    ctrl.pos
+  ).sub(
+    nearest.position
+  );
 
   nearest.userData.isGrabbed=true;
 
   selectedBlock=nearest;
 
-  highlightBlock(nearest,true);
+  highlightBlock(
+    nearest,
+    true
+  );
+
   updateSelectionUI();
 }
 
@@ -1686,18 +1847,28 @@ function releaseBlock(ctrl){
   block.userData.isGrabbed=false;
 
   /*
-    Lancio quando la mano apre.
+    NESSUN IMPULSO.
+    Quando l'oggetto viene lasciato,
+    la velocità viene azzerata e la gravità
+    lo fa cadere immediatamente.
   */
-  block.userData.velocity.copy(ctrl.velocity)
-    .multiplyScalar(CONFIG.throwPower);
+  block.userData.velocity.set(
+    0,
+    0,
+    0
+  );
 
   snapBlock(block);
 
-  highlightBlock(block,false);
+  highlightBlock(
+    block,
+    false
+  );
 
   ctrl.grabbedBlock=null;
 
   selectedBlock=null;
+
   updateSelectionUI();
 }
 
@@ -1726,13 +1897,10 @@ function updateParticles(delta){
   currentScale+=
     (targetScale-currentScale)*lerp;
 
-  particleGroup.scale.setScalar(currentScale);
+  particleGroup.scale.setScalar(
+    currentScale
+  );
 
-  /*
-    Transizione forma:
-    accelerazione temporanea senza creare
-    oggetti o sistemi extra.
-  */
   shapePulse=Math.max(
     0,
     shapePulse-.025*delta
@@ -1745,32 +1913,56 @@ function updateParticles(delta){
     controllers[0].isPinching||
     controllers[1].isPinching;
 
-  /*
-    Se c'è pinch, collassiamo metà particelle.
-    Il comportamento originale rimane.
-  */
-  for(let i=0,j=0;i<PARTICLE_COUNT;i++,j+=3){
+  for(
+    let i=0,j=0;
+    i<PARTICLE_COUNT;
+    i++,j+=3
+  ){
 
-    let tx=targetPositions[j]*currentScale;
-    let ty=targetPositions[j+1]*currentScale;
-    let tz=targetPositions[j+2]*currentScale;
+    let tx=
+      targetPositions[j]*
+      currentScale;
 
-    if(pinch&&(i&1)===0){
+    let ty=
+      targetPositions[j+1]*
+      currentScale;
+
+    let tz=
+      targetPositions[j+2]*
+      currentScale;
+
+    if(
+      pinch&&
+      (i&1)===0
+    ){
+
       tx*=.012;
       ty*=.012;
       tz*=.012;
     }
 
     const speed=
-      pinch&&(i&1)===0?.55:
-      .18+shapePulse*.08;
+      pinch&&(i&1)===0
+        ?.55
+        :.18+shapePulse*.08;
 
-    positions[j]+=(tx-positions[j])*speed;
-    positions[j+1]+=(ty-positions[j+1])*speed;
-    positions[j+2]+=(tz-positions[j+2])*speed;
+    positions[j]+=
+      (tx-positions[j])*
+      speed;
+
+    positions[j+1]+=
+      (ty-positions[j+1])*
+      speed;
+
+    positions[j+2]+=
+      (tz-positions[j+2])*
+      speed;
   }
 
-  particleGeometry.attributes.position.needsUpdate=true;
+  particleGeometry
+    .attributes
+    .position
+    .needsUpdate=true;
 }
 
 /* =========================================================
@@ -1781,15 +1973,22 @@ function updateBuilder(delta){
 
   if(currentMode!=='BUILDER')return;
 
-  const gravity=CONFIG.builderGravity*delta;
+  /*
+    delta qui è espresso in secondi.
+    9.81 = accelerazione gravitazionale terrestre.
+  */
+  const gravity=CONFIG.builderGravity;
 
   for(const block of blocks){
 
-    if(block.userData.isGrabbed)continue;
+    if(block.userData.isGrabbed)
+      continue;
 
-    const velocity=block.userData.velocity;
+    const velocity=
+      block.userData.velocity;
 
-    velocity.y-=gravity;
+    velocity.y-=
+      gravity*delta;
 
     block.position.addScaledVector(
       velocity,
@@ -1797,10 +1996,13 @@ function updateBuilder(delta){
     );
 
     const floorY=
-      -6+block.userData.size*.5;
+      -6+
+      block.userData.size*.5;
 
     if(block.position.y<floorY){
+
       block.position.y=floorY;
+
       velocity.y=0;
       velocity.x*=.92;
       velocity.z*=.92;
@@ -1817,24 +2019,30 @@ function updateBuilder(delta){
 
 function resolveCollisions(){
 
-  /*
-    Spatial hash semplice.
-    Non confrontiamo più ogni oggetto con tutti.
-  */
   const cell=3.5;
   const grid=new Map();
 
   for(const block of blocks){
 
-    if(block.userData.isGrabbed)continue;
+    if(block.userData.isGrabbed)
+      continue;
 
-    const x=Math.floor(block.position.x/cell);
-    const z=Math.floor(block.position.z/cell);
+    const x=
+      Math.floor(
+        block.position.x/cell
+      );
+
+    const z=
+      Math.floor(
+        block.position.z/cell
+      );
+
     const key=x+','+z;
 
     let list=grid.get(key);
 
     if(!list){
+
       list=[];
       grid.set(key,list);
     }
@@ -1845,14 +2053,19 @@ function resolveCollisions(){
   for(const [key,list] of grid){
 
     const parts=key.split(',');
+
     const cx=+parts[0];
     const cz=+parts[1];
 
     for(let ox=-1;ox<=1;ox++){
+
       for(let oz=-1;oz<=1;oz++){
 
         const otherList=
-          grid.get((cx+ox)+','+(cz+oz));
+          grid.get(
+            (cx+ox)+','+
+            (cz+oz)
+          );
 
         if(!otherList)continue;
 
@@ -1862,10 +2075,18 @@ function resolveCollisions(){
 
             if(a===b)continue;
 
-            const dx=a.position.x-b.position.x;
-            const dz=a.position.z-b.position.z;
+            const dx=
+              a.position.x-
+              b.position.x;
 
-            if(dx*dx+dz*dz>8.5)continue;
+            const dz=
+              a.position.z-
+              b.position.z;
+
+            if(
+              dx*dx+
+              dz*dz>8.5
+            )continue;
 
             const top=
               b.position.y+
@@ -1873,9 +2094,10 @@ function resolveCollisions(){
               a.userData.size*.5;
 
             if(
-              a.position.y<=top &&
+              a.position.y<=top&&
               a.position.y>b.position.y
             ){
+
               a.position.y=top;
               a.userData.velocity.y=0;
             }
@@ -1892,20 +2114,35 @@ function resolveCollisions(){
 
 function updateSelectionRing(){
 
-  if(!selectedBlock||currentMode!=='BUILDER'){
+  if(
+    !selectedBlock||
+    currentMode!=='BUILDER'
+  ){
+
     dom.ring.style.display='none';
     return;
   }
 
-  const v=selectedBlock.position.clone();
+  const v=
+    selectedBlock.position.clone();
+
   v.project(camera);
 
-  const x=(v.x*.5+.5)*innerWidth;
-  const y=(-v.y*.5+.5)*innerHeight;
+  const x=
+    (v.x*.5+.5)*
+    innerWidth;
+
+  const y=
+    (-v.y*.5+.5)*
+    innerHeight;
 
   dom.ring.style.display='block';
-  dom.ring.style.left=(x-22)+'px';
-  dom.ring.style.top=(y-22)+'px';
+
+  dom.ring.style.left=
+    (x-22)+'px';
+
+  dom.ring.style.top=
+    (y-22)+'px';
 }
 
 /* =========================================================
@@ -1918,16 +2155,33 @@ function switchMode(mode){
 
   currentMode=mode;
 
-  const builder=mode==='BUILDER';
+  const builder=
+    mode==='BUILDER';
 
-  dom.tabBuilder.classList.toggle('active',builder);
-  dom.tabParticles.classList.toggle('active',!builder);
+  dom.tabBuilder.classList.toggle(
+    'active',
+    builder
+  );
 
-  dom.builder.classList.toggle('hidden',!builder);
-  dom.particles.classList.toggle('hidden',builder);
+  dom.tabParticles.classList.toggle(
+    'active',
+    !builder
+  );
+
+  dom.builder.classList.toggle(
+    'hidden',
+    !builder
+  );
+
+  dom.particles.classList.toggle(
+    'hidden',
+    builder
+  );
 
   dom.panelTitle.textContent=
-    builder?'3D BUILDER MATRIX':'PARTICLE MATRIX';
+    builder
+      ?'3D BUILDER MATRIX'
+      :'PARTICLE MATRIX';
 
   dom.mode.textContent=mode;
 
@@ -1935,15 +2189,22 @@ function switchMode(mode){
   particleGroup.visible=!builder;
 
   controllers.forEach(c=>{
-    c.rayLine.visible=builder&&c.active;
-    c.trail.visible=!builder&&c.active;
+
+    c.rayLine.visible=
+      builder&&c.active;
+
+    c.trail.visible=
+      !builder&&c.active;
   });
 
   if(!builder){
+
     selectedBlock=null;
+
     controllers.forEach(c=>{
       releaseBlock(c);
     });
+
     updateSelectionUI();
   }
 }
@@ -1966,9 +2227,15 @@ function bindEvents(){
 
   document.querySelectorAll('.spawn-btn')
     .forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        spawnShape(btn.dataset.shape);
-      });
+
+      btn.addEventListener(
+        'click',
+        ()=>{
+          spawnShape(
+            btn.dataset.shape
+          );
+        }
+      );
     });
 
   dom.clear.addEventListener(
@@ -1978,27 +2245,34 @@ function bindEvents(){
 
   dom.shapeSelect.addEventListener(
     'change',
-    e=>generateShape(e.target.value)
+    e=>generateShape(
+      e.target.value
+    )
   );
 
   dom.colorPicker.addEventListener(
     'input',
     e=>{
-      particleMaterial?.color.set(e.target.value);
+      particleMaterial?.color.set(
+        e.target.value
+      );
     }
   );
 
   dom.audio.addEventListener(
     'click',
     ()=>{
-      sounds.enabled=!sounds.enabled;
+
+      sounds.enabled=
+        !sounds.enabled;
 
       dom.audio.textContent=
         sounds.enabled
-        ?'🔊 AUDIO: ATTIVO'
-        :'🔇 AUDIO: DISATTIVATO';
+          ?'🔊 AUDIO: ATTIVO'
+          :'🔇 AUDIO: DISATTIVATO';
 
-      if(sounds.enabled)sounds.init();
+      if(sounds.enabled)
+        sounds.init();
     }
   );
 
@@ -2019,8 +2293,10 @@ function setConnection(text,type){
 
   if(type==='green')
     dom.connection.style.color='#00ffcc';
+
   else if(type==='red')
     dom.connection.style.color='#ff5577';
+
   else
     dom.connection.style.color='#ffe66d';
 }
@@ -2036,7 +2312,9 @@ function updateFPS(now){
   if(now-fpsTime>=500){
 
     const fps=Math.round(
-      fpsFrames*1000/(now-fpsTime)
+      fpsFrames*
+      1000/
+      (now-fpsTime)
     );
 
     dom.fps.textContent=fps;
@@ -2056,26 +2334,40 @@ function animate(){
 
   const now=performance.now();
 
+  /*
+    delta normalizzato per il sistema particellare.
+  */
   const delta=Math.min(
     (now-lastFrame)/16.67,
     2
+  );
+
+  /*
+    Tempo reale in secondi per la gravità.
+    Questo permette di usare realmente 9.81 m/s².
+  */
+  const deltaSeconds=Math.min(
+    (now-lastFrame)/1000,
+    .05
   );
 
   lastFrame=now;
 
   updateFPS(now);
 
-  /*
-    Ogni sistema lavora solo quando la sua modalità
-    è realmente attiva.
-  */
   if(currentMode==='BUILDER'){
-    updateBuilder(delta);
+
+    updateBuilder(deltaSeconds);
+
   }else{
+
     updateParticles(delta);
   }
 
-  renderer.render(scene,camera);
+  renderer.render(
+    scene,
+    camera
+  );
 }
 
 /* =========================================================
@@ -2086,35 +2378,59 @@ function onResize(){
 
   if(!camera||!renderer)return;
 
-  camera.aspect=innerWidth/innerHeight;
+  camera.aspect=
+    innerWidth/innerHeight;
+
   camera.updateProjectionMatrix();
 
   renderer.setPixelRatio(1);
-  renderer.setSize(innerWidth,innerHeight,false);
+
+  renderer.setSize(
+    innerWidth,
+    innerHeight,
+    false
+  );
 }
 
 /* =========================================================
    START
    ========================================================= */
 
-window.addEventListener('load',async()=>{
+window.addEventListener(
+  'load',
+  async()=>{
 
-  initThree();
-  bindEvents();
+    initThree();
 
-  switchMode('PARTICLES');
+    bindEvents();
 
-  setConnection('CAM: INIT','yellow');
+    switchMode('PARTICLES');
 
-  try{
-    await initHandTracking();
-  }catch(e){
-    console.error('MediaPipe init error:',e);
-    setConnection('CAM: FAILED','red');
+    setConnection(
+      'CAM: INIT',
+      'yellow'
+    );
+
+    try{
+
+      await initHandTracking();
+
+    }catch(e){
+
+      console.error(
+        'MediaPipe init error:',
+        e
+      );
+
+      setConnection(
+        'CAM: FAILED',
+        'red'
+      );
+    }
+
+    animate();
   }
-
-  animate();
-});
+);
 </script>
 
 </body>
