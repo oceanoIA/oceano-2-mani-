@@ -2,1463 +2,5167 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>NEURAL // HAND SYSTEM</title>
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>NEURAL — Hand Interface</title>
 
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020204;color:#fff;font-family:Inter,Arial,sans-serif}
-body{user-select:none}
-canvas{display:block}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent
+}
 
-#app{position:fixed;inset:0;background:#020204}
-#scene{position:absolute;inset:0}
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#020204;
+  color:#fff;
+  font-family:Inter,Arial,sans-serif
+}
+
+body{
+  user-select:none
+}
+
+button,
+select,
+input{
+  font:inherit
+}
+
+button{
+  cursor:pointer
+}
+
+#app{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 50%,#101014 0%,#030305 48%,#000 100%)
+}
+
+#three{
+  position:absolute;
+  inset:0
+}
+
+canvas{
+  display:block
+}
+
+/* =====================================================
+   GLASS
+===================================================== */
 
 .glass{
-  background:rgba(18,18,22,.48);
+  background:rgba(18,18,22,.58);
   border:1px solid rgba(255,255,255,.12);
-  box-shadow:0 15px 50px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.07);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
+  box-shadow:
+    0 20px 70px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.08);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px)
 }
 
-#top{
-  position:absolute;z-index:10;top:16px;left:16px;right:16px;height:58px;
-  border-radius:20px;display:flex;align-items:center;padding:0 18px;gap:16px
-}
-.logo{font-weight:800;letter-spacing:4px;font-size:13px}
-.sub{opacity:.4;font-size:10px;letter-spacing:2px}
-.status{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:10px;letter-spacing:1px;opacity:.65}
-.dot{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 14px #fff}
+/* =====================================================
+   HEADER
+===================================================== */
 
-#left{
-  position:absolute;z-index:10;left:16px;top:90px;width:235px;
-  border-radius:22px;padding:15px
+#header{
+  position:absolute;
+  z-index:20;
+  top:14px;
+  left:14px;
+  right:14px;
+  height:58px;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  padding:0 18px;
+  gap:16px
 }
-.section{margin-bottom:16px}
-.label{font-size:9px;letter-spacing:2px;text-transform:uppercase;opacity:.38;margin-bottom:8px}
-select,input{
-  width:100%;border:1px solid rgba(255,255,255,.1);outline:0;
-  background:rgba(255,255,255,.055);color:#fff;border-radius:12px;
-  padding:10px;font-size:11px
+
+.logo{
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:5px
 }
-select option{background:#111;color:#fff}
-.row{display:flex;gap:7px}
+
+.version{
+  font-size:9px;
+  letter-spacing:2px;
+  opacity:.3
+}
+
+.system{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:9px;
+  letter-spacing:1.5px;
+  opacity:.7
+}
+
+.statusDot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 16px #fff
+}
+
+/* =====================================================
+   CONTROL PANEL
+===================================================== */
+
+#panel{
+  position:absolute;
+  z-index:20;
+  left:14px;
+  top:86px;
+  width:245px;
+  padding:15px;
+  border-radius:22px
+}
+
+.section{
+  margin-bottom:16px
+}
+
+.label{
+  margin-bottom:8px;
+  font-size:8px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  opacity:.38
+}
+
+select,
+input[type=range]{
+  width:100%
+}
+
+select{
+  border:1px solid rgba(255,255,255,.1);
+  outline:none;
+  border-radius:12px;
+  padding:10px;
+  color:#fff;
+  background:#111115;
+  font-size:10px
+}
+
+select option{
+  background:#111;
+  color:#fff
+}
+
 button{
-  border:1px solid rgba(255,255,255,.1);color:#fff;
-  background:rgba(255,255,255,.06);border-radius:11px;
-  padding:9px 11px;cursor:pointer;font-size:10px;transition:.2s
+  border:1px solid rgba(255,255,255,.1);
+  color:#fff;
+  background:rgba(255,255,255,.055);
+  border-radius:11px;
+  padding:10px;
+  transition:.18s
 }
-button:hover{background:rgba(255,255,255,.13)}
-button.active{background:#fff;color:#050505}
-.full{width:100%}
 
-#dock{
-  position:absolute;z-index:10;bottom:16px;left:50%;transform:translateX(-50%);
-  border-radius:20px;padding:7px;display:flex;gap:5px
+button:hover{
+  background:rgba(255,255,255,.12)
 }
-.mode{min-width:115px;height:40px}
-.mode small{display:block;font-size:8px;opacity:.5;margin-top:2px}
-.mode.active small{opacity:.6}
 
-#cameraBox{
-  position:absolute;z-index:11;right:16px;top:90px;width:190px;height:142px;
-  border-radius:18px;overflow:hidden;background:#08080a;
-  border:1px solid rgba(255,255,255,.12)
+button:active{
+  transform:scale(.97)
 }
-#video{display:none}
-#camCanvas{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:.72}
-.camLabel{position:absolute;left:9px;top:8px;font-size:8px;letter-spacing:2px;opacity:.6}
+
+button.active{
+  color:#000;
+  background:#fff
+}
+
+.full{
+  width:100%
+}
+
+.modeRow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px
+}
+
+.modeBtn{
+  height:44px;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:1px
+}
+
+.modeBtn span{
+  display:block;
+  margin-top:3px;
+  font-size:7px;
+  opacity:.45
+}
+
+.clock{
+  font-size:23px;
+  font-weight:800;
+  letter-spacing:4px
+}
+
+.date{
+  margin-top:3px;
+  font-size:8px;
+  letter-spacing:1px;
+  opacity:.3
+}
+
+.rangeLine{
+  display:flex;
+  align-items:center;
+  gap:8px
+}
+
+.rangeValue{
+  min-width:35px;
+  text-align:right;
+  font-size:9px;
+  opacity:.5
+}
+
+/* =====================================================
+   CAMERA
+===================================================== */
+
+#cameraPanel{
+  position:absolute;
+  z-index:21;
+  right:14px;
+  top:86px;
+  width:205px;
+  height:154px;
+  border-radius:20px;
+  overflow:hidden
+}
+
+#video{
+  display:none
+}
+
+#cameraCanvas{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  transform:scaleX(-1)
+}
+
+.cameraTitle{
+  position:absolute;
+  left:10px;
+  top:9px;
+  font-size:8px;
+  letter-spacing:2px;
+  text-shadow:0 2px 8px #000
+}
+
+.cameraStatus{
+  position:absolute;
+  right:10px;
+  top:9px;
+  font-size:8px;
+  opacity:.7
+}
+
+/* =====================================================
+   HAND CURSOR
+===================================================== */
+
+#handCursor{
+  position:absolute;
+  z-index:18;
+  width:26px;
+  height:26px;
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  display:none;
+  box-shadow:
+    0 0 15px rgba(255,255,255,.8),
+    inset 0 0 8px rgba(255,255,255,.2)
+}
+
+#handCursor:after{
+  content:"";
+  position:absolute;
+  inset:6px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 14px #fff
+}
+
+#handCursor.pinch{
+  width:40px;
+  height:40px
+}
+
+/* =====================================================
+   HUD
+===================================================== */
 
 #hud{
-  position:absolute;z-index:10;right:16px;bottom:78px;
-  border-radius:15px;padding:10px 13px;font-size:9px;line-height:1.8;
-  letter-spacing:1px;opacity:.65
+  position:absolute;
+  z-index:20;
+  right:14px;
+  bottom:78px;
+  min-width:145px;
+  padding:10px 13px;
+  border-radius:15px;
+  font-size:8px;
+  line-height:2;
+  letter-spacing:1.5px;
+  opacity:.7
 }
-#hud b{color:#fff;opacity:1}
 
-#console{
-  position:absolute;z-index:10;left:50%;bottom:16px;transform:translate(-50%,-70px);
-  width:min(420px,calc(100% - 32px));display:none
+#hud b{
+  float:right;
+  margin-left:18px;
+  opacity:1
 }
-#console form{display:flex;gap:6px}
-#console input{height:40px}
-#console button{width:65px}
+
+/* =====================================================
+   BOTTOM DOCK
+===================================================== */
+
+#dock{
+  position:absolute;
+  z-index:25;
+  left:50%;
+  bottom:14px;
+  transform:translateX(-50%);
+  display:flex;
+  gap:6px;
+  padding:7px;
+  border-radius:19px
+}
+
+.dockButton{
+  min-width:115px;
+  height:40px;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:1px
+}
+
+/* =====================================================
+   COMMAND
+===================================================== */
+
+#command{
+  position:absolute;
+  z-index:30;
+  left:50%;
+  bottom:72px;
+  width:min(440px,calc(100% - 28px));
+  transform:translateX(-50%);
+  display:none
+}
+
+#command form{
+  display:flex;
+  gap:6px
+}
+
+#command input{
+  min-width:0;
+  flex:1;
+  border:1px solid rgba(255,255,255,.12);
+  outline:none;
+  border-radius:12px;
+  padding:11px;
+  color:#fff;
+  background:rgba(15,15,18,.8)
+}
+
+#command button{
+  width:70px
+}
+
+/* =====================================================
+   TOAST
+===================================================== */
 
 #toast{
-  position:absolute;z-index:30;left:50%;top:50%;transform:translate(-50%,-50%);
-  padding:13px 20px;border-radius:15px;font-size:11px;opacity:0;
-  pointer-events:none;transition:.25s
+  position:absolute;
+  z-index:100;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  padding:12px 20px;
+  border-radius:15px;
+  font-size:10px;
+  letter-spacing:1.5px;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s
 }
-#toast.show{opacity:1}
+
+#toast.show{
+  opacity:1
+}
+
+/* =====================================================
+   START
+===================================================== */
 
 #start{
-  position:absolute;z-index:50;inset:0;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(circle at center,rgba(30,30,35,.5),#020204 65%)
+  position:absolute;
+  z-index:200;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at center,rgba(35,35,42,.5),#010103 68%)
 }
-.startCard{width:min(390px,calc(100% - 35px));padding:28px;border-radius:26px;text-align:center}
-.startCard h1{font-size:27px;letter-spacing:6px;margin:0 0 8px}
-.startCard p{font-size:11px;line-height:1.7;opacity:.45;margin:0 0 22px}
-#startBtn{width:100%;height:45px;background:#fff;color:#000;font-weight:700}
+
+.startCard{
+  width:min(420px,calc(100% - 30px));
+  padding:30px;
+  border-radius:28px;
+  text-align:center
+}
+
+.startCard h1{
+  margin:0;
+  font-size:30px;
+  letter-spacing:7px
+}
+
+.startCard p{
+  margin:12px 0 24px;
+  font-size:10px;
+  line-height:1.8;
+  opacity:.42
+}
+
+#startButton{
+  width:100%;
+  height:46px;
+  color:#000;
+  background:#fff;
+  font-weight:800
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
 
 @media(max-width:700px){
-  #left{width:190px;top:82px;left:10px}
-  #cameraBox{width:145px;height:110px;right:10px;top:82px}
-  #top{top:10px;left:10px;right:10px}
-  #dock{bottom:10px}
-  .mode{min-width:90px}
+
+  #header{
+    left:8px;
+    right:8px;
+    top:8px
+  }
+
+  #panel{
+    left:8px;
+    top:75px;
+    width:190px
+  }
+
+  #cameraPanel{
+    right:8px;
+    top:75px;
+    width:145px;
+    height:110px
+  }
+
+  #hud{
+    right:8px;
+    bottom:66px
+  }
+
+  #dock{
+    bottom:8px
+  }
+
+  .dockButton{
+    min-width:95px
+  }
+
+  .version{
+    display:none
+  }
 }
 </style>
 </head>
 
 <body>
+
 <div id="app">
-  <div id="scene"></div>
 
-  <header id="top" class="glass">
+  <div id="three"></div>
+
+  <!-- HEADER -->
+  <div id="header" class="glass">
     <div class="logo">NEURAL</div>
-    <div class="sub">HAND INTERFACE // 01</div>
-    <div class="status"><span class="dot"></span><span id="systemStatus">SYSTEM READY</span></div>
-  </header>
+    <div class="version">HAND INTERFACE / 02</div>
 
-  <aside id="left" class="glass">
-    <div class="section">
-      <div class="label">Mode</div>
-      <div class="row">
-        <button id="builderMode" class="mode active" onclick="setMode('builder')">
-          BUILDER<small>3D OBJECTS</small>
-        </button>
-        <button id="particleMode" class="mode" onclick="setMode('particles')">
-          HOLOGRAM<small>PARTICLES</small>
-        </button>
-      </div>
+    <div class="system">
+      <span class="statusDot"></span>
+      <span id="systemText">WAITING</span>
     </div>
-
-    <div class="section" id="builderControls">
-      <div class="label">3D Form</div>
-      <select id="builderSelect"></select>
-      <button class="full" style="margin-top:7px" onclick="spawnBuilder()">＋ CREATE OBJECT</button>
-      <button class="full" style="margin-top:6px" onclick="clearBuilder()">CLEAR SCENE</button>
-    </div>
-
-    <div class="section" id="particleControls" style="display:none">
-      <div class="label">Hologram Form</div>
-      <select id="holoSelect"></select>
-      <button class="full" style="margin-top:7px" onclick="changeHolo()">LOAD FORM</button>
-      <div style="height:8px"></div>
-      <div class="label">Particles</div>
-      <input id="particleRange" type="range" min="1500" max="7500" value="5200">
-    </div>
-
-    <div class="section">
-      <div class="label">Hand sensitivity</div>
-      <input id="sensitivity" type="range" min=".7" max="2.5" step=".1" value="1.6">
-    </div>
-
-    <div class="section">
-      <div class="label">Clock</div>
-      <div id="clock" style="font-size:20px;font-weight:700;letter-spacing:4px">00:00:00</div>
-      <div id="date" style="font-size:8px;opacity:.35;margin-top:3px">SYSTEM TIME</div>
-    </div>
-
-    <button class="full" onclick="toggleConsole()">COMMAND / SEND</button>
-  </aside>
-
-  <div id="cameraBox">
-    <video id="video" autoplay playsinline></video>
-    <canvas id="camCanvas"></canvas>
-    <div class="camLabel">HAND SENSOR</div>
   </div>
+
+  <!-- CONTROL PANEL -->
+  <div id="panel" class="glass">
+
+    <div class="section">
+
+      <div class="label">System mode</div>
+
+      <div class="modeRow">
+
+        <button
+          id="builderButton"
+          class="modeBtn active"
+          onclick="setMode('builder')">
+          BUILDER
+          <span>3D WORLD</span>
+        </button>
+
+        <button
+          id="holoButton"
+          class="modeBtn"
+          onclick="setMode('hologram')">
+          HOLOGRAM
+          <span>PARTICLE FIELD</span>
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- BUILDER CONTROLS -->
+
+    <div id="builderControls">
+
+      <div class="section">
+
+        <div class="label">3D object</div>
+
+        <select id="builderSelect"></select>
+
+        <button
+          class="full"
+          style="margin-top:7px"
+          onclick="createSelectedObject()">
+          CREATE OBJECT
+        </button>
+
+        <button
+          class="full"
+          style="margin-top:6px"
+          onclick="clearWorld()">
+          CLEAR WORLD
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- HOLOGRAM CONTROLS -->
+
+    <div id="hologramControls" style="display:none">
+
+      <div class="section">
+
+        <div class="label">Hologram</div>
+
+        <select id="hologramSelect"></select>
+
+        <button
+          class="full"
+          style="margin-top:7px"
+          onclick="loadSelectedHologram()">
+          LOAD HOLOGRAM
+        </button>
+
+      </div>
+
+      <div class="section">
+
+        <div class="label">Particle density</div>
+
+        <div class="rangeLine">
+
+          <input
+            id="particleSlider"
+            type="range"
+            min="1800"
+            max="7500"
+            value="5200">
+
+          <span
+            id="particleValue"
+            class="rangeValue">
+            5200
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- HAND -->
+
+    <div class="section">
+
+      <div class="label">Hand sensitivity</div>
+
+      <div class="rangeLine">
+
+        <input
+          id="sensitivitySlider"
+          type="range"
+          min="0.7"
+          max="2.5"
+          step="0.1"
+          value="1.6">
+
+        <span
+          id="sensitivityValue"
+          class="rangeValue">
+          1.6
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- CLOCK -->
+
+    <div class="section">
+
+      <div class="label">System time</div>
+
+      <div
+        id="clock"
+        class="clock">
+        00:00:00
+      </div>
+
+      <div
+        id="date"
+        class="date">
+        SYSTEM
+      </div>
+
+    </div>
+
+    <button
+      class="full"
+      onclick="toggleCommand()">
+      COMMAND / SEND
+    </button>
+
+  </div>
+
+  <!-- CAMERA -->
+
+  <div id="cameraPanel" class="glass">
+
+    <video
+      id="video"
+      autoplay
+      playsinline>
+    </video>
+
+    <canvas id="cameraCanvas"></canvas>
+
+    <div class="cameraTitle">
+      HAND SENSOR
+    </div>
+
+    <div
+      id="cameraStatus"
+      class="cameraStatus">
+      OFF
+    </div>
+
+  </div>
+
+  <!-- HAND CURSOR -->
+
+  <div id="handCursor"></div>
+
+  <!-- HUD -->
 
   <div id="hud" class="glass">
-    FPS <b id="fps">0</b><br>
-    HANDS <b id="hands">0</b><br>
-    OBJECTS <b id="objects">0</b><br>
-    PARTICLES <b id="pcount">5200</b>
+
+    FPS
+    <b id="fps">0</b>
+    <br>
+
+    HANDS
+    <b id="hands">0</b>
+    <br>
+
+    PINCH
+    <b id="pinch">NO</b>
+    <br>
+
+    OBJECTS
+    <b id="objectCount">0</b>
+    <br>
+
+    PARTICLES
+    <b id="particleCount">5200</b>
+
   </div>
 
-  <div id="console">
+  <!-- BOTTOM -->
+
+  <div id="dock" class="glass">
+
+    <button
+      id="dockBuilder"
+      class="dockButton active"
+      onclick="setMode('builder')">
+      BUILDER
+    </button>
+
+    <button
+      id="dockHolo"
+      class="dockButton"
+      onclick="setMode('hologram')">
+      HOLOGRAM
+    </button>
+
+    <button
+      class="dockButton"
+      onclick="toggleCommand()">
+      COMMAND
+    </button>
+
+  </div>
+
+  <!-- COMMAND -->
+
+  <div id="command" class="glass">
+
     <form id="commandForm">
-      <input id="commandInput" autocomplete="off" placeholder="Scrivi un comando...">
-      <button type="submit">INVIA</button>
+
+      <input
+        id="commandInput"
+        placeholder="Scrivi un comando..."
+        autocomplete="off">
+
+      <button type="submit">
+        INVIA
+      </button>
+
     </form>
+
   </div>
 
-  <div id="toast" class="glass"></div>
+  <!-- TOAST -->
+
+  <div
+    id="toast"
+    class="glass">
+  </div>
+
+  <!-- START -->
 
   <div id="start">
+
     <div class="startCard glass">
+
       <h1>NEURAL</h1>
+
       <p>
-        Interfaccia 3D controllata dalla mano.<br>
-        Builder, forme olografiche, neuroni e tracking in tempo reale.
+        HAND CONTROLLED 3D INTERFACE<br>
+        BUILDER / HOLOGRAM / PARTICLE ENGINE
       </p>
-      <button id="startBtn">INITIALIZE SYSTEM</button>
+
+      <button id="startButton">
+        INITIALIZE SYSTEM
+      </button>
+
     </div>
+
   </div>
+
 </div>
 
-<!-- THREE.JS -->
+<!-- =====================================================
+     LIBRARIES
+===================================================== -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-<!-- MEDIAPIPE -->
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
 <script>
-/* =========================================================
-   NEURAL // CORE
-   ========================================================= */
+
+/* =====================================================
+   SHORTCUT
+===================================================== */
 
 const $ = id => document.getElementById(id);
 
-let mode = 'builder';
-let sensitivity = 1.6;
-let handCount = 0;
-let lastFrame = performance.now();
-let frameCounter = 0;
-let fpsValue = 0;
-let clockStart = Date.now();
 
-/* =========================================================
+/* =====================================================
+   STATE
+===================================================== */
+
+let mode = 'builder';
+
+let sensitivity = 1.6;
+
+let activeParticles = 5200;
+
+let handVisible = false;
+
+let isPinching = false;
+
+let grabbedObject = null;
+
+let handX = 0;
+
+let handY = 0;
+
+let smoothX = 0;
+
+let smoothY = 0;
+
+let lastPinch = false;
+
+let handsInstance = null;
+
+let mpCamera = null;
+
+let cameraStarted = false;
+
+let startTime = performance.now();
+
+let frameCounter = 0;
+
+let fps = 0;
+
+
+/* =====================================================
    THREE
-   ========================================================= */
+===================================================== */
 
 const scene = new THREE.Scene();
+
 scene.background = new THREE.Color(0x020204);
 
-const camera3D = new THREE.PerspectiveCamera(
-  55, innerWidth / innerHeight, .1, 1000
+
+const camera = new THREE.PerspectiveCamera(
+  55,
+  innerWidth / innerHeight,
+  .1,
+  1000
 );
-camera3D.position.set(0,7,25);
+
+camera.position.set(0,4,24);
+
 
 const renderer = new THREE.WebGLRenderer({
   antialias:false,
   powerPreference:'high-performance'
 });
-renderer.setSize(innerWidth,innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio,1.25));
+
+renderer.setPixelRatio(
+  Math.min(window.devicePixelRatio || 1,1.25)
+);
+
+renderer.setSize(
+  innerWidth,
+  innerHeight
+);
+
 renderer.outputEncoding = THREE.sRGBEncoding;
-$('scene').appendChild(renderer.domElement);
+
+$('three').appendChild(renderer.domElement);
+
+
+/* =====================================================
+   WORLD
+===================================================== */
 
 const world = new THREE.Group();
+
 scene.add(world);
 
-const ambient = new THREE.AmbientLight(0xffffff,.65);
+
+const ambient = new THREE.AmbientLight(
+  0xffffff,
+  .65
+);
+
 scene.add(ambient);
 
-const light = new THREE.DirectionalLight(0xffffff,1.2);
-light.position.set(8,15,10);
-scene.add(light);
+
+const keyLight = new THREE.DirectionalLight(
+  0xffffff,
+  1.5
+);
+
+keyLight.position.set(
+ 8,
+ 15,
+ 12
+);
+
+scene.add(keyLight);
+
+
+const rimLight = new THREE.PointLight(
+  0xffffff,
+  1.2,
+  40
+);
+
+rimLight.position.set(
+ -8,
+ 8,
+ 10
+);
+
+scene.add(rimLight);
+
+
+/* =====================================================
+   FLOOR
+===================================================== */
 
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(100,100),
   new THREE.MeshStandardMaterial({
-    color:0x08080a,
-    roughness:.85,
-    metalness:.1
+    color:0x070709,
+    roughness:.9,
+    metalness:.05
   })
 );
-floor.rotation.x=-Math.PI/2;
-floor.position.y=-4;
+
+floor.rotation.x = -Math.PI/2;
+
+floor.position.y = -4;
+
 world.add(floor);
 
-const grid = new THREE.GridHelper(80,40,0x202025,0x101014);
-grid.position.y=-3.98;
+
+const grid = new THREE.GridHelper(
+  80,
+  40,
+  0x242429,
+  0x111115
+);
+
+grid.position.y = -3.98;
+
 world.add(grid);
 
-/* =========================================================
-   BUILDER
-   ========================================================= */
 
-const BUILDERS = [
- ['CUBE','box',[3,3,3]],
- ['SMALL CUBE','box',[2,2,2]],
- ['RECTANGLE','box',[5,2.5,2.5]],
- ['PLATFORM','box',[7,1,4]],
- ['SPHERE','sphere',[2.4]],
- ['BIG SPHERE','sphere',[3.5]],
- ['ICO SPHERE','ico',[2.8]],
- ['CYLINDER','cylinder',[2.3,4]],
- ['TALL CYLINDER','cylinder',[1.6,6]],
- ['CONE','cone',[2.8,5]],
- ['TOWER','cone',[3.2,7]],
- ['TORUS','torus',[2.5,.65]],
- ['RING','torus',[3.5,.35]],
- ['PYRAMID','cone4',[3,5]],
- ['DIAMOND','diamond',[3.2,5]],
- ['CRYSTAL','crystal',[2.5,5]],
- ['CAPSULE','capsule',[1.6,5]],
- ['ARCH','arch',[5,4,1]],
- ['WALL','box',[6,5,1]],
- ['PILLAR','box',[2,7,2]],
- ['CROSS','cross',[5,1.5,1.5]],
- ['PLUS','plus',[4,2,2]],
- ['STAR','star3d',[3,1]],
- ['GEAR','gear',[3,1]],
- ['ROCKET','rocket',[]],
- ['SATELLITE','satellite',[]],
- ['ROBOT','robot',[]],
- ['HOUSE','house',[]],
- ['TREE','tree',[]],
- ['LAMP','lamp',[]],
- ['CHAIR','chair',[]],
- ['TABLE','table',[]],
- ['MUSHROOM','mushroom',[]],
- ['BELL','bell',[]],
- ['TROPHY','trophy',[]],
- ['MICROPHONE','microphone',[]],
- ['PLANET','planet',[]],
- ['SPACE STATION','station',[]],
- ['WIND TURBINE','turbine',[]],
- ['DNA','dna3d',[]],
- ['ATOM','atom3d',[]],
- ['NEURAL NODE','neural3d',[]],
- ['SPIRAL','spiral3d',[]],
- ['WAVE','wave3d',[]],
- ['MOBIUS','mobius3d',[]],
- ['HEART','heart3d',[]],
- ['FLOWER','flower3d',[]],
- ['BUTTERFLY','butterfly3d',[]],
- ['OWL','owl',[]]
+/* =====================================================
+   BUILDER DATA
+===================================================== */
+
+const BUILDER_FORMS = [
+
+  ['CUBE','cube'],
+  ['SMALL CUBE','smallCube'],
+  ['RECTANGLE','rectangle'],
+  ['PLATFORM','platform'],
+  ['SPHERE','sphere'],
+  ['ICO SPHERE','ico'],
+  ['CYLINDER','cylinder'],
+  ['TALL CYLINDER','tallCylinder'],
+  ['CONE','cone'],
+  ['PYRAMID','pyramid'],
+  ['TORUS','torus'],
+  ['RING','ring'],
+  ['DIAMOND','diamond'],
+  ['CRYSTAL','crystal'],
+  ['ARCH','arch'],
+  ['CROSS','cross'],
+  ['STAR','star'],
+  ['GEAR','gear'],
+  ['ROCKET','rocket'],
+  ['SATELLITE','satellite'],
+  ['ROBOT','robot'],
+  ['HOUSE','house'],
+  ['TREE','tree'],
+  ['LAMP','lamp'],
+  ['CHAIR','chair'],
+  ['TABLE','table'],
+  ['MUSHROOM','mushroom'],
+  ['BELL','bell'],
+  ['TROPHY','trophy'],
+  ['MICROPHONE','microphone'],
+  ['PLANET','planet'],
+  ['SPACE STATION','station'],
+  ['TURBINE','turbine'],
+  ['DNA','dna'],
+  ['ATOM','atom'],
+  ['NEURAL CORE','neural'],
+  ['SPIRAL','spiral'],
+  ['WAVE','wave'],
+  ['MOBIUS','mobius'],
+  ['HEART','heart'],
+  ['FLOWER','flower'],
+  ['BUTTERFLY','butterfly'],
+  ['OWL','owl'],
+  ['PORTAL','portal'],
+  ['ENGINE','engine'],
+  ['CORE','core'],
+  ['UFO','ufo'],
+  ['DRONE','drone'],
+  ['SATELLITE DISH','dish'],
+  ['BEACON','beacon']
 ];
 
-const builderSelect=$('builderSelect');
-BUILDERS.forEach((x,i)=>{
-  const o=document.createElement('option');
-  o.value=i;o.textContent=x[0];
-  builderSelect.appendChild(o);
+
+BUILDER_FORMS.forEach((item,index)=>{
+
+  const option =
+    document.createElement('option');
+
+  option.value = index;
+
+  option.textContent = item[0];
+
+  $('builderSelect')
+    .appendChild(option);
+
 });
 
-const objects=[];
 
-function mat(){
+/* =====================================================
+   MATERIAL
+===================================================== */
+
+function material(){
+
   return new THREE.MeshStandardMaterial({
-    color:0xd9d9df,
-    metalness:.72,
+    color:0xd8d8de,
+    metalness:.7,
     roughness:.25
   });
+
 }
 
-function mesh(g,x=0,y=0,z=0,s=1){
-  const m=new THREE.Mesh(g,mat());
+
+/* =====================================================
+   ADD MESH
+===================================================== */
+
+function addMesh(
+  group,
+  geometry,
+  x=0,
+  y=0,
+  z=0,
+  sx=1,
+  sy=1,
+  sz=1
+){
+
+  const m =
+    new THREE.Mesh(
+      geometry,
+      material()
+    );
+
   m.position.set(x,y,z);
-  m.scale.setScalar(s);
+
+  m.scale.set(
+    sx,
+    sy,
+    sz
+  );
+
+  group.add(m);
+
   return m;
 }
 
-function primitive(type,p){
-  const M=new THREE.Group();
 
-  if(type==='box'){
-    M.add(mesh(new THREE.BoxGeometry(p[0],p[1],p[2])));
+/* =====================================================
+   OBJECT FACTORY
+===================================================== */
+
+function makeObject(type){
+
+  const g =
+    new THREE.Group();
+
+
+  if(type==='cube'){
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(3,3,3)
+    );
+
   }
+
+
+  else if(type==='smallCube'){
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(2,2,2)
+    );
+
+  }
+
+
+  else if(type==='rectangle'){
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(5,2.5,3)
+    );
+
+  }
+
+
+  else if(type==='platform'){
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(7,1,4)
+    );
+
+  }
+
+
   else if(type==='sphere'){
-    M.add(mesh(new THREE.SphereGeometry(p[0],18,12)));
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        2.5,
+        20,
+        14
+      )
+    );
+
   }
+
+
   else if(type==='ico'){
-    M.add(mesh(new THREE.IcosahedronGeometry(p[0],2)));
+
+    addMesh(
+      g,
+      new THREE.IcosahedronGeometry(
+        2.7,
+        2
+      )
+    );
+
   }
+
+
   else if(type==='cylinder'){
-    M.add(mesh(new THREE.CylinderGeometry(p[0],p[0],p[1],20)));
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        2.2,
+        2.2,
+        4,
+        24
+      )
+    );
+
   }
+
+
+  else if(type==='tallCylinder'){
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        1.5,
+        1.5,
+        7,
+        20
+      )
+    );
+
+  }
+
+
   else if(type==='cone'){
-    M.add(mesh(new THREE.ConeGeometry(p[0],p[1],20)));
+
+    addMesh(
+      g,
+      new THREE.ConeGeometry(
+        2.8,
+        5,
+        24
+      )
+    );
+
   }
-  else if(type==='cone4'){
-    M.add(mesh(new THREE.ConeGeometry(p[0],p[1],4)));
+
+
+  else if(type==='pyramid'){
+
+    addMesh(
+      g,
+      new THREE.ConeGeometry(
+        3,
+        5,
+        4
+      )
+    );
+
   }
+
+
   else if(type==='torus'){
-    M.add(mesh(new THREE.TorusGeometry(p[0],p[1],12,28)));
+
+    addMesh(
+      g,
+      new THREE.TorusGeometry(
+        2.5,
+        .65,
+        12,
+        32
+      )
+    );
+
   }
+
+
+  else if(type==='ring'){
+
+    addMesh(
+      g,
+      new THREE.TorusGeometry(
+        3.5,
+        .3,
+        10,
+        40
+      )
+    );
+
+  }
+
+
   else if(type==='diamond'){
-    const a=mesh(new THREE.OctahedronGeometry(p[0]));
-    a.scale.y=p[1]/(p[0]*2);
-    M.add(a);
+
+    addMesh(
+      g,
+      new THREE.OctahedronGeometry(3)
+    );
+
   }
+
+
   else if(type==='crystal'){
-    const a=mesh(new THREE.CylinderGeometry(p[0],p[0]*.55,p[1],6));
-    M.add(a);
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        2,
+        1,
+        6,
+        6
+      )
+    );
+
   }
-  else if(type==='capsule'){
-    const a=mesh(new THREE.CapsuleGeometry(p[0],p[1]-p[0]*2,8,16));
-    M.add(a);
-  }
+
+
   else if(type==='arch'){
-    M.add(mesh(new THREE.BoxGeometry(p[0],1,p[2]),0,p[1]/2,0));
-    M.add(mesh(new THREE.BoxGeometry(1,p[1],p[2]),-p[0]/2,0,0));
-    M.add(mesh(new THREE.BoxGeometry(1,p[1],p[2]),p[0]/2,0,0));
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(6,1,2),
+      0,
+      2.5,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(1,5,2),
+      -2.5,
+      0,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(1,5,2),
+      2.5,
+      0,
+      0
+    );
+
   }
+
+
   else if(type==='cross'){
-    M.add(mesh(new THREE.BoxGeometry(p[0],p[1],p[2])));
-    M.add(mesh(new THREE.BoxGeometry(p[1],p[0],p[2])));
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        5,1.5,1.5
+      )
+    );
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        1.5,5,1.5
+      )
+    );
+
   }
-  else if(type==='plus'){
-    M.add(mesh(new THREE.BoxGeometry(p[0],p[1],p[1])));
-    M.add(mesh(new THREE.BoxGeometry(p[1],p[0],p[1])));
-    M.add(mesh(new THREE.BoxGeometry(p[1],p[1],p[0])));
-  }
-  else if(type==='star3d'){
-    const s=new THREE.Shape();
+
+
+  else if(type==='star'){
+
+    const shape =
+      new THREE.Shape();
+
     for(let i=0;i<10;i++){
-      const r=i%2?1.25:2.8,a=i*Math.PI/5-Math.PI/2;
-      const x=Math.cos(a)*r,y=Math.sin(a)*r;
-      i?s.lineTo(x,y):s.moveTo(x,y);
+
+      const a =
+        -Math.PI/2 +
+        i*Math.PI/5;
+
+      const r =
+        i%2===0 ? 3 : 1.4;
+
+      const x =
+        Math.cos(a)*r;
+
+      const y =
+        Math.sin(a)*r;
+
+      if(i===0)
+        shape.moveTo(x,y);
+      else
+        shape.lineTo(x,y);
+
     }
-    s.closePath();
-    M.add(mesh(new THREE.ExtrudeGeometry(s,{depth:1,bevelEnabled:true,bevelSize:.15,bevelThickness:.15})));
+
+    shape.closePath();
+
+    const geo =
+      new THREE.ExtrudeGeometry(
+        shape,
+        {
+          depth:1,
+          bevelEnabled:true,
+          bevelSize:.12,
+          bevelThickness:.12
+        }
+      );
+
+    addMesh(g,geo);
+
   }
+
+
   else if(type==='gear'){
-    M.add(mesh(new THREE.TorusGeometry(p[0],.55,10,20)));
+
+    addMesh(
+      g,
+      new THREE.TorusGeometry(
+        2.5,
+        .55,
+        10,
+        24
+      )
+    );
+
     for(let i=0;i<8;i++){
-      const a=i*Math.PI/4;
-      M.add(mesh(new THREE.BoxGeometry(1,.7,.8),
-        Math.cos(a)*p[0],Math.sin(a)*p[0],0));
+
+      const a =
+        i*Math.PI/4;
+
+      addMesh(
+        g,
+        new THREE.BoxGeometry(
+          1,
+          .65,
+          .8
+        ),
+        Math.cos(a)*3,
+        Math.sin(a)*3,
+        0
+      );
+
     }
+
   }
+
+
   else if(type==='rocket'){
-    M.add(mesh(new THREE.CylinderGeometry(1.25,1.25,5,16),0,0,0));
-    M.add(mesh(new THREE.ConeGeometry(1.25,2.8,16),0,3.9,0));
-    M.add(mesh(new THREE.CylinderGeometry(.55,.8,1.5,12),0,-3.2,0));
-    M.add(mesh(new THREE.BoxGeometry(2.7,1.8,.35),0,-1.3,0));
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        1.25,
+        1.25,
+        5,
+        20
+      )
+    );
+
+    addMesh(
+      g,
+      new THREE.ConeGeometry(
+        1.25,
+        2.5,
+        20
+      ),
+      0,
+      3.7,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .6,
+        .8,
+        1.5,
+        12
+      ),
+      0,
+      -3.2,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        3,
+        1.8,
+        .4
+      ),
+      0,
+      -1.2,
+      0
+    );
+
   }
+
+
   else if(type==='satellite'){
-    M.add(mesh(new THREE.CylinderGeometry(.8,.8,3,12),0,0,0));
-    M.add(mesh(new THREE.BoxGeometry(6,2.2,.25),0,.5,0));
-    M.add(mesh(new THREE.CylinderGeometry(.7,.7,1.5,12),0,1.8,0));
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .8,
+        .8,
+        3,
+        16
+      )
+    );
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        7,
+        2,
+        .25
+      ),
+      0,
+      .5,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        .7,
+        14,
+        10
+      ),
+      0,
+      2,
+      0
+    );
+
   }
+
+
   else if(type==='robot'){
-    M.add(mesh(new THREE.BoxGeometry(3,3,2.4),0,1.5,0));
-    M.add(mesh(new THREE.BoxGeometry(2.5,2.5,2),0,-1.5,0));
-    M.add(mesh(new THREE.CylinderGeometry(.25,.25,1.5,10),-1.5,2.8,0));
-    M.add(mesh(new THREE.CylinderGeometry(.25,.25,1.5,10),1.5,2.8,0));
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        3,
+        3,
+        2.5
+      ),
+      0,
+      1.8,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        2.7,
+        2.7,
+        2.2
+      ),
+      0,
+      -1.3,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .22,
+        .22,
+        1.6,
+        10
+      ),
+      -1.6,
+      3.5,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .22,
+        .22,
+        1.6,
+        10
+      ),
+      1.6,
+      3.5,
+      0
+    );
+
   }
+
+
   else if(type==='house'){
-    M.add(mesh(new THREE.BoxGeometry(5,4,5),0,-.7,0));
-    const roof=mesh(new THREE.ConeGeometry(4.2,3,4),0,2.8,0);
-    roof.rotation.y=Math.PI/4;M.add(roof);
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        5,
+        4,
+        5
+      ),
+      0,
+      -1,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.ConeGeometry(
+        4.2,
+        3,
+        4
+      ),
+      0,
+      2.5,
+      0
+    );
+
   }
+
+
   else if(type==='tree'){
-    M.add(mesh(new THREE.CylinderGeometry(.8,.9,5,10),0,-.5,0));
-    M.add(mesh(new THREE.ConeGeometry(3,4,12),0,2.5,0));
-    M.add(mesh(new THREE.ConeGeometry(2.3,3.5,12),0,5,0));
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .7,
+        .9,
+        5,
+        12
+      ),
+      0,
+      -1,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.ConeGeometry(
+        3,
+        4,
+        16
+      ),
+      0,
+      2,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.ConeGeometry(
+        2.2,
+        3.5,
+        16
+      ),
+      0,
+      5,
+      0
+    );
+
   }
+
+
   else if(type==='lamp'){
-    M.add(mesh(new THREE.CylinderGeometry(.25,.3,6,10),0,0,0));
-    M.add(mesh(new THREE.SphereGeometry(1.1,14,10),0,3,0));
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .25,
+        .3,
+        6,
+        12
+      )
+    );
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        1.1,
+        16,
+        10
+      ),
+      0,
+      3,
+      0
+    );
+
   }
+
+
   else if(type==='chair'){
-    M.add(mesh(new THREE.BoxGeometry(3,.5,3),0,1.8,0));
-    M.add(mesh(new THREE.BoxGeometry(3,3,.5),0,3.2,-1.25));
-    [-1.1,1.1].forEach(x=>[-1.1,1.1].forEach(z=>
-      M.add(mesh(new THREE.BoxGeometry(.45,3,.45),x,0,z))
-    ));
-  }
-  else if(type==='table'){
-    M.add(mesh(new THREE.BoxGeometry(6,.5,4),0,2,0));
-    [-2.3,2.3].forEach(x=>[-1.3,1.3].forEach(z=>
-      M.add(mesh(new THREE.BoxGeometry(.5,2,.5),x,.8,z))
-    ));
-  }
-  else if(type==='mushroom'){
-    M.add(mesh(new THREE.CylinderGeometry(.7,.9,3,12),0,-.3,0));
-    M.add(mesh(new THREE.SphereGeometry(2.5,18,10),0,1.7,0,.9));
-  }
-  else if(type==='bell'){
-    M.add(mesh(new THREE.ConeGeometry(2.2,3,20),0,0,0));
-    M.add(mesh(new THREE.SphereGeometry(.5,12,8),0,-1.8,0));
-  }
-  else if(type==='trophy'){
-    M.add(mesh(new THREE.CylinderGeometry(.5,.7,3,12),0,-1,0));
-    M.add(mesh(new THREE.SphereGeometry(1.7,18,12),0,1,0));
-    M.add(mesh(new THREE.BoxGeometry(3,.5,1),0,-2.5,0));
-  }
-  else if(type==='microphone'){
-    M.add(mesh(new THREE.SphereGeometry(1.4,16,12),0,2,0));
-    M.add(mesh(new THREE.CylinderGeometry(.7,.7,4,16),0,-.2,0));
-    M.add(mesh(new THREE.CylinderGeometry(.35,.35,2,10),0,-3,0));
-  }
-  else if(type==='planet'){
-    M.add(mesh(new THREE.SphereGeometry(2.8,20,14)));
-    const r=mesh(new THREE.TorusGeometry(4,.22,8,40));
-    r.rotation.x=.45;M.add(r);
-  }
-  else if(type==='station'){
-    M.add(mesh(new THREE.CylinderGeometry(1.2,1.2,6,16)));
-    const r=mesh(new THREE.TorusGeometry(3,.45,10,28));
-    r.rotation.x=Math.PI/2;M.add(r);
-    M.add(mesh(new THREE.BoxGeometry(8,.4,1),0,0,0));
-  }
-  else if(type==='turbine'){
-    M.add(mesh(new THREE.CylinderGeometry(.4,.5,5,12)));
-    for(let i=0;i<5;i++){
-      const a=i*Math.PI*2/5;
-      const b=mesh(new THREE.BoxGeometry(4,.3,.6));
-      b.position.set(Math.cos(a)*1.5,2.1,Math.sin(a)*1.5);
-      b.rotation.y=-a;M.add(b);
-    }
-  }
-  else if(type==='dna3d'){
-    for(let i=0;i<25;i++){
-      const t=i/24*Math.PI*4;
-      const y=t*1.3-2.6;
-      M.add(mesh(new THREE.SphereGeometry(.22,8,6),
-        Math.cos(t)*1.6,y,Math.sin(t)*1.6));
-      M.add(mesh(new THREE.SphereGeometry(.22,8,6),
-        -Math.cos(t)*1.6,y,-Math.sin(t)*1.6));
-    }
-  }
-  else if(type==='atom3d'){
-    M.add(mesh(new THREE.SphereGeometry(1.1,16,10)));
-    for(let i=0;i<3;i++){
-      const r=mesh(new THREE.TorusGeometry(3,.12,8,32));
-      r.rotation.set(i*.8,i*.7,i*.5);M.add(r);
-    }
-  }
-  else if(type==='neural3d'){
-    for(let i=0;i<14;i++){
-      const a=i/14*Math.PI*2;
-      M.add(mesh(new THREE.SphereGeometry(.45,10,8),
-        Math.cos(a)*3,Math.sin(a*2)*1.5,Math.sin(a)*3));
-    }
-    M.add(mesh(new THREE.IcosahedronGeometry(1.4,1)));
-  }
-  else if(type==='spiral3d'){
-    for(let i=0;i<45;i++){
-      const t=i/44*Math.PI*5;
-      const r=.3+i/44*3;
-      M.add(mesh(new THREE.SphereGeometry(.18,7,5),
-        Math.cos(t)*r,t/2.2-3,Math.sin(t)*r));
-    }
-  }
-  else if(type==='wave3d'){
-    for(let x=-4;x<=4;x+=.5)
-      for(let z=-2;z<=2;z+=.5)
-        M.add(mesh(new THREE.SphereGeometry(.12,6,5),x,Math.sin(x*1.2+z)*1.5,z));
-  }
-  else if(type==='mobius3d'){
-    for(let i=0;i<70;i++){
-      const t=i/70*Math.PI*2,u=(i%7)/7-.5;
-      const r=3+u;
-      M.add(mesh(new THREE.SphereGeometry(.16,7,5),
-        Math.cos(t)*r,
-        Math.sin(t)*r,
-        u*2*Math.sin(t/2)));
-    }
-  }
-  else if(type==='heart3d'){
-    for(let i=0;i<90;i++){
-      const t=i/90*Math.PI*2;
-      const x=3.5*Math.sin(t)**3;
-      const y=2.8*Math.cos(t)-1.1*Math.cos(2*t)-.5*Math.cos(3*t)-.2*Math.cos(4*t);
-      M.add(mesh(new THREE.SphereGeometry(.15,7,5),x/1.5,y/1.5,0));
-    }
-  }
-  else if(type==='flower3d'){
-    for(let i=0;i<8;i++){
-      const a=i*Math.PI/4;
-      M.add(mesh(new THREE.SphereGeometry(1.3,12,8),
-        Math.cos(a)*2.3,Math.sin(a)*2.3,0));
-    }
-    M.add(mesh(new THREE.SphereGeometry(1.4,16,10)));
-  }
-  else if(type==='butterfly3d'){
-    for(let i=0;i<2;i++){
-      const x=i?2.2:-2.2;
-      const wing=mesh(new THREE.SphereGeometry(2.5,14,10));
-      wing.scale.set(1,.15,.7);wing.position.x=x;M.add(wing);
-    }
-    M.add(mesh(new THREE.CylinderGeometry(.35,.35,5,10),0,0,0));
-  }
-  else if(type==='owl'){
-    M.add(mesh(new THREE.SphereGeometry(2.7,18,12),0,0,0));
-    [-1,1].forEach(x=>{
-      M.add(mesh(new THREE.SphereGeometry(.9,12,8),x*.95,.65,2.2));
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        3,
+        .5,
+        3
+      ),
+      0,
+      1.8,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        3,
+        3,
+        .5
+      ),
+      0,
+      3.2,
+      -1.25
+    );
+
+    [-1.1,1.1].forEach(x=>{
+
+      [-1.1,1.1].forEach(z=>{
+
+        addMesh(
+          g,
+          new THREE.BoxGeometry(
+            .45,
+            3,
+            .45
+          ),
+          x,
+          0,
+          z
+        );
+
+      });
+
     });
+
   }
 
-  return M;
-}
 
-function spawnBuilder(){
-  const d=BUILDERS[+builderSelect.value];
-  const o=primitive(d[1],d[2]);
-  o.position.set((Math.random()-.5)*10,6,(Math.random()-.5)*5);
-  o.rotation.y=Math.random()*Math.PI*2;
-  o.userData={
-    vx:0,vy:0,vz:0,
-    size:new THREE.Vector3()
-  };
+  else if(type==='table'){
 
-  const box=new THREE.Box3().setFromObject(o);
-  box.getSize(o.userData.size);
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        6,
+        .5,
+        4
+      ),
+      0,
+      2,
+      0
+    );
 
-  world.add(o);
-  objects.push(o);
-  $('objects').textContent=objects.length;
-}
+    [-2.3,2.3].forEach(x=>{
 
-function clearBuilder(){
-  objects.forEach(o=>world.remove(o));
-  objects.length=0;
-  $('objects').textContent='0';
-}
+      [-1.3,1.3].forEach(z=>{
 
-function physics(){
-  for(let i=0;i<objects.length;i++){
-    const a=objects[i];
-    if(a.userData.grabbed)continue;
+        addMesh(
+          g,
+          new THREE.BoxGeometry(
+            .5,
+            2,
+            .5
+          ),
+          x,
+          .8,
+          z
+        );
 
-    a.userData.vy-=.012;
-    a.position.y+=a.userData.vy;
+      });
 
-    const s=a.userData.size;
-    const bottom=a.position.y-s.y/2;
+    });
 
-    if(bottom<-3.98){
-      a.position.y=-3.98+s.y/2;
-      a.userData.vy=0;
+  }
+
+
+  else if(type==='mushroom'){
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .7,
+        .9,
+        3,
+        14
+      ),
+      0,
+      -1,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        2.5,
+        18,
+        12
+      ),
+      0,
+      1,
+      0,
+      1,
+      .55,
+      1
+    );
+
+  }
+
+
+  else if(type==='bell'){
+
+    addMesh(
+      g,
+      new THREE.ConeGeometry(
+        2.2,
+        3,
+        24
+      )
+    );
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        .5,
+        12,
+        8
+      ),
+      0,
+      -1.8,
+      0
+    );
+
+  }
+
+
+  else if(type==='trophy'){
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        1.7,
+        18,
+        12
+      ),
+      0,
+      1,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .5,
+        .7,
+        3,
+        12
+      ),
+      0,
+      -1.5,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        3,
+        .5,
+        2
+      ),
+      0,
+      -3,
+      0
+    );
+
+  }
+
+
+  else if(type==='microphone'){
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        1.4,
+        18,
+        12
+      ),
+      0,
+      2,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .65,
+        .65,
+        4,
+        16
+      ),
+      0,
+      -.3,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .35,
+        .35,
+        2,
+        12
+      ),
+      0,
+      -3.2,
+      0
+    );
+
+  }
+
+
+  else if(type==='planet'){
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        2.8,
+        20,
+        14
+      )
+    );
+
+    const r =
+      addMesh(
+        g,
+        new THREE.TorusGeometry(
+          4,
+          .2,
+          10,
+          40
+        )
+      );
+
+    r.rotation.x=.5;
+
+  }
+
+
+  else if(type==='station'){
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        1.2,
+        1.2,
+        6,
+        18
+      )
+    );
+
+    const r =
+      addMesh(
+        g,
+        new THREE.TorusGeometry(
+          3,
+          .4,
+          10,
+          30
+        )
+      );
+
+    r.rotation.x=Math.PI/2;
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        8,
+        .4,
+        1
+      )
+    );
+
+  }
+
+
+  else if(type==='turbine'){
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .4,
+        .5,
+        6,
+        12
+      )
+    );
+
+    for(let i=0;i<5;i++){
+
+      const a =
+        i*Math.PI*2/5;
+
+      const b =
+        addMesh(
+          g,
+          new THREE.BoxGeometry(
+            4,
+            .25,
+            .6
+          ),
+          Math.cos(a)*1.5,
+          2,
+          Math.sin(a)*1.5
+        );
+
+      b.rotation.y=-a;
+
     }
+
+  }
+
+
+  else if(type==='dna'){
+
+    for(let i=0;i<30;i++){
+
+      const t =
+        i/29*Math.PI*8;
+
+      const y =
+        t/2-4;
+
+      addMesh(
+        g,
+        new THREE.SphereGeometry(
+          .22,
+          8,
+          6
+        ),
+        Math.cos(t)*1.7,
+        y,
+        Math.sin(t)*1.7
+      );
+
+      addMesh(
+        g,
+        new THREE.SphereGeometry(
+          .22,
+          8,
+          6
+        ),
+        -Math.cos(t)*1.7,
+        y,
+        -Math.sin(t)*1.7
+      );
+
+    }
+
+  }
+
+
+  else if(type==='atom'){
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        1.2,
+        16,
+        12
+      )
+    );
+
+    for(let i=0;i<3;i++){
+
+      const r =
+        addMesh(
+          g,
+          new THREE.TorusGeometry(
+            3,
+            .12,
+            8,
+            36
+          )
+        );
+
+      r.rotation.x=i*.8;
+      r.rotation.y=i*.6;
+
+    }
+
+  }
+
+
+  else if(type==='neural'){
+
+    addMesh(
+      g,
+      new THREE.IcosahedronGeometry(
+        1.5,
+        2
+      )
+    );
+
+    for(let i=0;i<12;i++){
+
+      const a =
+        i/12*Math.PI*2;
+
+      addMesh(
+        g,
+        new THREE.SphereGeometry(
+          .35,
+          8,
+          6
+        ),
+        Math.cos(a)*3,
+        Math.sin(a*2),
+        Math.sin(a)*3
+      );
+
+    }
+
+  }
+
+
+  else if(type==='spiral'){
+
+    for(let i=0;i<60;i++){
+
+      const t =
+        i/59*Math.PI*6;
+
+      const r =
+        .3+i/59*3;
+
+      addMesh(
+        g,
+        new THREE.SphereGeometry(
+          .16,
+          7,
+          5
+        ),
+        Math.cos(t)*r,
+        t/2.2-4,
+        Math.sin(t)*r
+      );
+
+    }
+
+  }
+
+
+  else if(type==='wave'){
+
+    for(let x=-4;x<=4;x+=.5){
+
+      for(let z=-2;z<=2;z+=.5){
+
+        addMesh(
+          g,
+          new THREE.SphereGeometry(
+            .13,
+            7,
+            5
+          ),
+          x,
+          Math.sin(x*1.3+z)*1.4,
+          z
+        );
+
+      }
+
+    }
+
+  }
+
+
+  else if(type==='mobius'){
+
+    for(let i=0;i<70;i++){
+
+      const t =
+        i/70*Math.PI*2;
+
+      const u =
+        (i%10)/10-.5;
+
+      const r =
+        3.5+u;
+
+      addMesh(
+        g,
+        new THREE.SphereGeometry(
+          .14,
+          7,
+          5
+        ),
+        Math.cos(t)*r,
+        u*2*Math.sin(t/2),
+        Math.sin(t)*r
+      );
+
+    }
+
+  }
+
+
+  else if(type==='heart'){
+
+    for(let i=0;i<100;i++){
+
+      const t =
+        i/100*Math.PI*2;
+
+      const x =
+        16*Math.pow(Math.sin(t),3);
+
+      const y =
+        13*Math.cos(t)
+        -5*Math.cos(2*t)
+        -2*Math.cos(3*t)
+        -Math.cos(4*t);
+
+      addMesh(
+        g,
+        new THREE.SphereGeometry(
+          .14,
+          7,
+          5
+        ),
+        x*.3,
+        y*.3,
+        0
+      );
+
+    }
+
+  }
+
+
+  else if(type==='flower'){
+
+    for(let i=0;i<8;i++){
+
+      const a =
+        i*Math.PI/4;
+
+      addMesh(
+        g,
+        new THREE.SphereGeometry(
+          1.3,
+          14,
+          10
+        ),
+        Math.cos(a)*2.4,
+        Math.sin(a)*2.4,
+        0
+      );
+
+    }
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        1.3,
+        16,
+        12
+      )
+    );
+
+  }
+
+
+  else if(type==='butterfly'){
+
+    [-1,1].forEach(side=>{
+
+      const w =
+        addMesh(
+          g,
+          new THREE.SphereGeometry(
+            2.5,
+            16,
+            10
+          ),
+          side*2,
+          .5,
+          0,
+          1,
+          .18,
+          .8
+        );
+
+      w.rotation.z=side*.25;
+
+    });
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .25,
+        .25,
+        5,
+        10
+      )
+    );
+
+  }
+
+
+  else if(type==='owl'){
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        2.7,
+        20,
+        14
+      )
+    );
+
+    [-1,1].forEach(side=>{
+
+      addMesh(
+        g,
+        new THREE.SphereGeometry(
+          .9,
+          14,
+          10
+        ),
+        side*.9,
+        .7,
+        2.2
+      );
+
+    });
+
+  }
+
+
+  else if(type==='portal'){
+
+    addMesh(
+      g,
+      new THREE.TorusGeometry(
+        3.5,
+        .5,
+        14,
+        48
+      )
+    );
+
+    addMesh(
+      g,
+      new THREE.TorusGeometry(
+        2,
+        .15,
+        10,
+        36
+      )
+    );
+
+  }
+
+
+  else if(type==='engine'){
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        2,
+        2,
+        4,
+        20
+      )
+    );
+
+    for(let i=0;i<6;i++){
+
+      const a=i*Math.PI/3;
+
+      addMesh(
+        g,
+        new THREE.BoxGeometry(
+          .6,
+          5,
+          .6
+        ),
+        Math.cos(a)*2.4,
+        0,
+        Math.sin(a)*2.4
+      );
+
+    }
+
+  }
+
+
+  else if(type==='core'){
+
+    addMesh(
+      g,
+      new THREE.IcosahedronGeometry(
+        2.7,
+        2
+      )
+    );
+
+    for(let i=0;i<3;i++){
+
+      const r=
+        addMesh(
+          g,
+          new THREE.TorusGeometry(
+            4,
+            .13,
+            8,
+            40
+          )
+        );
+
+      r.rotation.set(
+        i*.9,
+        i*.7,
+        i*.4
+      );
+
+    }
+
+  }
+
+
+  else if(type==='ufo'){
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        2.7,
+        20,
+        12
+      ),
+      0,
+      0,
+      0,
+      1,
+      .35,
+      1
+    );
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        1.2,
+        16,
+        10
+      ),
+      0,
+      1,
+      0,
+      1,
+      .8,
+      1
+    );
+
+  }
+
+
+  else if(type==='drone'){
+
+    addMesh(
+      g,
+      new THREE.BoxGeometry(
+        3,
+        1,
+        3
+      )
+    );
+
+    for(let i=0;i<4;i++){
+
+      const a=
+        i*Math.PI/2;
+
+      addMesh(
+        g,
+        new THREE.CylinderGeometry(
+          .3,
+          .3,
+          .5,
+          10
+        ),
+        Math.cos(a)*2.3,
+        0,
+        Math.sin(a)*2.3
+      );
+
+    }
+
+  }
+
+
+  else if(type==='dish'){
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        .3,
+        .3,
+        5,
+        10
+      ),
+      0,
+      -1,
+      0
+    );
+
+    addMesh(
+      g,
+      new THREE.SphereGeometry(
+        2.5,
+        20,
+        10
+      ),
+      0,
+      2,
+      0,
+      1,
+      .3,
+      1
+    );
+
+  }
+
+
+  else if(type==='beacon'){
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        1,
+        1.2,
+        5,
+        16
+      )
+    );
+
+    addMesh(
+      g,
+      new THREE.CylinderGeometry(
+        1.5,
+        1.5,
+        .5,
+        16
+      ),
+      0,
+      2.7,
+      0
+    );
+
+  }
+
+
+  return g;
+
+}
+
+
+/* =====================================================
+   BUILDER OBJECTS
+===================================================== */
+
+const objects=[];
+
+
+function createSelectedObject(){
+
+  const item =
+    BUILDER_FORMS[
+      Number($('builderSelect').value)
+    ];
+
+  const object =
+    makeObject(item[1]);
+
+
+  object.position.set(
+    (Math.random()-.5)*8,
+    5+Math.random()*3,
+    (Math.random()-.5)*5
+  );
+
+
+  object.rotation.y =
+    Math.random()*Math.PI*2;
+
+
+  object.userData.vy=0;
+
+  object.userData.grabbed=false;
+
+  object.userData.size =
+    new THREE.Vector3();
+
+
+  const box =
+    new THREE.Box3()
+      .setFromObject(object);
+
+  box.getSize(
+    object.userData.size
+  );
+
+
+  world.add(object);
+
+  objects.push(object);
+
+  $('objectCount').textContent=
+    objects.length;
+
+  toast(
+    item[0]+' CREATED'
+  );
+
+}
+
+
+function clearWorld(){
+
+  objects.forEach(o=>{
+    world.remove(o);
+  });
+
+  objects.length=0;
+
+  $('objectCount').textContent='0';
+
+}
+
+
+/* =====================================================
+   BUILDER PHYSICS
+===================================================== */
+
+function updatePhysics(){
+
+  for(let i=0;i<objects.length;i++){
+
+    const a=objects[i];
+
+    if(a.userData.grabbed)
+      continue;
+
+
+    a.userData.vy -= .012;
+
+    a.position.y +=
+      a.userData.vy;
+
+
+    const sa=
+      a.userData.size;
+
+
+    const bottom=
+      a.position.y-sa.y/2;
+
+
+    if(bottom < -3.98){
+
+      a.position.y=
+        -3.98+sa.y/2;
+
+      a.userData.vy=0;
+
+    }
+
 
     for(let j=0;j<objects.length;j++){
-      if(i===j)continue;
+
+      if(i===j)
+        continue;
+
       const b=objects[j];
-      if(b.userData.grabbed)continue;
 
-      const sa=a.userData.size,sb=b.userData.size;
-      const ax1=a.position.x-sa.x/2,ax2=a.position.x+sa.x/2;
-      const az1=a.position.z-sa.z/2,az2=a.position.z+sa.z/2;
-      const bx1=b.position.x-sb.x/2,bx2=b.position.x+sb.x/2;
-      const bz1=b.position.z-sb.z/2,bz2=b.position.z+sb.z/2;
+      if(b.userData.grabbed)
+        continue;
 
-      if(ax2>bx1&&ax1<bx2&&az2>bz1&&az1<bz2){
-        const top=b.position.y+sb.y/2;
-        if(bottom<top && bottom>top-1.2){
-          a.position.y=top+sa.y/2;
-          a.userData.vy=0;
-        }
+
+      const sb=
+        b.userData.size;
+
+
+      const overlapX =
+        a.position.x-sa.x/2 <
+        b.position.x+sb.x/2 &&
+        a.position.x+sa.x/2 >
+        b.position.x-sb.x/2;
+
+
+      const overlapZ =
+        a.position.z-sa.z/2 <
+        b.position.z+sb.z/2 &&
+        a.position.z+sa.z/2 >
+        b.position.z-sb.z/2;
+
+
+      if(!overlapX || !overlapZ)
+        continue;
+
+
+      const top =
+        b.position.y+sb.y/2;
+
+
+      const bottomA =
+        a.position.y-sa.y/2;
+
+
+      if(
+        bottomA < top &&
+        bottomA > top-1.5
+      ){
+
+        a.position.y=
+          top+sa.y/2;
+
+        a.userData.vy=0;
+
       }
+
     }
+
   }
+
 }
 
-/* =========================================================
-   HOLOGRAM PARTICLE ENGINE
-   ========================================================= */
 
-const MAX=8000;
-const positions=new Float32Array(MAX*3);
-const targets=new Float32Array(MAX*3);
-const sizes=new Float32Array(MAX);
-const colors=new Float32Array(MAX*3);
+/* =====================================================
+   HOLOGRAM DATA
+===================================================== */
 
-const pGeo=new THREE.BufferGeometry();
-pGeo.setAttribute('position',new THREE.BufferAttribute(positions,3));
-pGeo.setAttribute('color',new THREE.BufferAttribute(colors,3));
+const HOLOGRAMS=[
 
-const pMat=new THREE.PointsMaterial({
-  size:.075,
-  vertexColors:true,
-  transparent:true,
-  opacity:.9,
-  blending:THREE.AdditiveBlending,
-  depthWrite:false
-});
-
-const particles=new THREE.Points(pGeo,pMat);
-particles.visible=false;
-scene.add(particles);
-
-let activeParticles=5200;
-let holoTime=0;
-
-const HOLOS=[
- ['JUPITER','planet',6.5],
- ['SATURN','saturn',5.5],
- ['EARTH','earth',5.3],
- ['MARS','mars',5],
- ['MOON','moon',5],
- ['SUN','star',6],
- ['STAR','star5',5],
- ['BLACK HOLE','blackhole',7],
- ['GALAXY','galaxy',8],
- ['NEBULA','nebula',8],
- ['DNA','dna',7],
- ['ATOM','atom',7],
- ['HEART','heart',7],
- ['BRAIN','brain',7],
- ['EYE','eye',6],
- ['ROSE','flower',7],
- ['LOTUS','flower5',7],
- ['FLOWER','flower',7],
- ['BUTTERFLY','butterfly',7],
- ['WOLF','animal',7],
- ['EAGLE','animal2',7],
- ['WHALE','whale',8],
- ['FISH','fish',7],
- ['ROBOT','robot',6],
- ['ROCKET','rocket',7],
- ['SPACE STATION','station',8],
- ['HYPERCUBE','cube4',6],
- ['TESSERACT','cube4',7],
- ['CRYSTAL','crystal',6],
- ['DIAMOND','diamond',6],
- ['PYRAMID','pyramid',6],
- ['TORUS','torus',6],
- ['MOBIUS','mobius',7],
- ['WAVE','wave',8],
- ['LIGHTNING','lightning',7],
- ['FIREWORKS','burst',8],
- ['ENERGY BURST','burst2',7],
- ['NEURAL NETWORK','neurons',8],
- ['VORTEX','vortex',8],
- ['TORNADO','tornado',7],
- ['SHELL','shell',7],
- ['SPIRAL SHELL','shell2',7],
- ['PORTAL','ring',6],
- ['SPHERE GRID','spheregrid',6],
- ['CLOCK','clockshape',6],
- ['DNA CORE','dna2',7],
- ['QUASAR','quasar',7],
- ['ORBIT','orbit',8],
- ['DIMENSION','dimension',7]
+ ['JUPITER','planet'],
+ ['SATURN','saturn'],
+ ['EARTH','earth'],
+ ['MARS','mars'],
+ ['MOON','moon'],
+ ['SUN','sun'],
+ ['STAR','star'],
+ ['BLACK HOLE','blackhole'],
+ ['GALAXY','galaxy'],
+ ['NEBULA','nebula'],
+ ['DNA','dna'],
+ ['ATOM','atom'],
+ ['HEART','heart'],
+ ['BRAIN','brain'],
+ ['EYE','eye'],
+ ['ROSE','flower'],
+ ['LOTUS','flower5'],
+ ['FLOWER','flower8'],
+ ['BUTTERFLY','butterfly'],
+ ['WOLF','wolf'],
+ ['EAGLE','eagle'],
+ ['WHALE','whale'],
+ ['FISH','fish'],
+ ['ROBOT','robot'],
+ ['ROCKET','rocket'],
+ ['SPACE STATION','station'],
+ ['HYPERCUBE','cube'],
+ ['TESSERACT','cube2'],
+ ['CRYSTAL','crystal'],
+ ['DIAMOND','diamond'],
+ ['PYRAMID','pyramid'],
+ ['TORUS','torus'],
+ ['MOBIUS','mobius'],
+ ['WAVE','wave'],
+ ['LIGHTNING','lightning'],
+ ['FIREWORKS','burst'],
+ ['ENERGY BURST','burst2'],
+ ['NEURAL NETWORK','neurons'],
+ ['VORTEX','vortex'],
+ ['TORNADO','tornado'],
+ ['SHELL','shell'],
+ ['SPIRAL SHELL','shell2'],
+ ['PORTAL','ring'],
+ ['SPHERE GRID','spheregrid'],
+ ['CLOCK','clockshape'],
+ ['QUASAR','quasar'],
+ ['ORBIT','orbit'],
+ ['DIMENSION','dimension'],
+ ['QUANTUM CORE','quantum'],
+ ['SINGULARITY','singularity']
 ];
 
-const holoSelect=$('holoSelect');
-HOLOS.forEach((x,i)=>{
-  const o=document.createElement('option');
-  o.value=i;o.textContent=x[0];
-  holoSelect.appendChild(o);
-});
 
-function rnd(a,b){return a+Math.random()*(b-a)}
+HOLOGRAMS.forEach(
+  (item,index)=>{
 
-function setP(i,x,y,z,s=1){
-  targets[i*3]=x;
-  targets[i*3+1]=y;
-  targets[i*3+2]=z;
-  sizes[i]=s;
-}
+    const option=
+      document.createElement('option');
 
-function sphere(i,n,r){
-  const u=Math.random()*2-1;
-  const a=Math.random()*Math.PI*2;
-  const q=Math.sqrt(1-u*u);
-  setP(i,q*Math.cos(a)*r,q*Math.sin(a)*r,u*r,rnd(.5,1.2));
-}
+    option.value=index;
 
-function ring(i,n,r,w=.2){
-  const a=Math.random()*Math.PI*2;
-  const rr=r+rnd(-w,w);
-  setP(i,Math.cos(a)*rr,rnd(-w,w)*2,Math.sin(a)*rr,rnd(.5,1.2));
-}
+    option.textContent=item[0];
 
-function line(i,x1,y1,z1,x2,y2,z2){
-  const t=Math.random();
-  setP(i,
-    x1+(x2-x1)*t+rnd(-.08,.08),
-    y1+(y2-y1)*t+rnd(-.08,.08),
-    z1+(z2-z1)*t+rnd(-.08,.08),
-    rnd(.5,1.1)
+    $('hologramSelect')
+      .appendChild(option);
+
+  }
+);
+
+
+/* =====================================================
+   PARTICLE ENGINE
+===================================================== */
+
+const MAX_PARTICLES=7500;
+
+const positions=
+  new Float32Array(
+    MAX_PARTICLES*3
   );
+
+const targets=
+  new Float32Array(
+    MAX_PARTICLES*3
+  );
+
+const particleColors=
+  new Float32Array(
+    MAX_PARTICLES*3
+  );
+
+
+const particleGeometry=
+  new THREE.BufferGeometry();
+
+
+particleGeometry.setAttribute(
+  'position',
+  new THREE.BufferAttribute(
+    positions,
+    3
+  )
+);
+
+
+particleGeometry.setAttribute(
+  'color',
+  new THREE.BufferAttribute(
+    particleColors,
+    3
+  )
+);
+
+
+const particleMaterial=
+  new THREE.PointsMaterial({
+
+    size:.075,
+
+    vertexColors:true,
+
+    transparent:true,
+
+    opacity:.9,
+
+    depthWrite:false,
+
+    blending:
+      THREE.AdditiveBlending
+
+  });
+
+
+const particleSystem=
+  new THREE.Points(
+    particleGeometry,
+    particleMaterial
+  );
+
+
+particleSystem.visible=false;
+
+scene.add(
+  particleSystem
+);
+
+
+/* =====================================================
+   PARTICLE HELPERS
+===================================================== */
+
+function setTarget(
+  i,
+  x,
+  y,
+  z
+){
+
+  const k=i*3;
+
+  targets[k]=x;
+  targets[k+1]=y;
+  targets[k+2]=z;
+
 }
 
-function makeHolo(type){
-  const n=activeParticles;
 
-  for(let i=0;i<n;i++){
-    let x=0,y=0,z=0,s=1;
+function particleSphere(i,r){
 
-    if(type==='planet'||type==='earth'||type==='mars'||type==='moon'){
-      sphere(i,n,5.5);
-      continue;
+  const u=
+    Math.random()*2-1;
+
+  const a=
+    Math.random()*Math.PI*2;
+
+  const q=
+    Math.sqrt(1-u*u);
+
+  setTarget(
+    i,
+    q*Math.cos(a)*r,
+    q*Math.sin(a)*r,
+    u*r
+  );
+
+}
+
+
+function particleRing(
+  i,
+  radius,
+  width=.2
+){
+
+  const a=
+    Math.random()*Math.PI*2;
+
+  const r=
+    radius+
+    (Math.random()-.5)*width;
+
+  setTarget(
+    i,
+    Math.cos(a)*r,
+    (Math.random()-.5)*width,
+    Math.sin(a)*r
+  );
+
+}
+
+
+/* =====================================================
+   HOLOGRAM GENERATOR
+===================================================== */
+
+function generateHologram(type){
+
+  for(let i=0;i<activeParticles;i++){
+
+    let x=0;
+    let y=0;
+    let z=0;
+
+
+    /* SPHERES */
+
+    if(
+      type==='planet' ||
+      type==='earth' ||
+      type==='mars' ||
+      type==='moon'
+    ){
+
+      particleSphere(i,5.4);
+
     }
 
-    if(type==='saturn'){
-      if(i<n*.65)sphere(i,n,4.3);
-      else ring(i,n,7.2,.7);
-      continue;
-    }
 
-    if(type==='star'||type==='star5'){
-      const points=type==='star'?16:5;
-      const a=Math.random()*Math.PI*2;
-      const r=(type==='star'?rnd(2.5,6):rnd(2.5,6))*
-        (Math.random()<.35?1:rnd(.6,1));
-      setP(i,Math.cos(a)*r,Math.sin(a)*r*.75,rnd(-1,1));
-      continue;
-    }
+    /* SATURN */
 
-    if(type==='blackhole'){
-      ring(i,n,rnd(3,7),.45);
-      if(i<n*.18)sphere(i,n,rnd(.5,1.5));
-      continue;
-    }
+    else if(type==='saturn'){
 
-    if(type==='galaxy'){
-      const arm=i%4;
-      const r=Math.pow(Math.random(),.55)*8;
-      const a=r*1.4+arm*Math.PI/2+rnd(-.35,.35);
-      setP(i,Math.cos(a)*r,rnd(-1,1)*(1-r/9),Math.sin(a)*r,rnd(.5,1.2));
-      continue;
-    }
-
-    if(type==='nebula'){
-      const a=Math.random()*Math.PI*2;
-      const r=Math.sqrt(Math.random())*8;
-      setP(i,Math.cos(a)*r,rnd(-2.5,2.5),Math.sin(a)*r,rnd(.4,1.3));
-      continue;
-    }
-
-    if(type==='dna'||type==='dna2'){
-      const t=Math.random()*Math.PI*16;
-      const y=t/2.2-7;
-      const r=3;
-      if(Math.random()<.5)
-        setP(i,Math.cos(t)*r,y,Math.sin(t)*r);
+      if(i<activeParticles*.62)
+        particleSphere(i,4.2);
       else
-        setP(i,-Math.cos(t)*r,y,-Math.sin(t)*r);
-      continue;
+        particleRing(i,7,.8);
+
     }
 
-    if(type==='atom'){
-      if(i<n*.2)sphere(i,n,1.2);
-      else{
-        const a=Math.random()*Math.PI*2;
-        const plane=Math.floor(Math.random()*3);
+
+    /* SUN / STAR */
+
+    else if(
+      type==='sun' ||
+      type==='star'
+    ){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const r=
+        Math.random()<.4
+        ? Math.random()*2
+        : 3+Math.random()*3;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        Math.sin(a)*r,
+        (Math.random()-.5)*1.2
+      );
+
+    }
+
+
+    /* BLACK HOLE */
+
+    else if(type==='blackhole'){
+
+      if(i<activeParticles*.15)
+        particleSphere(i,1.1);
+      else
+        particleRing(
+          i,
+          3+Math.random()*4,
+          .6
+        );
+
+    }
+
+
+    /* GALAXY */
+
+    else if(type==='galaxy'){
+
+      const arms=5;
+
+      const arm=
+        i%arms;
+
+      const r=
+        Math.pow(Math.random(),.55)*8;
+
+      const a=
+        r*1.25+
+        arm*Math.PI*2/arms+
+        (Math.random()-.5)*.45;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        (Math.random()-.5)*
+        (1-r/10)*2,
+        Math.sin(a)*r
+      );
+
+    }
+
+
+    /* NEBULA */
+
+    else if(type==='nebula'){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const r=
+        Math.sqrt(Math.random())*8;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        (Math.random()-.5)*4,
+        Math.sin(a)*r
+      );
+
+    }
+
+
+    /* DNA */
+
+    else if(type==='dna'){
+
+      const t=
+        Math.random()*
+        Math.PI*16;
+
+      const yy=
+        t/2.1-7;
+
+      const rr=3;
+
+      if(Math.random()<.5){
+
+        setTarget(
+          i,
+          Math.cos(t)*rr,
+          yy,
+          Math.sin(t)*rr
+        );
+
+      }else{
+
+        setTarget(
+          i,
+          -Math.cos(t)*rr,
+          yy,
+          -Math.sin(t)*rr
+        );
+
+      }
+
+    }
+
+
+    /* ATOM */
+
+    else if(type==='atom'){
+
+      if(i<activeParticles*.15){
+
+        particleSphere(i,1.2);
+
+      }else{
+
+        const a=
+          Math.random()*Math.PI*2;
+
         const r=6;
-        if(plane===0)setP(i,Math.cos(a)*r,Math.sin(a)*r,0);
-        if(plane===1)setP(i,Math.cos(a)*r,0,Math.sin(a)*r);
-        if(plane===2)setP(i,0,Math.cos(a)*r,Math.sin(a)*r);
+
+        const plane=
+          Math.floor(Math.random()*3);
+
+        if(plane===0){
+
+          setTarget(
+            i,
+            Math.cos(a)*r,
+            Math.sin(a)*r,
+            0
+          );
+
+        }
+
+        if(plane===1){
+
+          setTarget(
+            i,
+            Math.cos(a)*r,
+            0,
+            Math.sin(a)*r
+          );
+
+        }
+
+        if(plane===2){
+
+          setTarget(
+            i,
+            0,
+            Math.cos(a)*r,
+            Math.sin(a)*r
+          );
+
+        }
+
       }
-      continue;
+
     }
 
-    if(type==='heart'){
-      const t=Math.random()*Math.PI*2;
-      const scale=Math.sqrt(Math.random())*.9;
-      x=16*Math.sin(t)**3;
-      y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
-      z=rnd(-2,2);
-      setP(i,x*.35*scale,y*.35*scale,z,s);
-      continue;
+
+    /* HEART */
+
+    else if(type==='heart'){
+
+      const t=
+        Math.random()*Math.PI*2;
+
+      const fill=
+        Math.sqrt(Math.random());
+
+      x=
+        16*Math.pow(
+          Math.sin(t),
+          3
+        );
+
+      y=
+        13*Math.cos(t)
+        -5*Math.cos(2*t)
+        -2*Math.cos(3*t)
+        -Math.cos(4*t);
+
+      z=
+        (Math.random()-.5)*3;
+
+      setTarget(
+        i,
+        x*.34*fill,
+        y*.34*fill,
+        z
+      );
+
     }
 
-    if(type==='brain'){
-      const a=Math.random()*Math.PI*2;
-      const r=5*Math.sqrt(Math.random());
+
+    /* BRAIN */
+
+    else if(type==='brain'){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const r=
+        Math.sqrt(Math.random())*5;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        (Math.random()-.5)*4+
+        Math.sin(a*7)*.6,
+        Math.sin(a)*r*.7
+      );
+
+    }
+
+
+    /* EYE */
+
+    else if(type==='eye'){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const r=
+        Math.sqrt(Math.random())*6;
+
       x=Math.cos(a)*r;
-      z=Math.sin(a)*r*.65;
-      y=rnd(-3,3)+Math.sin(a*6)*.5;
-      if(Math.random()<.55)y+=Math.sin(x*1.7)*.6;
-      setP(i,x,y,z);
-      continue;
-    }
 
-    if(type==='eye'){
-      const a=Math.random()*Math.PI*2;
-      const r=6*Math.sqrt(Math.random());
-      x=Math.cos(a)*r;
       y=Math.sin(a)*r*.5;
-      z=3.2-Math.sqrt(Math.max(0,36-x*x-y*y))*.35;
-      setP(i,x,y,z);
-      continue;
+
+      z=
+        2+
+        Math.sqrt(
+          Math.max(
+            0,
+            36-x*x-y*y
+          )
+        )*.2;
+
+      setTarget(
+        i,x,y,z
+      );
+
     }
 
-    if(type==='flower'||type==='flower5'){
-      const petals=type==='flower'?8:5;
-      const a=Math.random()*Math.PI*2;
-      const r=Math.abs(Math.sin(a*petals/2))*6;
-      setP(i,Math.cos(a)*r,rnd(-.7,.7),Math.sin(a)*r);
-      continue;
+
+    /* FLOWERS */
+
+    else if(
+      type==='flower' ||
+      type==='flower5' ||
+      type==='flower8'
+    ){
+
+      const petals=
+        type==='flower5'
+        ? 5
+        : type==='flower8'
+        ? 8
+        : 7;
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const r=
+        Math.abs(
+          Math.sin(
+            a*petals/2
+          )
+        )*6;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        (Math.random()-.5)*1.2,
+        Math.sin(a)*r
+      );
+
     }
 
-    if(type==='butterfly'){
-      const t=Math.random()*Math.PI*2;
-      const wing=Math.random()<.5?-1:1;
-      x=wing*(Math.sin(t)*4);
-      y=Math.cos(t)*3;
-      z=rnd(-.7,.7);
-      setP(i,x,y,z);
-      continue;
+
+    /* BUTTERFLY */
+
+    else if(type==='butterfly'){
+
+      const side=
+        Math.random()<.5
+        ? -1
+        : 1;
+
+      const t=
+        Math.random()*Math.PI*2;
+
+      setTarget(
+        i,
+        side*Math.sin(t)*5,
+        Math.cos(t)*3,
+        (Math.random()-.5)*1.3
+      );
+
     }
 
-    if(type==='animal'||type==='animal2'){
-      /* silhouette stilizzata: testa + corpo + orecchie/ali */
-      if(i<n*.35){
-        sphere(i,n,2.8);
-        targets[i*3]*=1.35;
-        targets[i*3+1]*=.75;
-      }else if(i<n*.75){
-        x=rnd(-4,4);y=rnd(-1.8,1.8);z=rnd(-1.3,1.3);
-        setP(i,x,y,z);
+
+    /* ANIMAL */
+
+    else if(
+      type==='wolf' ||
+      type==='eagle'
+    ){
+
+      if(i<activeParticles*.45){
+
+        particleSphere(i,2.8);
+
+        const k=i*3;
+
+        targets[k]*=1.35;
+
+        targets[k+1]*=.75;
+
       }else{
-        const side=Math.random()<.5?-1:1;
-        setP(i,side*rnd(2.5,5),rnd(1.5,4),rnd(-1,1));
+
+        setTarget(
+          i,
+          (Math.random()-.5)*9,
+          (Math.random()-.5)*4,
+          (Math.random()-.5)*2
+        );
+
       }
-      continue;
+
     }
 
-    if(type==='whale'){
-      x=rnd(-6,6);
-      const w=Math.sqrt(Math.max(0,1-(x*x/36)));
-      y=rnd(-1,1)*w*2;
-      z=rnd(-1,1)*w*2;
-      if(Math.random()<.15)x=6+rnd(0,2);
-      setP(i,x,y,z);
-      continue;
+
+    /* WHALE */
+
+    else if(type==='whale'){
+
+      x=
+        (Math.random()-.5)*12;
+
+      const width=
+        Math.sqrt(
+          Math.max(
+            0,
+            1-x*x/36
+          )
+        );
+
+      setTarget(
+        i,
+        x,
+        (Math.random()-.5)*3*width,
+        (Math.random()-.5)*2*width
+      );
+
     }
 
-    if(type==='fish'){
-      const a=Math.random()*Math.PI*2;
-      x=Math.cos(a)*5;
-      y=Math.sin(a)*2.2;
-      z=rnd(-1,1);
-      setP(i,x,y,z);
-      continue;
+
+    /* FISH */
+
+    else if(type==='fish'){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const r=
+        Math.random()*5;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        Math.sin(a)*2,
+        (Math.random()-.5)*1.2
+      );
+
     }
 
-    if(type==='robot'){
-      if(i<n*.45){
-        x=rnd(-2.5,2.5);y=rnd(-3,1);z=rnd(-1.5,1.5);
-      }else if(i<n*.75){
-        x=rnd(-2,2);y=rnd(1,4);z=rnd(-1.5,1.5);
+
+    /* ROBOT */
+
+    else if(type==='robot'){
+
+      if(i<activeParticles*.45){
+
+        setTarget(
+          i,
+          (Math.random()-.5)*5,
+          (Math.random()-.5)*3,
+          (Math.random()-.5)*3
+        );
+
       }else{
-        x=rnd(-4,4);y=rnd(-4,4);z=rnd(-.5,.5);
+
+        setTarget(
+          i,
+          (Math.random()-.5)*4,
+          2+Math.random()*3,
+          (Math.random()-.5)*2
+        );
+
       }
-      setP(i,x,y,z);
-      continue;
+
     }
 
-    if(type==='rocket'){
-      const r=rnd(.2,2);
-      const a=Math.random()*Math.PI*2;
-      y=rnd(-3,4);
-      x=Math.cos(a)*r*(y<2?1:.7);
-      z=Math.sin(a)*r*(y<2?1:.7);
-      if(y>3) {x*=1-y/8;z*=1-y/8}
-      setP(i,x,y,z);
-      continue;
+
+    /* ROCKET */
+
+    else if(type==='rocket'){
+
+      y=
+        Math.random()*8-4;
+
+      const radius=
+        y<2
+        ? 2
+        : Math.max(
+            .2,
+            2-(y-2)*.45
+          );
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      setTarget(
+        i,
+        Math.cos(a)*radius,
+        y,
+        Math.sin(a)*radius
+      );
+
     }
 
-    if(type==='station'){
-      if(i<n*.5)ring(i,n,6,.35);
+
+    /* STATION */
+
+    else if(type==='station'){
+
+      if(i<activeParticles*.55){
+
+        particleRing(
+          i,
+          6,
+          .5
+        );
+
+      }else{
+
+        setTarget(
+          i,
+          (Math.random()-.5)*14,
+          (Math.random()-.5),
+          (Math.random()-.5)
+        );
+
+      }
+
+    }
+
+
+    /* CUBE */
+
+    else if(
+      type==='cube' ||
+      type==='cube2'
+    ){
+
+      const edge=
+        Math.floor(
+          Math.random()*12
+        );
+
+      const a=
+        (Math.random()-.5)*12;
+
+      if(edge<4){
+
+        setTarget(
+          i,
+          edge%2?6:-6,
+          a,
+          (Math.random()-.5)*12
+        );
+
+      }
+
+      else if(edge<8){
+
+        setTarget(
+          i,
+          (Math.random()-.5)*12,
+          edge%2?6:-6,
+          a
+        );
+
+      }
+
       else{
-        x=rnd(-7,7);y=rnd(-.5,.5);z=rnd(-.4,.4);
-        setP(i,x,y,z);
+
+        setTarget(
+          i,
+          (Math.random()-.5)*12,
+          a,
+          edge%2?6:-6
+        );
+
       }
-      continue;
+
     }
 
-    if(type==='cube4'){
-      const a=Math.random()<.5?-1:1;
-      x=a*rnd(4,6);y=a*rnd(4,6);z=a*rnd(4,6);
-      if(Math.random()<.55){
-        const edge=Math.floor(Math.random()*12);
-        x=edge<4?(edge%2?6:-6):rnd(-6,6);
-        y=edge<4?rnd(-6,6):(edge<8?(edge%2?6:-6):rnd(-6,6));
-        z=edge<8?rnd(-6,6):(edge%2?6:-6);
-      }
-      setP(i,x,y,z);
-      continue;
+
+    /* CRYSTAL */
+
+    else if(
+      type==='crystal' ||
+      type==='diamond'
+    ){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const r=
+        Math.random()*4;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        (Math.random()-.5)*10,
+        Math.sin(a)*r
+      );
+
     }
 
-    if(type==='crystal'||type==='diamond'){
-      const a=Math.random()*Math.PI*2;
-      const r=rnd(.3,5)*(1-Math.abs(Math.random()-.5)*.3);
-      setP(i,Math.cos(a)*r,rnd(-6,6),Math.sin(a)*r);
-      continue;
+
+    /* PYRAMID */
+
+    else if(type==='pyramid'){
+
+      y=
+        Math.random()*8-4;
+
+      const r=
+        Math.max(
+          .2,
+          4-y*.45
+        );
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        y,
+        Math.sin(a)*r
+      );
+
     }
 
-    if(type==='pyramid'){
-      const y=rnd(-4,4);
-      const r=(4-y*.45);
-      const a=Math.random()*Math.PI*2;
-      setP(i,Math.cos(a)*Math.max(.2,r),y,Math.sin(a)*Math.max(.2,r));
-      continue;
-    }
 
-    if(type==='torus'||type==='ring'){
-      const a=Math.random()*Math.PI*2;
-      const b=Math.random()*Math.PI*2;
-      const R=5,r=1;
-      setP(i,(R+r*Math.cos(b))*Math.cos(a),
+    /* TORUS */
+
+    else if(
+      type==='torus' ||
+      type==='ring'
+    ){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const b=
+        Math.random()*Math.PI*2;
+
+      const R=5;
+
+      const r=1;
+
+      setTarget(
+        i,
+        (R+r*Math.cos(b))*Math.cos(a),
         r*Math.sin(b),
-        (R+r*Math.cos(b))*Math.sin(a));
-      continue;
+        (R+r*Math.cos(b))*Math.sin(a)
+      );
+
     }
 
-    if(type==='mobius'){
-      const a=Math.random()*Math.PI*2;
-      const u=rnd(-1,1);
-      const r=5+u;
-      setP(i,r*Math.cos(a),u*Math.sin(a/2)*1.8,r*Math.sin(a));
-      continue;
+
+    /* MOBIUS */
+
+    else if(type==='mobius'){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const u=
+        Math.random()*2-1;
+
+      const r=
+        5+u;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        u*2*Math.sin(a/2),
+        Math.sin(a)*r
+      );
+
     }
 
-    if(type==='wave'){
-      x=rnd(-8,8);z=rnd(-4,4);
-      y=Math.sin(x*1.2+z)*2;
-      setP(i,x,y,z);
-      continue;
+
+    /* WAVE */
+
+    else if(type==='wave'){
+
+      x=
+        (Math.random()-.5)*16;
+
+      z=
+        (Math.random()-.5)*8;
+
+      y=
+        Math.sin(
+          x*1.2+z
+        )*2;
+
+      setTarget(
+        i,x,y,z
+      );
+
     }
 
-    if(type==='lightning'){
-      x=0;y=7;
-      for(let k=0;k<Math.floor(Math.random()*7);k++){
-        x+=rnd(-1.8,1.8);y-=2;
+
+    /* LIGHTNING */
+
+    else if(type==='lightning'){
+
+      x=0;
+
+      y=7;
+
+      for(
+        let j=0;
+        j<7;
+        j++
+      ){
+
+        x+=
+          (Math.random()-.5)*3;
+
+        y-=2;
+
       }
-      setP(i,x+rnd(-.2,.2),y,z=rnd(-.4,.4));
-      continue;
+
+      setTarget(
+        i,
+        x+(Math.random()-.5)*.5,
+        y+(Math.random()-.5)*.5,
+        (Math.random()-.5)
+      );
+
     }
 
-    if(type==='burst'||type==='burst2'){
-      const a=Math.random()*Math.PI*2;
-      const b=Math.acos(rnd(-1,1));
-      const r=Math.pow(Math.random(),.45)*8;
-      setP(i,
+
+    /* BURST */
+
+    else if(
+      type==='burst' ||
+      type==='burst2'
+    ){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const b=
+        Math.acos(
+          Math.random()*2-1
+        );
+
+      const r=
+        Math.pow(
+          Math.random(),
+          .4
+        )*8;
+
+      setTarget(
+        i,
         Math.sin(b)*Math.cos(a)*r,
         Math.cos(b)*r,
         Math.sin(b)*Math.sin(a)*r
       );
-      continue;
+
     }
 
-    if(type==='neurons'){
-      if(Math.random()<.2){
-        sphere(i,n,rnd(1,2));
+
+    /* NEURONS */
+
+    else if(type==='neurons'){
+
+      if(i<activeParticles*.18){
+
+        particleSphere(
+          i,
+          1.2+Math.random()
+        );
+
       }else{
-        const a=Math.random()*Math.PI*2;
-        const r=rnd(2,8);
-        setP(i,Math.cos(a)*r,rnd(-4,4),Math.sin(a)*r);
+
+        const a=
+          Math.random()*Math.PI*2;
+
+        const r=
+          2+Math.random()*7;
+
+        setTarget(
+          i,
+          Math.cos(a)*r,
+          (Math.random()-.5)*7,
+          Math.sin(a)*r
+        );
+
       }
-      continue;
+
     }
 
-    if(type==='vortex'||type==='tornado'){
-      const y=rnd(-7,7);
-      const r=(type==='tornado'?Math.abs(y)+.5:8-Math.abs(y))*.45;
-      const a=y*2.3+rnd(-.4,.4);
-      setP(i,Math.cos(a)*r,y,Math.sin(a)*r);
-      continue;
+
+    /* VORTEX */
+
+    else if(
+      type==='vortex' ||
+      type==='tornado'
+    ){
+
+      y=
+        Math.random()*14-7;
+
+      const r=
+        type==='tornado'
+        ? .5+Math.abs(y)*.45
+        : 7-Math.abs(y)*.5;
+
+      const a=
+        y*2.5+
+        Math.random()*.4;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        y,
+        Math.sin(a)*r
+      );
+
     }
 
-    if(type==='shell'||type==='shell2'){
-      const t=Math.random()*Math.PI*8;
-      const r=.25+t*.12;
-      setP(i,Math.cos(t)*r,
+
+    /* SHELL */
+
+    else if(
+      type==='shell' ||
+      type==='shell2'
+    ){
+
+      const t=
+        Math.random()*
+        Math.PI*8;
+
+      const r=
+        .25+t*.12;
+
+      setTarget(
+        i,
+        Math.cos(t)*r,
         Math.sin(t)*r,
-        t*.18-7);
-      continue;
+        t*.18-7
+      );
+
     }
 
-    if(type==='spheregrid'){
-      const lat=Math.floor(Math.random()*20);
-      const lon=Math.floor(Math.random()*30);
-      const a=lon/30*Math.PI*2;
-      const b=lat/19*Math.PI-Math.PI/2;
-      setP(i,Math.cos(b)*Math.cos(a)*6,
+
+    /* SPHERE GRID */
+
+    else if(type==='spheregrid'){
+
+      const lat=
+        Math.floor(
+          Math.random()*20
+        );
+
+      const lon=
+        Math.floor(
+          Math.random()*30
+        );
+
+      const a=
+        lon/30*Math.PI*2;
+
+      const b=
+        lat/19*Math.PI-
+        Math.PI/2;
+
+      setTarget(
+        i,
+        Math.cos(b)*Math.cos(a)*6,
         Math.sin(b)*6,
-        Math.cos(b)*Math.sin(a)*6);
-      continue;
+        Math.cos(b)*Math.sin(a)*6
+      );
+
     }
 
-    if(type==='clockshape'){
-      const a=Math.random()*Math.PI*2;
-      const r=Math.random()<.7?6:3;
-      setP(i,Math.cos(a)*r,Math.sin(a)*r,0);
-      continue;
+
+    /* CLOCK */
+
+    else if(type==='clockshape'){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const r=
+        Math.random()<.75
+        ? 6
+        : 3;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        Math.sin(a)*r,
+        0
+      );
+
     }
 
-    if(type==='quasar'){
-      ring(i,n,rnd(2,8),.25);
-      if(i<n*.15)sphere(i,n,1);
-      continue;
+
+    /* QUASAR */
+
+    else if(type==='quasar'){
+
+      if(i<activeParticles*.15){
+
+        particleSphere(i,1);
+
+      }else{
+
+        particleRing(
+          i,
+          2+Math.random()*6,
+          .4
+        );
+
+      }
+
     }
 
-    if(type==='orbit'){
-      const a=Math.random()*Math.PI*2;
+
+    /* ORBIT */
+
+    else if(type==='orbit'){
+
+      const a=
+        Math.random()*Math.PI*2;
+
       const r=7;
-      setP(i,Math.cos(a)*r,rnd(-2,2),Math.sin(a)*r);
-      continue;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        (Math.random()-.5)*2,
+        Math.sin(a)*r
+      );
+
     }
 
-    if(type==='dimension'){
-      const t=Math.random()*Math.PI*2;
-      const r=3+Math.sin(t*4)*2;
-      setP(i,Math.cos(t)*r,Math.sin(t*2)*3,Math.sin(t)*r);
-      continue;
+
+    /* DIMENSION */
+
+    else if(type==='dimension'){
+
+      const t=
+        Math.random()*Math.PI*2;
+
+      const r=
+        3+
+        Math.sin(t*4)*2;
+
+      setTarget(
+        i,
+        Math.cos(t)*r,
+        Math.sin(t*2)*3,
+        Math.sin(t)*r
+      );
+
     }
 
-    sphere(i,n,5);
+
+    /* QUANTUM */
+
+    else if(type==='quantum'){
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      const r=
+        2+
+        Math.sin(a*7)*3;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        Math.sin(a*5)*3,
+        Math.sin(a)*r
+      );
+
+    }
+
+
+    /* SINGULARITY */
+
+    else if(type==='singularity'){
+
+      const r=
+        Math.pow(
+          Math.random(),
+          2
+        )*8;
+
+      const a=
+        Math.random()*Math.PI*2;
+
+      setTarget(
+        i,
+        Math.cos(a)*r,
+        (Math.random()-.5)*r,
+        Math.sin(a)*r
+      );
+
+    }
+
+
+    else{
+
+      particleSphere(i,5);
+
+    }
+
   }
 
-  for(let i=0;i<MAX;i++){
-    if(i>=n){
-      positions[i*3]=positions[i*3+1]=positions[i*3+2]=999;
-      continue;
+
+  for(let i=0;i<MAX_PARTICLES;i++){
+
+    const k=i*3;
+
+    if(i>=activeParticles){
+
+      positions[k]=9999;
+      positions[k+1]=9999;
+      positions[k+2]=9999;
+
     }
 
-    if(!Number.isFinite(targets[i*3]))targets[i*3]=0;
-    if(!Number.isFinite(targets[i*3+1]))targets[i*3+1]=0;
-    if(!Number.isFinite(targets[i*3+2]))targets[i*3+2]=0;
+    const brightness=
+      .55+
+      Math.random()*.45;
 
-    const shade=.65+Math.random()*.35;
-    colors[i*3]=shade;
-    colors[i*3+1]=shade;
-    colors[i*3+2]=shade;
-    sizes[i]=sizes[i]||1;
+    particleColors[k]=brightness;
+    particleColors[k+1]=brightness;
+    particleColors[k+2]=brightness;
+
   }
 
-  pGeo.attributes.position.needsUpdate=true;
-  pGeo.attributes.color.needsUpdate=true;
+
+  particleGeometry
+    .attributes
+    .position
+    .needsUpdate=true;
+
+  particleGeometry
+    .attributes
+    .color
+    .needsUpdate=true;
+
 }
+
+
+/* =====================================================
+   PARTICLE ANIMATION
+===================================================== */
 
 function updateParticles(){
-  if(!particles.visible)return;
 
-  const p=pGeo.attributes.position.array;
+  if(!particleSystem.visible)
+    return;
+
+
+  const p=
+    particleGeometry
+      .attributes
+      .position
+      .array;
+
 
   for(let i=0;i<activeParticles;i++){
+
     const k=i*3;
-    p[k]+=(targets[k]-p[k])*.075;
-    p[k+1]+=(targets[k+1]-p[k+1])*.075;
-    p[k+2]+=(targets[k+2]-p[k+2])*.075;
+
+    p[k]+=
+      (targets[k]-p[k])*.09;
+
+    p[k+1]+=
+      (targets[k+1]-p[k+1])*.09;
+
+    p[k+2]+=
+      (targets[k+2]-p[k+2])*.09;
+
   }
 
-  pGeo.attributes.position.needsUpdate=true;
 
-  particles.rotation.y+=.0018;
-  particles.rotation.x=Math.sin(holoTime*.3)*.04;
+  particleGeometry
+    .attributes
+    .position
+    .needsUpdate=true;
+
+
+  particleSystem.rotation.y+=.0018;
+
+  particleSystem.rotation.x=
+    Math.sin(
+      performance.now()*.00025
+    )*.04;
+
 }
 
-/* =========================================================
+
+/* =====================================================
    MODE
-   ========================================================= */
+===================================================== */
 
-function setMode(m){
-  mode=m;
+function setMode(newMode){
 
-  $('builderMode').classList.toggle('active',m==='builder');
-  $('particleMode').classList.toggle('active',m==='particles');
+  mode=newMode;
 
-  $('builderControls').style.display=m==='builder'?'block':'none';
-  $('particleControls').style.display=m==='particles'?'block':'none';
 
-  particles.visible=m==='particles';
-  floor.visible=m==='builder';
-  grid.visible=m==='builder';
+  const builder=
+    mode==='builder';
 
-  if(m==='particles'){
-    makeHolo(HOLOS[+holoSelect.value][1]);
-    toast('HOLOGRAM ENGINE ACTIVE');
-  }else{
-    toast('BUILDER ENGINE ACTIVE');
+  const holo=
+    mode==='hologram';
+
+
+  $('builderButton')
+    .classList.toggle(
+      'active',
+      builder
+    );
+
+  $('holoButton')
+    .classList.toggle(
+      'active',
+      holo
+    );
+
+  $('dockBuilder')
+    .classList.toggle(
+      'active',
+      builder
+    );
+
+  $('dockHolo')
+    .classList.toggle(
+      'active',
+      holo
+    );
+
+
+  $('builderControls')
+    .style.display=
+    builder
+    ? 'block'
+    : 'none';
+
+
+  $('hologramControls')
+    .style.display=
+    holo
+    ? 'block'
+    : 'none';
+
+
+  floor.visible=builder;
+
+  grid.visible=builder;
+
+  particleSystem.visible=holo;
+
+
+  if(holo){
+
+    loadSelectedHologram();
+
   }
+
+
+  toast(
+    builder
+    ? 'BUILDER ACTIVE'
+    : 'HOLOGRAM ACTIVE'
+  );
+
 }
 
-function changeHolo(){
-  const h=HOLOS[+holoSelect.value];
-  makeHolo(h[1]);
-  toast(h[0]+' // LOADED');
+
+/* =====================================================
+   HOLOGRAM LOAD
+===================================================== */
+
+function loadSelectedHologram(){
+
+  const item=
+    HOLOGRAMS[
+      Number(
+        $('hologramSelect').value
+      )
+    ];
+
+
+  generateHologram(
+    item[1]
+  );
+
+
+  toast(
+    item[0]+' // LOADED'
+  );
+
 }
 
-$('particleRange').addEventListener('input',e=>{
-  activeParticles=+e.target.value;
-  $('pcount').textContent=activeParticles;
-  makeHolo(HOLOS[+holoSelect.value][1]);
-});
 
-$('sensitivity').addEventListener('input',e=>{
-  sensitivity=+e.target.value;
-});
+/* =====================================================
+   PARTICLE SLIDER
+===================================================== */
 
-/* =========================================================
+$('particleSlider')
+.addEventListener(
+  'input',
+  e=>{
+
+    activeParticles=
+      Number(e.target.value);
+
+    $('particleValue')
+      .textContent=
+      activeParticles;
+
+    $('particleCount')
+      .textContent=
+      activeParticles;
+
+
+    if(mode==='hologram'){
+
+      const item=
+        HOLOGRAMS[
+          Number(
+            $('hologramSelect').value
+          )
+        ];
+
+      generateHologram(
+        item[1]
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   SENSITIVITY
+===================================================== */
+
+$('sensitivitySlider')
+.addEventListener(
+  'input',
+  e=>{
+
+    sensitivity=
+      Number(e.target.value);
+
+    $('sensitivityValue')
+      .textContent=
+      sensitivity.toFixed(1);
+
+  }
+);
+
+
+/* =====================================================
    HAND TRACKING
-   ========================================================= */
+===================================================== */
 
-const video=$('video');
-const camCanvas=$('camCanvas');
-const camCtx=camCanvas.getContext('2d',{alpha:false});
+const video=
+  $('video');
 
-let hands;
-let mpCamera;
-let lastHand={x:.5,y:.5};
-let grabTarget=null;
-let pinch=false;
+const cameraCanvas=
+  $('cameraCanvas');
 
-function distance(a,b){
-  return Math.hypot(a.x-b.x,a.y-b.y);
+const cameraContext=
+  cameraCanvas.getContext(
+    '2d',
+    {alpha:false}
+  );
+
+
+function distance2D(a,b){
+
+  return Math.sqrt(
+    Math.pow(a.x-b.x,2)+
+    Math.pow(a.y-b.y,2)
+  );
+
 }
 
-function processHands(results){
-  const lm=results.multiHandLandmarks||[];
-  handCount=lm.length;
-  $('hands').textContent=handCount;
 
-  if(!lm.length)return;
+/* =====================================================
+   MEDIAPIPE RESULT
+===================================================== */
 
-  const h=lm[0];
-  const thumb=h[4];
-  const index=h[8];
+function onHands(results){
 
-  const d=distance(thumb,index);
-  const isPinch=d<.065;
+  const list=
+    results.multiHandLandmarks || [];
 
-  const x=(1-index.x)*2-1;
-  const y=-(index.y*2-1);
 
-  lastHand.x += (x-lastHand.x)*.35*sensitivity*.55;
-  lastHand.y += (y-lastHand.y)*.35*sensitivity*.55;
+  handVisible=
+    list.length>0;
+
+
+  $('hands')
+    .textContent=
+    list.length;
+
+
+  if(!handVisible){
+
+    $('handCursor')
+      .style.display='none';
+
+    $('pinch')
+      .textContent='NO';
+
+    isPinching=false;
+
+    if(grabbedObject){
+
+      grabbedObject
+        .userData
+        .grabbed=false;
+
+      grabbedObject=null;
+
+    }
+
+    return;
+
+  }
+
+
+  const hand=
+    list[0];
+
+
+  const index=
+    hand[8];
+
+  const thumb=
+    hand[4];
+
+
+  /*
+    MediaPipe:
+    x = 0 left
+    x = 1 right
+
+    We mirror it because
+    the camera preview is mirrored.
+  */
+
+  const rawX=
+    1-index.x;
+
+  const rawY=
+    index.y;
+
+
+  /*
+    More responsive smoothing.
+  */
+
+  smoothX +=
+    (rawX-smoothX)*
+    Math.min(
+      1,
+      .28*sensitivity
+    );
+
+  smoothY +=
+    (rawY-smoothY)*
+    Math.min(
+      1,
+      .28*sensitivity
+    );
+
+
+  handX=
+    smoothX;
+
+  handY=
+    smoothY;
+
+
+  /* SCREEN CURSOR */
+
+  const cursor=
+    $('handCursor');
+
+
+  cursor.style.display=
+    'block';
+
+
+  cursor.style.left=
+    (handX*100)+'%';
+
+
+  cursor.style.top=
+    (handY*100)+'%';
+
+
+  /* PINCH */
+
+  const pinchDistance=
+    distance2D(
+      thumb,
+      index
+    );
+
+
+  /*
+    Hysteresis:
+    easier to activate,
+    harder to accidentally release.
+  */
+
+  if(!isPinching){
+
+    isPinching=
+      pinchDistance<
+      .075;
+
+  }else{
+
+    isPinching=
+      pinchDistance<
+      .095;
+
+  }
+
+
+  $('pinch')
+    .textContent=
+    isPinching
+    ? 'YES'
+    : 'NO';
+
+
+  cursor.classList.toggle(
+    'pinch',
+    isPinching
+  );
+
+
+  /* BUILDER HAND */
 
   if(mode==='builder'){
-    if(isPinch && !pinch){
-      grabTarget=findNearestObject();
-      if(grabTarget)grabTarget.userData.grabbed=true;
+
+    if(
+      isPinching &&
+      !lastPinch
+    ){
+
+      grabbedObject=
+        findHandObject();
+
+      if(grabbedObject){
+
+        grabbedObject
+          .userData
+          .grabbed=true;
+
+        grabbedObject
+          .userData
+          .vy=0;
+
+        toast(
+          'OBJECT GRABBED'
+        );
+
+      }
+
     }
 
-    if(!isPinch && pinch && grabTarget){
-      grabTarget.userData.grabbed=false;
-      grabTarget.userData.vy=.04;
-      grabTarget=null;
+
+    if(
+      !isPinching &&
+      lastPinch
+    ){
+
+      if(grabbedObject){
+
+        grabbedObject
+          .userData
+          .grabbed=false;
+
+        grabbedObject
+          .userData
+          .vy=.03;
+
+        grabbedObject=null;
+
+        toast(
+          'OBJECT RELEASED'
+        );
+
+      }
+
     }
 
-    if(grabTarget){
-      grabTarget.position.x=lastHand.x*7;
-      grabTarget.position.y=lastHand.y*5+3;
-      grabTarget.position.z=0;
-      grabTarget.userData.vy=0;
+
+    if(grabbedObject){
+
+      /*
+        Direct hand-to-world mapping.
+        Much easier to control.
+      */
+
+      const targetX=
+        (handX-.5)*16;
+
+      const targetY=
+        (1-handY)*10-4;
+
+
+      grabbedObject.position.x +=
+        (targetX-
+         grabbedObject.position.x)*.32;
+
+
+      grabbedObject.position.y +=
+        (targetY-
+         grabbedObject.position.y)*.32;
+
+
+      grabbedObject.position.z +=
+        (0-
+         grabbedObject.position.z)*.18;
+
     }
+
   }
 
-  pinch=isPinch;
+
+  lastPinch=
+    isPinching;
+
 }
 
-function findNearestObject(){
-  let best=null;
-  let dist=Infinity;
 
-  objects.forEach(o=>{
-    const d=Math.hypot(
-      o.position.x-lastHand.x*7,
-      o.position.y-(lastHand.y*5+3),
-      o.position.z
-    );
-    if(d<dist){dist=d;best=o}
-  });
+/* =====================================================
+   FIND OBJECT
+===================================================== */
 
-  return dist<6?best:null;
+function findHandObject(){
+
+  if(!objects.length)
+    return null;
+
+
+  const x=
+    (handX-.5)*16;
+
+  const y=
+    (1-handY)*10-4;
+
+
+  let nearest=null;
+
+  let best=Infinity;
+
+
+  for(const object of objects){
+
+    const d=
+      Math.sqrt(
+        Math.pow(
+          object.position.x-x,
+          2
+        )+
+        Math.pow(
+          object.position.y-y,
+          2
+        )
+      );
+
+
+    if(d<best){
+
+      best=d;
+
+      nearest=object;
+
+    }
+
+  }
+
+
+  /*
+    Large pickup radius so
+    the interaction actually
+    works instead of requiring
+    pixel-perfect positioning.
+  */
+
+  return best<7
+    ? nearest
+    : null;
+
 }
+
+
+/* =====================================================
+   CAMERA DRAW
+===================================================== */
 
 function drawCamera(results){
-  if(!video.videoWidth)return;
 
-  camCanvas.width=video.videoWidth;
-  camCanvas.height=video.videoHeight;
+  if(!video.videoWidth)
+    return;
 
-  camCtx.drawImage(video,0,0,camCanvas.width,camCanvas.height);
 
-  if(results.multiHandLandmarks){
-    results.multiHandLandmarks.forEach(hand=>{
-      camCtx.fillStyle='#fff';
-      hand.forEach(p=>{
-        camCtx.beginPath();
-        camCtx.arc(p.x*camCanvas.width,p.y*camCanvas.height,2.5,0,Math.PI*2);
-        camCtx.fill();
-      });
+  if(
+    cameraCanvas.width !==
+    video.videoWidth
+  ){
+
+    cameraCanvas.width=
+      video.videoWidth;
+
+    cameraCanvas.height=
+      video.videoHeight;
+
+  }
+
+
+  cameraContext.drawImage(
+    video,
+    0,
+    0,
+    cameraCanvas.width,
+    cameraCanvas.height
+  );
+
+
+  const hands=
+    results.multiHandLandmarks || [];
+
+
+  cameraContext.fillStyle=
+    '#fff';
+
+
+  hands.forEach(hand=>{
+
+    hand.forEach(point=>{
+
+      cameraContext.beginPath();
+
+      cameraContext.arc(
+        point.x*
+          cameraCanvas.width,
+        point.y*
+          cameraCanvas.height,
+        2.5,
+        0,
+        Math.PI*2
+      );
+
+      cameraContext.fill();
+
     });
-  }
-}
 
-async function initHands(){
-  hands=new Hands({
-    locateFile:file=>
-      `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
   });
 
-  hands.setOptions({
-    maxNumHands:2,
-    modelComplexity:0,
-    minDetectionConfidence:.45,
-    minTrackingConfidence:.45
-  });
-
-  hands.onResults(results=>{
-    processHands(results);
-    drawCamera(results);
-  });
-
-  mpCamera=new Camera(video,{
-    onFrame:async()=>{
-      await hands.send({image:video});
-    },
-    width:640,
-    height:480
-  });
-
-  mpCamera.start();
 }
 
-/* =========================================================
-   CLOCK
-   ========================================================= */
 
-function updateClock(){
-  const d=new Date();
+/* =====================================================
+   MEDIAPIPE INITIALIZATION
+===================================================== */
 
-  const hh=String(d.getHours()).padStart(2,'0');
-  const mm=String(d.getMinutes()).padStart(2,'0');
-  const ss=String(d.getSeconds()).padStart(2,'0');
+async function startHandTracking(){
 
-  $('clock').textContent=`${hh}:${mm}:${ss}`;
+  if(cameraStarted)
+    return;
 
-  $('date').textContent=d.toLocaleDateString('it-IT',{
-    weekday:'short',
-    day:'2-digit',
-    month:'short',
-    year:'numeric'
-  }).toUpperCase();
-}
 
-setInterval(updateClock,250);
-updateClock();
+  $('cameraStatus')
+    .textContent='LOADING';
 
-/* =========================================================
-   COMMAND / SEND
-   ========================================================= */
 
-function toggleConsole(){
-  const c=$('console');
-  c.style.display=c.style.display==='block'?'none':'block';
-  if(c.style.display==='block')$('commandInput').focus();
-}
+  $('systemText')
+    .textContent=
+    'LOADING HAND SENSOR';
 
-$('commandForm').addEventListener('submit',e=>{
-  e.preventDefault();
-
-  const input=$('commandInput');
-  const cmd=input.value.trim().toLowerCase();
-
-  if(!cmd)return;
-
-  if(cmd==='builder'){
-    setMode('builder');
-    toast('MODE // BUILDER');
-  }
-  else if(cmd==='hologram'||cmd==='particles'){
-    setMode('particles');
-    toast('MODE // HOLOGRAM');
-  }
-  else if(cmd==='clear'){
-    clearBuilder();
-    toast('SCENE CLEARED');
-  }
-  else if(cmd==='send'||cmd==='test'){
-    toast('COMMAND RECEIVED');
-  }
-  else if(cmd==='neuroni'||cmd==='neurons'){
-    setMode('particles');
-    const i=HOLOS.findIndex(x=>x[1]==='neurons');
-    holoSelect.value=i;
-    changeHolo();
-  }
-  else if(cmd==='clock'||cmd==='orologio'){
-    toast($('clock').textContent);
-  }
-  else{
-    toast('COMMAND: '+cmd.toUpperCase());
-  }
-
-  input.value='';
-});
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-
-let toastTimer;
-
-function toast(text){
-  const t=$('toast');
-  t.textContent=text;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),1400);
-}
-
-/* =========================================================
-   START
-   ========================================================= */
-
-$('startBtn').onclick=async()=>{
-  $('start').style.display='none';
-  $('systemStatus').textContent='INITIALIZING...';
 
   try{
-    await initHands();
-    $('systemStatus').textContent='ONLINE';
-    toast('HAND SENSOR ONLINE');
-  }catch(err){
-    console.error(err);
-    $('systemStatus').textContent='3D ONLINE / CAMERA OFF';
-    toast('CAMERA NON DISPONIBILE');
+
+    if(
+      typeof Hands==='undefined' ||
+      typeof Camera==='undefined'
+    ){
+
+      throw new Error(
+        'MediaPipe non caricato'
+      );
+
+    }
+
+
+    handsInstance=
+      new Hands({
+
+        locateFile:file=>
+          'https://cdn.jsdelivr.net/npm/@mediapipe/hands/'+file
+
+      });
+
+
+    handsInstance.setOptions({
+
+      maxNumHands:2,
+
+      modelComplexity:0,
+
+      minDetectionConfidence:.42,
+
+      minTrackingConfidence:.42
+
+    });
+
+
+    handsInstance.onResults(
+      results=>{
+
+        drawCamera(results);
+
+        onHands(results);
+
+      }
+    );
+
+
+    mpCamera=
+      new Camera(
+        video,
+        {
+
+          onFrame:
+            async()=>{
+
+              if(
+                video.readyState>=2
+              ){
+
+                await handsInstance
+                  .send({
+                    image:video
+                  });
+
+              }
+
+            },
+
+          width:640,
+
+          height:480
+
+        }
+      );
+
+
+    await navigator.mediaDevices
+      .getUserMedia({
+
+        video:{
+          width:{
+            ideal:640
+          },
+          height:{
+            ideal:480
+          },
+          facingMode:'user'
+        },
+
+        audio:false
+
+      })
+      .then(stream=>{
+
+        video.srcObject=
+          stream;
+
+        return video.play();
+
+      });
+
+
+    mpCamera.start();
+
+
+    cameraStarted=true;
+
+
+    $('cameraStatus')
+      .textContent='ONLINE';
+
+
+    $('systemText')
+      .textContent=
+      'HAND SENSOR ONLINE';
+
+
+    toast(
+      'HAND TRACKING ONLINE'
+    );
+
+  }
+  catch(error){
+
+    console.error(
+      'HAND SENSOR ERROR:',
+      error
+    );
+
+
+    $('cameraStatus')
+      .textContent='ERROR';
+
+
+    $('systemText')
+      .textContent=
+      'CAMERA ERROR';
+
+
+    toast(
+      'PERMESSO CAMERA NECESSARIO'
+    );
+
   }
 
-  makeHolo('neurons');
-};
-
-/* =========================================================
-   RESIZE
-   ========================================================= */
-
-addEventListener('resize',()=>{
-  camera3D.aspect=innerWidth/innerHeight;
-  camera3D.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
-});
-
-/* =========================================================
-   RENDER LOOP
-   ========================================================= */
-
-function animate(now){
-  requestAnimationFrame(animate);
-
-  const dt=now-lastFrame;
-  lastFrame=now;
-  frameCounter++;
-
-  if(now-clockStart>1000){
-    fpsValue=frameCounter;
-    frameCounter=0;
-    clockStart=now;
-    $('fps').textContent=fpsValue;
-  }
-
-  holoTime+=.016;
-
-  physics();
-  updateParticles();
-
-  if(mode==='builder'){
-    world.rotation.y+=(lastHand.x*.08-world.rotation.y)*.025;
-    world.position.y+=(lastHand.y*.25-world.position.y)*.025;
-  }else{
-    particles.rotation.y+=.002;
-  }
-
-  renderer.render(scene,camera3D);
 }
 
-animate(performance.now());
 
-/* =========================================================
+/* =====================================================
+   CLOCK
+===================================================== */
+
+function updateClock(){
+
+  const d=
+    new Date();
+
+
+  const hh=
+    String(
+      d.getHours()
+    ).padStart(2,'0');
+
+
+  const mm=
+    String(
+      d.getMinutes()
+    ).padStart(2,'0');
+
+
+  const ss=
+    String(
+      d.getSeconds()
+    ).padStart(2,'0');
+
+
+  $('clock')
+    .textContent=
+    hh+':'+mm+':'+ss;
+
+
+  $('date')
+    .textContent=
+    d.toLocaleDateString(
+      'it-IT',
+      {
+        weekday:'short',
+        day:'2-digit',
+        month:'short',
+        year:'numeric'
+      }
+    ).toUpperCase();
+
+}
+
+
+setInterval(
+  updateClock,
+  250
+);
+
+updateClock();
+
+
+/* =====================================================
+   COMMAND
+===================================================== */
+
+function toggleCommand(){
+
+  const box=
+    $('command');
+
+
+  if(
+    box.style.display===
+    'block'
+  ){
+
+    box.style.display=
+      'none';
+
+  }else{
+
+    box.style.display=
+      'block';
+
+    setTimeout(
+      ()=>$('commandInput').focus(),
+      50
+    );
+
+  }
+
+}
+
+
+$('commandForm')
+.addEventListener(
+  'submit',
+  e=>{
+
+    e.preventDefault();
+
+
+    const input=
+      $('commandInput');
+
+
+    const cmd=
+      input.value
+        .trim()
+        .toLowerCase();
+
+
+    if(!cmd)
+      return;
+
+
+    if(
+      cmd==='builder'
+    ){
+
+      setMode('builder');
+
+    }
+
+    else if(
+      cmd==='hologram' ||
+      cmd==='particles'
+    ){
+
+      setMode('hologram');
+
+    }
+
+    else if(
+      cmd==='clear'
+    ){
+
+      clearWorld();
+
+      toast(
+        'WORLD CLEARED'
+      );
+
+    }
+
+    else if(
+      cmd==='neuroni' ||
+      cmd==='neurons' ||
+      cmd==='neural'
+    ){
+
+      setMode('hologram');
+
+      const index=
+        HOLOGRAMS.findIndex(
+          x=>x[1]==='neurons'
+        );
+
+      if(index>=0){
+
+        $('hologramSelect')
+          .value=index;
+
+        loadSelectedHologram();
+
+      }
+
+    }
+
+    else if(
+      cmd==='clock' ||
+      cmd==='orologio'
+    ){
+
+      toast(
+        $('clock').textContent
+      );
+
+    }
+
+    else if(
+      cmd==='spawn'
+    ){
+
+      createSelectedObject();
+
+    }
+
+    else{
+
+      toast(
+        'COMMAND RECEIVED'
+      );
+
+    }
+
+
+    input.value='';
+
+  }
+);
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+let toastTimeout=0;
+
+
+function toast(text){
+
+  const t=
+    $('toast');
+
+
+  t.textContent=
+    text;
+
+
+  t.classList.add(
+    'show'
+  );
+
+
+  clearTimeout(
+    toastTimeout
+  );
+
+
+  toastTimeout=
+    setTimeout(
+      ()=>{
+        t.classList.remove(
+          'show'
+        );
+      },
+      1400
+    );
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+$('startButton')
+.addEventListener(
+  'click',
+  async()=>{
+
+    $('start')
+      .style.display='none';
+
+
+    /*
+      Start camera ONLY after
+      user interaction.
+      This avoids browser
+      permission/autoplay problems.
+    */
+
+    await startHandTracking();
+
+
+    /*
+      Put something immediately
+      in the Builder so the world
+      is never empty.
+    */
+
+    $('builderSelect')
+      .value=0;
+
+
+    createSelectedObject();
+
+
+    $('builderSelect')
+      .value=4;
+
+
+    createSelectedObject();
+
+
+    $('builderSelect')
+      .value=11;
+
+
+    createSelectedObject();
+
+
+    generateHologram(
+      'neurons'
+    );
+
+  }
+);
+
+
+/* =====================================================
+   RESIZE
+===================================================== */
+
+window.addEventListener(
+  'resize',
+  ()=>{
+
+    camera.aspect=
+      innerWidth/
+      innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+      innerWidth,
+      innerHeight
+    );
+
+  }
+);
+
+
+/* =====================================================
+   RENDER LOOP
+===================================================== */
+
+function animate(){
+
+  requestAnimationFrame(
+    animate
+  );
+
+
+  const now=
+    performance.now();
+
+
+  frameCounter++;
+
+
+  if(
+    now-startTime>1000
+  ){
+
+    fps=
+      frameCounter;
+
+    frameCounter=0;
+
+    startTime=now;
+
+
+    $('fps')
+      .textContent=
+      fps;
+
+  }
+
+
+  updatePhysics();
+
+  updateParticles();
+
+
+  /*
+    Small world movement follows
+    the hand even when no object
+    is grabbed.
+  */
+
+  if(
+    mode==='builder' &&
+    handVisible &&
+    !grabbedObject
+  ){
+
+    world.rotation.y +=
+      (
+        (handX-.5)*.12-
+        world.rotation.y
+      )*.02;
+
+  }
+
+
+  renderer.render(
+    scene,
+    camera
+  );
+
+}
+
+
+/* =====================================================
    INITIAL STATE
-   ========================================================= */
+===================================================== */
 
-makeHolo('neurons');
-$('pcount').textContent=activeParticles;
-$('objects').textContent='0';
+generateHologram(
+  'neurons'
+);
+
+$('particleCount')
+  .textContent=
+  activeParticles;
+
+
+animate();
+
 </script>
+
 </body>
 </html>
