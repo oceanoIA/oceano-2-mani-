@@ -1821,43 +1821,21 @@ function updateParticleTargets(){
   const p=activeHand.pos;
 
   /*
-    ROTAZIONE ORIZZONTALE:
-    invariata.
+    SENSIBILITÀ PARTICLES AUMENTATA:
+    movimento orizzontale = rotazione Y
+    movimento verticale = rotazione X
   */
+
   targetRotY=
     THREE.MathUtils.clamp(
-      p.x*.035,
-      -1.2,
-      1.2
+      p.x*.10,
+      -2.5,
+      2.5
     );
-
-  /*
-    ROTAZIONE VERTICALE POTENZIATA:
-    movimento verticale della mano
-    -> rotazione X del modello.
-
-    Con due mani viene usata la media
-    verticale delle due mani, così quando
-    entrambe salgono Saturn reagisce
-    molto più chiaramente.
-  */
-  let verticalY=p.y;
-
-  if(
-    controllers[0].active&&
-    controllers[1].active
-  ){
-
-    verticalY=
-      (
-        controllers[0].pos.y+
-        controllers[1].pos.y
-      )*.5;
-  }
 
   targetRotX=
     THREE.MathUtils.clamp(
-      -verticalY*.10,
+      -p.y*.10,
       -2.5,
       2.5
     );
