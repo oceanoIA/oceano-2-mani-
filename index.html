@@ -513,17 +513,14 @@
       }
     }
 
-    // Funzione modificata per disegnare lo scheletro vettoriale della mano
     function drawHandSkeletonPreview(ctx, multiHandLandmarks, w, h) {
       ctx.clearRect(0, 0, w, h);
       
-      // Sfondo scuro high-tech nel riquadro
       ctx.fillStyle = 'rgba(10, 15, 20, 0.85)';
       ctx.fillRect(0, 0, w, h);
 
       if (multiHandLandmarks && multiHandLandmarks.length > 0) {
         multiHandLandmarks.forEach(landmarks => {
-          // Disegna le linee delle articolazioni (scheletro)
           ctx.lineWidth = 2;
           ctx.strokeStyle = '#00ffcc';
           for (let [startIdx, endIdx] of HAND_CONNECTIONS) {
@@ -535,7 +532,6 @@
             ctx.stroke();
           }
 
-          // Disegna i nodi (pallini) sulle articolazioni
           landmarks.forEach((pt, index) => {
             ctx.fillStyle = (index === 4 || index === 8) ? '#ff00aa' : '#ffffff';
             ctx.beginPath();
@@ -544,7 +540,6 @@
           });
         });
       } else {
-        // Testo guida se nessuna mano è rilevata nel box
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         ctx.font = '9px "Share Tech Mono"';
         ctx.textAlign = 'center';
@@ -567,7 +562,6 @@
         if (!previewCtx) return;
         previewCtx.save();
         
-        // Disegna lo scheletro nel box HUD
         drawHandSkeletonPreview(previewCtx, results.multiHandLandmarks, previewCanvas.width, previewCanvas.height);
 
         const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
@@ -672,10 +666,12 @@
           if (numHands === 2) {
             const landmarks2 = results.multiHandLandmarks[1];
             const distBetweenHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
-            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(distBetweenHands, 0.08, 0.6, 0.4, 3.5), 0.3, 4.0);
+            
+            // MODIFICATO: Range di distanza e mappatura ampliati (zoom naturale senza attaccare le mani)
+            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(distBetweenHands, 0.2, 0.8, 0.8, 2.5), 0.6, 3.0);
           } else {
             const span = Math.hypot(wrist1.x - landmarks1[12].x, wrist1.y - landmarks1[12].y);
-            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(span, 0.15, 0.45, 0.4, 2.5), 0.3, 3.0);
+            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(span, 0.15, 0.45, 0.8, 2.2), 0.6, 2.5);
           }
         }
 
