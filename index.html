@@ -387,6 +387,9 @@ input[type=color]{
       <label>HOLOGRAM TEMPLATE</label>
       <select id="shape-select">
 
+        <!-- NUOVA OPZIONE AGGIUNTA -->
+        <option value="hudmatrix">HUD CIRCUIT MATRIX (HD)</option>
+
         <!-- FORME ORIGINALI -->
         <option value="jupiter">JUPITER & RINGS</option>
         <option value="galaxy">GALAXY SPIRAL</option>
@@ -476,7 +479,7 @@ input[type=color]{
 
     <div class="telemetry-top">
       <span>PARTICLES</span>
-      <strong id="particle-value">4000</strong>
+      <strong id="particle-value">8000</strong>
     </div>
 
     <div class="telemetry-top">
@@ -525,7 +528,7 @@ input[type=color]{
    ========================================================= */
 
 const CONFIG = {
-  particles: 4000,
+  particles: 8000, /* Aumentato a 8000 per altissima definizione e nitidezza */
   handFPS: 24,
   cameraWidth: 320,
   cameraHeight: 240,
@@ -568,10 +571,12 @@ const CONFIG = {
 const PARTICLE_COUNT = CONFIG.particles;
 
 /* =========================================================
-   COLORI REALISTICI DELLE 50 NUOVE FORME
+   COLORI REALISTICI DELLE FORME (INCLUSO HUD MATRIX)
    ========================================================= */
 
 const EXTRA_SHAPE_COLORS = {
+
+  hudmatrix:0x00aaff, /* Colore blu olografico nitido per la nuova matrice */
 
   rose:0xd81b32,
   tulip:0xe53935,
@@ -1034,11 +1039,11 @@ function initParticles(){
   const texture=createGlowTexture();
 
   particleMaterial=new THREE.PointsMaterial({
-    size:.30,
+    size:.25,
     vertexColors:true,
     map:texture,
     transparent:true,
-    opacity:.9,
+    opacity:.95,
     blending:THREE.AdditiveBlending,
     depthWrite:false
   });
@@ -1050,7 +1055,7 @@ function initParticles(){
 
   particleGroup.add(particleSystem);
 
-  generateShape('jupiter');
+  generateShape('hudmatrix'); /* Partenza diretta in alta definizione con l'HUD matrix */
 
   dom.particleValue.textContent=PARTICLE_COUNT;
 }
@@ -1262,7 +1267,7 @@ function updateSelectionUI(){
 }
 
 /* =========================================================
-   50 NUOVE FORME
+   GENERATORE FORME (INCLUSO HUD CIRCUIT MATRIX 3D)
    ========================================================= */
 
 function generateExtraShape(type,i){
@@ -1276,6 +1281,44 @@ function generateExtraShape(type,i){
   let z=0;
 
   switch(type){
+
+    /* ================= HUD CIRCUIT MATRIX (NUOVA FORMA ISPIRATA ALL'IMMAGINE) ================= */
+    case 'hudmatrix': {
+      const section = i % 5;
+      
+      if (section === 0) {
+        // Anello olografico centrale rotante ad alta nitidezza
+        const u = a;
+        const rad = 4 + (i % 3) * 0.7;
+        x = rad * Math.cos(u);
+        z = rad * Math.sin(u);
+        y = (Math.random() - 0.5) * 0.4;
+      } else if (section === 1) {
+        // Griglia/Piastra di base del circuito stampato
+        x = (Math.random() - 0.5) * 16;
+        z = (Math.random() - 0.5) * 16;
+        y = -3.5;
+      } else if (section === 2) {
+        // Tracce dati verticali e HUD fluttuanti in alto
+        x = (Math.random() - 0.5) * 12;
+        z = (Math.random() - 0.5) * 12;
+        y = 2 + Math.random() * 5;
+      } else if (section === 3) {
+        // Linee e bus dati angolari ortogonali (stile scheda madre)
+        const line = Math.floor(i / 150) % 4;
+        const pos = ((i % 150) / 150) * 14 - 7;
+        if (line === 0) { x = pos; z = -5; y = pos * 0.15; }
+        else if (line === 1) { x = 5; z = pos; y = pos * 0.1; }
+        else if (line === 2) { x = pos; z = 5; y = -1; }
+        else { x = -5; z = pos; y = 1; }
+      } else {
+        // Particelle di polvere olografica e glitch sparsi
+        x = (Math.random() - 0.5) * 18;
+        z = (Math.random() - 0.5) * 18;
+        y = 6 + Math.random() * 3;
+      }
+      break;
+    }
 
     /* ================= FLOWERS ================= */
 
@@ -1688,7 +1731,7 @@ function generateExtraShape(type,i){
 
     case'lightning':{
       const branch=i%5===0;
-      const y=-8+t*16;
+      const yPos=-8+t*16;
       x=Math.sin(t*15)*2;
       z=(Math.random()-.5)*1.5;
       if(branch)x+=Math.sin(t*35)*2;
@@ -1957,10 +2000,6 @@ function generateShape(type){
 
   const p=targetPositions;
 
-  /*
-    COLORE REALISTICO AUTOMATICO
-    SOLO PER LE 50 NUOVE FORME.
-  */
   if(
     particleMaterial&&
     EXTRA_SHAPE_COLORS[type]
@@ -1983,10 +2022,6 @@ function generateShape(type){
     let y=0;
     let z=0;
 
-    /*
-      PRIMA controlliamo le 50 nuove forme.
-      Se la forma è nuova, usiamo il generatore dedicato.
-    */
     const extra=
       generateExtraShape(type,i);
 
