@@ -493,11 +493,12 @@ const CONFIG = {
   snapSize: 1.5,
 
   /*
-    SENSIBILITÀ MOVIMENTO
-    +20% rispetto a 0.10
-    = 0.12
+    SENSIBILITÀ MOVIMENTO ALTA
+
+    X e Y usano ESATTAMENTE lo stesso valore.
+    Il valore 0.50 è volutamente alto.
   */
-  axisSensitivity: 0.12,
+  axisSensitivity: 0.50,
 
   colors: {
     white: 0xffffff,
@@ -677,10 +678,6 @@ function createController(index){
     grabbedBlock:null,
     grabOffset:new THREE.Vector3(),
 
-    /*
-      Posizione della mano e dell'oggetto
-      al momento del grab.
-    */
     grabStartHand:new THREE.Vector3(),
     grabStartBlock:new THREE.Vector3(),
 
@@ -1835,17 +1832,10 @@ function updateParticleTargets(){
   const p=activeHand.pos;
 
   /*
-    SENSIBILITÀ IDENTICA SULLE DUE ASSI
+    SENSIBILITÀ ALTA E IDENTICA
 
-    Prima:
-    X = 0.10
-    Y = 0.10
-
-    Ora:
-    X = 0.12
-    Y = 0.12
-
-    +20%
+    X = 0.50
+    Y = 0.50
   */
 
   targetRotY=
@@ -1911,27 +1901,36 @@ function updateBuilderHand(ctrl){
         ctrl.grabbedBlock;
 
       /*
-        Movimento Builder con la stessa
-        sensibilità delle due assi.
+        SENSIBILITÀ BUILDER ALTA.
 
-        X = 0.12
-        Y = 0.12
+        Usiamo lo stesso valore CONFIG.axisSensitivity,
+        ma come incremento del guadagno.
 
-        Z mantiene la stessa proporzione
-        per evitare movimenti irregolari.
+        0.50 -> gain 1.50
+
+        Quindi:
+        - X è molto sensibile
+        - Y è molto sensibile
+        - Z segue la stessa intensità
+
+        La mano NON modifica la rotazione
+        dell'oggetto.
       */
+
+      const builderGain=
+        1+CONFIG.axisSensitivity;
 
       const dx=
         (ctrl.pos.x-ctrl.grabStartHand.x)*
-        CONFIG.axisSensitivity;
+        builderGain;
 
       const dy=
         (ctrl.pos.y-ctrl.grabStartHand.y)*
-        CONFIG.axisSensitivity;
+        builderGain;
 
       const dz=
         (ctrl.pos.z-ctrl.grabStartHand.z)*
-        CONFIG.axisSensitivity;
+        builderGain;
 
       block.position.set(
         ctrl.grabStartBlock.x+dx,
@@ -1989,12 +1988,6 @@ function selectNearestBlock(ctrl){
   ).sub(
     nearest.position
   );
-
-  /*
-    Memorizziamo il punto iniziale
-    di mano e oggetto per applicare
-    la sensibilità senza saltare.
-  */
 
   ctrl.grabStartHand.copy(
     ctrl.pos
