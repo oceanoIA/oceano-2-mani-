@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v10.1 // ULTRA-BLOOM & NO SHOCKWAVE</title>
+  <title>STARK KINETIC LAB v10.2 // MOBILE & DESKTOP ROBUST FIX</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -106,13 +106,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <video id="video-input"></video>
+  <video id="video-input" playsinline></video>
   <div id="canvas-container"></div>
 
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">ULTRA BLOOM & CLEAN GRAB</span>
+      <span class="security-badge">ROBUST FIX ACTIVE</span>
     </div>
     <div class="mode-tabs">
       <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
@@ -272,30 +272,34 @@
       }
       init() {
         if (this.initialized) return;
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        this.ctx = new AudioCtx();
-        this.humOsc = this.ctx.createOscillator();
-        this.humGain = this.ctx.createGain();
-        this.humOsc.type = 'sawtooth';
-        this.humOsc.frequency.setValueAtTime(45, this.ctx.currentTime);
-        this.humGain.gain.setValueAtTime(0.015, this.ctx.currentTime);
-        this.humOsc.connect(this.humGain);
-        this.humGain.connect(this.ctx.destination);
-        this.humOsc.start();
-        this.initialized = true;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioCtx();
+          this.humOsc = this.ctx.createOscillator();
+          this.humGain = this.ctx.createGain();
+          this.humOsc.type = 'sawtooth';
+          this.humOsc.frequency.setValueAtTime(45, this.ctx.currentTime);
+          this.humGain.gain.setValueAtTime(0.015, this.ctx.currentTime);
+          this.humOsc.connect(this.humGain);
+          this.humGain.connect(this.ctx.destination);
+          this.humOsc.start();
+          this.initialized = true;
+        } catch(e) { console.warn("Audio Context blocked:", e); }
       }
       pulse(freq = 200) {
         if (!this.enabled || !this.initialized) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.15);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.15);
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.15);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.15);
+        } catch(e) {}
       }
     }
 
@@ -304,6 +308,7 @@
     function toggleAudio() {
       sounds.enabled = !sounds.enabled;
       document.getElementById('audio-toggle-btn').innerText = sounds.enabled ? "🔊 AUDIO: ATTIVO" : "🔇 AUDIO: DISATTIVATO";
+      sounds.init();
     }
 
     let currentMode = 'PARTICLES';
@@ -570,125 +575,156 @@
 
     function initHandTracking() {
       const videoElement = document.getElementById('video-input');
-      const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
+      
+      try {
+        const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
 
-      hands.setOptions({
-        maxNumHands: 2, modelComplexity: 1,
-        minDetectionConfidence: 0.6, minTrackingConfidence: 0.6
-      });
+        hands.setOptions({
+          maxNumHands: 2, modelComplexity: 1,
+          minDetectionConfidence: 0.5, minTrackingConfidence: 0.5
+        });
 
-      hands.onResults((results) => {
-        sounds.init();
-        previewCtx.save();
-        previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-        previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
+        hands.onResults((results) => {
+          if (!previewCtx) return;
+          previewCtx.save();
+          previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+          if (results.image) {
+            previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
+          }
 
-        const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
+          const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
 
-        for (let i = 0; i < 2; i++) {
-          const ctrl = controllers[i];
-          if (i < numHands) {
-            ctrl.active = true;
-            const landmarks = results.multiHandLandmarks[i];
+          for (let i = 0; i < 2; i++) {
+            const ctrl = controllers[i];
+            if (i < numHands) {
+              ctrl.active = true;
+              const landmarks = results.multiHandLandmarks[i];
 
-            drawConnectors(previewCtx, landmarks, HAND_CONNECTIONS, { color: '#00f3ff', lineWidth: 1.5 });
-            drawLandmarks(previewCtx, landmarks, { color: '#ffffff', lineWidth: 1, radius: 2 });
+              drawConnectors(previewCtx, landmarks, HAND_CONNECTIONS, { color: '#00f3ff', lineWidth: 1.5 });
+              drawLandmarks(previewCtx, landmarks, { color: '#ffffff', lineWidth: 1, radius: 2 });
 
-            const indexTip = landmarks[8];
-            const pX = indexTip.x, pY = indexTip.y, pZ = indexTip.z;
+              const indexTip = landmarks[8];
+              const pX = indexTip.x, pY = indexTip.y, pZ = indexTip.z;
 
-            const ndcX = (1 - pX) * 2 - 1, ndcY = -(pY * 2 - 1);
-            const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
-            vector.unproject(camera);
-            const dir = vector.sub(camera.position).normalize();
-            const targetZ = -pZ * 20;
-            const distanceToPlane = (targetZ - camera.position.z) / dir.z;
-            const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
+              const ndcX = (1 - pX) * 2 - 1, ndcY = -(pY * 2 - 1);
+              const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
+              vector.unproject(camera);
+              const dir = vector.sub(camera.position).normalize();
+              const targetZ = -pZ * 20;
+              const distanceToPlane = (targetZ - camera.position.z) / dir.z;
+              const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
 
-            ctrl.pos.copy(targetPos);
-            ctrl.mesh.visible = true;
-            ctrl.mesh.position.copy(ctrl.pos);
-            ctrl.pointLight.position.copy(ctrl.pos);
+              ctrl.pos.copy(targetPos);
+              ctrl.mesh.visible = true;
+              ctrl.mesh.position.copy(ctrl.pos);
+              ctrl.pointLight.position.copy(ctrl.pos);
 
-            const thumbTip = landmarks[4];
-            const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
-            const isPinching = pinchDist < 0.055;
+              const thumbTip = landmarks[4];
+              const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+              const isPinching = pinchDist < 0.055;
 
-            ctrl.wasPinching = ctrl.pinching;
-            ctrl.pinching = isPinching;
-            ctrl.gestureEl.innerText = isPinching ? "PINCH: PRESA ATTIVA" : "PINCH: APERTO";
-            ctrl.gestureEl.style.color = isPinching ? "#2bf2b0" : "#00f3ff";
+              ctrl.wasPinching = ctrl.pinching;
+              ctrl.pinching = isPinching;
+              ctrl.gestureEl.innerText = isPinching ? "PINCH: PRESA ATTIVA" : "PINCH: APERTO";
+              ctrl.gestureEl.style.color = isPinching ? "#2bf2b0" : "#00f3ff";
 
-            if (isPinching && !ctrl.wasPinching) {
-              sounds.pulse(800);
-            }
+              if (isPinching && !ctrl.wasPinching) {
+                sounds.pulse(800);
+              }
 
-            if (currentMode === 'BUILDER') {
-              if (isPinching) {
-                if (!ctrl.grabbedBlock) {
-                  let closestBlock = null;
-                  let minDist = 3.0;
-                  blocks.forEach(block => {
-                    const d = block.position.distanceTo(ctrl.pos);
-                    if (d < minDist) {
-                      minDist = d;
-                      closestBlock = block;
+              if (currentMode === 'BUILDER') {
+                if (isPinching) {
+                  if (!ctrl.grabbedBlock) {
+                    let closestBlock = null;
+                    let minDist = 3.0;
+                    blocks.forEach(block => {
+                      const d = block.position.distanceTo(ctrl.pos);
+                      if (d < minDist) {
+                        minDist = d;
+                        closestBlock = block;
+                      }
+                    });
+                    if (closestBlock) {
+                      ctrl.grabbedBlock = closestBlock;
+                      ctrl.mesh.material.color.set(0x2bf2b0);
+                      ctrl.pointLight.color.set(0x2bf2b0);
                     }
-                  });
-                  if (closestBlock) {
-                    ctrl.grabbedBlock = closestBlock;
-                    ctrl.mesh.material.color.set(0x2bf2b0);
-                    ctrl.pointLight.color.set(0x2bf2b0);
+                  } else {
+                    ctrl.grabbedBlock.position.copy(ctrl.pos);
+                    ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
                   }
                 } else {
-                  ctrl.grabbedBlock.position.copy(ctrl.pos);
-                  ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
-                }
-              } else {
-                if (ctrl.grabbedBlock) {
-                  ctrl.grabbedBlock = null;
-                  ctrl.mesh.material.color.set(0x00f3ff);
-                  ctrl.pointLight.color.set(0x00f3ff);
+                  if (ctrl.grabbedBlock) {
+                    ctrl.grabbedBlock = null;
+                    ctrl.mesh.material.color.set(0x00f3ff);
+                    ctrl.pointLight.color.set(0x00f3ff);
+                  }
                 }
               }
+
+              ctrl.statusEl.innerText = "ATTIVA";
+              ctrl.statusEl.style.color = "#ffffff";
+            } else {
+              ctrl.active = false;
+              ctrl.mesh.visible = false;
+              ctrl.grabbedBlock = null;
+              ctrl.statusEl.innerText = "CERCA...";
+              ctrl.statusEl.style.color = "#ff3366";
             }
-
-            ctrl.statusEl.innerText = "ATTIVA";
-            ctrl.statusEl.style.color = "#ffffff";
-          } else {
-            ctrl.active = false;
-            ctrl.mesh.visible = false;
-            ctrl.grabbedBlock = null;
-            ctrl.statusEl.innerText = "CERCA...";
-            ctrl.statusEl.style.color = "#ff3366";
           }
-        }
 
-        if (currentMode === 'PARTICLES' && numHands > 0) {
-          const landmarks1 = results.multiHandLandmarks[0];
-          const h1Center = landmarks1[9], wrist1 = landmarks1[0];
-          targetRotZ = -Math.atan2(h1Center.y - wrist1.y, h1Center.x - wrist1.x) - Math.PI / 2;
-          targetRotX = (h1Center.y - 0.5) * Math.PI * 2.0;
-          targetRotY = (h1Center.x - 0.5) * Math.PI * 3.0;
+          if (currentMode === 'PARTICLES' && numHands > 0) {
+            const landmarks1 = results.multiHandLandmarks[0];
+            const h1Center = landmarks1[9], wrist1 = landmarks1[0];
+            targetRotZ = -Math.atan2(h1Center.y - wrist1.y, h1Center.x - wrist1.x) - Math.PI / 2;
+            targetRotX = (h1Center.y - 0.5) * Math.PI * 2.0;
+            targetRotY = (h1Center.x - 0.5) * Math.PI * 3.0;
 
-          if (numHands === 2) {
-            const landmarks2 = results.multiHandLandmarks[1];
-            const distBetweenHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
-            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(distBetweenHands, 0.1, 0.7, 0.5, 2.5), 0.4, 3.0);
-          } else {
-            const span = Math.hypot(wrist1.x - landmarks1[12].x, wrist1.y - landmarks1[12].y);
-            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(span, 0.2, 0.5, 0.5, 2.0), 0.4, 2.2);
+            if (numHands === 2) {
+              const landmarks2 = results.multiHandLandmarks[1];
+              const distBetweenHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
+              targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(distBetweenHands, 0.1, 0.7, 0.5, 2.5), 0.4, 3.0);
+            } else {
+              const span = Math.hypot(wrist1.x - landmarks1[12].x, wrist1.y - landmarks1[12].y);
+              targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(span, 0.2, 0.5, 0.5, 2.0), 0.4, 2.2);
+            }
           }
+
+          previewCtx.restore();
+        });
+
+        const cameraUtils = new Camera(videoElement, {
+          onFrame: async () => { 
+            if (videoElement.readyState >= 2) {
+              await hands.send({ image: videoElement }); 
+            }
+          },
+          width: 640, height: 480
+        });
+        cameraUtils.start().catch(err => {
+          console.warn("Camera auto-start fallita:", err);
+          fallbackUserMedia(videoElement, hands);
+        });
+      } catch (e) {
+        console.warn("Errore nell'inizializzazione di MediaPipe:", e);
+      }
+    }
+
+    async function fallbackUserMedia(videoElement, handsInstance) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+        videoElement.srcObject = stream;
+        videoElement.play();
+        async function sendLoop() {
+          if (videoElement.readyState >= 2) {
+            await handsInstance.send({ image: videoElement });
+          }
+          requestAnimationFrame(sendLoop);
         }
-
-        previewCtx.restore();
-      });
-
-      const cameraUtils = new Camera(videoElement, {
-        onFrame: async () => { await hands.send({ image: videoElement }); },
-        width: 640, height: 480
-      });
-      cameraUtils.start();
+        sendLoop();
+      } catch (err) {
+        console.error("Impossibile accedere alla webcam:", err);
+      }
     }
 
     function animate() {
@@ -765,9 +801,11 @@
       particleMaterial.color.set(e.target.value);
     });
 
-    initThree();
-    initHandTracking();
-    animate();
+    window.addEventListener('DOMContentLoaded', () => {
+      initThree();
+      initHandTracking();
+      animate();
+    });
   </script>
 </body>
 </html>
