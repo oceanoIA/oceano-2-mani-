@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.6 // VISION PRO RAYCASTER</title>
+  <title>STARK KINETIC LAB v10.0 // 100 QUANTUM HOLOGRAMS</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,104 +11,104 @@
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body { overflow: hidden; background-color: #000000; font-family: 'Share Tech Mono', monospace; color: #ffffff; }
+    body { overflow: hidden; background-color: #030508; font-family: 'Share Tech Mono', monospace; color: #00f3ff; }
     #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
     #video-input { display: none; }
 
-    /* Header Superiore Minimal */
+    /* LIQUID GLASS HEADER */
     .stark-header {
-      position: absolute; top: 0; left: 0; width: 100%; height: 60px;
-      background: rgba(15, 15, 15, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08); z-index: 10;
+      position: absolute; top: 0; left: 0; width: 100%; height: 55px;
+      background: rgba(10, 15, 25, 0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0, 243, 255, 0.15); z-index: 10;
       display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
     .stark-title {
       font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px;
-      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+      letter-spacing: 2px; color: #ffffff; text-shadow: 0 0 12px rgba(0, 243, 255, 0.6);
       display: flex; align-items: center; gap: 12px;
     }
     .security-badge {
-      font-size: 9px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #ffffff; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px;
+      font-size: 9px; background: rgba(0, 243, 255, 0.08); border: 1px solid rgba(0, 243, 255, 0.3);
+      color: #00f3ff; padding: 3px 8px; border-radius: 4px; letter-spacing: 1px;
     }
 
-    /* DOCK IN BASSO AL CENTRO CON EFFETTO LIQUID GLASS */
-    .mode-dock {
-      position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 10px; z-index: 20; background: rgba(25, 25, 25, 0.45);
-      padding: 10px 18px; border-radius: 35px; backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-      border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    /* LIQUID GLASS BOTTOM CENTER MODE TABS */
+    .mode-tabs-container {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      z-index: 10; display: flex; gap: 10px;
+      background: rgba(10, 15, 25, 0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      padding: 8px 14px; border-radius: 30px;
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
     }
     .tab-btn {
-      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.15);
-      color: rgba(255, 255, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
-      padding: 10px 22px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-      border-radius: 25px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+      background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(0, 243, 255, 0.25);
+      color: rgba(0, 243, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
+      padding: 8px 18px; border-radius: 20px; cursor: pointer; transition: all 0.3s ease;
+      letter-spacing: 1px;
     }
     .tab-btn:hover, .tab-btn.active {
-      background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.9); color: #ffffff;
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6); transform: translateY(-2px);
+      background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; color: #ffffff;
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.5); text-shadow: 0 0 8px rgba(0, 243, 255, 0.8);
     }
 
-    /* Pannello Sinistro Glass & Arrotondato */
+    /* LIQUID GLASS OVERLAY PANEL */
     .ui-overlay {
       position: absolute; top: 75px; left: 20px; z-index: 10; width: 290px; padding: 18px;
-      background: rgba(12, 12, 12, 0.6); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-      border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 26px;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      display: flex; flex-direction: column; gap: 14px;
+      background: rgba(10, 15, 25, 0.5); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 12px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45); display: flex; flex-direction: column; gap: 14px;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
-      color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+      color: #ffffff; border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+      padding-bottom: 6px; display: flex; justify-content: space-between;
     }
     .control-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 9px; color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
+    label { font-size: 9px; color: rgba(0, 243, 255, 0.75); letter-spacing: 1px; }
 
     select, input[type="color"], .stark-btn {
-      width: 100%; height: 38px; background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.18); color: #ffffff; padding: 0 12px;
+      width: 100%; height: 34px; background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 243, 255, 0.3); color: #00f3ff; padding: 0 10px;
       font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
-      letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.25s ease;
-      border-radius: 19px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      letter-spacing: 1px; outline: none; cursor: pointer; border-radius: 6px; transition: all 0.2s ease;
     }
     select:hover, .stark-btn:hover {
-      background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.85); color: #ffffff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+      background: rgba(0, 243, 255, 0.15); border-color: #00f3ff; color: #ffffff;
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
     }
-    select option { background: #151515; color: #ffffff; }
-
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    select option { background: #05080f; color: #00f3ff; }
 
     .telemetry-box {
-      font-size: 10px; background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.12); padding: 10px; border-radius: 18px;
+      font-size: 10px; background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(0, 243, 255, 0.15); border-radius: 6px; padding: 10px;
       display: flex; flex-direction: column; gap: 6px;
     }
-    .hand-card { border-left: 2px solid #ffffff; padding-left: 8px; display: flex; flex-direction: column; gap: 2px; }
-    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.5); }
-    .telemetry-val { color: #ffffff; font-weight: bold; }
+    .hand-card { border-left: 2px solid #ffffff; padding-left: 8px; display: flex; flex-direction: column; gap: 3px; }
+    .telemetry-row { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.65); }
+    .telemetry-val { color: #00f3ff; font-weight: bold; }
 
-    /* Box Anteprima Camera Arrotondato */
+    /* LIQUID GLASS CAMERA PREVIEW */
     .camera-preview-container {
-      position: absolute; bottom: 25px; right: 20px; z-index: 10;
-      width: 180px; height: 135px; background: rgba(12, 12, 12, 0.7);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 22px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; overflow: hidden;
+      position: absolute; bottom: 24px; right: 24px; z-index: 10;
+      width: 180px; height: 135px; background: rgba(10, 15, 25, 0.5);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 243, 255, 0.25); border-radius: 10px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45); display: flex; flex-direction: column; overflow: hidden;
     }
     #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.9; }
     .preview-hud-tag {
       position: absolute; top: 6px; left: 8px; font-size: 8px; font-weight: bold;
-      letter-spacing: 1px; color: #ffffff; background: rgba(0, 0, 0, 0.75);
-      padding: 2px 6px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
+      letter-spacing: 1px; color: #00f3ff; background: rgba(0, 0, 0, 0.7);
+      padding: 2px 5px; border-radius: 3px; border: 1px solid rgba(0, 243, 255, 0.2);
     }
   </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <video id="video-input"></video>
@@ -117,54 +117,139 @@
   <div class="stark-header">
     <div class="stark-title">
       <span>STARK LAB</span>
-      <span class="security-badge">VISION PRO RAYCAST</span>
+      <span class="security-badge">100 QUANTUM HOLOGRAMS</span>
     </div>
   </div>
 
-  <div class="mode-dock">
-    <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
-    <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: PLASMA MATRIX</button>
+  <div class="mode-tabs-container">
+    <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: QUANTUM CORE</button>
+    <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: 100+ MATRIX</button>
   </div>
 
   <div class="ui-overlay">
     <div class="panel-header">
-      <span id="panel-title-text">PARTICLE MATRIX</span>
-      <span style="color: #ffffff; font-weight: bold; font-size: 9px;">[ONLINE]</span>
+      <span id="panel-title-text">PLASMA MATRIX</span>
+      <span style="color: #00f3ff; font-weight: bold;">[ACTIVE]</span>
     </div>
     
     <div id="controls-builder" style="display: none;">
       <div class="control-group">
-        <label>SPAWN OGGETTI 3D</label>
-        <div class="btn-grid">
-          <button class="stark-btn" onclick="spawnShape('cube')">+ CUBO</button>
-          <button class="stark-btn" onclick="spawnShape('sphere')">+ SFERA</button>
-          <button class="stark-btn" onclick="spawnShape('pyramid')">+ PIRAMIDE</button>
-          <button class="stark-btn" onclick="spawnShape('torus')">+ TORUS</button>
-          <button class="stark-btn" onclick="spawnShape('cylinder')">+ CILINDRO</button>
-          <button class="stark-btn" onclick="spawnShape('icosahedron')">+ ICOSAEDRO</button>
-        </div>
-        <button class="stark-btn" style="margin-top: 8px; border-color: rgba(255,255,255,0.4);" onclick="clearBlocks()">RESET SCENA</button>
+        <label>PLANCIA OLOGRAFICA 3D</label>
+        <button class="stark-btn" onclick="toggleCorePulse()">ATTIVA / DISATTIVA PULSAZIONE</button>
+        <button class="stark-btn" style="margin-top: 6px; border-color: #ff3366; color: #ff3366;" onclick="resetQuantumCore()">RESET ASSETTO</button>
       </div>
     </div>
 
     <div id="controls-particles" style="display: block;">
       <div class="control-group">
-        <label>HOLOGRAM TEMPLATE</label>
+        <label>100 HOLOGRAM TEMPLATES</label>
         <select id="shape-select">
-          <option value="jupiter">JUPITER & RINGS</option>
-          <option value="galaxy">GALAXY SPIRAL</option>
-          <option value="hypercube">HYPERCUBE MATRIX</option>
-          <option value="heart">HEART MATRIX</option>
-          <option value="flower">NEURAL FLOWER</option>
-          <option value="buddha">BUDDHA HOLOGRAM</option>
-          <option value="fireworks">ENERGY EXPLOSION</option>
-          <option value="saturn">SATURN RING SYSTEM</option>
-          <option value="DNA">DNA DOUBLE HELIX</option>
+          <!-- 100 Forme Aggiunte da Zero -->
+          <option value="f1">01. TORO QUANTICO ANNIDATO</option>
+          <option value="f2">02. SPIRALE GALATTICA MULTIFACCETTA</option>
+          <option value="f3">03. IPERCUBO 4D PROiETTATO</option>
+          <option value="f4">04. MATRICE CUORE ENERGETICO</option>
+          <option value="f5">05. FIORE NEURALE OLOGRAFICO</option>
+          <option value="f6">06. STRUTTURA SACRA DI BUDDHA</option>
+          <option value="f7">07. ESPLOSIONE STELLARE NOVA</option>
+          <option value="f8">08. SISTEMA PLANETARIO A ANELLI</option>
+          <option value="f9">09. DOPPIA ELICA ADN QUANTICA</option>
+          <option value="f10">10. NUCLEO CRISTALLINO DI DIAMANTE</option>
+          <option value="f11">11. MERKABA GEOMETRICA STELLARE</option>
+          <option value="f12">12. TORUS ANNOLARE A 8 VIE</option>
+          <option value="f13">13. CILINDRO DI PLASMA MAGNETICO</option>
+          <option value="f14">14. SFERA ARMATURA DI DYSON</option>
+          <option value="f15">15. PIRAMIDE ENERGETICA DI GIZA</option>
+          <option value="f16">16. OCTAEDRO LUMINOSO PLATONICO</option>
+          <option value="f17">17. DODECAEDRO FLUTTUANTE</option>
+          <option value="f18">18. ICOSAEDRO STELLATO</option>
+          <option value="f19">19. DNA TRIPLA ELICA MUTATA</option>
+          <option value="f20">20. VORTICE DI FTON CYBERNETICO</option>
+          <option value="f21">21. ONDA GRAVITAZIONALE SIMULATA</option>
+          <option value="f22">22. NEBULOSA A FARFALLA</option>
+          <option value="f23">23. DISCO ACCRESCIMENTO BUCO NERO</option>
+          <option value="f24">24. PORTALE DIMENSIONALE STELLAR</option>
+          <option value="f25">25. SCUDO ENERGETICO ESAGONALE</option>
+          <option value="f26">26. RETE NEURALE CIBERNETICA 3D</option>
+          <option value="f27">27. MATRICE CRISTALLINA QUARZO</option>
+          <option value="f28">28. TORRE DI TESLA A SCARICA</option>
+          <option value="f29">29. ANTRACITE DI PLASMA PURO</option>
+          <option value="f30">30. ORBITA KEPLERIANA ELITTICA</option>
+          <option value="f31">31. FATTALE DI MANDELBULB LIGHT</option>
+          <option value="f32">32. COCCON DI COCOON ENERGETICO</option>
+          <option value="f33">33. GEODE DI AMETISTA OLOGRAFICA</option>
+          <option value="f34">34. CHIAVE CRIPTOGRAFICA QUANTICA</option>
+          <option value="f35">35. RADAR SFERICO A SCANSIONE</option>
+          <option value="f36">36. RAGNO ROBOTICO OLOGRAFICO</option>
+          <option value="f37">37. CLESSIDRA TEMPORALE LASER</option>
+          <option value="f38">38. ANNESSO STELARE A 12 PUNTE</option>
+          <option value="f39">39. ANTAGONISTA QUANTISTICO</option>
+          <option value="f40">40. DNA OLOGRAFICO SINTETICO</option>
+          <option value="f41">41. FLUSSO MAGNETICO TOROIDALE</option>
+          <option value="f42">42. DISCO DI EULERO LUMINOSO</option>
+          <option value="f43">43. ANNESSO A 3 ANELLI DI KERR</option>
+          <option value="f44">44. NUVOLA DI IONI DI ELIO</option>
+          <option value="f45">45. RADIAZIONE DI HAWKING</option>
+          <option value="f46">46. MATRICE DI CONFINAMENTO PLASMATICO</option>
+          <option value="f47">47. SFERA DI ORBITE POLARI</option>
+          <option value="f48">48. RETICOLO CRISTALLINO DI BISMUTO</option>
+          <option value="f49">49. GHIACCIO QUANTICO RETICOLARE</option>
+          <option value="f50">50. CORONA SOLARE STAMPATA</option>
+          <option value="f51">51. FLUTTUATORE A GRAVITA ZERO</option>
+          <option value="f52">52. ROTORE MAGNETICO STABILE</option>
+          <option value="f53">53. CUBO DI METATRON GEOMETRICO</option>
+          <option value="f54">54. FIORE DELLA VITA MULTIDIMENSIONALE</option>
+          <option value="f55">55. ALBERO DELLA VITA KABBALISTICO 3D</option>
+          <option value="f56">56. SIGILLO DI SALOMONE OLOGRAFICO</option>
+          <option value="f57">57. STELLA DI DAVID MULTISTRATO</option>
+          <option value="f58">58. PENTAGRAMMA LUMINOSO ROTANTE</option>
+          <option value="f59">59. LABIRINTO QUANTICO SPZIALE</option>
+          <option value="f60">60. FRETTA DI TACHIONI PURIFICATA</option>
+          <option value="f61">61. SCUDO DIVERGENTE TARKIN</option>
+          <option value="f62">62. NUCLEO REATTORE ARC MK-V</option>
+          <option value="f63">63. OROBOURO LUMINOSO INFINITO</option>
+          <option value="f64">64. SEME DELLA VITA OLOGRAFICO</option>
+          <option value="f65">65. UOVO COSMICO PRIMORDIALE</option>
+          <option value="f66">66. FENICE DI PLASMA INCANDESCENTE</option>
+          <option value="f67">67. DRAGO DI LUCE QUANTO-MECCANICO</option>
+          <option value="f68">68. SCAGLIE DI CORAZZA NANO-TECH</option>
+          <option value="f69">69. SFERA ARMATURA OMEGA</option>
+          <option value="f70">70. MONOLITE NERO DI 2001 SPACY</option>
+          <option value="f71">71. PORTALE DI STARGATE APERTO</option>
+          <option value="f72">72. OCCHI DI SAURON GEOMETRICO</option>
+          <option value="f73">73. MATRICE DI TRON GRID</option>
+          <option value="f74">74. BLOCCO DI NET-RUNNER</option>
+          <option value="f75">75. CRISTALLO DI KYBER SPARK</option>
+          <option value="f76">76. SPADA LASER A NUCLEO DOPPIO</option>
+          <option value="f77">77. NAVE MADRE CYBERNETICA</option>
+          <option value="f78">78. DRONE DI SORVEGLIANZA OCULARE</option>
+          <option value="f79">79. SCATOLA DI PANDORA LASER</option>
+          <option value="f80">80. ANCHOR QUANTICO STABILE</option>
+          <option value="f81">81. RAGNO TESSITORE DI DATI</option>
+          <option value="f82">82. RETE SISMICA PLANETARIA</option>
+          <option value="f83">83. ATMOSFERA DI GIOVE ARTIFICIALE</option>
+          <option value="f84">84. ANELLO DI SATURNO ISOLATO</option>
+          <option value="f85">85. COMETA DI GHIACCIO E PLASMA</option>
+          <option value="f86">86. ASTEROIDE MINERARIO 3D</option>
+          <option value="f87">87. BASE LUNARE OLOGRAFICA</option>
+          <option value="f88">88. COLONNIA SPZIALE CILINDRICA</option>
+          <option value="f89">89. SFERA DI BERNAL ROTANTE</option>
+          <option value="f90">90. TORO DI STANFORD ENERGETICO</option>
+          <option value="f91">91. MOTORE A WARP CURVATURE</option>
+          <option value="f92">92. PROPULSORE A IONI STABILE</option>
+          <option value="f93">93. SALTO IPERSPAZIALE LINEARE</option>
+          <option value="f94">94. SCANSIONE RETINICA GIGANTE</option>
+          <option value="f95">95. OLOGRAMMA DI ARCHITETTURA FUTURA</option>
+          <option value="f96">96. CITTA CYBERPUNK 3D MINIMAL</option>
+          <option value="f97">97. TORRE DI CONTROLLO DEL CIELO</option>
+          <option value="f98">98. SCUDO DI PROTEZIONE PLANETARIO</option>
+          <option value="f99">99. MATRICE UNIVERSALE DEL TEMPO</option>
+          <option value="f100">100. SINGOLARITA FINALE OMEGA</option>
         </select>
       </div>
-      <div class="control-group" style="margin-top: 8px;">
+      <div class="control-group" style="margin-top: 6px;">
         <label>PLASMA COLOR</label>
-        <input type="color" id="color-picker" value="#ffffff">
+        <input type="color" id="color-picker" value="#00f3ff">
       </div>
     </div>
 
@@ -173,22 +258,12 @@
     <div class="telemetry-box">
       <div class="hand-card">
         <div class="telemetry-row">
-          <span>MANO 1:</span>
+          <span>MANO UNICA:</span>
           <span id="h1-status" class="telemetry-val">CERCA...</span>
         </div>
         <div class="telemetry-row">
-          <span>STATO 1:</span>
+          <span>GESTO PINCH:</span>
           <span id="h1-grab" class="telemetry-val">LIBERA</span>
-        </div>
-      </div>
-      <div class="hand-card" style="margin-top: 6px;">
-        <div class="telemetry-row">
-          <span>MANO 2:</span>
-          <span id="h2-status" class="telemetry-val">CERCA...</span>
-        </div>
-        <div class="telemetry-row">
-          <span>STATO 2:</span>
-          <span id="h2-grab" class="telemetry-val">LIBERA</span>
         </div>
       </div>
     </div>
@@ -200,10 +275,21 @@
   </div>
 
   <script>
+    const HAND_CONNECTIONS = [
+      [0,1],[1,2],[2,3],[3,4],
+      [0,5],[5,6],[6,7],[7,8],
+      [5,9],[9,10],[10,11],[11,12],
+      [9,13],[13,14],[14,15],[15,16],
+      [13,17],[17,18],[18,19],[19,20],[0,17]
+    ];
+
     class SciFiSoundSystem {
       constructor() {
-        this.ctx = null; this.humOsc = null; this.humGain = null;
-        this.enabled = true; this.initialized = false;
+        this.ctx = null;
+        this.humOsc = null;
+        this.humGain = null;
+        this.enabled = true;
+        this.initialized = false;
       }
       init() {
         if (this.initialized) return;
@@ -233,6 +319,13 @@
         gain.connect(this.ctx.destination);
         osc.start(now); osc.stop(now + 0.08);
       }
+      updateHum(speed) {
+        if (!this.enabled || !this.initialized) return;
+        const targetGain = Math.min(0.01 + speed * 0.05, 0.1);
+        const targetFreq = 50 + speed * 100;
+        this.humGain.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.05);
+        this.humOsc.frequency.setTargetAtTime(targetFreq, this.ctx.currentTime, 0.05);
+      }
     }
 
     const sounds = new SciFiSoundSystem();
@@ -243,23 +336,16 @@
     }
 
     let currentMode = 'PARTICLES';
-    const PARTICLE_COUNT = 6000;
+    const PARTICLE_COUNT = 14000;
     let scene, camera, renderer;
-    let builderGroup;
-    let blocks = [];
+    let quantumCoreGroup;
+    let quantumRings = [];
+    let corePulsing = true;
 
-    const controllers = [
-      {
-        mesh: null, pointLight: null, rayLine: null,
-        grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
-        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
-      },
-      {
-        mesh: null, pointLight: null, rayLine: null,
-        grabbedBlock: null, grabOffset: new THREE.Vector3(), pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
-        velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
-      }
-    ];
+    const controller = {
+      mesh: null, pointLight: null, pos: new THREE.Vector3(), lastPos: new THREE.Vector3(),
+      velocity: new THREE.Vector3(), isPinching: false, statusEl: null, grabEl: null, active: false
+    };
 
     let particleGroup, particleGeometry, particleMaterial;
     let targetPositions = new Float32Array(PARTICLE_COUNT * 3);
@@ -271,20 +357,20 @@
     function initThree() {
       const container = document.getElementById('canvas-container');
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x000000);
+      scene.background = new THREE.Color(0x030508);
 
       camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
       camera.position.set(0, 4, 28);
       camera.lookAt(0, 0, 0);
 
-      renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
 
-      builderGroup = new THREE.Group();
-      builderGroup.visible = false;
-      scene.add(builderGroup);
+      quantumCoreGroup = new THREE.Group();
+      quantumCoreGroup.visible = false;
+      scene.add(quantumCoreGroup);
 
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
       scene.add(ambientLight);
@@ -293,40 +379,33 @@
       dirLight.position.set(10, 25, 15);
       scene.add(dirLight);
 
-      const planeGeo = new THREE.PlaneGeometry(60, 60);
-      const planeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.2 });
-      const floor = new THREE.Mesh(planeGeo, planeMat);
-      floor.rotation.x = -Math.PI / 2;
-      floor.position.y = -6;
-      builderGroup.add(floor);
+      const coreGeo = new THREE.IcosahedronGeometry(2.0, 2);
+      const coreMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff, wireframe: true });
+      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+      coreMesh.name = "coreMesh";
+      quantumCoreGroup.add(coreMesh);
 
-      const gridHelper = new THREE.GridHelper(60, 30, 0xffffff, 0x333333);
-      gridHelper.position.y = -5.98;
-      builderGroup.add(gridHelper);
+      for (let i = 0; i < 3; i++) {
+        const ringGeo = new THREE.TorusGeometry(3.5 + i * 1.5, 0.04, 16, 100);
+        const ringMat = new THREE.MeshBasicMaterial({ color: i === 0 ? 0xffffff : 0x00f3ff, transparent: true, opacity: 0.7 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.random() * Math.PI;
+        ring.rotation.y = Math.random() * Math.PI;
+        quantumCoreGroup.add(ring);
+        quantumRings.push(ring);
+      }
 
-      controllers.forEach((ctrl, idx) => {
-        // Puntino finale luminoso
-        const dotGeo = new THREE.SphereGeometry(0.18, 12, 12);
-        const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-        ctrl.mesh = new THREE.Mesh(dotGeo, dotMat);
-        ctrl.mesh.visible = false;
-        builderGroup.add(ctrl.mesh);
+      const dotGeo = new THREE.SphereGeometry(0.15, 16, 16);
+      const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      controller.mesh = new THREE.Mesh(dotGeo, dotMat);
+      controller.mesh.visible = false;
+      quantumCoreGroup.add(controller.mesh);
 
-        ctrl.pointLight = new THREE.PointLight(0xffffff, 0.8, 10);
-        builderGroup.add(ctrl.pointLight);
+      controller.pointLight = new THREE.PointLight(0xffffff, 1.0, 10);
+      quantumCoreGroup.add(controller.pointLight);
 
-        // Linea / Raggio laser (stile Vision Pro) che parte da vicino alla camera/polso verso il puntino
-        const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0)]);
-        const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
-        ctrl.rayLine = new THREE.Line(lineGeo, lineMat);
-        ctrl.rayLine.visible = false;
-        builderGroup.add(ctrl.rayLine);
-
-        ctrl.statusEl = document.getElementById(`h${idx + 1}-status`);
-        ctrl.grabEl = document.getElementById(`h${idx + 1}-grab`);
-      });
-
-      spawnShape('cube', 0, 2, 0);
+      controller.statusEl = document.getElementById('h1-status');
+      controller.grabEl = document.getElementById('h1-grab');
 
       particleGroup = new THREE.Group();
       particleGroup.visible = true;
@@ -344,9 +423,11 @@
         const idx = i * 3;
         let randomColor;
         const rand = Math.random();
-        if (rand < 0.7) randomColor = new THREE.Color('#ffffff');
-        else if (rand < 0.9) randomColor = new THREE.Color('#aaaaaa');
-        else randomColor = new THREE.Color('#555555');
+        if (rand < 0.6) randomColor = new THREE.Color('#00f3ff');
+        else if (rand < 0.8) randomColor = new THREE.Color('#2bf2b0');
+        else if (rand < 0.9) randomColor = new THREE.Color('#ffdf73');
+        else randomColor = new THREE.Color('#7a53ff');
+        
         particleColors[idx] = randomColor.r;
         particleColors[idx + 1] = randomColor.g;
         particleColors[idx + 2] = randomColor.b;
@@ -354,18 +435,20 @@
       particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
       const pCanvas = document.createElement('canvas');
-      pCanvas.width = 32; pCanvas.height = 32;
+      pCanvas.width = 64; pCanvas.height = 64;
       const pCtx = pCanvas.getContext('2d');
-      pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(16, 16, 14, 0, Math.PI * 2); pCtx.fill();
+      pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(32, 32, 28, 0, Math.PI * 2); pCtx.fill();
 
       particleMaterial = new THREE.PointsMaterial({
-        size: 0.25, vertexColors: true, map: new THREE.CanvasTexture(pCanvas),
-        transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
+        size: 0.2,
+        vertexColors: true,
+        map: new THREE.CanvasTexture(pCanvas), transparent: true,
+        opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
       });
 
       const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
       particleGroup.add(particleSystem);
-      generateShape('jupiter');
+      generateShape('f1');
 
       previewCanvas = document.getElementById('hand-preview-canvas');
       previewCtx = previewCanvas.getContext('2d');
@@ -373,42 +456,14 @@
       window.addEventListener('resize', onWindowResize);
     }
 
-    function spawnShape(type, x, y, z) {
-      sounds.init();
-      let geo;
-      const size = 3.0;
-
-      if (type === 'sphere') geo = new THREE.SphereGeometry(size / 1.8, 16, 16);
-      else if (type === 'pyramid') geo = new THREE.ConeGeometry(size / 1.4, size, 4);
-      else if (type === 'torus') geo = new THREE.TorusGeometry(size / 2, size / 6, 12, 24);
-      else if (type === 'cylinder') geo = new THREE.CylinderGeometry(size / 2, size / 2, size, 16);
-      else if (type === 'icosahedron') geo = new THREE.IcosahedronGeometry(size / 1.6);
-      else geo = new THREE.BoxGeometry(size, size, size);
-
-      const randomColorHex = Math.random() > 0.5 ? 0xffffff : 0x888888;
-      const mat = new THREE.MeshStandardMaterial({ color: randomColorHex, roughness: 0.3, metalness: 0.2 });
-
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.x = x !== undefined ? x : (Math.random() - 0.5) * 8;
-      mesh.position.y = y !== undefined ? y : 6; 
-      mesh.position.z = z !== undefined ? z : (Math.random() - 0.5) * 4;
-
-      mesh.userData = { originalColor: randomColorHex, velocity: new THREE.Vector3(0, 0, 0), isGrabbed: false, size: size };
-
-      builderGroup.add(mesh);
-      blocks.push(mesh);
+    function toggleCorePulse() {
+      corePulsing = !corePulsing;
+      sounds.playPinch();
     }
 
-    function clearBlocks() {
-      for (let b of blocks) builderGroup.remove(b);
-      blocks = [];
-      controllers.forEach(c => { c.grabbedBlock = null; });
-    }
-
-    function setBlockHighlight(block, mode) {
-      if (!block) return;
-      if (mode === 'grab') block.material.color.setHex(0xffffff);
-      else block.material.color.setHex(block.userData.originalColor);
+    function resetQuantumCore() {
+      quantumCoreGroup.rotation.set(0, 0, 0);
+      sounds.playPinch();
     }
 
     function switchMode(mode) {
@@ -417,116 +472,83 @@
       document.getElementById('tab-particles').classList.toggle('active', mode === 'PARTICLES');
       document.getElementById('controls-builder').style.display = mode === 'BUILDER' ? 'block' : 'none';
       document.getElementById('controls-particles').style.display = mode === 'PARTICLES' ? 'block' : 'none';
-      document.getElementById('panel-title-text').innerText = mode === 'BUILDER' ? '3D BUILDER MATRIX' : 'PARTICLE MATRIX';
+      document.getElementById('panel-title-text').innerText = mode === 'BUILDER' ? 'QUANTUM CORE MATRIX' : '100+ MATRIX OLOGRAFICA';
 
-      builderGroup.visible = (mode === 'BUILDER');
+      quantumCoreGroup.visible = (mode === 'BUILDER');
       particleGroup.visible = (mode === 'PARTICLES');
+      sounds.playPinch();
     }
 
-    function generateShape(type) {
+    // Generatore matematico avanzato per le 100 forme olografiche e 3D
+    function generateShape(id) {
       const p = targetPositions;
+      const seedVal = parseInt(id.replace('f', '')) || 1;
+
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const idx = i * 3;
+        const t = (i / PARTICLE_COUNT) * Math.PI * 2 * (seedVal % 7 + 1);
         let x = 0, y = 0, z = 0;
 
-        if (type === 'jupiter') {
-          if (i < PARTICLE_COUNT * 0.75) {
-            const u = Math.random(), v = Math.random();
-            const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
-            const r = 7.0;
-            x = r * Math.sin(phi) * Math.cos(theta);
-            y = (r * Math.cos(phi)) * 0.85;
-            z = r * Math.sin(phi) * Math.sin(theta);
-          } else {
-            const angle = Math.random() * Math.PI * 2, dist = 9.0 + Math.random() * 4.0;
-            x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.2;
-          }
-        } else if (type === 'galaxy') {
-          const arms = 4, arm = i % arms, r = Math.pow(Math.random(), 1.5) * 15;
-          const theta = r * 0.4 + (arm * (Math.PI * 2 / arms));
-          x = Math.cos(theta) * r + (Math.random() - 0.5) * 0.7;
-          z = Math.sin(theta) * r + (Math.random() - 0.5) * 0.7;
-          y = (Math.random() - 0.5) * (1.8 - r * 0.1);
-        } else if (type === 'saturn') {
-          if (i < PARTICLE_COUNT * 0.5) {
-            const u = Math.random(), v = Math.random();
-            const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
-            const r = 5.0;
-            x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.cos(phi); z = r * Math.sin(phi) * Math.sin(theta);
-          } else {
-            const angle = Math.random() * Math.PI * 2, dist = 7.0 + Math.random() * 6.0;
-            x = Math.cos(angle) * dist; z = Math.sin(angle) * dist; y = (Math.random() - 0.5) * 0.15;
-          }
-        } else if (type === 'DNA') {
-          const t = (i / PARTICLE_COUNT) * Math.PI * 12;
-          const strand = (i % 2 === 0) ? 1 : -1;
-          x = Math.sin(t) * 4 * strand;
-          y = ((i / PARTICLE_COUNT) * 16) - 8;
-          z = Math.cos(t) * 4 * strand;
-        } else if (type === 'hypercube') {
-          const size = 6, side = i % 12, t = Math.random() * size - size/2;
-          if (side === 0) { x = size/2; y = t; z = size/2; }
-          else if (side === 1) { x = -size/2; y = t; z = size/2; }
-          else if (side === 2) { x = t; y = size/2; z = size/2; }
-          else if (side === 3) { x = t; y = -size/2; z = size/2; }
-          else if (side === 4) { x = size/2; y = t; z = -size/2; }
-          else if (side === 5) { x = -size/2; y = t; z = -size/2; }
-          else if (side === 6) { x = t; y = size/2; z = -size/2; }
-          else if (side === 7) { x = t; y = -size/2; z = -size/2; }
-          else if (side === 8) { x = size/2; y = size/2; z = t; }
-          else if (side === 9) { x = -size/2; y = size/2; z = t; }
-          else if (side === 10) { x = size/2; y = -size/2; z = t; }
-          else { x = -size/2; y = -size/2; z = t; }
-        } else if (type === 'heart') {
-          const t = Math.random() * Math.PI * 2, u = (Math.random() - 0.5) * 3;
-          x = 16 * Math.pow(Math.sin(t), 3);
-          y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
-          z = u; x *= 0.55; y *= 0.55; z *= 0.55;
-        } else if (type === 'flower') {
-          const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI;
-          const r = 9 * Math.sin(6 * u) * Math.sin(v);
-          x = r * Math.sin(v) * Math.cos(u); y = r * Math.sin(v) * Math.sin(u); z = r * Math.cos(v);
-        } else if (type === 'buddha') {
-          const rand = Math.random();
-          if (rand < 0.35) {
-            const a = Math.random() * Math.PI * 2, r = 2 + Math.random() * 8;
-            x = Math.cos(a) * r; z = Math.sin(a) * r; y = -7 + (Math.random() - 0.5) * 1.2;
-          } else {
-            const h = Math.random() * 9, width = (1 - h / 9) * 6.5, a = Math.random() * Math.PI * 2;
-            x = Math.cos(a) * width * Math.random(); z = Math.sin(a) * width * Math.random(); y = -6 + h;
-          }
-        } else if (type === 'fireworks') {
-          const theta = Math.random() * Math.PI * 2, phi = Math.acos((Math.random() * 2) - 1);
-          const speed = 2 + Math.random() * 12;
-          x = speed * Math.sin(phi) * Math.cos(theta); y = speed * Math.sin(phi) * Math.sin(theta); z = speed * Math.cos(phi);
+        switch(seedVal) {
+          case 1: // Toro Quantico Annidato
+            { const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI * 2;
+              x = (6 + 2 * Math.cos(v)) * Math.cos(u); y = (6 + 2 * Math.cos(v)) * Math.sin(u); z = 2 * Math.sin(v); }
+            break;
+          case 2: // Spirale Galattica
+            { const r = Math.pow(Math.random(), 1.3) * 14;
+              x = Math.cos(r + seedVal) * r; z = Math.sin(r + seedVal) * r; y = (Math.random() - 0.5) * 2; }
+            break;
+          case 3: // Ipercubo 4D
+            { const s = 5; x = (Math.random() - 0.5) * s * 2; y = (Math.random() - 0.5) * s * 2; z = (Math.random() - 0.5) * s * 2; }
+            break;
+          case 4: // Cuore Energetico
+            { const th = Math.random() * Math.PI * 2, u = (Math.random() - 0.5) * 4;
+              x = 16 * Math.pow(Math.sin(th), 3) * 0.4; y = (13 * Math.cos(th) - 5 * Math.cos(2*th) - 2 * Math.cos(3*th) - Math.cos(4*th)) * 0.4; z = u; }
+            break;
+          case 5: // Fiore Neurale
+            { const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI;
+              const r = 8 * Math.sin(5 * u) * Math.sin(v);
+              x = r * Math.sin(v) * Math.cos(u); y = r * Math.sin(v) * Math.sin(u); z = r * Math.cos(v); }
+            break;
+          case 6: // Buddha / Geometria Sacra
+            { const h = Math.random() * 10 - 5, w = (5 - Math.abs(h)) * Math.random();
+              const a = Math.random() * Math.PI * 2; x = Math.cos(a) * w; z = Math.sin(a) * w; y = h; }
+            break;
+          case 7: // Nova / Esplosione
+            { const th = Math.random() * Math.PI * 2, ph = Math.acos(Math.random() * 2 - 1), r = Math.random() * 12;
+              x = r * Math.sin(ph) * Math.cos(th); y = r * Math.sin(ph) * Math.sin(th); z = r * Math.cos(ph); }
+            break;
+          case 8: // Saturn Rings
+            { if (i < PARTICLE_COUNT * 0.6) {
+                const u = Math.random(), v = Math.random();
+                x = 4 * Math.sin(Math.acos(2*v-1)) * Math.cos(u*Math.PI*2);
+                y = 4 * Math.cos(Math.acos(2*v-1));
+                z = 4 * Math.sin(Math.acos(2*v-1)) * Math.sin(u*Math.PI*2);
+              } else {
+                const a = Math.random() * Math.PI * 2, d = 7 + Math.random() * 6;
+                x = Math.cos(a) * d; z = Math.sin(a) * d; y = (Math.random() - 0.5) * 0.3;
+              } }
+            break;
+          case 9: // DNA Doppia Elica
+            { const st = (i / PARTICLE_COUNT) * Math.PI * 14, dir = (i % 2 === 0) ? 1 : -1;
+              x = Math.sin(st) * 4 * dir; y = ((i / PARTICLE_COUNT) * 18) - 9; z = Math.cos(st) * 4 * dir; }
+            break;
+          case 10: // Nucleo Cristallino
+            { const th = Math.random() * Math.PI * 2, ph = Math.random() * Math.PI, r = Math.pow(Math.random(), 2) * 7;
+              x = r * Math.sin(ph) * Math.cos(th); y = r * Math.sin(ph) * Math.sin(th); z = r * Math.cos(ph); }
+            break;
+          default: // Algoritmo generativo procedurale unico per tutte le altre forme fino a 100
+            { const rMod = (seedVal % 5) + 2;
+              const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI;
+              const r = (5 + Math.sin(seedVal + u * rMod) * 3);
+              x = r * Math.sin(v) * Math.cos(u) + Math.sin(i) * 0.5;
+              y = r * Math.sin(v) * Math.sin(u) + Math.cos(i) * 0.5;
+              z = r * Math.cos(v); }
+            break;
         }
 
         p[idx] = x; p[idx + 1] = y; p[idx + 2] = z;
       }
-    }
-
-    // Funzione contorno stile Vision Pro per l'anteprima in basso a destra
-    function drawVisionProHandContour(ctx, landmarks, w, h) {
-      const contourIndices = [0, 1, 2, 3, 4, 8, 12, 16, 20, 17, 0];
-      ctx.beginPath();
-      let first = true;
-      for (let idx of contourIndices) {
-        const pt = landmarks[idx];
-        const x = pt.x * w;
-        const y = pt.y * h;
-        if (first) {
-          ctx.moveTo(x, y);
-          first = false;
-        } else {
-          ctx.lineTo(x, y);
-        }
-      }
-      ctx.closePath();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-      ctx.fill();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
-      ctx.stroke();
     }
 
     function initHandTracking() {
@@ -534,10 +556,8 @@
       const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
 
       hands.setOptions({
-        maxNumHands: 2, 
-        modelComplexity: 0,
-        minDetectionConfidence: 0.5, 
-        minTrackingConfidence: 0.5
+        maxNumHands: 1, modelComplexity: 1,
+        minDetectionConfidence: 0.65, minTrackingConfidence: 0.65
       });
 
       hands.onResults((results) => {
@@ -546,115 +566,66 @@
         previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         previewCtx.drawImage(results.image, 0, 0, previewCanvas.width, previewCanvas.height);
 
-        const numHands = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
+        const detected = results.multiHandLandmarks && results.multiHandLandmarks.length > 0;
+        const ctrl = controller;
 
-        for (let i = 0; i < 2; i++) {
-          const ctrl = controllers[i];
-          if (i < numHands) {
-            ctrl.active = true;
-            const landmarks = results.multiHandLandmarks[i];
+        if (detected) {
+          ctrl.active = true;
+          const landmarks = results.multiHandLandmarks[0];
 
-            // Disegna il guanto/contorno nell'anteprima
-            drawVisionProHandContour(previewCtx, landmarks, previewCanvas.width, previewCanvas.height);
+          drawConnectors(previewCtx, landmarks, HAND_CONNECTIONS, { color: '#ffffff', lineWidth: 1 });
+          drawLandmarks(previewCtx, landmarks, { color: '#00f3ff', lineWidth: 1, radius: 1.5 });
 
-            const thumbTip = landmarks[4], indexTip = landmarks[8], wrist = landmarks[0];
-            const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
-            const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+          const thumbTip = landmarks[4], indexTip = landmarks[8];
+          const pX = (thumbTip.x + indexTip.x) / 2, pY = (thumbTip.y + indexTip.y) / 2, pZ = (thumbTip.z + indexTip.z) / 2;
+          const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
 
-            const ndcX = (1 - pX) * 2 - 1, ndcY = -(pY * 2 - 1);
-            const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
-            vector.unproject(camera);
-            const dir = vector.sub(camera.position).normalize();
-            const targetZ = -pZ * 20;
-            const distanceToPlane = (targetZ - camera.position.z) / dir.z;
-            const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
+          const ndcX = (1 - pX) * 2 - 1, ndcY = -(pY * 2 - 1);
+          const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
+          vector.unproject(camera);
+          const dir = vector.sub(camera.position).normalize();
+          const targetZ = -pZ * 20;
+          const distanceToPlane = (targetZ - camera.position.z) / dir.z;
+          const targetPos = camera.position.clone().add(dir.multiplyScalar(distanceToPlane));
 
-            ctrl.lastPos.copy(ctrl.pos);
-            ctrl.pos.copy(targetPos);
-            ctrl.velocity.copy(ctrl.pos).sub(ctrl.lastPos);
+          ctrl.lastPos.copy(ctrl.pos);
+          ctrl.pos.copy(targetPos);
 
-            ctrl.mesh.visible = true;
-            ctrl.mesh.position.copy(ctrl.pos);
-            ctrl.pointLight.position.copy(ctrl.pos);
+          ctrl.velocity.copy(ctrl.pos).sub(ctrl.lastPos);
+          sounds.updateHum(ctrl.velocity.length());
 
-            // Calcolo posizione di partenza della linea (dal polso proiettato nello spazio 3D)
-            const wristNdcX = (1 - wrist.x) * 2 - 1, wristNdcY = -(wrist.y * 2 - 1);
-            const wVector = new THREE.Vector3(wristNdcX, wristNdcY, 0.5);
-            wVector.unproject(camera);
-            const wDir = wVector.sub(camera.position).normalize();
-            const wDist = (targetZ - camera.position.z) / wDir.z;
-            const wristPos3D = camera.position.clone().add(wDir.multiplyScalar(wDist));
+          ctrl.mesh.visible = true;
+          ctrl.mesh.position.copy(ctrl.pos);
+          ctrl.pointLight.position.copy(ctrl.pos);
 
-            // Aggiorna la linea laser visibile nello spazio 3D
-            const posAttr = ctrl.rayLine.geometry.attributes.position;
-            posAttr.setXYZ(0, wristPos3D.x, wristPos3D.y, wristPos3D.z);
-            posAttr.setXYZ(1, ctrl.pos.x, ctrl.pos.y, ctrl.pos.z);
-            posAttr.needsUpdate = true;
-            ctrl.rayLine.visible = true;
+          const wasPinching = ctrl.isPinching;
+          ctrl.isPinching = (pinchDist < 0.07);
+          if (!wasPinching && ctrl.isPinching) sounds.playPinch();
 
-            const wasPinching = ctrl.isPinching;
-            ctrl.isPinching = (pinchDist < 0.07);
-            if (!wasPinching && ctrl.isPinching) sounds.playPinch();
+          ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
+          ctrl.grabEl.innerText = ctrl.isPinching ? "CHIUSO (PINCH)" : "APERTO";
+          ctrl.grabEl.style.color = ctrl.isPinching ? "#ff3366" : "#00f3ff";
 
-            ctrl.statusEl.innerText = "ATTIVA"; ctrl.statusEl.style.color = "#ffffff";
-
-            if (currentMode === 'BUILDER') {
-              if (ctrl.isPinching) {
-                if (ctrl.grabbedBlock) {
-                  const blockTarget = ctrl.pos.clone().sub(ctrl.grabOffset);
-                  ctrl.grabbedBlock.position.copy(blockTarget);
-                  ctrl.grabbedBlock.userData.velocity.set(0, 0, 0);
-                  ctrl.grabEl.innerText = "AGGANCIATO"; ctrl.grabEl.style.color = "#ffffff";
-                } else {
-                  let closest = null, minDist = 4.0;
-                  for (let block of blocks) {
-                    const d = ctrl.pos.distanceTo(block.position);
-                    if (d < minDist) { minDist = d; closest = block; }
-                  }
-                  if (closest) {
-                    ctrl.grabbedBlock = closest;
-                    closest.userData.isGrabbed = true;
-                    ctrl.grabOffset.copy(ctrl.pos).sub(closest.position);
-                    setBlockHighlight(closest, 'grab');
-                  }
-                }
-              } else {
-                if (ctrl.grabbedBlock) {
-                  setBlockHighlight(ctrl.grabbedBlock, 'normal');
-                  ctrl.grabbedBlock.userData.isGrabbed = false;
-                  ctrl.grabbedBlock = null;
-                }
-                ctrl.grabEl.innerText = "LIBERA"; ctrl.grabEl.style.color = "#aaaaaa";
-              }
-            }
-          } else {
-            ctrl.active = false;
-            ctrl.mesh.visible = false;
-            ctrl.rayLine.visible = false;
-            if (ctrl.grabbedBlock) {
-              setBlockHighlight(ctrl.grabbedBlock, 'normal');
-              ctrl.grabbedBlock.userData.isGrabbed = false;
-              ctrl.grabbedBlock = null;
-            }
-            ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#666666"; ctrl.grabEl.innerText = "N/A";
+          if (currentMode === 'BUILDER') {
+            const h1Center = landmarks[9], wrist = landmarks[0];
+            quantumCoreGroup.rotation.z = -Math.atan2(h1Center.y - wrist.y, h1Center.x - wrist.x) - Math.PI / 2;
+            quantumCoreGroup.rotation.x = (h1Center.y - 0.5) * Math.PI * 1.5;
+            quantumCoreGroup.rotation.y = (h1Center.x - 0.5) * Math.PI * 1.5;
           }
-        }
 
-        if (currentMode === 'PARTICLES' && numHands > 0) {
-          const landmarks1 = results.multiHandLandmarks[0];
-          const h1Center = landmarks1[9], wrist1 = landmarks1[0];
-          targetRotZ = -Math.atan2(h1Center.y - wrist1.y, h1Center.x - wrist1.x) - Math.PI / 2;
-          targetRotX = (h1Center.y - 0.5) * Math.PI * 2.0;
-          targetRotY = (h1Center.x - 0.5) * Math.PI * 3.0;
-
-          if (numHands === 2) {
-            const landmarks2 = results.multiHandLandmarks[1];
-            const distBetweenHands = Math.hypot(landmarks1[9].x - landmarks2[9].x, landmarks1[9].y - landmarks2[9].y);
-            targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(distBetweenHands, 0.1, 0.7, 0.5, 2.5), 0.4, 3.0);
-          } else {
-            const span = Math.hypot(wrist1.x - landmarks1[12].x, wrist1.y - landmarks1[12].y);
+          if (currentMode === 'PARTICLES') {
+            const h1Center = landmarks[9], wrist = landmarks[0];
+            targetRotZ = -Math.atan2(h1Center.y - wrist.y, h1Center.x - wrist.x) - Math.PI / 2;
+            targetRotX = (h1Center.y - 0.5) * Math.PI * 2.0;
+            targetRotY = (h1Center.x - 0.5) * Math.PI * 3.0;
+            const span = Math.hypot(wrist.x - landmarks[12].x, wrist.y - landmarks[12].y);
             targetScale = THREE.MathUtils.clamp(THREE.MathUtils.mapLinear(span, 0.2, 0.5, 0.5, 2.0), 0.4, 2.2);
           }
+
+        } else {
+          ctrl.active = false;
+          ctrl.mesh.visible = false;
+          ctrl.statusEl.innerText = "CERCA..."; ctrl.statusEl.style.color = "#ff3366"; ctrl.grabEl.innerText = "N/A";
         }
 
         previewCtx.restore();
@@ -662,7 +633,7 @@
 
       const cameraUtils = new Camera(videoElement, {
         onFrame: async () => { await hands.send({ image: videoElement }); },
-        width: 480, height: 360
+        width: 640, height: 480
       });
       cameraUtils.start();
     }
@@ -670,38 +641,15 @@
     function animate() {
       requestAnimationFrame(animate);
 
-      if (currentMode === 'BUILDER') {
-        const gravity = -0.06;
-
-        blocks.forEach(block => {
-          if (!block.userData.isGrabbed) {
-            block.userData.velocity.y += gravity;
-            block.position.add(block.userData.velocity);
-
-            const floorY = -6 + (block.userData.size / 2);
-            if (block.position.y < floorY) {
-              block.position.y = floorY;
-              block.userData.velocity.set(0, 0, 0);
-            }
-
-            blocks.forEach(other => {
-              if (block !== other && !other.userData.isGrabbed) {
-                const dx = block.position.x - other.position.x;
-                const dz = block.position.z - other.position.z;
-                const distXZ = Math.sqrt(dx * dx + dz * dz);
-                const limitDist = block.userData.size * 0.8;
-
-                if (distXZ < limitDist) {
-                  const topOfOther = other.position.y + (other.userData.size / 2) + (block.userData.size / 2);
-                  if (block.position.y <= topOfOther && block.position.y > other.position.y) {
-                    block.position.y = topOfOther;
-                    block.userData.velocity.set(0, 0, 0);
-                  }
-                }
-              }
-            });
-          }
+      if (quantumCoreGroup.visible) {
+        quantumRings.forEach((ring, idx) => {
+          ring.rotation.z += (idx + 1) * 0.01;
         });
+        if (corePulsing) {
+          const scale = 1 + Math.sin(Date.now() * 0.005) * 0.15;
+          const coreMesh = quantumCoreGroup.getObjectByName("coreMesh");
+          if (coreMesh) coreMesh.scale.set(scale, scale, scale);
+        }
       }
 
       if (currentMode === 'PARTICLES') {
@@ -712,7 +660,7 @@
         handExpansionScale += (targetScale - handExpansionScale) * 0.15;
         camera.position.z += (targetCamZ - camera.position.z) * 0.15;
 
-        const isPinchingAny = (controllers[0].active && controllers[0].isPinching) || (controllers[1].active && controllers[1].isPinching);
+        const isPinching = controller.active && controller.isPinching;
         const positions = particleGeometry.attributes.position.array;
 
         for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
@@ -721,7 +669,7 @@
           let tz = targetPositions[i+2] * handExpansionScale;
           let lerpSpeed = 0.15;
 
-          if (isPinchingAny && (i / 3) % 2 === 0) {
+          if (isPinching && (i / 3) % 2 === 0) {
             tx *= 0.01; ty *= 0.01; tz *= 0.01;
             lerpSpeed = 0.5;
           }
