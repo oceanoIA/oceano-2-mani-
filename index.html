@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARK KINETIC LAB v9.5 // IOS LIQUID GLASS</title>
+  <title>STARK KINETIC LAB v9.6 // IOS BOTTOM DOCK GLASS</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,8 +17,8 @@
 
     .stark-header {
       position: absolute; top: 0; left: 0; width: 100%; height: 60px;
-      background: rgba(15, 15, 15, 0.65); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12); z-index: 10;
+      background: rgba(15, 15, 15, 0.5); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1); z-index: 10;
       display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
     }
     .stark-title {
@@ -27,28 +27,34 @@
       display: flex; align-items: center; gap: 12px;
     }
     .security-badge {
-      font-size: 9px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.25);
+      font-size: 9px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.2);
       color: #ffffff; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px;
     }
     
-    /* Pulsanti di modalità spostati in alto a destra (area cerchiata) con stile Liquid Glass arrotondato */
-    .mode-tabs { display: flex; gap: 10px; }
+    /* DOCK IN BASSO AL CENTRO (Zona indicata dalla linea rossa inferiore) con Liquid Glass iOS */
+    .mode-dock {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 12px; z-index: 20; background: rgba(20, 20, 20, 0.6);
+      padding: 8px 16px; border-radius: 30px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
     .tab-btn {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: rgba(255, 255, 255, 0.7); font-family: 'Orbitron', sans-serif; font-size: 10px;
-      padding: 7px 16px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-      border-radius: 20px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.65); font-family: 'Orbitron', sans-serif; font-size: 10px;
+      padding: 10px 20px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      border-radius: 22px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
     }
     .tab-btn:hover, .tab-btn.active {
-      background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.8); color: #ffffff;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.25); transform: scale(1.02);
+      background: rgba(255, 255, 255, 0.22); border-color: rgba(255, 255, 255, 0.85); color: #ffffff;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.5); transform: translateY(-2px);
     }
 
     .ui-overlay {
       position: absolute; top: 75px; left: 20px; z-index: 10; width: 290px; padding: 18px;
       background: rgba(12, 12, 12, 0.65); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-      border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 20px;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; gap: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 24px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      display: flex; flex-direction: column; gap: 14px;
     }
     .panel-header {
       font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
@@ -59,15 +65,15 @@
     label { font-size: 9px; color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
 
     select, input[type="color"], .stark-btn {
-      width: 100%; height: 36px; background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; padding: 0 12px;
+      width: 100%; height: 38px; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.18); color: #ffffff; padding: 0 12px;
       font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
       letter-spacing: 1px; outline: none; cursor: pointer; transition: all 0.25s ease;
-      border-radius: 18px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-radius: 19px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
     select:hover, .stark-btn:hover {
       background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.8); color: #ffffff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
     }
     select option { background: #151515; color: #ffffff; }
 
@@ -75,7 +81,7 @@
 
     .telemetry-box {
       font-size: 10px; background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.12); padding: 10px; border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12); padding: 10px; border-radius: 16px;
       display: flex; flex-direction: column; gap: 6px;
     }
     .hand-card { border-left: 2px solid #ffffff; padding-left: 8px; display: flex; flex-direction: column; gap: 2px; }
@@ -86,7 +92,7 @@
       position: absolute; bottom: 24px; right: 24px; z-index: 10;
       width: 180px; height: 135px; background: rgba(12, 12, 12, 0.7);
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 20px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; overflow: hidden;
     }
     #hand-preview-canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.9; }
@@ -111,11 +117,12 @@
       <span>STARK LAB</span>
       <span class="security-badge">IOS LIQUID GLASS</span>
     </div>
-    <!-- Pulsanti modalità posizionati esattamente in alto a destra -->
-    <div class="mode-tabs">
-      <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
-      <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: PLASMA MATRIX</button>
-    </div>
+  </div>
+
+  <!-- Pulsanti di cambio modalità posizionati al centro in basso (linea rossa) con effetto dock glass arrotondato -->
+  <div class="mode-dock">
+    <button id="tab-builder" class="tab-btn" onclick="switchMode('BUILDER')">SYS 01: 3D BUILDER</button>
+    <button id="tab-particles" class="tab-btn active" onclick="switchMode('PARTICLES')">SYS 02: PLASMA MATRIX</button>
   </div>
 
   <div class="ui-overlay">
@@ -239,7 +246,6 @@
 
     function toggleAudio() {
       sounds.enabled = !sounds.enabled;
-      document.getElementById('audio-toggle-btnलेक्ट्र.disabled' = false; // safe check
       document.getElementById('audio-toggle-btn').innerText = sounds.enabled ? "🔊 AUDIO: ATTIVO" : "🔇 AUDIO: DISATTIVATO";
     }
 
