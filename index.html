@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>STARK KINETIC LAB v11 // VISION PRO</title>
+<title>STARK KINETIC LAB v10 // VISION PRO</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -387,11 +387,8 @@ input[type=color]{
       <label>HOLOGRAM TEMPLATE</label>
       <select id="shape-select">
 
-        <!-- NUOVA OPZIONE MOTHERBOARD 3D -->
-        <option value="motherboard3d">MOTHERBOARD 3D MATRIX</option>
         <option value="hudmatrix">HUD CIRCUIT MATRIX (HD)</option>
 
-        <!-- FORME ORIGINALI -->
         <option value="jupiter">JUPITER & RINGS</option>
         <option value="galaxy">GALAXY SPIRAL</option>
         <option value="hypercube">HYPERCUBE MATRIX</option>
@@ -402,7 +399,6 @@ input[type=color]{
         <option value="saturn">SATURN RING SYSTEM</option>
         <option value="DNA">DNA DOUBLE HELIX</option>
 
-        <!-- 50 NUOVE FORME -->
         <option value="rose">ROSE</option>
         <option value="tulip">TULIP</option>
         <option value="sunflower">SUNFLOWER</option>
@@ -459,7 +455,7 @@ input[type=color]{
 
     <div class="control-group">
       <label>PLASMA COLOR</label>
-      <input type="color" id="color-picker" value="#0088ff">
+      <input type="color" id="color-picker" value="#ffffff">
     </div>
 
   </div>
@@ -529,7 +525,7 @@ input[type=color]{
    ========================================================= */
 
 const CONFIG = {
-  particles: 8000,
+  particles: 8000, /* Aumentato a 8000 per altissima definizione e nitidezza */
   handFPS: 24,
   cameraWidth: 320,
   cameraHeight: 240,
@@ -546,31 +542,38 @@ const CONFIG = {
 
   builderGravity: 0.06,
 
-  /* BLOCCO COMPLETO DELLO SCIVOLAMENTO */
+  /*
+    BLOCCO COMPLETO DELLO SCIVOLAMENTO
+  */
   throwPower: 0,
 
   snapSize: 1.5,
 
-  /* SENSIBILITÀ MOVIMENTO ALTA */
+  /*
+    SENSIBILITÀ MOVIMENTO ALTA
+
+    X e Y usano ESATTAMENTE lo stesso valore.
+    Il valore 0.50 è volutamente alto.
+  */
   axisSensitivity: 0.50,
 
   colors: {
     white: 0xffffff,
     green: 0x00ffcc,
     pink: 0xff00aa,
-    yellow: 0ffe66d
+    yellow: 0xffe66d
   }
 };
 
 const PARTICLE_COUNT = CONFIG.particles;
 
 /* =========================================================
-   COLORI REALISTICI DELLE FORME
+   COLORI REALISTICI DELLE FORME (INCLUSO HUD MATRIX)
    ========================================================= */
 
 const EXTRA_SHAPE_COLORS = {
-  motherboard3d: 0x00aaff, /* Colore blu olografico circuito integrato */
-  hudmatrix: 0x00aaff,
+
+  hudmatrix:0x00aaff, /* Colore blu olografico nitido per la nuova matrice */
 
   rose:0xd81b32,
   tulip:0xe53935,
@@ -1049,7 +1052,7 @@ function initParticles(){
 
   particleGroup.add(particleSystem);
 
-  generateShape('motherboard3d'); /* Partenza diretta con la nuova Motherboard 3D */
+  generateShape('hudmatrix'); /* Partenza diretta in alta definizione con l'HUD matrix */
 
   dom.particleValue.textContent=PARTICLE_COUNT;
 }
@@ -1261,7 +1264,7 @@ function updateSelectionUI(){
 }
 
 /* =========================================================
-   GENERATORE FORME (INCLUSO MOTHERBOARD 3D DALL'IMMAGINE)
+   GENERATORE FORME (INCLUSO HUD CIRCUIT MATRIX 3D)
    ========================================================= */
 
 function generateExtraShape(type,i){
@@ -1276,74 +1279,29 @@ function generateExtraShape(type,i){
 
   switch(type){
 
-    /* ================= MOTHERBOARD 3D (ISPIRATA DIRETTAMENTE ALL'IMMAGINE FORNITA) ================= */
-    case 'motherboard3d': {
-      const section = i % 6;
-      
-      if (section === 0) {
-        // Base planar circuit grid (piano principale del circuito stampato blu scuro)
-        x = (Math.random() - 0.5) * 22;
-        z = (Math.random() - 0.5) * 22;
-        y = -4 + (Math.random() - 0.5) * 0.3;
-      } else if (section === 1) {
-        // Microchip e processori quadrati in rilievo (blocchi chip con pin dorati)
-        const chipId = Math.floor(i / 300) % 8;
-        const cx = ((chipId % 3) - 1) * 6 + (Math.random() - 0.5) * 2;
-        const cz = (Math.floor(chipId / 3) - 1) * 6 + (Math.random() - 0.5) * 2;
-        x = cx + (Math.random() - 0.5) * 2.2;
-        z = cz + (Math.random() - 0.5) * 2.2;
-        y = -2.5 + Math.random() * 2.2;
-      } else if (section === 2) {
-        // Piste di connessione dati ortogonali (tracce luminose blu/azzurre)
-        const pathLine = Math.floor(i / 100) % 8;
-        const pVal = ((i % 100) / 100) * 18 - 9;
-        if (pathLine === 0) { x = pVal; z = -7; y = -3.8; }
-        else if (pathLine === 1) { x = 7; z = pVal; y = -3.8; }
-        else if (pathLine === 2) { x = pVal; z = 2; y = -3.8; }
-        else if (pathLine === 3) { x = -4; z = pVal; y = -3.8; }
-        else if (pathLine === 4) { x = pVal; z = -2; y = -3.8; }
-        else { x = -2; z = pVal; y = -3.8; }
-      } else if (section === 3) {
-        // Condensatori e componenti cilindrici verticali (punti luminosi arancioni/dorati)
-        const capId = i % 25;
-        const angle = (capId / 25) * Math.PI * 2;
-        const dist = 3 + (capId % 4) * 2;
-        x = Math.cos(angle) * dist + (Math.random() - 0.5) * 0.8;
-        z = Math.sin(angle) * dist + (Math.random() - 0.5) * 0.8;
-        y = -3.5 + Math.random() * 3.5;
-      } else if (section === 4) {
-        // Matrice di pin dorati / LED SMD ad alta densità (angolo in basso a destra dell'immagine)
-        x = 5 + (i % 6) * 0.4 + (Math.random() - 0.5) * 0.2;
-        z = 5 + (Math.floor((i % 36) / 6)) * 0.4 + (Math.random() - 0.5) * 0.2;
-        y = -3.2 + Math.random() * 1.5;
-      } else {
-        // Ologrammi fluttuanti e pulviscolo di dati in sospensione sopra la scheda
-        x = (Math.random() - 0.5) * 16;
-        z = (Math.random() - 0.5) * 16;
-        y = 1 + Math.random() * 5;
-      }
-      break;
-    }
-
-    /* ================= HUD CIRCUIT MATRIX ================= */
+    /* ================= HUD CIRCUIT MATRIX (NUOVA FORMA ISPIRATA ALL'IMMAGINE) ================= */
     case 'hudmatrix': {
       const section = i % 5;
       
       if (section === 0) {
+        // Anello olografico centrale rotante ad alta nitidezza
         const u = a;
         const rad = 4 + (i % 3) * 0.7;
         x = rad * Math.cos(u);
         z = rad * Math.sin(u);
         y = (Math.random() - 0.5) * 0.4;
       } else if (section === 1) {
+        // Griglia/Piastra di base del circuito stampato
         x = (Math.random() - 0.5) * 16;
         z = (Math.random() - 0.5) * 16;
         y = -3.5;
       } else if (section === 2) {
+        // Tracce dati verticali e HUD fluttuanti in alto
         x = (Math.random() - 0.5) * 12;
         z = (Math.random() - 0.5) * 12;
         y = 2 + Math.random() * 5;
       } else if (section === 3) {
+        // Linee e bus dati angolari ortogonali (stile scheda madre)
         const line = Math.floor(i / 150) % 4;
         const pos = ((i % 150) / 150) * 14 - 7;
         if (line === 0) { x = pos; z = -5; y = pos * 0.15; }
@@ -1351,6 +1309,7 @@ function generateExtraShape(type,i){
         else if (line === 2) { x = pos; z = 5; y = -1; }
         else { x = -5; z = pos; y = 1; }
       } else {
+        // Particelle di polvere olografica e glitch sparsi
         x = (Math.random() - 0.5) * 18;
         z = (Math.random() - 0.5) * 18;
         y = 6 + Math.random() * 3;
