@@ -2216,252 +2216,186 @@ function randomShell(radius){
 function generateCPU(i){
 
   /*
-    Struttura 3D composta da:
+    =========================================================
+    JARVIS CPU – Replica fedele dell'ologramma circuitale
+    (isometric circuit board + central yellow gear)
+    =========================================================
 
-    - PCB principale
-    - strati interni
-    - CPU centrale
-    - socket
-    - RAM
-    - chip secondari
-    - piste
-    - connettori
-    - anelli energetici
-
-    NON è un'immagine piatta:
-    la geometria occupa realmente X/Y/Z.
+    Struttura basata sull'immagine di riferimento:
+    - Board principale inclinata (effetto isometrico)
+    - Grande ingranaggio/anello centrale giallo
+    - Tracce circuiti orizzontali + verticali + diagonali
+    - Chip e componenti sparsi
+    - Particelle digitali fluttuanti
   */
 
-  const layer=i%10;
+  // Applica una leggera rotazione isometrica a tutto
+  function iso(x, y, z){
+    // rotazione leggera per effetto 3/4 isometrico
+    const a = 0.35; // tilt
+    const b = 0.55; // yaw
+    const cosA = Math.cos(a), sinA = Math.sin(a);
+    const cosB = Math.cos(b), sinB = Math.sin(b);
 
-  /* PCB */
+    let x1 = x * cosB - z * sinB;
+    let z1 = x * sinB + z * cosB;
+    let y1 = y * cosA - z1 * sinA;
+    z1 = y * sinA + z1 * cosA;
 
-  if(i<900){
-
-    const x=
-      (Math.random()-.5)*18;
-
-    const z=
-      (Math.random()-.5)*11;
-
-    const edge=
-      Math.min(
-        Math.abs(x),
-        Math.abs(z)
-      );
-
-    return{
-
-      x,
-      y:
-        (Math.random()-.5)*.22
-        +(edge<1?.08:0),
-
-      z
-    };
+    return { x: x1, y: y1, z: z1 };
   }
 
-  /* TRACCE CIRCUITO */
+  /* ---------- 1. GRANDE INGRANAGGIO / ANELLO CENTRALE (giallo) ---------- */
+  // ~900 particelle – elemento dominante dell'immagine
+  if(i < 900){
 
-  if(i<1550){
+    const teeth = 18;
+    const a = Math.random() * Math.PI * 2;
+    const ring = i % 4;          // 4 anelli concentrici
+    let r = 2.8 + ring * 0.55;
 
-    const line=
-      i%8;
-
-    const t=
-      Math.random()*2-1;
-
-    let x=0;
-    let z=0;
-
-    if(line<2){
-
-      x=t*8;
-      z=(line===0?2.2:-2.2);
-
-    }else if(line<4){
-
-      z=t*5;
-      x=(line===2?4.4:-4.4);
-
-    }else{
-
-      const a=
-        Math.random()*Math.PI*2;
-
-      const r=
-        3+
-        Math.random()*5;
-
-      x=
-        Math.cos(a)*r;
-
-      z=
-        Math.sin(a)*r;
+    // denti dell'ingranaggio
+    if(ring === 3 && Math.sin(a * teeth) > 0.55){
+      r += 0.55 + Math.random() * 0.25;
     }
 
-    return{
+    // spessore verticale dell'anello
+    const y = (Math.random() - 0.5) * 0.55;
 
-      x,
-      y:
-        .15+
-        Math.sin(t*8)*.08,
-
-      z
-    };
-  }
-
-  /* CPU CENTRALE */
-
-  if(i<2300){
-
-    const x=
-      (Math.random()-.5)*4.5;
-
-    const y=
-      (Math.random()-.5)*1.1;
-
-    const z=
-      (Math.random()-.5)*4.5;
-
-    const edge=
-      Math.max(
-        Math.abs(x),
-        Math.abs(z)
-      );
-
-    if(
-      edge<1.9||
-      Math.random()<.35
-    ){
-
-      return{
-        x,
-        y:.65+y,
-        z
-      };
-    }
-  }
-
-  /* CPU SOCKET */
-
-  if(i<2700){
-
-    const a=
-      Math.random()*Math.PI*2;
-
-    const r=
-      2.5+
-      Math.random()*.5;
-
-    return{
-
-      x:
-        Math.cos(a)*r,
-
-      y:
-        .35+
-        (Math.random()-.5)*.12,
-
-      z:
-        Math.sin(a)*r
-    };
-  }
-
-  /* RAM */
-
-  if(i<3200){
-
-    const bank=
-      i%4;
-
-    const x=
-      -7+
-      bank*2.1;
-
-    return{
-
-      x:
-        x+
-        (Math.random()-.5)*.9,
-
-      y:
-        .45+
-        Math.random()*2.5,
-
-      z:
-        (Math.random()-.5)*1.4
-    };
-  }
-
-  /* CHIP SECONDARI */
-
-  if(i<3600){
-
-    const chip=
-      i%8;
-
-    const x=
-      (chip%4-1.5)*3.8;
-
-    const z=
-      (Math.floor(chip/4)-.5)*6.2;
-
-    return{
-
-      x:
-        x+
-        (Math.random()-.5)*1.4,
-
-      y:
-        .35+
-        Math.random()*1.4,
-
-      z:
-        z+
-        (Math.random()-.5)*1.5
-    };
-  }
-
-  /* COMPONENTI VERTICALI */
-
-  if(i<3850){
-
-    const a=
-      Math.random()*Math.PI*2;
-
-    const r=
-      4+
-      Math.random()*5;
-
-    return{
-
-      x:
-        Math.cos(a)*r,
-
-      y:
-        .2+
-        Math.random()*3,
-
-      z:
-        Math.sin(a)*r
-    };
-  }
-
-  /* PUNTI ENERGETICI */
-
-  const p=
-    randomShell(
-      8+
-      Math.random()*3
+    return iso(
+      Math.cos(a) * r,
+      y + 0.8,
+      Math.sin(a) * r
     );
+  }
 
-  return{
+  /* ---------- 2. CORE INTERNO DELL'INGRANAGGIO ---------- */
+  if(i < 1150){
 
-    x:p.x,
-    y:p.y*.5,
-    z:p.z
-  };
+    const a = Math.random() * Math.PI * 2;
+    const r = Math.random() * 2.4;
+
+    return iso(
+      Math.cos(a) * r,
+      (Math.random() - 0.5) * 0.4 + 0.8,
+      Math.sin(a) * r
+    );
+  }
+
+  /* ---------- 3. PCB PRINCIPALE (piano della scheda) ---------- */
+  if(i < 1750){
+
+    const x = (Math.random() - 0.5) * 16;
+    const z = (Math.random() - 0.5) * 11;
+
+    // bordi un po' più alti
+    const edge = Math.min(Math.abs(x) / 8, Math.abs(z) / 5.5);
+    const y = (Math.random() - 0.5) * 0.12 + (edge > 0.85 ? 0.08 : 0);
+
+    return iso(x, y, z);
+  }
+
+  /* ---------- 4. TRACCE CIRCUITO ORIZZONTALI / VERTICALI ---------- */
+  if(i < 2450){
+
+    const line = i % 14;
+    const t = Math.random() * 2 - 1;   // -1 → 1
+
+    let x = 0, z = 0, y = 0.18;
+
+    // linee orizzontali
+    if(line < 5){
+      x = t * 7.5;
+      z = (line - 2) * 1.7 + (Math.random() - 0.5) * 0.3;
+      // piccole curve
+      y += Math.sin(t * 6) * 0.06;
+    }
+    // linee verticali
+    else if(line < 10){
+      z = t * 5.2;
+      x = (line - 7) * 2.4 + (Math.random() - 0.5) * 0.3;
+      y += Math.sin(t * 5) * 0.05;
+    }
+    // tracce diagonali / curve
+    else{
+      const a = t * Math.PI;
+      const r = 3.5 + Math.random() * 4;
+      x = Math.cos(a) * r;
+      z = Math.sin(a) * r * 0.7;
+      y += 0.1;
+    }
+
+    return iso(x, y, z);
+  }
+
+  /* ---------- 5. TRACCE RADIALI DAL CENTRO (stile hologramma) ---------- */
+  if(i < 2900){
+
+    const a = (i % 24) * (Math.PI * 2 / 24) + (Math.random() - 0.5) * 0.15;
+    const r = 3.2 + Math.random() * 6.5;
+
+    return iso(
+      Math.cos(a) * r,
+      0.15 + Math.sin(r * 0.8) * 0.08,
+      Math.sin(a) * r
+    );
+  }
+
+  /* ---------- 6. CHIP E COMPONENTI ---------- */
+  if(i < 3400){
+
+    const chip = i % 12;
+    const cx = ((chip % 4) - 1.5) * 3.6;
+    const cz = (Math.floor(chip / 4) - 1) * 3.8;
+
+    // rettangolo del chip
+    const x = cx + (Math.random() - 0.5) * 1.6;
+    const z = cz + (Math.random() - 0.5) * 1.3;
+    const y = 0.25 + Math.random() * 0.9;
+
+    return iso(x, y, z);
+  }
+
+  /* ---------- 7. CONNETTORI / PIN LATERALE ---------- */
+  if(i < 3650){
+
+    const side = i % 4;
+    let x, z;
+
+    if(side === 0){ x = -7.8; z = (Math.random() - 0.5) * 8; }
+    else if(side === 1){ x = 7.8; z = (Math.random() - 0.5) * 8; }
+    else if(side === 2){ z = -5.5; x = (Math.random() - 0.5) * 12; }
+    else{ z = 5.5; x = (Math.random() - 0.5) * 12; }
+
+    return iso(
+      x + (Math.random() - 0.5) * 0.4,
+      0.1 + Math.random() * 0.7,
+      z + (Math.random() - 0.5) * 0.4
+    );
+  }
+
+  /* ---------- 8. PARTICELLE DIGITALI / DATA FLOATING ---------- */
+  if(i < 3850){
+
+    const a = Math.random() * Math.PI * 2;
+    const r = 5 + Math.random() * 7;
+
+    return iso(
+      Math.cos(a) * r,
+      0.5 + Math.random() * 3.5,
+      Math.sin(a) * r
+    );
+  }
+
+  /* ---------- 9. PUNTI ENERGETICI ESTERNI ---------- */
+  const a = Math.random() * Math.PI * 2;
+  const r = 8 + Math.random() * 4;
+
+  return iso(
+    Math.cos(a) * r,
+    (Math.random() - 0.5) * 1.5,
+    Math.sin(a) * r
+  );
 }
 
 /* =========================================================
