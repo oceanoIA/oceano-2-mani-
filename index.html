@@ -56,12 +56,7 @@ button{
   inset:0;
   width:100vw;
   height:100vh;
-  z-index:1;
-  background:transparent;
-  pointer-events:none
-}
-#canvas-container canvas{
-  pointer-events:auto
+  z-index:1
 }
 
 #canvas-container canvas{
@@ -71,20 +66,7 @@ button{
 }
 
 #video-input{
-  position:fixed;
-  inset:0;
-  width:100vw;
-  height:100vh;
-  object-fit:cover;
-  transform:scaleX(-1);
-  z-index:0;
-  opacity:0.92;
-  pointer-events:none;
-  background:#000;
-}
-
-.camera-preview-container{
-  display:none !important;
+  display:none
 }
 
 /* ================= HUD ================= */
@@ -977,23 +959,15 @@ const HAND_CONNECTIONS = [
 
 function initThree() {
   scene = new THREE.Scene();
-  scene.background = null;
+  scene.background = new THREE.Color(0x000000);
 
   camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 1000);
   camera.position.set(0, 2.2, 28);
   camera.lookAt(0, 0, 0);
 
-  renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    powerPreference: 'high-performance',
-    alpha: true
-  });
-  renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(CONFIG.renderScale, 1.5));
+  renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(CONFIG.renderScale);
   renderer.setSize(innerWidth, innerHeight, false);
-  renderer.domElement.style.position = 'absolute';
-  renderer.domElement.style.inset = '0';
-  renderer.domElement.style.zIndex = '1';
   dom.container.appendChild(renderer.domElement);
 
   initBuilder();
@@ -1377,15 +1351,15 @@ function randomSphere(radius) {
 
 function randomShell(radius) {
   const a = Math.random() * Math.PI * 2;
-  const b = Math.acos(Math.random() * 2 - 1);  const r = radius + (Math.random() - 0.5) * 0.25;
+  const b = Math.acos(Math.random() * 2 - 1);
+  const r = radius + (Math.random() - 0.5) * 0.25;
   return { x: r * Math.sin(b) * Math.cos(a), y: r * Math.cos(b), z: r * Math.sin(b) * Math.sin(a) };
 }
 
 function generateCPU(i) {
   function iso(x, y, z) {
     const a = 0.38, b = 0.55;
-    const cosA = Math.cos(a), sinA = Math.sin(a);
-    const cosB = Math.cos(b), sinB = Math.sin(b);
+    const cosA = Math.cos(a), sinA = Math.sin(a);    const cosB = Math.cos(b), sinB = Math.sin(b);
     let x1 = x * cosB - z * sinB;
     let z1 = x * sinB + z * cosB;
     let y1 = y * cosA - z1 * sinA;
