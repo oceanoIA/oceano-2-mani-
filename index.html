@@ -1,304 +1,1965 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interfaccia Olografica 3D - Standalone</title>
-  
-  <!-- MediaPipe Hands & Camera Utils -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-  
-  <!-- Three.js per la grafica 3D -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<title>STARK KINETIC LAB // HOLOGRAPHIC CPU</title>
 
-    body, html {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #020208;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #00f3ff;
-    }
+<!-- ==============================
+     MEDIAPIPE HANDS
+================================ -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+        crossorigin="anonymous"></script>
 
-    #stage {
-      width: 100vw;
-      height: 100vh;
-      display: block;
-    }
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"
+        crossorigin="anonymous"></script>
 
-    #hud-overlay {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      pointer-events: none;
-    }
+<!-- ==============================
+     THREE.JS
+================================ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    .hud-panel {
-      background: rgba(0, 15, 30, 0.65);
-      border: 1px solid rgba(0, 243, 255, 0.3);
-      padding: 15px 20px;
-      border-radius: 8px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
-    }
+<style>
 
-    .hud-panel h2 {
-      font-size: 12px;
-      letter-spacing: 2px;
-      margin-bottom: 8px;
-      color: #88f7ff;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    #status, #fps {
-      font-size: 14px;
-      font-family: monospace;
-    }
-  </style>
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at center,
+        #03141d 0%,
+        #01070c 45%,
+        #000205 100%);
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #00f3ff;
+}
+
+/* ==============================
+   CANVAS
+================================ */
+
+#stage {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+}
+
+/* ==============================
+   VIDEO
+================================ */
+
+#webcam {
+    display: none;
+}
+
+/* ==============================
+   HUD
+================================ */
+
+#hud-overlay {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.hud-panel {
+
+    min-width: 260px;
+
+    padding: 16px 20px;
+
+    border: 1px solid rgba(0,243,255,0.35);
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,30,45,0.72),
+            rgba(0,8,15,0.55)
+        );
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 0 25px rgba(0,243,255,0.08),
+        inset 0 0 20px rgba(0,243,255,0.03);
+
+}
+
+.hud-title {
+
+    font-size: 11px;
+
+    letter-spacing: 3px;
+
+    color: #70f7ff;
+
+    margin-bottom: 10px;
+
+}
+
+.hud-line {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    font-family: monospace;
+
+    font-size: 13px;
+
+    margin-top: 6px;
+
+    color: #d4fbff;
+
+}
+
+.hud-value {
+
+    color: #00f3ff;
+
+}
+
+/* ==============================
+   CROSSHAIR
+================================ */
+
+#crosshair {
+
+    position: fixed;
+
+    width: 25px;
+    height: 25px;
+
+    transform: translate(-50%, -50%);
+
+    pointer-events: none;
+
+    z-index: 15;
+
+    opacity: 0;
+
+}
+
+#crosshair::before,
+#crosshair::after {
+
+    content: "";
+
+    position: absolute;
+
+    background: rgba(0,243,255,0.9);
+
+}
+
+#crosshair::before {
+
+    width: 25px;
+    height: 1px;
+
+    top: 12px;
+    left: 0;
+
+}
+
+#crosshair::after {
+
+    width: 1px;
+    height: 25px;
+
+    left: 12px;
+    top: 0;
+
+}
+
+/* ==============================
+   LOADING
+================================ */
+
+#loading {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #010509;
+
+    z-index: 100;
+
+    transition: opacity 0.8s ease;
+
+}
+
+.loading-box {
+
+    text-align: center;
+
+}
+
+.loading-title {
+
+    font-size: 22px;
+
+    letter-spacing: 6px;
+
+    color: #00f3ff;
+
+    margin-bottom: 15px;
+
+}
+
+.loading-text {
+
+    font-family: monospace;
+
+    font-size: 12px;
+
+    color: rgba(150,240,255,0.7);
+
+}
+
+/* ==============================
+   BOTTOM INFO
+================================ */
+
+#gesture-info {
+
+    position: fixed;
+
+    bottom: 20px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 20;
+
+    padding: 10px 18px;
+
+    border: 1px solid rgba(0,243,255,0.22);
+
+    border-radius: 8px;
+
+    background: rgba(0,12,20,0.65);
+
+    backdrop-filter: blur(10px);
+
+    color: rgba(190,250,255,0.75);
+
+    font-family: monospace;
+
+    font-size: 11px;
+
+    letter-spacing: 1px;
+
+    text-align: center;
+
+}
+
+</style>
 </head>
+
 <body>
 
-  <video id="webcam" playsinline style="display: none;"></video>
-  <canvas id="stage"></canvas>
-  
-  <div id="hud-overlay">
-    <div class="hud-panel">
-      <h2>STATO SISTEMA</h2>
-      <div id="status">Inizializzazione...</div>
-      <div id="fps">FPS: --</div>
+<!-- ==============================
+     LOADING
+================================ -->
+
+<div id="loading">
+
+    <div class="loading-box">
+
+        <div class="loading-title">
+            STARK KINETIC LAB
+        </div>
+
+        <div class="loading-text">
+            INITIALIZING HOLOGRAPHIC CORE...
+        </div>
+
     </div>
-  </div>
 
-  <script>
-    // --- MOTORE AUDIO ---
-    class AudioEngine {
-      constructor() {
+</div>
+
+<!-- ==============================
+     CAMERA
+================================ -->
+
+<video id="webcam" playsinline></video>
+
+<!-- ==============================
+     THREE CANVAS
+================================ -->
+
+<canvas id="stage"></canvas>
+
+<!-- ==============================
+     CROSSHAIR
+================================ -->
+
+<div id="crosshair"></div>
+
+<!-- ==============================
+     HUD
+================================ -->
+
+<div id="hud-overlay">
+
+    <div class="hud-panel">
+
+        <div class="hud-title">
+            STARK // SYSTEM CORE
+        </div>
+
+        <div class="hud-line">
+            <span>STATUS</span>
+            <span class="hud-value" id="status">
+                INITIALIZING
+            </span>
+        </div>
+
+        <div class="hud-line">
+            <span>HANDS</span>
+            <span class="hud-value" id="hands">
+                0
+            </span>
+        </div>
+
+        <div class="hud-line">
+            <span>ZOOM</span>
+            <span class="hud-value" id="zoom">
+                1.00x
+            </span>
+        </div>
+
+        <div class="hud-line">
+            <span>FPS</span>
+            <span class="hud-value" id="fps">
+                --
+            </span>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ==============================
+     GESTURE INFO
+================================ -->
+
+<div id="gesture-info">
+
+    ✋ UNA MANO = INTERAZIONE &nbsp;&nbsp;|&nbsp;&nbsp;
+    ✋✋ DUE MANI = ZOOM
+
+</div>
+
+<script>
+
+/* ============================================================
+   AUDIO ENGINE
+============================================================ */
+
+class AudioEngine {
+
+    constructor() {
+
         this.ctx = null;
+
         this.oscillator = null;
+
         this.gainNode = null;
+
         this.initialized = false;
-      }
 
-      init() {
+    }
+
+    init() {
+
         if (this.initialized) return;
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        this.ctx = new AudioCtx();
-        
-        this.oscillator = this.ctx.createOscillator();
-        this.gainNode = this.ctx.createGain();
-        
-        this.oscillator.type = 'sine';
-        this.oscillator.frequency.setValueAtTime(220, this.ctx.currentTime);
-        this.gainNode.gain.setValueAtTime(0, this.ctx.currentTime);
-        
-        this.oscillator.connect(this.gainNode);
-        this.gainNode.connect(this.ctx.destination);
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        if (!AudioContext) return;
+
+        this.ctx = new AudioContext();
+
+        this.oscillator =
+            this.ctx.createOscillator();
+
+        this.gainNode =
+            this.ctx.createGain();
+
+        this.oscillator.type = "sine";
+
+        this.oscillator.frequency.setValueAtTime(
+            220,
+            this.ctx.currentTime
+        );
+
+        this.gainNode.gain.setValueAtTime(
+            0,
+            this.ctx.currentTime
+        );
+
+        this.oscillator.connect(
+            this.gainNode
+        );
+
+        this.gainNode.connect(
+            this.ctx.destination
+        );
+
         this.oscillator.start();
-        
+
         this.initialized = true;
-      }
 
-      updateFrequency(handPosition) {
-        if (!this.initialized || !this.ctx) return;
-        const freq = 100 + (1 - handPosition.y) * 700;
-        this.oscillator.frequency.setTargetAtTime(freq, this.ctx.currentTime, 0.05);
-      }
-
-      setVolume(volume) {
-        if (!this.initialized || !this.ctx) return;
-        this.gainNode.gain.setTargetAtTime(volume, this.ctx.currentTime, 0.05);
-      }
     }
 
-    // --- SISTEMA PARTICELLE 3D ---
-    class ParticleSystem {
-      constructor(scene, count = 25000) {
+    update(hand) {
+
+        if (!this.initialized) return;
+
+        if (!hand) {
+
+            this.setVolume(0);
+
+            return;
+
+        }
+
+        const frequency =
+            150 +
+            (1 - hand.y) * 700;
+
+        this.oscillator.frequency.setTargetAtTime(
+            frequency,
+            this.ctx.currentTime,
+            0.04
+        );
+
+        this.setVolume(0.025);
+
+    }
+
+    setVolume(value) {
+
+        if (!this.initialized) return;
+
+        this.gainNode.gain.setTargetAtTime(
+            value,
+            this.ctx.currentTime,
+            0.05
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   PARTICLE SYSTEM
+============================================================ */
+
+class ParticleSystem {
+
+    constructor(scene, count = 9000) {
+
         this.scene = scene;
+
         this.count = count;
-        this.geometry = new THREE.BufferGeometry();
-        
-        const positions = new Float32Array(count * 3);
-        const colors = new Float32Array(count * 3);
-        const baseColor = new THREE.Color('#00f3ff');
-        
-        for (let i = 0; i < count * 3; i += 3) {
-          positions[i] = (Math.random() - 0.5) * 10;
-          positions[i + 1] = (Math.random() - 0.5) * 10;
-          positions[i + 2] = (Math.random() - 0.5) * 10;
-          
-          colors[i] = baseColor.r;
-          colors[i + 1] = baseColor.g;
-          colors[i + 2] = baseColor.b;
+
+        this.geometry =
+            new THREE.BufferGeometry();
+
+        const positions =
+            new Float32Array(count * 3);
+
+        const colors =
+            new Float32Array(count * 3);
+
+        const color =
+            new THREE.Color(0x00f3ff);
+
+        for (
+            let i = 0;
+            i < count;
+            i++
+        ) {
+
+            const i3 = i * 3;
+
+            positions[i3] =
+                (Math.random() - 0.5) * 16;
+
+            positions[i3 + 1] =
+                (Math.random() - 0.5) * 10;
+
+            positions[i3 + 2] =
+                (Math.random() - 0.5) * 10;
+
+            colors[i3] = color.r;
+            colors[i3 + 1] = color.g;
+            colors[i3 + 2] = color.b;
+
         }
-        
-        this.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-        
-        this.material = new THREE.PointsMaterial({
-          size: 0.03,
-          vertexColors: true,
-          transparent: true,
-          opacity: 0.8,
-          blending: THREE.AdditiveBlending
-        });
-        
-        this.mesh = new THREE.Points(this.geometry, this.material);
-        this.scene.add(this.mesh);
-      }
 
-      update(interactionPoint) {
-        const positions = this.geometry.attributes.position.array;
-        
-        if (interactionPoint) {
-          for (let i = 0; i < this.count * 3; i += 3) {
-            const dx = positions[i] - interactionPoint.x;
-            const dy = positions[i + 1] - interactionPoint.y;
-            const dz = positions[i + 2] - interactionPoint.z;
-            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-            
-            if (dist < 2.0) {
-              const force = (2.0 - dist) * 0.02;
-              positions[i] += dx * force;
-              positions[i + 1] += dy * force;
-              positions[i + 2] += dz * force;
-            }
-          }
-          this.geometry.attributes.position.needsUpdate = true;
-        }
-        
-        this.mesh.rotation.y += 0.001;
-      }
-    }
+        this.geometry.setAttribute(
+            "position",
+            new THREE.BufferAttribute(
+                positions,
+                3
+            )
+        );
 
-    // --- CONTROLLER TRACCIAMENTO MANI ---
-    class GestureController {
-      constructor(videoElement, onResultsCallback) {
-        this.videoElement = videoElement;
-        this.onResultsCallback = onResultsCallback;
-        
-        this.hands = new Hands({
-          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-        });
+        this.geometry.setAttribute(
+            "color",
+            new THREE.BufferAttribute(
+                colors,
+                3
+            )
+        );
 
-        this.hands.setOptions({
-          maxNumHands: 2,
-          modelComplexity: 1,
-          minDetectionConfidence: 0.7,
-          minTrackingConfidence: 0.7
-        });
+        this.material =
+            new THREE.PointsMaterial({
 
-        this.hands.onResults(this.onResultsCallback);
-      }
+                size: 0.018,
 
-      start() {
-        const camera = new Camera(this.videoElement, {
-          onFrame: async () => {
-            await this.hands.send({ image: this.videoElement });
-          },
-          width: 1280,
-          height: 720
-        });
-        camera.start();
-      }
-    }
+                vertexColors: true,
 
-    // --- APPLICAZIONE PRINCIPALE ---
-    class App {
-      constructor() {
-        this.container = document.getElementById('stage');
-        this.statusEl = document.getElementById('status');
-        this.fpsEl = document.getElementById('fps');
-        
-        this.lastTime = performance.now();
-        this.frameCount = 0;
+                transparent: true,
 
-        this.initGraphics();
-        this.initAudio();
-        this.initTracking();
+                opacity: 0.55,
 
-        window.addEventListener('resize', () => this.onWindowResize());
-        window.addEventListener('click', () => this.audio.init(), { once: true });
-        
-        this.animate();
-      }
+                blending:
+                    THREE.AdditiveBlending,
 
-      initGraphics() {
-        this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.z = 5;
+                depthWrite: false
 
-        this.renderer = new THREE.WebGLRenderer({ canvas: this.container, antialias: true });
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            });
 
-        this.particles = new ParticleSystem(this.scene, 25000);
-      }
-
-      initAudio() {
-        this.audio = new AudioEngine();
-      }
-
-      initTracking() {
-        const video = document.getElementById('webcam');
-        
-        this.gestureController = new GestureController(video, (results) => {
-          if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-            this.statusEl.innerText = "Mano Rilevata";
-            
-            const hand = results.multiHandLandmarks[0];
-            const indexTip = hand[8];
-            
-            const worldPoint = new THREE.Vector3(
-              (indexTip.x - 0.5) * -10,
-              (0.5 - indexTip.y) * 10,
-              (indexTip.z) * -5
+        this.mesh =
+            new THREE.Points(
+                this.geometry,
+                this.material
             );
 
-            this.particles.update(worldPoint);
-            this.audio.updateFrequency(indexTip);
-            this.audio.setVolume(0.1);
-          } else {
-            this.statusEl.innerText = "In attesa delle mani...";
-            this.particles.update(null);
-            this.audio.setVolume(0);
-          }
-        });
+        this.scene.add(this.mesh);
 
-        this.gestureController.start();
-      }
-
-      onWindowResize() {
-        this.camera.aspect = window.innerWidth / window.innerHeight;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-      }
-
-      animate() {
-        requestAnimationFrame(() => this.animate());
-
-        const now = performance.now();
-        this.frameCount++;
-        if (now - this.lastTime >= 1000) {
-          this.fpsEl.innerText = `FPS: ${this.frameCount}`;
-          this.frameCount = 0;
-          this.lastTime = now;
-        }
-
-        this.renderer.render(this.scene, this.camera);
-      }
     }
 
-    // Avvia l'applicazione
-    window.addEventListener('DOMContentLoaded', () => {
-      new App();
+    update(interactionPoint) {
+
+        const positions =
+            this.geometry
+                .attributes
+                .position
+                .array;
+
+        if (interactionPoint) {
+
+            for (
+                let i = 0;
+                i < this.count;
+                i++
+            ) {
+
+                const i3 = i * 3;
+
+                const dx =
+                    positions[i3] -
+                    interactionPoint.x;
+
+                const dy =
+                    positions[i3 + 1] -
+                    interactionPoint.y;
+
+                const dz =
+                    positions[i3 + 2] -
+                    interactionPoint.z;
+
+                const dist =
+                    Math.sqrt(
+                        dx * dx +
+                        dy * dy +
+                        dz * dz
+                    );
+
+                if (dist < 1.7 && dist > 0.01) {
+
+                    const force =
+                        (1.7 - dist) * 0.012;
+
+                    positions[i3] +=
+                        dx * force;
+
+                    positions[i3 + 1] +=
+                        dy * force;
+
+                    positions[i3 + 2] +=
+                        dz * force;
+
+                }
+
+            }
+
+            this.geometry.attributes
+                .position
+                .needsUpdate = true;
+
+        }
+
+    }
+
+}
+
+
+/* ============================================================
+   HOLOGRAPHIC MATERIAL
+============================================================ */
+
+function holographicMaterial(
+    color = 0x00f3ff,
+    opacity = 0.28
+) {
+
+    return new THREE.MeshBasicMaterial({
+
+        color: color,
+
+        transparent: true,
+
+        opacity: opacity,
+
+        wireframe: false,
+
+        blending:
+            THREE.AdditiveBlending,
+
+        depthWrite: false
+
     });
-  </script>
+
+}
+
+
+/* ============================================================
+   MOTHERBOARD
+============================================================ */
+
+class Motherboard {
+
+    constructor(scene) {
+
+        this.scene = scene;
+
+        this.group =
+            new THREE.Group();
+
+        this.scene.add(this.group);
+
+        this.createBoard();
+
+        this.createSocket();
+
+        this.createCPU();
+
+        this.createRAM();
+
+        this.createHeatsinks();
+
+        this.createCircuits();
+
+        this.createComponents();
+
+        this.createHolographicGrid();
+
+        this.createEnergyRing();
+
+    }
+
+
+    /* --------------------------------------------------------
+       MAIN BOARD
+    -------------------------------------------------------- */
+
+    createBoard() {
+
+        const boardGeometry =
+            new THREE.BoxGeometry(
+                5.8,
+                0.22,
+                4.2
+            );
+
+        const boardMaterial =
+            holographicMaterial(
+                0x00dfff,
+                0.16
+            );
+
+        this.board =
+            new THREE.Mesh(
+                boardGeometry,
+                boardMaterial
+            );
+
+        this.group.add(this.board);
+
+
+        /* wireframe */
+
+        const edges =
+            new THREE.EdgesGeometry(
+                boardGeometry
+            );
+
+        const lineMaterial =
+            new THREE.LineBasicMaterial({
+
+                color: 0x00f3ff,
+
+                transparent: true,
+
+                opacity: 0.75,
+
+                blending:
+                    THREE.AdditiveBlending
+
+            });
+
+        const wire =
+            new THREE.LineSegments(
+                edges,
+                lineMaterial
+            );
+
+        this.group.add(wire);
+
+    }
+
+
+    /* --------------------------------------------------------
+       CPU SOCKET
+    -------------------------------------------------------- */
+
+    createSocket() {
+
+        const socketGeometry =
+            new THREE.BoxGeometry(
+                1.65,
+                0.12,
+                1.65
+            );
+
+        const socketMaterial =
+            new THREE.MeshBasicMaterial({
+
+                color: 0x04252e,
+
+                transparent: true,
+
+                opacity: 0.95,
+
+                wireframe: true
+
+            });
+
+        const socket =
+            new THREE.Mesh(
+                socketGeometry,
+                socketMaterial
+            );
+
+        socket.position.y = 0.19;
+
+        this.group.add(socket);
+
+
+        /* socket glow */
+
+        const glowGeometry =
+            new THREE.BoxGeometry(
+                1.75,
+                0.025,
+                1.75
+            );
+
+        const glow =
+            new THREE.Mesh(
+                glowGeometry,
+                holographicMaterial(
+                    0x00f3ff,
+                    0.22
+                )
+            );
+
+        glow.position.y = 0.255;
+
+        this.group.add(glow);
+
+    }
+
+
+    /* --------------------------------------------------------
+       CPU
+    -------------------------------------------------------- */
+
+    createCPU() {
+
+        const cpuGeometry =
+            new THREE.BoxGeometry(
+                1.28,
+                0.32,
+                1.28
+            );
+
+        const cpuMaterial =
+            new THREE.MeshBasicMaterial({
+
+                color: 0x0b6874,
+
+                transparent: true,
+
+                opacity: 0.85,
+
+                blending:
+                    THREE.AdditiveBlending
+
+            });
+
+        this.cpu =
+            new THREE.Mesh(
+                cpuGeometry,
+                cpuMaterial
+            );
+
+        this.cpu.position.y = 0.43;
+
+        this.group.add(this.cpu);
+
+
+        /* CPU top */
+
+        const topGeometry =
+            new THREE.BoxGeometry(
+                1.08,
+                0.035,
+                1.08
+            );
+
+        const top =
+            new THREE.Mesh(
+                topGeometry,
+                holographicMaterial(
+                    0x00ffff,
+                    0.42
+                )
+            );
+
+        top.position.y = 0.19;
+
+        this.cpu.add(top);
+
+
+        /* CPU center */
+
+        const centerGeometry =
+            new THREE.BoxGeometry(
+                0.55,
+                0.04,
+                0.55
+            );
+
+        const center =
+            new THREE.Mesh(
+                centerGeometry,
+                holographicMaterial(
+                    0x7fffff,
+                    0.7
+                )
+            );
+
+        center.position.y = 0.22;
+
+        this.cpu.add(center);
+
+
+        /* CPU edges */
+
+        const edges =
+            new THREE.EdgesGeometry(
+                cpuGeometry
+            );
+
+        const edgeLines =
+            new THREE.LineSegments(
+                edges,
+                new THREE.LineBasicMaterial({
+
+                    color: 0x8fffff,
+
+                    transparent: true,
+
+                    opacity: 0.95
+
+                })
+            );
+
+        this.cpu.add(edgeLines);
+
+    }
+
+
+    /* --------------------------------------------------------
+       RAM
+    -------------------------------------------------------- */
+
+    createRAM() {
+
+        for (let i = 0; i < 4; i++) {
+
+            const geometry =
+                new THREE.BoxGeometry(
+                    0.25,
+                    0.18,
+                    1.7
+                );
+
+            const material =
+                holographicMaterial(
+                    0x00f3ff,
+                    0.35
+                );
+
+            const ram =
+                new THREE.Mesh(
+                    geometry,
+                    material
+                );
+
+            ram.position.set(
+                1.55 + i * 0.38,
+                0.27,
+                -0.25
+            );
+
+            this.group.add(ram);
+
+
+            /* RAM glowing line */
+
+            const lineGeometry =
+                new THREE.BoxGeometry(
+                    0.035,
+                    0.025,
+                    1.55
+                );
+
+            const line =
+                new THREE.Mesh(
+                    lineGeometry,
+                    holographicMaterial(
+                        0x8fffff,
+                        0.8
+                    )
+                );
+
+            line.position.y = 0.1;
+
+            ram.add(line);
+
+        }
+
+    }
+
+
+    /* --------------------------------------------------------
+       HEATSINKS
+    -------------------------------------------------------- */
+
+    createHeatsinks() {
+
+        for (let i = 0; i < 6; i++) {
+
+            const geometry =
+                new THREE.BoxGeometry(
+                    0.12,
+                    0.42,
+                    0.65
+                );
+
+            const material =
+                holographicMaterial(
+                    0x00cfe8,
+                    0.38
+                );
+
+            const fin =
+                new THREE.Mesh(
+                    geometry,
+                    material
+                );
+
+            fin.position.set(
+                -1.65 + i * 0.25,
+                0.43,
+                -1.1
+            );
+
+            this.group.add(fin);
+
+        }
+
+    }
+
+
+    /* --------------------------------------------------------
+       CIRCUIT PATHS
+    -------------------------------------------------------- */
+
+    createCircuits() {
+
+        const material =
+            new THREE.LineBasicMaterial({
+
+                color: 0x00f3ff,
+
+                transparent: true,
+
+                opacity: 0.65,
+
+                blending:
+                    THREE.AdditiveBlending
+
+            });
+
+
+        const paths = [
+
+            [
+                [-2.5,0.15,1.5],
+                [-1.7,0.15,1.5],
+                [-1.7,0.15,0.8],
+                [-0.7,0.15,0.8]
+            ],
+
+            [
+                [0.7,0.15,0.8],
+                [1.3,0.15,0.8],
+                [1.3,0.15,1.5],
+                [2.5,0.15,1.5]
+            ],
+
+            [
+                [-2.4,0.15,-1.5],
+                [-1.5,0.15,-1.5],
+                [-1.5,0.15,-0.8]
+            ],
+
+            [
+                [0.8,0.15,-0.8],
+                [1.8,0.15,-0.8],
+                [1.8,0.15,-1.5]
+            ]
+
+        ];
+
+
+        paths.forEach(path => {
+
+            const points =
+                path.map(
+                    p =>
+                        new THREE.Vector3(
+                            p[0],
+                            p[1],
+                            p[2]
+                        )
+                );
+
+            const geometry =
+                new THREE.BufferGeometry()
+                    .setFromPoints(points);
+
+            const line =
+                new THREE.Line(
+                    geometry,
+                    material
+                );
+
+            this.group.add(line);
+
+        });
+
+    }
+
+
+    /* --------------------------------------------------------
+       COMPONENTS
+    -------------------------------------------------------- */
+
+    createComponents() {
+
+        for (let i = 0; i < 18; i++) {
+
+            const geometry =
+                new THREE.BoxGeometry(
+                    0.18,
+                    0.12,
+                    0.18
+                );
+
+            const material =
+                holographicMaterial(
+                    0x00dff0,
+                    0.3
+                );
+
+            const component =
+                new THREE.Mesh(
+                    geometry,
+                    material
+                );
+
+            const x =
+                -2.3 +
+                Math.random() * 4.6;
+
+            const z =
+                -1.65 +
+                Math.random() * 3.3;
+
+            component.position.set(
+                x,
+                0.22,
+                z
+            );
+
+            this.group.add(component);
+
+        }
+
+    }
+
+
+    /* --------------------------------------------------------
+       HOLOGRAPHIC GRID
+    -------------------------------------------------------- */
+
+    createHolographicGrid() {
+
+        const grid =
+            new THREE.GridHelper(
+                7,
+                28,
+                0x00f3ff,
+                0x006677
+            );
+
+        grid.position.y = -0.1;
+
+        grid.material.transparent = true;
+
+        grid.material.opacity = 0.16;
+
+        this.group.add(grid);
+
+    }
+
+
+    /* --------------------------------------------------------
+       ENERGY RING
+    -------------------------------------------------------- */
+
+    createEnergyRing() {
+
+        const geometry =
+            new THREE.RingGeometry(
+                1.9,
+                1.94,
+                96
+            );
+
+        const material =
+            new THREE.MeshBasicMaterial({
+
+                color: 0x00f3ff,
+
+                transparent: true,
+
+                opacity: 0.45,
+
+                side: THREE.DoubleSide,
+
+                blending:
+                    THREE.AdditiveBlending
+
+            });
+
+        this.ring =
+            new THREE.Mesh(
+                geometry,
+                material
+            );
+
+        this.ring.rotation.x =
+            -Math.PI / 2;
+
+        this.ring.position.y =
+            0.08;
+
+        this.group.add(this.ring);
+
+    }
+
+
+    /* --------------------------------------------------------
+       UPDATE
+    -------------------------------------------------------- */
+
+    update(time) {
+
+        /* IMPORTANT:
+           nessuna rotazione della motherboard
+           */
+
+        this.ring.rotation.z =
+            time * 0.0005;
+
+        if (this.cpu) {
+
+            this.cpu.position.y =
+                0.43 +
+                Math.sin(time * 0.002) *
+                0.025;
+
+        }
+
+    }
+
+}
+
+
+/* ============================================================
+   HAND CONTROLLER
+============================================================ */
+
+class GestureController {
+
+    constructor(video, callback) {
+
+        this.video = video;
+
+        this.callback = callback;
+
+        this.hands =
+            new Hands({
+
+                locateFile: file =>
+                    `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+
+            });
+
+
+        this.hands.setOptions({
+
+            maxNumHands: 2,
+
+            modelComplexity: 1,
+
+            minDetectionConfidence: 0.65,
+
+            minTrackingConfidence: 0.65
+
+        });
+
+
+        this.hands.onResults(
+            callback
+        );
+
+    }
+
+
+    start() {
+
+        const camera =
+            new Camera(
+                this.video,
+                {
+
+                    onFrame: async () => {
+
+                        await this.hands.send({
+                            image: this.video
+                        });
+
+                    },
+
+                    width: 1280,
+
+                    height: 720
+
+                }
+            );
+
+        camera.start();
+
+    }
+
+}
+
+
+/* ============================================================
+   MAIN APP
+============================================================ */
+
+class App {
+
+    constructor() {
+
+        this.canvas =
+            document.getElementById(
+                "stage"
+            );
+
+        this.status =
+            document.getElementById(
+                "status"
+            );
+
+        this.handsEl =
+            document.getElementById(
+                "hands"
+            );
+
+        this.zoomEl =
+            document.getElementById(
+                "zoom"
+            );
+
+        this.fpsEl =
+            document.getElementById(
+                "fps"
+            );
+
+        this.crosshair =
+            document.getElementById(
+                "crosshair"
+            );
+
+
+        this.lastTime =
+            performance.now();
+
+        this.frames = 0;
+
+
+        /* ZOOM */
+
+        this.zoom = 1;
+
+        this.targetZoom = 1;
+
+        this.lastHandDistance = null;
+
+
+        this.initGraphics();
+
+        this.initAudio();
+
+        this.initParticles();
+
+        this.initMotherboard();
+
+        this.initTracking();
+
+
+        window.addEventListener(
+            "resize",
+            () => this.resize()
+        );
+
+
+        window.addEventListener(
+            "pointerdown",
+            () => {
+
+                this.audio.init();
+
+            },
+            { once: true }
+        );
+
+
+        setTimeout(() => {
+
+            const loading =
+                document.getElementById(
+                    "loading"
+                );
+
+            loading.style.opacity = "0";
+
+            setTimeout(() => {
+
+                loading.style.display =
+                    "none";
+
+            }, 800);
+
+        }, 1200);
+
+
+        this.animate();
+
+    }
+
+
+    /* --------------------------------------------------------
+       GRAPHICS
+    -------------------------------------------------------- */
+
+    initGraphics() {
+
+        this.scene =
+            new THREE.Scene();
+
+
+        this.camera =
+            new THREE.PerspectiveCamera(
+
+                55,
+
+                window.innerWidth /
+                window.innerHeight,
+
+                0.1,
+
+                100
+
+            );
+
+
+        /*
+         * La camera resta SEMPRE centrata.
+         *
+         * Questo è importante:
+         * le mani NON comandano la rotazione
+         * della scena.
+         */
+
+        this.camera.position.set(
+            0,
+            0.5,
+            7
+        );
+
+
+        this.renderer =
+            new THREE.WebGLRenderer({
+
+                canvas: this.canvas,
+
+                antialias: true,
+
+                alpha: true
+
+            });
+
+
+        this.renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+
+        this.renderer.setPixelRatio(
+            Math.min(
+                window.devicePixelRatio,
+                1.8
+            )
+        );
+
+
+        this.renderer.setClearColor(
+            0x000000,
+            0
+        );
+
+    }
+
+
+    /* --------------------------------------------------------
+       PARTICLES
+    -------------------------------------------------------- */
+
+    initParticles() {
+
+        this.particles =
+            new ParticleSystem(
+                this.scene,
+                9000
+            );
+
+    }
+
+
+    /* --------------------------------------------------------
+       MOTHERBOARD
+    -------------------------------------------------------- */
+
+    initMotherboard() {
+
+        this.motherboard =
+            new Motherboard(
+                this.scene
+            );
+
+    }
+
+
+    /* --------------------------------------------------------
+       AUDIO
+    -------------------------------------------------------- */
+
+    initAudio() {
+
+        this.audio =
+            new AudioEngine();
+
+    }
+
+
+    /* ========================================================
+       HAND TRACKING
+    ======================================================== */
+
+    initTracking() {
+
+        const video =
+            document.getElementById(
+                "webcam"
+            );
+
+
+        this.gesture =
+            new GestureController(
+                video,
+                results =>
+                    this.processHands(
+                        results
+                    )
+            );
+
+
+        this.gesture.start();
+
+    }
+
+
+    /* ========================================================
+       PROCESS HANDS
+    ======================================================== */
+
+    processHands(results) {
+
+        const detectedHands =
+            results.multiHandLandmarks || [];
+
+
+        const count =
+            detectedHands.length;
+
+
+        this.handsEl.innerText =
+            count;
+
+
+        /* ---------------------------------------------
+           NESSUNA MANO
+        --------------------------------------------- */
+
+        if (count === 0) {
+
+            this.status.innerText =
+                "IN ATTESA";
+
+            this.crosshair.style.opacity =
+                "0";
+
+            this.lastHandDistance =
+                null;
+
+            this.audio.update(null);
+
+            return;
+
+        }
+
+
+        /* ---------------------------------------------
+           UNA MANO
+        --------------------------------------------- */
+
+        if (count === 1) {
+
+            this.status.innerText =
+                "MANO RILEVATA";
+
+            this.lastHandDistance =
+                null;
+
+
+            const hand =
+                detectedHands[0];
+
+
+            const index =
+                hand[8];
+
+
+            /*
+             * Coordinate mano → mondo 3D
+             */
+
+            const worldPoint =
+                new THREE.Vector3(
+
+                    (index.x - 0.5) * -7,
+
+                    (0.5 - index.y) * 5,
+
+                    index.z * -2
+
+                );
+
+
+            this.particles.update(
+                worldPoint
+            );
+
+
+            /*
+             * Crosshair
+             */
+
+            this.crosshair.style.opacity =
+                "1";
+
+            this.crosshair.style.left =
+                `${index.x * 100}%`;
+
+            this.crosshair.style.top =
+                `${index.y * 100}%`;
+
+
+            this.audio.update(
+                index
+            );
+
+
+            return;
+
+        }
+
+
+        /* ---------------------------------------------
+           DUE MANI
+        --------------------------------------------- */
+
+        if (count >= 2) {
+
+            this.status.innerText =
+                "DUAL HAND ZOOM";
+
+
+            const handA =
+                detectedHands[0];
+
+            const handB =
+                detectedHands[1];
+
+
+            const a = handA[8];
+
+            const b = handB[8];
+
+
+            /*
+             * DISTANZA TRA LE MANI
+             *
+             * Questa è l'unica cosa che
+             * controlla lo zoom.
+             */
+
+            const dx =
+                a.x - b.x;
+
+            const dy =
+                a.y - b.y;
+
+            const distance =
+                Math.sqrt(
+                    dx * dx +
+                    dy * dy
+                );
+
+
+            if (
+                this.lastHandDistance !==
+                null
+            ) {
+
+                const difference =
+                    distance -
+                    this.lastHandDistance;
+
+
+                /*
+                 * Zoom incrementale.
+                 *
+                 * NON tocchiamo:
+                 * rotation.x
+                 * rotation.y
+                 * rotation.z
+                 *
+                 * quindi la motherboard
+                 * NON ruota quando le mani
+                 * si allontanano.
+                 */
+
+                this.targetZoom +=
+                    difference * 4.0;
+
+            }
+
+
+            this.lastHandDistance =
+                distance;
+
+
+            /*
+             * Limiti zoom
+             */
+
+            this.targetZoom =
+                THREE.MathUtils.clamp(
+                    this.targetZoom,
+                    0.65,
+                    2.4
+                );
+
+
+            /*
+             * Punto medio mani
+             */
+
+            const centerX =
+                (a.x + b.x) / 2;
+
+            const centerY =
+                (a.y + b.y) / 2;
+
+
+            /*
+             * Crosshair centrale
+             */
+
+            this.crosshair.style.opacity =
+                "1";
+
+            this.crosshair.style.left =
+                `${centerX * 100}%`;
+
+            this.crosshair.style.top =
+                `${centerY * 100}%`;
+
+
+            this.audio.update(
+                a
+            );
+
+        }
+
+    }
+
+
+    /* ========================================================
+       UPDATE ZOOM
+    ======================================================== */
+
+    updateZoom() {
+
+        /*
+         * Smooth interpolation
+         */
+
+        this.zoom +=
+            (
+                this.targetZoom -
+                this.zoom
+            ) * 0.12;
+
+
+        /*
+         * Lo zoom viene applicato
+         * alla CAMERA.
+         *
+         * La motherboard non viene ruotata.
+         */
+
+        this.camera.position.z =
+            7 / this.zoom;
+
+
+        this.zoomEl.innerText =
+            `${this.zoom.toFixed(2)}x`;
+
+    }
+
+
+    /* ========================================================
+       RESIZE
+    ======================================================== */
+
+    resize() {
+
+        this.camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+
+        this.camera.updateProjectionMatrix();
+
+
+        this.renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+
+
+    /* ========================================================
+       ANIMATION
+    ======================================================== */
+
+    animate() {
+
+        requestAnimationFrame(
+            () => this.animate()
+        );
+
+
+        const now =
+            performance.now();
+
+
+        this.frames++;
+
+
+        if (
+            now -
+            this.lastTime >=
+            1000
+        ) {
+
+            this.fpsEl.innerText =
+                this.frames;
+
+            this.frames = 0;
+
+            this.lastTime =
+                now;
+
+        }
+
+
+        /*
+         * Zoom
+         */
+
+        this.updateZoom();
+
+
+        /*
+         * Madreboard animation
+         *
+         * NOTA:
+         * nessuna rotazione globale.
+         */
+
+        this.motherboard.update(
+            now
+        );
+
+
+        /*
+         * Render
+         */
+
+        this.renderer.render(
+            this.scene,
+            this.camera
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   START
+============================================================ */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        try {
+
+            new App();
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "status"
+            ).innerText =
+                "ERRORE";
+
+        }
+
+    }
+);
+
+</script>
+
 </body>
 </html>
