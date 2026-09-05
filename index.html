@@ -386,9 +386,6 @@ input[type=color]{
     <div class="control-group">
       <label>HOLOGRAM TEMPLATE</label>
       <select id="shape-select">
-
-        <option value="hudmatrix">HUD CIRCUIT MATRIX (HD)</option>
-
         <option value="jupiter">JUPITER & RINGS</option>
         <option value="galaxy">GALAXY SPIRAL</option>
         <option value="hypercube">HYPERCUBE MATRIX</option>
@@ -399,57 +396,8 @@ input[type=color]{
         <option value="saturn">SATURN RING SYSTEM</option>
         <option value="DNA">DNA DOUBLE HELIX</option>
 
-        <option value="rose">ROSE</option>
-        <option value="tulip">TULIP</option>
-        <option value="sunflower">SUNFLOWER</option>
-        <option value="lotus">LOTUS FLOWER</option>
-        <option value="daisy">DAISY</option>
-        <option value="butterfly">BUTTERFLY</option>
-        <option value="eagle">EAGLE</option>
-        <option value="wolf">WOLF</option>
-        <option value="cat">CAT</option>
-        <option value="dolphin">DOLPHIN</option>
-        <option value="shark">SHARK</option>
-        <option value="whale">WHALE</option>
-        <option value="horse">HORSE</option>
-        <option value="tree">TREE</option>
-        <option value="mushroom">MUSHROOM</option>
-        <option value="rocket">ROCKET</option>
-        <option value="airplane">AIRPLANE</option>
-        <option value="car">CAR</option>
-        <option value="bicycle">BICYCLE</option>
-        <option value="motorcycle">MOTORCYCLE</option>
-        <option value="robot">ROBOT</option>
-        <option value="bionicarm">BIONIC ARM</option>
-        <option value="humanarm">HUMAN ARM</option>
-        <option value="brain">BRAIN</option>
-        <option value="skull">SKULL</option>
-        <option value="atom">ATOM</option>
-        <option value="molecule">MOLECULE</option>
-        <option value="moon">MOON</option>
-        <option value="earth">EARTH</option>
-        <option value="mars">MARS</option>
-        <option value="comet">COMET</option>
-        <option value="lightning">LIGHTNING</option>
-        <option value="cloud">CLOUD</option>
-        <option value="volcano">VOLCANO</option>
-        <option value="mountain">MOUNTAIN</option>
-        <option value="castle">CASTLE</option>
-        <option value="crown">CROWN</option>
-        <option value="hourglass">HOURGLASS</option>
-        <option value="key">KEY</option>
-        <option value="chessking">CHESS KING</option>
-        <option value="gear">GEAR</option>
-        <option value="infinity">INFINITY</option>
-        <option value="spiral">SPIRAL</option>
-        <option value="mapleleaf">MAPLE LEAF</option>
-        <option value="snowflake">SNOWFLAKE</option>
-        <option value="tornado">TORNADO</option>
-        <option value="wave">OCEAN WAVE</option>
-        <option value="satellite">SATELLITE</option>
-        <option value="camera">CAMERA</option>
-        <option value="microphone">MICROPHONE</option>
-
+        <!-- NUOVA FORMA -->
+        <option value="motherboard">HOLO MOTHERBOARD // CPU CORE</option>
       </select>
     </div>
 
@@ -476,7 +424,7 @@ input[type=color]{
 
     <div class="telemetry-top">
       <span>PARTICLES</span>
-      <strong id="particle-value">8000</strong>
+      <strong id="particle-value">4000</strong>
     </div>
 
     <div class="telemetry-top">
@@ -525,7 +473,7 @@ input[type=color]{
    ========================================================= */
 
 const CONFIG = {
-  particles: 8000, /* Aumentato a 8000 per altissima definizione e nitidezza */
+  particles: 4000,
   handFPS: 24,
   cameraWidth: 320,
   cameraHeight: 240,
@@ -547,8 +495,6 @@ const CONFIG = {
   */
   throwPower: 0,
 
-  snapSize: 1.5,
-
   /*
     SENSIBILITÀ MOVIMENTO ALTA
 
@@ -556,6 +502,12 @@ const CONFIG = {
     Il valore 0.50 è volutamente alto.
   */
   axisSensitivity: 0.50,
+
+  /*
+    RISOLUZIONE SPECIALE DELLA MOTHERBOARD.
+    2 = 200% del pixel ratio normale.
+  */
+  motherboardPixelRatio: 2,
 
   colors: {
     white: 0xffffff,
@@ -566,75 +518,6 @@ const CONFIG = {
 };
 
 const PARTICLE_COUNT = CONFIG.particles;
-
-/* =========================================================
-   COLORI REALISTICI DELLE FORME (INCLUSO HUD MATRIX)
-   ========================================================= */
-
-const EXTRA_SHAPE_COLORS = {
-
-  hudmatrix:0x00aaff, /* Colore blu olografico nitido per la nuova matrice */
-
-  rose:0xd81b32,
-  tulip:0xe53935,
-  sunflower:0xffc107,
-  lotus:0xf8a5c2,
-  daisy:0xffffff,
-
-  butterfly:0x6a1b9a,
-  eagle:0x795548,
-  wolf:0x9e9e9e,
-  cat:0xf5f5f5,
-  dolphin:0x78909c,
-
-  shark:0x607d8b,
-  whale:0x455a64,
-  horse:0x6d4c41,
-  tree:0x2e7d32,
-  mushroom:0xc62828,
-
-  rocket:0xe0e0e0,
-  airplane:0xbdbdbd,
-  car:0x1565c0,
-  bicycle:0x212121,
-  motorcycle:0x212121,
-
-  robot:0x90a4ae,
-  bionicarm:0x9e9e9e,
-  humanarm:0xd7a77a,
-  brain:0xe8a0a8,
-  skull:0xd6d0c4,
-
-  atom:0x00bcd4,
-  molecule:0x4caf50,
-  moon:0xbdbdbd,
-  earth:0x1976d2,
-  mars:0xc95a3b,
-
-  comet:0x9be7ff,
-  lightning:0xffeb3b,
-  cloud:0xf5f5f5,
-  volcano:0x8d3b2f,
-  mountain:0x78909c,
-
-  castle:0x9e9e9e,
-  crown:0xffd700,
-  hourglass:0xd7a86e,
-  key:0xc9a227,
-  chessking:0xf5f5f5,
-
-  gear:0x757575,
-  infinity:0x26c6da,
-  spiral:0xff7043,
-  mapleleaf:0xd32f2f,
-  snowflake:0x81d4fa,
-
-  tornado:0xb0bec5,
-  wave:0x0288d1,
-  satellite:0xb0bec5,
-  camera:0x263238,
-  microphone:0x424242
-};
 
 /* =========================================================
    AUDIO
@@ -759,6 +642,8 @@ let particleSystem;
 
 const targetPositions=new Float32Array(PARTICLE_COUNT*3);
 const currentPositions=new Float32Array(PARTICLE_COUNT*3);
+
+let particleColors;
 
 let blocks=[];
 let selectedBlock=null;
@@ -1012,7 +897,7 @@ function initParticles(){
     new THREE.BufferAttribute(currentPositions,3)
   );
 
-  const colors=new Float32Array(PARTICLE_COUNT*3);
+  particleColors=new Float32Array(PARTICLE_COUNT*3);
 
   for(let i=0;i<PARTICLE_COUNT;i++){
 
@@ -1023,24 +908,27 @@ function initParticles(){
 
     const j=i*3;
 
-    colors[j]=v;
-    colors[j+1]=v;
-    colors[j+2]=v;
+    particleColors[j]=v;
+    particleColors[j+1]=v;
+    particleColors[j+2]=v;
   }
 
   particleGeometry.setAttribute(
     'color',
-    new THREE.BufferAttribute(colors,3)
+    new THREE.BufferAttribute(
+      particleColors,
+      3
+    )
   );
 
   const texture=createGlowTexture();
 
   particleMaterial=new THREE.PointsMaterial({
-    size:.25,
+    size:.30,
     vertexColors:true,
     map:texture,
     transparent:true,
-    opacity:.95,
+    opacity:.9,
     blending:THREE.AdditiveBlending,
     depthWrite:false
   });
@@ -1052,9 +940,95 @@ function initParticles(){
 
   particleGroup.add(particleSystem);
 
-  generateShape('hudmatrix'); /* Partenza diretta in alta definizione con l'HUD matrix */
+  generateShape('jupiter');
 
   dom.particleValue.textContent=PARTICLE_COUNT;
+}
+
+/* =========================================================
+   PARTICLE COLORS
+   ========================================================= */
+
+function setParticlePalette(type){
+
+  if(!particleColors)return;
+
+  const colorAttribute=
+    particleGeometry.attributes.color;
+
+  for(let i=0;i<PARTICLE_COUNT;i++){
+
+    const j=i*3;
+
+    if(type==='motherboard'){
+
+      const r=Math.random();
+
+      if(r<.58){
+
+        /*
+          BLU / CIANO:
+          piste e struttura olografica.
+        */
+        particleColors[j]=0.02;
+        particleColors[j+1]=0.42+Math.random()*.35;
+        particleColors[j+2]=0.95+Math.random()*.05;
+
+      }else if(r<.80){
+
+        /*
+          BLU PROFONDO.
+        */
+        particleColors[j]=0.01;
+        particleColors[j+1]=0.18+Math.random()*.20;
+        particleColors[j+2]=0.65+Math.random()*.25;
+
+      }else if(r<.94){
+
+        /*
+          ORO / AMBRA.
+        */
+        particleColors[j]=1;
+        particleColors[j+1]=0.48+Math.random()*.38;
+        particleColors[j+2]=0.03+Math.random()*.10;
+
+      }else{
+
+        /*
+          BIANCO / AZZURRO DIAGNOSTICO.
+        */
+        particleColors[j]=.65;
+        particleColors[j+1]=.90;
+        particleColors[j+2]=1;
+      }
+
+      particleColors[j+1]=particleColors[j+1];
+      particleColors[j+2]=particleColors[j+2];
+
+      /*
+        Piccola variazione per il canale rosso.
+      */
+      if(r>=.58){
+        particleColors[j]=Math.min(
+          1,
+          particleColors[j]
+        );
+      }
+
+    }else{
+
+      const v=
+        Math.random()<.7
+        ?1
+        :Math.random()<.66?.66:.33;
+
+      particleColors[j]=v;
+      particleColors[j+1]=v;
+      particleColors[j+2]=v;
+    }
+  }
+
+  colorAttribute.needsUpdate=true;
 }
 
 /* =========================================================
@@ -1264,752 +1238,12 @@ function updateSelectionUI(){
 }
 
 /* =========================================================
-   GENERATORE FORME (INCLUSO HUD CIRCUIT MATRIX 3D)
-   ========================================================= */
-
-function generateExtraShape(type,i){
-
-  const t=i/PARTICLE_COUNT;
-  const a=t*Math.PI*2;
-  const r=Math.random();
-
-  let x=0;
-  let y=0;
-  let z=0;
-
-  switch(type){
-
-    /* ================= HUD CIRCUIT MATRIX (NUOVA FORMA ISPIRATA ALL'IMMAGINE) ================= */
-    case 'hudmatrix': {
-      const section = i % 5;
-      
-      if (section === 0) {
-        // Anello olografico centrale rotante ad alta nitidezza
-        const u = a;
-        const rad = 4 + (i % 3) * 0.7;
-        x = rad * Math.cos(u);
-        z = rad * Math.sin(u);
-        y = (Math.random() - 0.5) * 0.4;
-      } else if (section === 1) {
-        // Griglia/Piastra di base del circuito stampato
-        x = (Math.random() - 0.5) * 16;
-        z = (Math.random() - 0.5) * 16;
-        y = -3.5;
-      } else if (section === 2) {
-        // Tracce dati verticali e HUD fluttuanti in alto
-        x = (Math.random() - 0.5) * 12;
-        z = (Math.random() - 0.5) * 12;
-        y = 2 + Math.random() * 5;
-      } else if (section === 3) {
-        // Linee e bus dati angolari ortogonali (stile scheda madre)
-        const line = Math.floor(i / 150) % 4;
-        const pos = ((i % 150) / 150) * 14 - 7;
-        if (line === 0) { x = pos; z = -5; y = pos * 0.15; }
-        else if (line === 1) { x = 5; z = pos; y = pos * 0.1; }
-        else if (line === 2) { x = pos; z = 5; y = -1; }
-        else { x = -5; z = pos; y = 1; }
-      } else {
-        // Particelle di polvere olografica e glitch sparsi
-        x = (Math.random() - 0.5) * 18;
-        z = (Math.random() - 0.5) * 18;
-        y = 6 + Math.random() * 3;
-      }
-      break;
-    }
-
-    /* ================= FLOWERS ================= */
-
-    case'rose':{
-      const u=a*7;
-      const petal=Math.cos(5*u);
-      const rr=1.5+5*Math.abs(petal)*Math.sqrt(r);
-      x=rr*Math.cos(u);
-      y=rr*Math.sin(u);
-      z=(Math.random()-.5)*1.4;
-      break;
-    }
-
-    case'tulip':{
-      const u=a;
-      const rr=1.2+5*r;
-      x=rr*Math.cos(u)*(0.55+0.45*r);
-      z=rr*Math.sin(u)*(0.55+0.45*r);
-      y=4.5-rr*.75;
-      if(r>.72)y+=2;
-      break;
-    }
-
-    case'sunflower':{
-      if(i<PARTICLE_COUNT*.28){
-        const rr=Math.sqrt(r)*2.5;
-        x=rr*Math.cos(a);
-        z=rr*Math.sin(a);
-        y=(Math.random()-.5)*1.2;
-      }else{
-        const petal=Math.floor(t*70);
-        const u=petal*Math.PI*2/70;
-        const rr=3.2+Math.random()*3;
-        x=rr*Math.cos(u);
-        z=rr*Math.sin(u);
-        y=(Math.random()-.5)*.8;
-      }
-      break;
-    }
-
-    case'lotus':{
-      const layer=Math.floor(r*4);
-      const u=a;
-      const rr=2+layer*1.3+Math.random()*1.2;
-      x=rr*Math.cos(u);
-      z=rr*Math.sin(u);
-      y=layer*.8+Math.sin(u*3)*.7;
-      break;
-    }
-
-    case'daisy':{
-      const petal=Math.floor(t*12);
-      const u=petal*Math.PI*2/12;
-      const rr=r<.22?Math.random()*2.2:3+Math.random()*3;
-      x=rr*Math.cos(u);
-      z=rr*Math.sin(u);
-      y=(Math.random()-.5)*.7;
-      break;
-    }
-
-    /* ================= ANIMALS ================= */
-
-    case'butterfly':{
-      const side=i%2?-1:1;
-      const u=r*Math.PI*5;
-      const wing=(Math.sin(u)*.5+.5);
-      x=side*(1.2+wing*5);
-      y=Math.sin(u)*2.5+(Math.random()-.5);
-      z=(Math.random()-.5)*2;
-      if(Math.abs(x)<1.3)y+=1;
-      break;
-    }
-
-    case'eagle':{
-      const side=i%2?-1:1;
-      x=side*(1+Math.random()*7);
-      y=2.5-Math.abs(x)*.25+(Math.random()-.5);
-      z=(Math.random()-.5)*2;
-      if(Math.random()<.22){
-        x*=.55;
-        y-=2;
-      }
-      break;
-    }
-
-    case'wolf':{
-      const u=a;
-      x=4*Math.cos(u);
-      z=2.2*Math.sin(u);
-      y=Math.sin(u*2)*1.2;
-      if(i%9===0)y+=3;
-      if(i%11===0)x+=2.5;
-      break;
-    }
-
-    case'cat':{
-      const u=a;
-      x=4*Math.cos(u);
-      z=2*Math.sin(u);
-      y=Math.sin(u)*1.1;
-      if(i%8===0)y+=3;
-      if(i%13===0)y+=4;
-      break;
-    }
-
-    case'dolphin':{
-      const u=a;
-      x=6*Math.cos(u);
-      y=1.5*Math.sin(u);
-      z=2*Math.sin(u*2);
-      if(i%9===0)y+=3;
-      break;
-    }
-
-    case'shark':{
-      const u=a;
-      x=7*Math.cos(u);
-      y=1.8*Math.sin(u);
-      z=2*Math.sin(u*2);
-      if(i%10===0)y+=3.5;
-      break;
-    }
-
-    case'whale':{
-      const u=a;
-      x=7*Math.cos(u);
-      y=2.4*Math.sin(u);
-      z=2.8*Math.sin(u*2);
-      if(i%12===0)y+=4;
-      break;
-    }
-
-    case'horse':{
-      const u=a;
-      x=5*Math.cos(u);
-      z=2*Math.sin(u);
-      y=Math.sin(u*2)*1.4;
-      if(i%7===0)y+=3;
-      break;
-    }
-
-    /* ================= NATURE ================= */
-
-    case'tree':{
-      if(i<PARTICLE_COUNT*.35){
-        const u=a*3;
-        const rr=.7+Math.random()*.8;
-        x=rr*Math.cos(u);
-        z=rr*Math.sin(u);
-        y=-5+Math.random()*7;
-      }else{
-        const u=a*8;
-        const rr=3+Math.random()*4;
-        x=rr*Math.cos(u);
-        z=rr*Math.sin(u);
-        y=2+Math.random()*5;
-      }
-      break;
-    }
-
-    case'mushroom':{
-      if(r<.38){
-        const rr=1+Math.random()*1.2;
-        x=rr*Math.cos(a);
-        z=rr*Math.sin(a);
-        y=-3+Math.random()*5;
-      }else{
-        const rr=Math.sqrt(r)*6;
-        x=rr*Math.cos(a);
-        z=rr*Math.sin(a);
-        y=2+Math.sin(rr)*.8;
-      }
-      break;
-    }
-
-    /* ================= VEHICLES ================= */
-
-    case'rocket':{
-      const u=a;
-      const rr=2.2*Math.sqrt(r);
-      x=rr*Math.cos(u);
-      z=rr*Math.sin(u);
-      y=-5+10*t;
-      if(i%8===0){
-        x*=1.5;
-        z*=1.5;
-        y-=2;
-      }
-      break;
-    }
-
-    case'airplane':{
-      const wing=i%3===0;
-      if(wing){
-        x=(Math.random()-.5)*16;
-        y=(Math.random()-.5)*.8;
-        z=(Math.random()-.5)*.7;
-      }else{
-        x=(Math.random()-.5)*10;
-        y=(Math.random()-.5)*1.5;
-        z=(Math.random()-.5)*1.5;
-      }
-      break;
-    }
-
-    case'car':{
-      x=(Math.random()-.5)*10;
-      y=(Math.random()-.5)*2.5;
-      z=(Math.random()-.5)*4;
-      if(i%9===0)y+=2;
-      break;
-    }
-
-    case'bicycle':{
-      const wheel=i%2;
-      const u=a;
-      const rr=3;
-      if(wheel){
-        x=rr*Math.cos(u)-3;
-        y=rr*Math.sin(u);
-        z=-1.5;
-      }else{
-        x=rr*Math.cos(u)+3;
-        y=rr*Math.sin(u);
-        z=-1.5;
-      }
-      if(i%8===0){
-        x=(Math.random()-.5)*6;
-        y=Math.random()*5;
-        z=0;
-      }
-      break;
-    }
-
-    case'motorcycle':{
-      const wheel=i%2;
-      const u=a;
-      const rr=2.5;
-      if(wheel){
-        x=rr*Math.cos(u)-3;
-        y=rr*Math.sin(u)-2;
-        z=0;
-      }else{
-        x=rr*Math.cos(u)+3;
-        y=rr*Math.sin(u)-2;
-        z=0;
-      }
-      if(i%7===0){
-        x=(Math.random()-.5)*8;
-        y=Math.random()*4;
-        z=(Math.random()-.5);
-      }
-      break;
-    }
-
-    /* ================= TECHNOLOGY ================= */
-
-    case'robot':{
-      const section=i%4;
-      if(section===0){
-        x=(Math.random()-.5)*6;
-        y=(Math.random()-.5)*7;
-        z=(Math.random()-.5)*3;
-      }else if(section===1){
-        x=(Math.random()-.5)*9;
-        y=-5+Math.random()*4;
-        z=(Math.random()-.5)*3;
-      }else if(section===2){
-        x=(Math.random()-.5)*10;
-        y=2+Math.random()*3;
-        z=(Math.random()-.5)*3;
-      }else{
-        x=(Math.random()-.5)*3;
-        y=5+Math.random()*2;
-        z=(Math.random()-.5)*2;
-      }
-      break;
-    }
-
-    case'bionicarm':{
-      const u=t*Math.PI*2;
-      const arm=5+Math.sin(u)*1.5;
-      x=arm*Math.cos(u*.5);
-      y=4*Math.sin(u*.5);
-      z=(Math.random()-.5)*2;
-      if(i%10===0)y+=2;
-      break;
-    }
-
-    case'humanarm':{
-      const u=t*Math.PI*1.3;
-      x=2.5+4*Math.sin(u);
-      y=-5+8*t;
-      z=(Math.random()-.5)*2;
-      if(i%12===0)x+=1.5;
-      break;
-    }
-
-    case'brain':{
-      const u=a*8;
-      const rr=4+1.3*Math.sin(u*3);
-      x=rr*Math.cos(u);
-      y=rr*.72*Math.sin(u);
-      z=(Math.random()-.5)*4;
-      break;
-    }
-
-    case'skull':{
-      const u=a;
-      const rr=4;
-      x=rr*Math.cos(u);
-      y=rr*.95*Math.sin(u);
-      z=(Math.random()-.5)*3;
-      if(i%7===0){
-        x*=.55;
-        y*=.55;
-        z+=2;
-      }
-      break;
-    }
-
-    case'atom':{
-      const orbit=i%3;
-      const u=a;
-      const rr=7;
-      if(orbit===0){
-        x=rr*Math.cos(u);
-        y=rr*Math.sin(u);
-        z=0;
-      }else if(orbit===1){
-        x=rr*Math.cos(u);
-        y=0;
-        z=rr*Math.sin(u);
-      }else{
-        x=0;
-        y=rr*Math.cos(u);
-        z=rr*Math.sin(u);
-      }
-      if(i%15===0){
-        x*=.3;
-        y*=.3;
-        z*=.3;
-      }
-      break;
-    }
-
-    case'molecule':{
-      const nodes=[
-        [0,0,0],
-        [4,0,0],
-        [-4,0,0],
-        [0,4,0],
-        [0,-4,0],
-        [0,0,4],
-        [0,0,-4]
-      ];
-      const n=nodes[i%nodes.length];
-      const rr=Math.random()*1.4;
-      x=n[0]+rr*Math.cos(a);
-      y=n[1]+rr*Math.sin(a);
-      z=n[2]+(Math.random()-.5)*1.4;
-      break;
-    }
-
-    /* ================= SPACE ================= */
-
-    case'moon':{
-      const b=Math.acos(Math.random()*2-1);
-      const rr=5.5+Math.random()*.8;
-      x=rr*Math.sin(b)*Math.cos(a);
-      y=rr*Math.cos(b);
-      z=rr*Math.sin(b)*Math.sin(a);
-      break;
-    }
-
-    case'earth':{
-      const b=Math.acos(Math.random()*2-1);
-      const rr=6+Math.random()*.7;
-      x=rr*Math.sin(b)*Math.cos(a);
-      y=rr*Math.cos(b);
-      z=rr*Math.sin(b)*Math.sin(a);
-      break;
-    }
-
-    case'mars':{
-      const b=Math.acos(Math.random()*2-1);
-      const rr=5.5+Math.random()*.8;
-      x=rr*Math.sin(b)*Math.cos(a);
-      y=rr*Math.cos(b);
-      z=rr*Math.sin(b)*Math.sin(a);
-      break;
-    }
-
-    case'comet':{
-      if(r<.35){
-        const rr=2+Math.random()*2;
-        x=rr*Math.cos(a);
-        y=rr*Math.sin(a);
-        z=(Math.random()-.5)*2;
-      }else{
-        const tail=-r*15;
-        x=tail;
-        y=(Math.random()-.5)*2*(r+.2);
-        z=(Math.random()-.5)*2*(r+.2);
-      }
-      break;
-    }
-
-    /* ================= ENERGY / WEATHER ================= */
-
-    case'lightning':{
-      const branch=i%5===0;
-      const yPos=-8+t*16;
-      x=Math.sin(t*15)*2;
-      z=(Math.random()-.5)*1.5;
-      if(branch)x+=Math.sin(t*35)*2;
-      break;
-    }
-
-    case'cloud':{
-      const u=a;
-      const blob=i%5;
-      const offsets=[
-        [-4,1,0],
-        [-2,2,0],
-        [0,2.5,0],
-        [2,2,0],
-        [4,1,0]
-      ];
-      const o=offsets[blob];
-      const rr=2+Math.random()*2;
-      x=o[0]+rr*Math.cos(u);
-      y=o[1]+rr*.65*Math.sin(u);
-      z=o[2]+(Math.random()-.5)*3;
-      break;
-    }
-
-    case'volcano':{
-      const rr=Math.random()*6;
-      x=rr*Math.cos(a);
-      z=rr*Math.sin(a);
-      y=-6+rr*.65+Math.random()*2;
-      if(i%8===0){
-        x*=.35;
-        z*=.35;
-        y+=6+Math.random()*5;
-      }
-      break;
-    }
-
-    case'mountain':{
-      const u=a;
-      const rr=Math.random()*8;
-      x=rr*Math.cos(u);
-      z=rr*Math.sin(u);
-      y=-6+(8-rr)*1.15+Math.random();
-      break;
-    }
-
-    /* ================= ARCHITECTURE ================= */
-
-    case'castle':{
-      const tower=i%4;
-      const centers=[
-        [-5,-3],
-        [5,-3],
-        [-5,3],
-        [5,3]
-      ];
-      const c=centers[tower];
-      x=c[0]+(Math.random()-.5)*2;
-      z=c[1]+(Math.random()-.5)*2;
-      y=-5+Math.random()*10;
-      if(i%13===0)y+=3;
-      break;
-    }
-
-    case'crown':{
-      const u=a;
-      const rr=5;
-      x=rr*Math.cos(u);
-      z=rr*Math.sin(u);
-      y=-2+Math.abs(Math.sin(u*3))*6;
-      break;
-    }
-
-    case'hourglass':{
-      const yy=Math.random()*10-5;
-      const width=Math.abs(yy)*.75+.7;
-      x=(Math.random()-.5)*width;
-      z=(Math.random()-.5)*width;
-      y=yy;
-      if(Math.random()<.18){
-        x=(Math.random()-.5)*1.2;
-        z=(Math.random()-.5)*1.2;
-        y=(Math.random()<.5?-1:1)*Math.random()*3;
-      }
-      break;
-    }
-
-    case'key':{
-      if(i<PARTICLE_COUNT*.55){
-        const u=a;
-        const rr=2.2;
-        x=-4+rr*Math.cos(u);
-        y=rr*Math.sin(u);
-        z=(Math.random()-.5)*1;
-      }else{
-        x=-1+Math.random()*8;
-        y=(Math.random()-.5)*1;
-        z=(Math.random()-.5)*1;
-      }
-      break;
-    }
-
-    case'chessking':{
-      const yy=Math.random()*11-5;
-      const width=
-        yy>3
-        ?1.2
-        :yy>0
-        ?2
-        :3.5;
-      x=(Math.random()-.5)*width;
-      z=(Math.random()-.5)*width;
-      y=yy;
-      if(i%20===0){
-        x=(Math.random()-.5)*2;
-        z=(Math.random()-.5)*2;
-        y=6;
-      }
-      break;
-    }
-
-    /* ================= ABSTRACT ================= */
-
-    case'gear':{
-      const teeth=i%16;
-      const u=teeth*Math.PI*2/16;
-      const rr=(teeth%2?6.5:5);
-      x=rr*Math.cos(u);
-      y=rr*Math.sin(u);
-      z=(Math.random()-.5)*2;
-      break;
-    }
-
-    case'infinity':{
-      const u=t*Math.PI*2;
-      const scale=6;
-      x=scale*Math.sin(u);
-      y=scale*.55*Math.sin(u)*Math.cos(u);
-      z=(Math.random()-.5)*1.4;
-      break;
-    }
-
-    case'spiral':{
-      const turns=5;
-      const u=t*Math.PI*2*turns;
-      const rr=.4+6*t;
-      x=rr*Math.cos(u);
-      y=rr*Math.sin(u);
-      z=(t-.5)*8;
-      break;
-    }
-
-    case'mapleleaf':{
-      const u=a;
-      const rr=
-        5+
-        1.5*Math.sin(3*u)+
-        1.2*Math.sin(7*u);
-      x=rr*Math.cos(u);
-      z=rr*Math.sin(u);
-      y=Math.sin(u*5)*.7;
-      break;
-    }
-
-    case'snowflake':{
-      const branch=i%6;
-      const u=branch*Math.PI/3;
-      const rr=Math.random()*8;
-      x=rr*Math.cos(u);
-      y=rr*Math.sin(u);
-      z=(Math.random()-.5)*.8;
-      if(i%5===0){
-        const side=branch%2?-1:1;
-        x+=side*rr*.3;
-        y+=rr*.15;
-      }
-      break;
-    }
-
-    case'tornado':{
-      const yy=-7+t*14;
-      const rr=.7+t*5.5;
-      x=rr*Math.cos(a*4);
-      z=rr*Math.sin(a*4);
-      y=yy;
-      break;
-    }
-
-    case'wave':{
-      const u=t*Math.PI*4;
-      x=(t-.5)*16;
-      y=Math.sin(u)*3;
-      z=Math.cos(u*1.7)*2;
-      break;
-    }
-
-    /* ================= SPACE TECHNOLOGY ================= */
-
-    case'satellite':{
-      const u=a;
-      const orbit=i%3;
-      if(orbit===0){
-        x=6*Math.cos(u);
-        y=6*Math.sin(u);
-        z=0;
-      }else{
-        x=(Math.random()-.5)*5;
-        y=(Math.random()-.5)*3;
-        z=(Math.random()-.5)*3;
-      }
-      if(i%8===0){
-        x*=1.8;
-        z*=2;
-      }
-      break;
-    }
-
-    case'camera':{
-      const section=i%4;
-      if(section===0){
-        x=(Math.random()-.5)*7;
-        y=(Math.random()-.5)*5;
-        z=(Math.random()-.5)*3;
-      }else if(section===1){
-        const u=a;
-        x=3*Math.cos(u);
-        y=3*Math.sin(u);
-        z=2;
-      }else{
-        x=(Math.random()-.5)*9;
-        y=-2+Math.random()*3;
-        z=(Math.random()-.5)*2;
-      }
-      break;
-    }
-
-    case'microphone':{
-      const yy=-5+Math.random()*10;
-      const rr=
-        yy>1
-        ?2.5
-        :1.1;
-      x=rr*Math.cos(a);
-      z=rr*Math.sin(a);
-      y=yy;
-      if(i%10===0){
-        x=(Math.random()-.5)*4;
-        z=(Math.random()-.5)*4;
-        y=4+Math.random()*3;
-      }
-      break;
-    }
-
-    default:
-      return null;
-  }
-
-  return [x,y,z];
-}
-
-/* =========================================================
    PARTICLE SHAPES
    ========================================================= */
 
 function generateShape(type){
 
   const p=targetPositions;
-
-  if(
-    particleMaterial&&
-    EXTRA_SHAPE_COLORS[type]
-  ){
-    particleMaterial.color.setHex(
-      EXTRA_SHAPE_COLORS[type]
-    );
-
-    dom.colorPicker.value=
-      '#'+EXTRA_SHAPE_COLORS[type]
-        .toString(16)
-        .padStart(6,'0');
-  }
 
   for(let i=0;i<PARTICLE_COUNT;i++){
 
@@ -2018,22 +1252,6 @@ function generateShape(type){
     let x=0;
     let y=0;
     let z=0;
-
-    const extra=
-      generateExtraShape(type,i);
-
-    if(extra){
-
-      x=extra[0];
-      y=extra[1];
-      z=extra[2];
-
-      p[j]=x;
-      p[j+1]=y;
-      p[j+2]=z;
-
-      continue;
-    }
 
     if(type==='jupiter'||type==='saturn'){
 
@@ -2173,11 +1391,470 @@ function generateShape(type){
       x=r*Math.sin(b)*Math.cos(a);
       y=r*Math.sin(b)*Math.sin(a);
       z=r*Math.cos(b);
+
+    }else if(type==='motherboard'){
+
+      /*
+        =====================================================
+        HOLO MOTHERBOARD // CPU CORE
+        =====================================================
+
+        Struttura 3D dettagliata:
+        - PCB
+        - CPU centrale
+        - die
+        - socket
+        - piste
+        - chip secondari
+        - RAM
+        - VRM
+        - condensatori
+        - resistori
+        - LED
+        - connettori
+        - contatti dorati
+        =====================================================
+      */
+
+      const r=Math.random();
+
+      /*
+        1. BASE PCB
+      */
+      if(r<.18){
+
+        x=(Math.random()-.5)*18;
+        y=(Math.random()-.5)*11.5;
+        z=(Math.random()-.5)*.45;
+
+      /*
+        2. BORDO DELLA SCHEDA
+      */
+      }else if(r<.23){
+
+        const edge=Math.floor(Math.random()*4);
+
+        if(edge===0){
+
+          x=-9+Math.random()*.12;
+          y=(Math.random()-.5)*11.5;
+          z=.35;
+
+        }else if(edge===1){
+
+          x=9-Math.random()*.12;
+          y=(Math.random()-.5)*11.5;
+          z=.35;
+
+        }else if(edge===2){
+
+          x=(Math.random()-.5)*18;
+          y=-5.75+Math.random()*.12;
+          z=.35;
+
+        }else{
+
+          x=(Math.random()-.5)*18;
+          y=5.75-Math.random()*.12;
+          z=.35;
+        }
+
+      /*
+        3. CPU PACKAGE CENTRALE
+      */
+      }else if(r<.43){
+
+        const region=Math.random();
+
+        if(region<.40){
+
+          /*
+            PACKAGE ESTERNO CPU
+          */
+          const side=Math.floor(Math.random()*4);
+          const t=(Math.random()-.5)*3.8;
+
+          if(side===0){
+            x=-1.9;
+            y=t;
+          }else if(side===1){
+            x=1.9;
+            y=t;
+          }else if(side===2){
+            x=t;
+            y=-1.9;
+          }else{
+            x=t;
+            y=1.9;
+          }
+
+          z=.65+Math.random()*.12;
+
+        }else if(region<.72){
+
+          /*
+            DIE CENTRALE
+          */
+          x=(Math.random()-.5)*2.55;
+          y=(Math.random()-.5)*2.55;
+          z=.82+Math.random()*.10;
+
+        }else{
+
+          /*
+            STRUTTURA INTERNA DEL DIE
+          */
+          const a=Math.floor(Math.random()*4);
+
+          if(a===0){
+            x=(Math.random()-.5)*2.8;
+            y=1.35+(Math.random()-.5)*.18;
+          }else if(a===1){
+            x=(Math.random()-.5)*2.8;
+            y=-1.35+(Math.random()-.5)*.18;
+          }else if(a===2){
+            x=1.35+(Math.random()-.5)*.18;
+            y=(Math.random()-.5)*2.8;
+          }else{
+            x=-1.35+(Math.random()-.5)*.18;
+            y=(Math.random()-.5)*2.8;
+          }
+
+          z=.95+Math.random()*.10;
+        }
+
+      /*
+        4. CPU PINS / SOCKET
+      */
+      }else if(r<.51){
+
+        const side=Math.floor(Math.random()*4);
+        const t=-2.05+Math.random()*4.1;
+
+        if(side===0){
+          x=-2.25;
+          y=t;
+        }else if(side===1){
+          x=2.25;
+          y=t;
+        }else if(side===2){
+          x=t;
+          y=-2.25;
+        }else{
+          x=t;
+          y=2.25;
+        }
+
+        z=.48+Math.random()*.15;
+
+      /*
+        5. CIRCUIT TRACES
+      */
+      }else if(r<.70){
+
+        const traces=[
+          [-1.6,0, -7.8,0],
+          [1.6,.4, 7.8,.4],
+
+          [0,1.6, 0,5.2],
+          [0,-1.6, 0,-5.2],
+
+          [-1.5,1.2, -5.0,4.5],
+          [1.5,1.2, 5.2,4.6],
+
+          [-1.5,-1.2, -5.5,-4.5],
+          [1.5,-1.2, 5.6,-4.3],
+
+          [-3.0,.7, -7.0,2.4],
+          [3.0,-.7, 7.0,-2.4],
+
+          [-3.2,-.5, -6.2,-.8],
+          [3.2,.5, 6.4,.8],
+
+          [-4.0,3.0, -7.5,3.0],
+          [4.0,-3.0, 7.5,-3.0],
+
+          [-4.5,1.1, -7.5,1.1],
+          [4.5,-1.1, 7.5,-1.1],
+
+          [-.8,2.0, -2.5,5.0],
+          [.8,-2.0, 2.5,-5.0]
+        ];
+
+        const tr=
+          traces[
+            Math.floor(
+              Math.random()*traces.length
+            )
+          ];
+
+        const t=Math.random();
+
+        x=
+          tr[0]+
+          (tr[2]-tr[0])*t;
+
+        y=
+          tr[1]+
+          (tr[3]-tr[1])*t;
+
+        /*
+          leggero spessore 3D della pista
+        */
+        z=.38+Math.random()*.12;
+
+        /*
+          nodi sulle piste
+        */
+        if(Math.random()<.13){
+
+          x+=
+            (Math.random()-.5)*.12;
+
+          y+=
+            (Math.random()-.5)*.12;
+
+          z=.55+Math.random()*.18;
+        }
+
+      /*
+        6. CHIP SECONDARI
+      */
+      }else if(r<.82){
+
+        const chips=[
+          [-6.1,3.9,1.25,.8],
+          [-6.2,-3.4,1.5,.9],
+          [6.2,3.6,1.4,.85],
+          [6.0,-3.7,1.6,.95],
+
+          [-3.8,4.1,1.0,.65],
+          [3.9,4.0,1.1,.7],
+
+          [-4.0,-4.0,1.15,.7],
+          [4.1,-4.0,1.2,.72],
+
+          [-7.1,-.8,.9,1.5],
+          [7.1,.8,.9,1.5],
+
+          [-7.3,2.3,.7,1.0],
+          [7.3,-2.3,.7,1.0]
+        ];
+
+        const chip=
+          chips[
+            Math.floor(
+              Math.random()*chips.length
+            )
+          ];
+
+        const cx=chip[0];
+        const cy=chip[1];
+        const w=chip[2];
+        const h=chip[3];
+
+        const side=Math.floor(Math.random()*4);
+
+        if(Math.random()<.72){
+
+          x=
+            cx+
+            (Math.random()-.5)*w;
+
+          y=
+            cy+
+            (Math.random()-.5)*h;
+
+          z=.52+Math.random()*.28;
+
+        }else{
+
+          if(side===0){
+            x=cx-w*.55;
+            y=cy+(Math.random()-.5)*h;
+          }else if(side===1){
+            x=cx+w*.55;
+            y=cy+(Math.random()-.5)*h;
+          }else if(side===2){
+            x=cx+(Math.random()-.5)*w;
+            y=cy-h*.55;
+          }else{
+            x=cx+(Math.random()-.5)*w;
+            y=cy+h*.55;
+          }
+
+          z=.48+Math.random()*.20;
+        }
+
+      /*
+        7. RAM MODULES
+      */
+      }else if(r<.87){
+
+        const ramSide=
+          Math.random()<.5
+          ?-1
+          :1;
+
+        const baseX=
+          ramSide<0
+          ?-5.0
+          :5.0;
+
+        const slot=
+          Math.floor(
+            Math.random()*3
+          );
+
+        x=
+          baseX+
+          (Math.random()-.5)*.7;
+
+        y=
+          1.0+
+          slot*1.25+
+          (Math.random()-.5)*.45;
+
+        z=.60+Math.random()*.18;
+
+      /*
+        8. CAPACITORI CILINDRICI
+      */
+      }else if(r<.92){
+
+        const positions=[
+          [-7.0,4.5],
+          [-7.0,-4.5],
+          [-4.8,4.8],
+          [-4.8,-4.8],
+
+          [7.0,4.5],
+          [7.0,-4.5],
+          [4.8,4.8],
+          [4.8,-4.8],
+
+          [-2.8,4.6],
+          [2.8,4.6],
+          [-2.8,-4.6],
+          [2.8,-4.6]
+        ];
+
+        const pos=
+          positions[
+            Math.floor(
+              Math.random()*positions.length
+            )
+          ];
+
+        const a=Math.random()*Math.PI*2;
+        const rr=.15+Math.random()*.15;
+
+        x=pos[0]+Math.cos(a)*rr;
+        y=pos[1]+Math.sin(a)*rr;
+        z=.55+Math.random()*.45;
+
+      /*
+        9. CONTATTI DORATI
+      */
+      }else if(r<.965){
+
+        const edge=
+          Math.floor(
+            Math.random()*4
+          );
+
+        if(edge===0){
+
+          x=-8.4+Math.random()*16.8;
+          y=5.38;
+          z=.52+Math.random()*.15;
+
+        }else if(edge===1){
+
+          x=-8.4+Math.random()*16.8;
+          y=-5.38;
+          z=.52+Math.random()*.15;
+
+        }else if(edge===2){
+
+          x=-8.38;
+          y=-4.8+Math.random()*9.6;
+          z=.52+Math.random()*.15;
+
+        }else{
+
+          x=8.38;
+          y=-4.8+Math.random()*9.6;
+          z=.52+Math.random()*.15;
+        }
+
+      /*
+        10. LED / NODI DIAGNOSTICI
+      */
+      }else{
+
+        const nodes=[
+          [-7.2,0],
+          [-5.7,1.7],
+          [-5.7,-1.7],
+          [7.2,0],
+          [5.7,1.7],
+          [5.7,-1.7],
+
+          [-2.7,3.2],
+          [2.7,3.2],
+          [-2.7,-3.2],
+          [2.7,-3.2],
+
+          [-1.0,4.2],
+          [1.0,4.2],
+          [-1.0,-4.2],
+          [1.0,-4.2]
+        ];
+
+        const node=
+          nodes[
+            Math.floor(
+              Math.random()*nodes.length
+            )
+          ];
+
+        const a=Math.random()*Math.PI*2;
+        const rr=Math.random()*.16;
+
+        x=node[0]+Math.cos(a)*rr;
+        y=node[1]+Math.sin(a)*rr;
+        z=.72+Math.random()*.32;
+      }
     }
 
     p[j]=x;
     p[j+1]=y;
     p[j+2]=z;
+  }
+
+  /*
+    Palette specifica della motherboard.
+  */
+  setParticlePalette(type);
+
+  /*
+    200% di nitidezza quando è attiva
+    la motherboard.
+  */
+  if(renderer){
+
+    renderer.setPixelRatio(
+      type==='motherboard'
+      ?CONFIG.motherboardPixelRatio
+      :1
+    );
+
+    renderer.setSize(
+      innerWidth,
+      innerHeight,
+      false
+    );
   }
 
   shapePulse=1;
@@ -2726,6 +2403,13 @@ function updateParticleTargets(){
 
   const p=activeHand.pos;
 
+  /*
+    SENSIBILITÀ ALTA E IDENTICA
+
+    X = 0.50
+    Y = 0.50
+  */
+
   targetRotY=
     THREE.MathUtils.clamp(
       p.x*CONFIG.axisSensitivity,
@@ -3265,6 +2949,22 @@ function switchMode(mode){
   builderGroup.visible=builder;
   particleGroup.visible=!builder;
 
+  /*
+    Se torni al Builder, torna alla
+    risoluzione normale.
+  */
+  if(renderer){
+    renderer.setPixelRatio(
+      1
+    );
+
+    renderer.setSize(
+      innerWidth,
+      innerHeight,
+      false
+    );
+  }
+
   controllers.forEach(c=>{
 
     c.rayLine.visible=
@@ -3283,6 +2983,26 @@ function switchMode(mode){
     });
 
     updateSelectionUI();
+
+    /*
+      Ripristina la risoluzione della forma
+      attualmente selezionata se è la motherboard.
+    */
+    if(
+      dom.shapeSelect.value==='motherboard' &&
+      renderer
+    ){
+
+      renderer.setPixelRatio(
+        CONFIG.motherboardPixelRatio
+      );
+
+      renderer.setSize(
+        innerWidth,
+        innerHeight,
+        false
+      );
+    }
   }
 }
 
@@ -3449,7 +3169,16 @@ function onResize(){
 
   camera.updateProjectionMatrix();
 
-  renderer.setPixelRatio(1);
+  /*
+    La motherboard mantiene il 200%.
+    Tutto il resto rimane a 1x.
+  */
+  renderer.setPixelRatio(
+    currentMode==='PARTICLES' &&
+    dom.shapeSelect.value==='motherboard'
+    ?CONFIG.motherboardPixelRatio
+    :1
+  );
 
   renderer.setSize(
     innerWidth,
