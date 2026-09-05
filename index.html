@@ -1080,177 +1080,301 @@ function createCpuHologram() {
   const content = new THREE.Group();
   hologramGroup.add(content);
 
-  // Materials â€“ glowing tech look
-  const matCyan = new THREE.MeshBasicMaterial({
-    color: 0x00eaff, transparent: true, opacity: 0.95,
-    depthWrite: false, blending: THREE.AdditiveBlending
+  // ---- Realistic PBR materials ----
+  const matPCB = new THREE.MeshStandardMaterial({
+    color: 0x0a1a12, roughness: 0.72, metalness: 0.15, flatShading: false
   });
-  const matBlue = new THREE.MeshBasicMaterial({
-    color: 0x4488ff, transparent: true, opacity: 0.9,
-    depthWrite: false, blending: THREE.AdditiveBlending
+  const matPCBDark = new THREE.MeshStandardMaterial({
+    color: 0x050a08, roughness: 0.85, metalness: 0.1
   });
-  const matYellow = new THREE.MeshBasicMaterial({
-    color: 0xffcc33, transparent: true, opacity: 0.95,
-    depthWrite: false, blending: THREE.AdditiveBlending
+  const matCopper = new THREE.MeshStandardMaterial({
+    color: 0xb87333, roughness: 0.35, metalness: 0.95, emissive: 0x221100, emissiveIntensity: 0.15
   });
-  const matOrange = new THREE.MeshBasicMaterial({
-    color: 0xff8822, transparent: true, opacity: 0.85,
-    depthWrite: false, blending: THREE.AdditiveBlending
+  const matGold = new THREE.MeshStandardMaterial({
+    color: 0xd4af37, roughness: 0.25, metalness: 1.0, emissive: 0x332200, emissiveIntensity: 0.2
   });
-  const matDim = new THREE.MeshBasicMaterial({
-    color: 0x2266aa, transparent: true, opacity: 0.45,
-    depthWrite: false, blending: THREE.AdditiveBlending
+  const matSilver = new THREE.MeshStandardMaterial({
+    color: 0xc0c5ce, roughness: 0.3, metalness: 0.9
+  });
+  const matChip = new THREE.MeshStandardMaterial({
+    color: 0x1a1a1e, roughness: 0.55, metalness: 0.4
+  });
+  const matChipBody = new THREE.MeshStandardMaterial({
+    color: 0x2a2a30, roughness: 0.5, metalness: 0.35
+  });
+  const matPlastic = new THREE.MeshStandardMaterial({
+    color: 0x222228, roughness: 0.7, metalness: 0.1
+  });
+  const matLEDCyan = new THREE.MeshStandardMaterial({
+    color: 0x00e5ff, roughness: 0.2, metalness: 0.3,
+    emissive: 0x00ccee, emissiveIntensity: 1.8
+  });
+  const matLEDYellow = new THREE.MeshStandardMaterial({
+    color: 0xffcc33, roughness: 0.2, metalness: 0.3,
+    emissive: 0xffaa00, emissiveIntensity: 1.6
+  });
+  const matLEDOrange = new THREE.MeshStandardMaterial({
+    color: 0xff6622, roughness: 0.2, metalness: 0.3,
+    emissive: 0xff4400, emissiveIntensity: 1.5
+  });
+  const matLEDPink = new THREE.MeshStandardMaterial({
+    color: 0xff44aa, roughness: 0.2, metalness: 0.3,
+    emissive: 0xff2288, emissiveIntensity: 1.4
+  });
+  const matCore = new THREE.MeshStandardMaterial({
+    color: 0xffaa22, roughness: 0.15, metalness: 0.8,
+    emissive: 0xff8800, emissiveIntensity: 1.2
+  });
+  const matCoreInner = new THREE.MeshStandardMaterial({
+    color: 0x00ddff, roughness: 0.15, metalness: 0.7,
+    emissive: 0x00aadd, emissiveIntensity: 1.5
+  });
+  const matGlass = new THREE.MeshStandardMaterial({
+    color: 0x88ccff, roughness: 0.05, metalness: 0.1,
+    transparent: true, opacity: 0.35, emissive: 0x2266aa, emissiveIntensity: 0.4
   });
 
-  // Helper: thin box used as a circuit trace
+  function box(w, h, d, mat) {
+    return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  }
+  function cyl(rt, rb, h, seg, mat) {
+    return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), mat);
+  }
+  function torus(r, t, rs, ts, mat) {
+    return new THREE.Mesh(new THREE.TorusGeometry(r, t, rs, ts), mat);
+  }
+
   function trace(x1, z1, x2, z2, y, thick, mat) {
     const dx = x2 - x1, dz = z2 - z1;
     const len = Math.sqrt(dx * dx + dz * dz) || 0.01;
-    const mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(len, 0.06, thick),
-      mat
-    );
-    mesh.position.set((x1 + x2) / 2, y, (z1 + z2) / 2);
-    mesh.rotation.y = -Math.atan2(dz, dx);
-    content.add(mesh);
-    return mesh;
+    const m = box(len, 0.04, thick, mat);
+    m.position.set((x1 + x2) / 2, y, (z1 + z2) / 2);
+    m.rotation.y = -Math.atan2(dz, dx);
+    content.add(m);
+    return m;
   }
 
-  // Helper: chip (raised rectangle)
-  function chip(x, z, w, d, h, mat) {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-    mesh.position.set(x, h / 2, z);
-    content.add(mesh);
-    // small pins under chip
-    const pinMat = matDim;
-    for (let i = -1; i <= 1; i += 2) {
-      for (let j = -1; j <= 1; j += 2) {
-        const pin = new THREE.Mesh(
-          new THREE.BoxGeometry(0.12, 0.15, 0.12),
-          pinMat
-        );
-        pin.position.set(x + i * w * 0.35, 0.05, z + j * d * 0.35);
+  function chip(x, z, w, d, h, bodyMat) {
+    const body = box(w, h, d, bodyMat || matChipBody);
+    body.position.set(x, h / 2 + 0.03, z);
+    content.add(body);
+    // ceramic top
+    const top = box(w * 0.85, 0.08, d * 0.7, matChip);
+    top.position.set(x, h + 0.07, z);
+    content.add(top);
+    // gold pin rows
+    const nx = Math.max(3, Math.floor(w / 0.28));
+    for (let i = 0; i < nx; i++) {
+      const px = x - w / 2 + 0.12 + i * ((w - 0.24) / Math.max(1, nx - 1));
+      for (const side of [-1, 1]) {
+        const pin = box(0.07, 0.14, 0.07, matGold);
+        pin.position.set(px, 0.07, z + side * (d / 2 + 0.04));
         content.add(pin);
       }
     }
-    return mesh;
+    // tiny logo pad
+    const logo = box(w * 0.25, 0.02, d * 0.2, matSilver);
+    logo.position.set(x, h + 0.12, z);
+    content.add(logo);
   }
 
-  // === PCB BASE (very thin, dark cyan glow outline only) ===
-  const baseOutline = new THREE.Mesh(
-    new THREE.BoxGeometry(16, 0.04, 12),
-    matDim
-  );
-  baseOutline.position.y = -0.02;
-  content.add(baseOutline);
+  // === REALISTIC PCB BASE ===
+  const pcb = box(16, 0.12, 11.5, matPCB);
+  pcb.position.y = 0;
+  content.add(pcb);
+  // subtle inner layer hint
+  const pcbInner = box(15.6, 0.04, 11.1, matPCBDark);
+  pcbInner.position.y = 0.08;
+  content.add(pcbInner);
 
-  // === CENTRAL GEAR / CORE ===
-  const gear = new THREE.Mesh(
-    new THREE.TorusGeometry(2.2, 0.18, 10, 32),
-    matYellow
-  );
-  gear.rotation.x = Math.PI / 2;
-  gear.position.y = 0.35;
-  content.add(gear);
+  // Edge plating (gold contacts strip)
+  const edgeGold = box(16.1, 0.06, 0.25, matGold);
+  edgeGold.position.set(0, 0.02, -5.85);
+  content.add(edgeGold);
+  const edgeGold2 = edgeGold.clone();
+  edgeGold2.position.z = 5.85;
+  content.add(edgeGold2);
 
-  const gearInner = new THREE.Mesh(
-    new THREE.TorusGeometry(1.4, 0.12, 8, 24),
-    matCyan
-  );
-  gearInner.rotation.x = Math.PI / 2;
-  gearInner.position.y = 0.4;
-  content.add(gearInner);
+  // === CENTRAL ARC REACTOR STYLE CORE ===
+  const coreGroup = new THREE.Group();
+  content.add(coreGroup);
 
-  const core = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.7, 0.7, 0.5, 16),
-    matOrange
-  );
-  core.position.y = 0.35;
-  content.add(core);
+  const ring1 = torus(2.5, 0.14, 14, 48, matGold);
+  ring1.rotation.x = Math.PI / 2;
+  ring1.position.y = 0.55;
+  coreGroup.add(ring1);
 
-  // Gear teeth (simple boxes around)
-  for (let i = 0; i < 16; i++) {
-    const a = (i / 16) * Math.PI * 2;
-    const tooth = new THREE.Mesh(
-      new THREE.BoxGeometry(0.35, 0.25, 0.45),
-      matYellow
-    );
-    tooth.position.set(Math.cos(a) * 2.45, 0.35, Math.sin(a) * 2.45);
+  const ring2 = torus(1.9, 0.11, 12, 40, matCopper);
+  ring2.rotation.x = Math.PI / 2;
+  ring2.position.y = 0.6;
+  coreGroup.add(ring2);
+
+  const ring3 = torus(1.3, 0.09, 10, 36, matCoreInner);
+  ring3.rotation.x = Math.PI / 2;
+  ring3.position.y = 0.65;
+  coreGroup.add(ring3);
+
+  // Teeth
+  for (let i = 0; i < 20; i++) {
+    const a = (i / 20) * Math.PI * 2;
+    const tooth = box(0.32, 0.28, 0.42, matGold);
+    tooth.position.set(Math.cos(a) * 2.75, 0.55, Math.sin(a) * 2.75);
     tooth.rotation.y = -a;
-    content.add(tooth);
+    coreGroup.add(tooth);
   }
 
-  // === CHIPS around the board ===
-  chip(-5.5, -3.2, 2.2, 1.6, 0.45, matCyan);
-  chip(5.2, -2.8, 1.8, 1.4, 0.4, matBlue);
-  chip(-4.8, 3.5, 2.0, 1.5, 0.5, matYellow);
-  chip(4.5, 3.2, 2.4, 1.8, 0.42, matCyan);
-  chip(-1.5, -4.5, 1.4, 1.0, 0.35, matBlue);
-  chip(1.8, 4.6, 1.5, 1.1, 0.38, matOrange);
-  chip(6.5, 0.5, 1.2, 2.0, 0.4, matYellow);
-  chip(-6.3, 0.2, 1.3, 1.8, 0.36, matBlue);
+  const coreLow = cyl(1.0, 1.05, 0.4, 24, matCopper);
+  coreLow.position.y = 0.28;
+  coreGroup.add(coreLow);
+  const coreMid = cyl(0.7, 0.7, 0.55, 20, matCore);
+  coreMid.position.y = 0.65;
+  coreGroup.add(coreMid);
+  const coreTop = cyl(0.35, 0.5, 0.28, 16, matCoreInner);
+  coreTop.position.y = 1.0;
+  coreGroup.add(coreTop);
 
-  // === CIRCUIT TRACES (horizontal + vertical + some diagonals) ===
-  // Horizontal main buses
-  trace(-7.5, -1.5, 7.5, -1.5, 0.05, 0.12, matCyan);
-  trace(-7.5, 1.5, 7.5, 1.5, 0.05, 0.12, matBlue);
-  trace(-6, -3.8, 6, -3.8, 0.05, 0.1, matYellow);
-  trace(-6, 3.8, 6, 3.8, 0.05, 0.1, matCyan);
+  // Glass dome over core
+  const dome = new THREE.Mesh(
+    new THREE.SphereGeometry(1.15, 24, 16, 0, Math.PI * 2, 0, Math.PI * 0.5),
+    matGlass
+  );
+  dome.position.y = 0.85;
+  coreGroup.add(dome);
 
-  // Vertical buses
-  trace(-3, -5.5, -3, 5.5, 0.06, 0.1, matBlue);
-  trace(3, -5.5, 3, 5.5, 0.06, 0.1, matCyan);
-  trace(0, -5.5, 0, -2.8, 0.06, 0.08, matYellow);
-  trace(0, 2.8, 0, 5.5, 0.06, 0.08, matYellow);
+  // Energy pillars
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2;
+    const beam = box(0.07, 1.3, 0.07, matLEDCyan);
+    beam.position.set(Math.cos(a) * 1.1, 0.75, Math.sin(a) * 1.1);
+    coreGroup.add(beam);
+  }
 
-  // Connections from chips to center
-  trace(-5.5, -3.2, -2.5, -1.5, 0.08, 0.08, matCyan);
-  trace(5.2, -2.8, 2.5, -1.5, 0.08, 0.08, matBlue);
-  trace(-4.8, 3.5, -2.5, 1.5, 0.08, 0.08, matYellow);
-  trace(4.5, 3.2, 2.5, 1.5, 0.08, 0.08, matCyan);
-  trace(-6.3, 0.2, -2.5, 0, 0.08, 0.07, matBlue);
-  trace(6.5, 0.5, 2.5, 0, 0.08, 0.07, matYellow);
+  // Point lights on core for realism
+  const coreLight = new THREE.PointLight(0xffaa44, 1.2, 12);
+  coreLight.position.set(0, 1.2, 0);
+  coreGroup.add(coreLight);
+  const coreLight2 = new THREE.PointLight(0x00ccff, 0.8, 10);
+  coreLight2.position.set(0, 0.8, 0);
+  coreGroup.add(coreLight2);
 
-  // Extra small traces for density
-  for (let i = 0; i < 12; i++) {
+  // === CHIPS ===
+  const chips = [
+    [-5.6, -3.6, 2.5, 1.8, 0.55],
+    [5.4, -3.3, 2.1, 1.6, 0.5],
+    [-5.0, 3.6, 2.3, 1.7, 0.6],
+    [4.9, 3.4, 2.7, 2.0, 0.52],
+    [-2.0, -4.8, 1.7, 1.3, 0.42],
+    [2.3, 4.9, 1.8, 1.4, 0.45],
+    [6.6, 0.2, 1.5, 2.3, 0.48],
+    [-6.6, -0.1, 1.6, 2.1, 0.44],
+    [-3.4, 0.1, 1.4, 1.1, 0.38],
+    [3.4, -0.1, 1.3, 1.0, 0.36],
+    [0.0, -4.6, 1.9, 1.2, 0.4],
+    [0.0, 4.6, 1.9, 1.2, 0.4]
+  ];
+  chips.forEach(([x, z, w, d, h]) => chip(x, z, w, d, h));
+
+  // === COPPER TRACES ===
+  const buses = [
+    [-7.5, -2.0, 7.5, -2.0, 0.14],
+    [-7.5, 2.0, 7.5, 2.0, 0.14],
+    [-6.5, -4.1, 6.5, -4.1, 0.11],
+    [-6.5, 4.1, 6.5, 4.1, 0.11],
+    [-4.0, -5.6, -4.0, 5.6, 0.12],
+    [4.0, -5.6, 4.0, 5.6, 0.12],
+    [-7.2, 0, -3.2, 0, 0.1],
+    [3.2, 0, 7.2, 0, 0.1]
+  ];
+  buses.forEach(([x1, z1, x2, z2, th]) => trace(x1, z1, x2, z2, 0.1, th, matCopper));
+
+  // Connections to core
+  [[-5.6, -3.6, -2.7, -2.0], [5.4, -3.3, 2.7, -2.0],
+   [-5.0, 3.6, -2.7, 2.0], [4.9, 3.4, 2.7, 2.0],
+   [-6.6, -0.1, -3.2, 0], [6.6, 0.2, 3.2, 0],
+   [0, -4.6, 0, -3.0], [0, 4.6, 0, 3.0]
+  ].forEach(([x1, z1, x2, z2]) => trace(x1, z1, x2, z2, 0.12, 0.09, matGold));
+
+  // Micro traces
+  for (let i = 0; i < 32; i++) {
     const x = (Math.random() - 0.5) * 14;
-    const z = (Math.random() - 0.5) * 10;
-    const len = 0.8 + Math.random() * 1.8;
+    const z = (Math.random() - 0.5) * 9;
+    const len = 0.5 + Math.random() * 2.0;
     const horiz = Math.random() > 0.5;
-    if (horiz) {
-      trace(x, z, x + len, z, 0.04, 0.06, Math.random() > 0.5 ? matCyan : matBlue);
-    } else {
-      trace(x, z, x, z + len, 0.04, 0.06, Math.random() > 0.5 ? matYellow : matDim);
-    }
+    const mat = Math.random() > 0.7 ? matGold : matCopper;
+    if (horiz) trace(x, z, x + len * (Math.random() > 0.5 ? 1 : -1), z, 0.09, 0.045, mat);
+    else trace(x, z, x, z + len * (Math.random() > 0.5 ? 1 : -1), 0.09, 0.045, mat);
   }
 
-  // Corner connectors / pads
-  const padGeo = new THREE.BoxGeometry(0.35, 0.08, 0.35);
-  [[-7.2, -5.2], [7.2, -5.2], [-7.2, 5.2], [7.2, 5.2],
-   [-7.2, 0], [7.2, 0], [0, -5.2], [0, 5.2]].forEach(([x, z]) => {
-    const pad = new THREE.Mesh(padGeo, matOrange);
-    pad.position.set(x, 0.04, z);
-    content.add(pad);
+  // L traces
+  for (let i = 0; i < 12; i++) {
+    const x = (Math.random() - 0.5) * 12;
+    const z = (Math.random() - 0.5) * 8;
+    trace(x, z, x + 1.3, z, 0.095, 0.05, matCopper);
+    trace(x + 1.3, z, x + 1.3, z + 1.1, 0.095, 0.05, matCopper);
+  }
+
+  // === EDGE PORTS ===
+  for (let i = -3; i <= 3; i++) {
+    if (i === 0) continue;
+    const p = box(0.55, 0.28, 0.4, matPlastic);
+    p.position.set(i * 1.85, 0.2, -5.95);
+    content.add(p);
+    const g = box(0.4, 0.08, 0.15, matGold);
+    g.position.set(i * 1.85, 0.12, -6.15);
+    content.add(g);
+  }
+  for (let i = -2; i <= 2; i++) {
+    const p = box(0.4, 0.28, 0.55, matPlastic);
+    p.position.set(-7.7, 0.2, i * 1.85);
+    content.add(p);
+    const p2 = p.clone();
+    p2.position.x = 7.7;
+    content.add(p2);
+  }
+
+  // === LEDS with real glow lights ===
+  const ledMats = [matLEDCyan, matLEDYellow, matLEDOrange, matLEDPink];
+  const ledLights = [];
+  for (let i = 0; i < 16; i++) {
+    const mat = ledMats[i % 4];
+    const lx = (Math.random() - 0.5) * 13;
+    const lz = (Math.random() - 0.5) * 9;
+    const led = cyl(0.11, 0.11, 0.3 + Math.random() * 0.2, 10, mat);
+    led.position.set(lx, 0.22, lz);
+    content.add(led);
+    const pl = new THREE.PointLight(mat.emissive, 0.35, 3.5);
+    pl.position.set(lx, 0.45, lz);
+    content.add(pl);
+    ledLights.push(pl);
+  }
+
+  // Corner data stacks
+  [[-7.0, -5.0], [7.0, -5.0], [-7.0, 5.0], [7.0, 5.0]].forEach(([x, z]) => {
+    for (let k = 0; k < 5; k++) {
+      const p = box(0.22, 0.16, 0.22, k % 2 ? matSilver : matCopper);
+      p.position.set(x, 0.2 + k * 0.3, z);
+      content.add(p);
+    }
   });
 
-  // Small vertical posts (like capacitors / LEDs)
-  for (let i = 0; i < 10; i++) {
-    const post = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.08, 0.08, 0.55 + Math.random() * 0.4, 6),
-      Math.random() > 0.5 ? matCyan : matYellow
-    );
-    post.position.set(
-      (Math.random() - 0.5) * 13,
-      0.3,
-      (Math.random() - 0.5) * 9
-    );
-    content.add(post);
-  }
+  // Soft ambient fill only for this group (extra lights)
+  const fill = new THREE.PointLight(0xaaccff, 0.45, 25);
+  fill.position.set(0, 6, 4);
+  hologramGroup.add(fill);
+  const fill2 = new THREE.PointLight(0xffcc88, 0.3, 20);
+  fill2.position.set(-5, 4, -3);
+  hologramGroup.add(fill2);
 
-  hologramGroup.userData = { content, gear, gearInner, core, idleTime: 0 };
-  content.rotation.x = -0.35;
-  content.rotation.y = 0.45;
+  hologramGroup.userData = {
+    content, coreGroup, ring1, ring2, ring3,
+    coreLight, coreLight2, ledLights, idleTime: 0
+  };
+
+  content.rotation.x = -0.42;
+  content.rotation.y = 0.55;
 }
+
+
 
 
 
@@ -1294,8 +1418,7 @@ function spawnShape(type, x, y, z) {
   const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, roughness: 0.35, metalness: 0.2 }));
   mesh.position.set(x ?? (Math.random() - 0.5) * 8, y ?? 6, z ?? (Math.random() - 0.5) * 4);
   mesh.rotation.set(0, 0, 0);
-  mesh.userData = { originalColor: color, velocity: new THREE.Vector3(), isGrabbed: false, size, type };
-  builderGroup.add(mesh);
+  mesh.userData = { originalColor: color, velocity: new THREE.Vector3(), isGrabbed: false, size, type };  builderGroup.add(mesh);
   blocks.push(mesh);
   if (blocks.length > CONFIG.maxBlocks) disposeBlock(blocks.shift());
 }
@@ -1355,7 +1478,8 @@ function randomShell(radius) {
 
 function generateCPU(i) {
   function iso(x, y, z) {
-    const a = 0.38, b = 0.55;    const cosA = Math.cos(a), sinA = Math.sin(a);
+    const a = 0.38, b = 0.55;
+    const cosA = Math.cos(a), sinA = Math.sin(a);
     const cosB = Math.cos(b), sinB = Math.sin(b);
     let x1 = x * cosB - z * sinB;
     let z1 = x * sinB + z * cosB;
@@ -1947,18 +2071,25 @@ function updateParticles(delta) {
 
   shapePulse = Math.max(0, shapePulse - 0.025 * delta);
 
-  // 3D circuit hologram idle animation
+  // 3D circuit â€“ realistic idle
   if (isCpuHologram && hologramGroup) {
     const ud = hologramGroup.userData;
     ud.idleTime = (ud.idleTime || 0) + delta * 0.016;
     const t = ud.idleTime;
-    hologramGroup.position.y = Math.sin(t * 0.9) * 0.2;
-    if (ud.content) {
-      ud.content.rotation.y += 0.003 * delta;
+    hologramGroup.position.y = Math.sin(t * 0.85) * 0.15;
+    if (ud.content) ud.content.rotation.y += 0.002 * delta;
+    if (ud.coreGroup) ud.coreGroup.rotation.y += 0.006 * delta;
+    if (ud.ring1) ud.ring1.rotation.z += 0.02 * delta;
+    if (ud.ring2) ud.ring2.rotation.z -= 0.028 * delta;
+    if (ud.ring3) ud.ring3.rotation.z += 0.038 * delta;
+    // Pulse core lights
+    if (ud.coreLight) ud.coreLight.intensity = 1.0 + Math.sin(t * 2.2) * 0.35;
+    if (ud.coreLight2) ud.coreLight2.intensity = 0.7 + Math.sin(t * 2.8) * 0.25;
+    if (ud.ledLights) {
+      ud.ledLights.forEach((pl, i) => {
+        pl.intensity = 0.25 + Math.sin(t * 3 + i * 0.7) * 0.15;
+      });
     }
-    if (ud.gear) ud.gear.rotation.z += 0.02 * delta;
-    if (ud.gearInner) ud.gearInner.rotation.z -= 0.03 * delta;
-    if (ud.core) ud.core.rotation.y += 0.015 * delta;
     return;
   }
 
