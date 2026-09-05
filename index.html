@@ -1307,6 +1307,11 @@ let targetRotX=0;
 let targetRotY=0;
 let targetRotZ=0;
 
+// Per rotazione continua illimitata (segue il movimento delle mani)
+let lastHandCenterX=0;
+let lastHandCenterY=0;
+let hasLastHandCenter=false;
+
 let shapePulse=0;
 
 let lastFrame=performance.now();
@@ -4635,17 +4640,19 @@ function updateParticleTargets(){
 
   /*
     =======================================================
-    DUE MANI
+    ROTAZIONE CONTINUA ILLIMITATA
     =======================================================
 
-    IMPORTANTISSIMO:
+    La rotazione NON è più limitata.
+    Segue il DELTA di movimento delle mani:
+    puoi fare quanti giri vuoi (anche 10+).
 
-    La distanza tra le mani serve SOLO per lo ZOOM.
-
-    NON viene più usata per la rotazione.
-
-    La rotazione segue il CENTRO delle due mani.
+    - Due mani → centro tra le due
+    - Una mano → posizione della mano attiva
+    - Distanza tra le mani → solo ZOOM
   */
+
+  const ROT_GAIN=0.85; // sensibilità rotazione continua
 
   if(
     left.active&&
@@ -4658,44 +4665,37 @@ function updateParticleTargets(){
     const b=
       right.pos;
 
-    /*
-      CENTRO REALE DELLE DUE MANI
-    */
-
     const center=
       new THREE.Vector3()
       .addVectors(a,b)
       .multiplyScalar(.5);
 
-    /*
-      MOVIMENTO X -> ROTAZIONE Y
-      MOVIMENTO Y -> ROTAZIONE X
+    if(hasLastHandCenter){
 
-      La distanza non entra qui.
-    */
+      const dx=
+        center.x-lastHandCenterX;
 
-    targetRotY=
-      THREE.MathUtils.clamp(
+      const dy=
+        center.y-lastHandCenterY;
 
-        center.x*
-        CONFIG.axisSensitivity,
+      // Accumulo continuo (nessun clamp)
+      targetRotY+=
+        dx*
+        CONFIG.axisSensitivity*
+        ROT_GAIN;
 
-        -2.5,
-        2.5
-      );
+      targetRotX+=
+        -dy*
+        CONFIG.axisSensitivity*
+        ROT_GAIN;
+    }
 
-    targetRotX=
-      THREE.MathUtils.clamp(
-
-        -center.y*
-        CONFIG.axisSensitivity,
-
-        -2.5,
-        2.5
-      );
+    lastHandCenterX=center.x;
+    lastHandCenterY=center.y;
+    hasLastHandCenter=true;
 
     /*
-      SOLO DISTANZA -> ZOOM
+      SOLO DISTANZA → ZOOM
     */
 
     const distance=
@@ -4725,30 +4725,36 @@ function updateParticleTargets(){
     ?right
     :null;
 
-  if(!activeHand)return;
+  if(!activeHand){
+    hasLastHandCenter=false;
+    return;
+  }
 
   const p=
     activeHand.pos;
 
-  targetRotY=
-    THREE.MathUtils.clamp(
+  if(hasLastHandCenter){
 
-      p.x*
-      CONFIG.axisSensitivity,
+    const dx=
+      p.x-lastHandCenterX;
 
-      -2.5,
-      2.5
-    );
+    const dy=
+      p.y-lastHandCenterY;
 
-  targetRotX=
-    THREE.MathUtils.clamp(
+    targetRotY+=
+      dx*
+      CONFIG.axisSensitivity*
+      ROT_GAIN;
 
-      -p.y*
-      CONFIG.axisSensitivity,
+    targetRotX+=
+      -dy*
+      CONFIG.axisSensitivity*
+      ROT_GAIN;
+  }
 
-      -2.5,
-      2.5
-    );
+  lastHandCenterX=p.x;
+  lastHandCenterY=p.y;
+  hasLastHandCenter=true;
 
   targetScale=
     THREE.MathUtils.clamp(
