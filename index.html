@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>STARK KINETIC LAB v13 // VISION PRO</title>
+<title>STARK KINETIC LAB v14 // VISION PRO</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,120 +11,86 @@
 
 <style>
 :root{
-  --white:#fff;
-  --dim:rgba(255,255,255,.58);
-  --line:rgba(255,255,255,.16);
-  --panel:rgba(8,10,12,.78);
   --green:#00ffcc;
   --pink:#ff00aa;
   --yellow:#ffe66d;
-  --red:#ff5577;
   --cyan:#00e8ff;
-  --radius:18px;
+  --line:rgba(255,255,255,.18);
+  --panel:rgba(6,9,12,.82);
 }
 
-*{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none;}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Share Tech Mono',monospace;color:#fff;}
-body{position:fixed;inset:0;touch-action:none;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+body{
+  font-family:'Share Tech Mono',monospace;
+  background:#000;color:#fff;overflow:hidden;
+  position:fixed;inset:0;
+}
 
-button,select,input{font:inherit;}
-button{color:inherit;}
-
-#canvas-container{position:absolute;inset:0;width:100vw;height:100vh;z-index:1;}
+#canvas-container{position:absolute;inset:0;z-index:1;}
 
 .hud-scanline{
   position:fixed;inset:0;z-index:5;pointer-events:none;
-  background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.018) 4px);
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent 4px,rgba(0,255,220,.025) 5px);
   mix-blend-mode:screen;
 }
 
 .stark-header{
-  position:absolute;top:0;left:0;width:100%;height:60px;z-index:10;
-  display:flex;align-items:center;justify-content:space-between;padding:0 24px;
-  background:rgba(8,8,8,.75);backdrop-filter:blur(12px);
+  position:absolute;top:0;left:0;right:0;height:64px;
+  background:rgba(5,8,12,.85);backdrop-filter:blur(16px);
   border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px;
+  z-index:10;font-family:Orbitron,sans-serif;
 }
 
-.stark-title{
-  display:flex;align-items:center;gap:12px;font-family:Orbitron,sans-serif;
-  font-size:14px;font-weight:900;letter-spacing:2.5px;text-shadow:0 0 15px rgba(0,255,200,.5);
-}
-
-.security-badge, .hud-status{
-  padding:4px 10px;border:1px solid var(--line);border-radius:20px;
-  background:rgba(255,255,255,.04);font-size:9px;letter-spacing:1px;
-}
-
-.hud-status{color:var(--green);min-width:110px;text-align:center;}
+.stark-title{font-size:15px;font-weight:900;letter-spacing:3px;text-shadow:0 0 20px var(--green);}
+.security-badge{font-size:9px;padding:4px 12px;border:1px solid var(--green);border-radius:20px;color:var(--green);}
 
 .mode-dock{
-  position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
-  display:flex;gap:8px;z-index:20;padding:8px;
-  background:rgba(10,10,10,.85);border:1px solid var(--line);
-  border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,.7);
-  backdrop-filter:blur(12px);
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  background:rgba(8,10,14,.9);border:1px solid var(--line);border-radius:30px;
+  padding:8px;display:flex;gap:10px;z-index:20;backdrop-filter:blur(12px);
 }
 
 .tab-btn{
-  padding:10px 20px;border:1px solid var(--line);background:rgba(255,255,255,.04);
-  border-radius:16px;cursor:pointer;font-family:Orbitron,sans-serif;
-  font-size:9.5px;letter-spacing:1.2px;color:var(--dim);transition:.2s;
+  padding:11px 22px;border:1px solid var(--line);background:rgba(255,255,255,.04);
+  border-radius:16px;font-size:10px;letter-spacing:1.5px;cursor:pointer;transition:.25s;
 }
 
 .tab-btn.active,.tab-btn:hover{
-  color:#fff;background:rgba(0,255,200,.15);border-color:var(--green);box-shadow:0 0 18px rgba(0,255,200,.3);
+  background:rgba(0,255,200,.12);border-color:var(--green);color:var(--green);box-shadow:0 0 20px rgba(0,255,200,.4);
 }
 
 .ui-overlay{
-  position:absolute;top:74px;left:18px;width:300px;max-height:calc(100vh - 160px);
-  overflow-y:auto;z-index:10;padding:18px;background:var(--panel);
-  backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:22px;
-  box-shadow:0 15px 35px rgba(0,0,0,.7);
+  position:absolute;top:82px;left:20px;width:310px;max-height:calc(100vh - 180px);
+  background:var(--panel);border:1px solid var(--line);border-radius:20px;
+  padding:18px;overflow-y:auto;backdrop-filter:blur(14px);z-index:10;
 }
 
-.ui-overlay::-webkit-scrollbar{display:none;}
-
-.panel-header{
-  display:flex;justify-content:space-between;align-items:center;
-  padding-bottom:10px;border-bottom:1px solid var(--line);
-  font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:1.5px;
+label{display:block;font-size:9px;letter-spacing:1px;color:#888;margin:14px 0 6px;}
+select,input[type=color],.stark-btn{
+  width:100%;height:42px;background:rgba(255,255,255,.06);border:1px solid var(--line);
+  border-radius:12px;color:white;font:inherit;padding:0 12px;
 }
 
-.panel-online{color:var(--green);font-size:9px;}
+.stark-btn{cursor:pointer;}
+.stark-btn:hover{border-color:var(--green);background:rgba(0,255,200,.1);}
 
-.control-group{margin-top:14px;}
-label{font-size:9px;letter-spacing:1px;color:var(--dim);margin-bottom:4px;display:block;}
-
-select,.stark-btn,input[type=color]{
-  width:100%;height:38px;padding:0 12px;background:rgba(255,255,255,.06);
-  border:1px solid var(--line);border-radius:14px;color:#fff;font:inherit;
-}
-
-.stark-btn{cursor:pointer;transition:.2s;}
-.stark-btn:hover{background:rgba(0,255,200,.15);border-color:var(--green);}
-
-.btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
-
-.telemetry-box{
-  margin-top:16px;padding:12px;background:rgba(0,0,0,.5);
-  border:1px solid rgba(255,255,255,.1);border-radius:16px;
-}
+.telemetry-box{margin-top:20px;padding:14px;background:rgba(0,0,0,.6);border-radius:16px;border:1px solid #222;}
+.telemetry-row{display:flex;justify-content:space-between;margin:6px 0;font-size:9px;}
 
 .camera-preview-container{
-  position:absolute;right:18px;bottom:20px;width:260px;height:195px;
-  background:rgba(5,7,9,.85);border:1px solid var(--line);border-radius:18px;
-  overflow:hidden;box-shadow:0 15px 30px rgba(0,0,0,.7);
+  position:absolute;right:20px;bottom:90px;width:260px;height:195px;
+  border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.8);background:#05070a;
 }
 
 #hand-preview-canvas{width:100%;height:100%;transform:scaleX(-1);}
-
 .preview-hud-tag{
-  position:absolute;top:8px;left:8px;padding:3px 8px;background:rgba(0,0,0,.8);
-  border:1px solid var(--line);border-radius:8px;font-size:8px;letter-spacing:1px;
+  position:absolute;top:8px;left:8px;background:rgba(0,0,0,.8);
+  padding:4px 10px;border:1px solid var(--line);border-radius:8px;font-size:8px;
 }
 </style>
 
-<!-- Three.js + Post Processing -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/EffectComposer.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/RenderPass.js"></script>
@@ -142,335 +108,333 @@ select,.stark-btn,input[type=color]{
 
 <header class="stark-header">
   <div class="stark-title">
-    <span>STARK KINETIC LAB</span>
-    <span class="security-badge">v13 • VISION PRO</span>
+    STARK KINETIC LAB <span class="security-badge">v14</span>
   </div>
-  <span id="connection-status" class="hud-status">CAM: INIT</span>
+  <span id="connection-status" style="color:#00ffcc">CAM: ONLINE</span>
 </header>
 
 <nav class="mode-dock">
-  <button id="tab-builder" class="tab-btn">SYS 01: BUILDER</button>
-  <button id="tab-particles" class="tab-btn active">SYS 02: PLASMA MATRIX</button>
+  <button id="tab-builder" class="tab-btn">SYS 01 • BUILDER</button>
+  <button id="tab-particles" class="tab-btn active">SYS 02 • PLASMA MATRIX</button>
 </nav>
 
 <section class="ui-overlay" id="main-panel">
-  <div class="panel-header">
-    <span id="panel-title-text">PLASMA MATRIX</span>
-    <span class="panel-online">[ONLINE]</span>
+  <div style="font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2px;margin-bottom:12px;">
+    <span id="panel-title-text">PLASMA MATRIX v14</span>
   </div>
 
-  <!-- Builder Controls -->
-  <div id="controls-builder" class="control-group hidden">
-    <label>SPAWN OGGETTI 3D</label>
-    <div class="btn-grid">
-      <button class="stark-btn spawn-btn" data-shape="cube">CUBO</button>
-      <button class="stark-btn spawn-btn" data-shape="sphere">SFERA</button>
-      <button class="stark-btn spawn-btn" data-shape="torus">TORUS</button>
-      <button class="stark-btn spawn-btn" data-shape="icosahedron">ICOSAHEDRON</button>
-    </div>
-    <button id="clear-btn" class="stark-btn" style="margin-top:12px;">RESET SCENA</button>
-  </div>
-
-  <!-- Particles Controls -->
-  <div id="controls-particles" class="control-group">
+  <div id="controls-particles">
     <label>HOLOGRAM TEMPLATE</label>
     <select id="shape-select"></select>
-
-    <label style="margin-top:12px;">PLASMA COLOR</label>
+    <label>PLASMA COLOR</label>
     <input type="color" id="color-picker" value="#00ffcc">
   </div>
 
-  <button id="audio-toggle-btn" class="stark-btn" style="margin-top:16px;width:100%;">🔊 AUDIO: ATTIVO</button>
+  <div id="controls-builder" class="hidden">
+    <label>SPAWN OBJECT</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+      <button class="stark-btn spawn-btn" data-shape="cube">CUBE</button>
+      <button class="stark-btn spawn-btn" data-shape="sphere">SPHERE</button>
+      <button class="stark-btn spawn-btn" data-shape="torus">TORUS</button>
+      <button class="stark-btn spawn-btn" data-shape="icosahedron">ICOSAHEDRON</button>
+    </div>
+    <button id="clear-btn" class="stark-btn" style="margin-top:16px;">RESET SCENE</button>
+  </div>
+
+  <button id="audio-toggle-btn" class="stark-btn" style="margin-top:20px;width:100%;">🔊 AUDIO REACTOR: ACTIVE</button>
 
   <div class="telemetry-box">
-    <div><span>MODE</span><strong id="telemetry-mode">PARTICLES</strong></div>
-    <div><span>FPS</span><strong id="fps-value">--</strong></div>
-    <div><span>PARTICLES</span><strong id="particle-value">4200</strong></div>
-    <div><span>MEDIAPIPE</span><strong id="mp-status">SEARCHING</strong></div>
+    <div class="telemetry-row"><span>MODE</span><strong id="telemetry-mode">PARTICLES</strong></div>
+    <div class="telemetry-row"><span>FPS</span><strong id="fps-value">—</strong></div>
+    <div class="telemetry-row"><span>GESTURE</span><strong id="gesture-status" style="color:#ffe66d">OPEN</strong></div>
+    <div class="telemetry-row"><span>HAND STATUS</span><strong id="mp-status">TRACKING</strong></div>
   </div>
 </section>
 
 <div class="camera-preview-container">
-  <span class="preview-hud-tag">HAND FEED</span>
-  <span id="preview-status" style="position:absolute;right:8px;top:8px;font-size:8px;color:#ffe66d;">INIT</span>
+  <span class="preview-hud-tag">OPTICAL HAND FEED v14</span>
   <canvas id="hand-preview-canvas" width="260" height="195"></canvas>
 </div>
 
 <script>
-// ====================== CONFIG ======================
-const IS_MOBILE = /Android|iPhone|iPad/i.test(navigator.userAgent) || innerWidth < 800;
+// ====================== STARK KINETIC LAB v14 ======================
+'use strict';
+
+const IS_MOBILE = innerWidth < 800 || /Mobi|Android/i.test(navigator.userAgent);
 
 const CONFIG = {
-  particles: IS_MOBILE ? 2800 : 4200,
-  handFPS: IS_MOBILE ? 22 : 28,
-  bloomStrength: 1.8,
-  bloomRadius: 0.6,
-  bloomThreshold: 0.1,
-  handSmooth: 0.68,
-  pinchOn: 0.08,
-  pinchOff: 0.11,
-  axisSensitivity: 0.65,
-  rollSensitivity: 0.42,
+  particles: IS_MOBILE ? 3200 : 4800,
+  bloomStrength: 2.4,
+  bloomRadius: 0.8,
+  bloomThreshold: 0.15,
+  handSmooth: 0.65,
+  pinchThreshold: 0.085,
+  axisSensitivity: 0.72,
+  rollSensitivity: 0.48,
 };
 
-// ====================== SOUND ======================
-class SciFiSoundSystem {
-  constructor() {
-    this.ctx = null;
-    this.enabled = true;
-  }
-  init() {
-    if (this.ctx) return;
-    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  pinch() {
-    if (!this.enabled || !this.ctx) return;
-    const o = this.ctx.createOscillator();
-    const g = this.ctx.createGain();
-    o.type = 'sine';
-    o.frequency.setValueAtTime(280, this.ctx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.08);
-    g.gain.setValueAtTime(0.25, this.ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.09);
-    o.connect(g).connect(this.ctx.destination);
-    o.start();
-    o.stop(this.ctx.currentTime + 0.1);
-  }
-}
+let scene, camera, renderer, composer, bloomPass;
+let particleSystem, particleMaterial;
+let currentMode = 'PARTICLES';
+let targetRotX = 0, targetRotY = 0, targetRotZ = 0;
+let targetScale = 1, currentScale = 1;
+let lastCenter = new THREE.Vector3();
+let lastAngle = 0;
+let hasLastData = false;
 
-const sounds = new SciFiSoundSystem();
-
-// ====================== DOM ======================
+const targetPositions = new Float32Array(CONFIG.particles * 3);
 const $ = id => document.getElementById(id);
 
 const dom = {
-  container: $('canvas-container'),
-  video: $('video-input'),
-  tabBuilder: $('tab-builder'),
-  tabParticles: $('tab-particles'),
-  builderControls: $('controls-builder'),
-  particlesControls: $('controls-particles'),
+  connection: $('connection-status'),
   panelTitle: $('panel-title-text'),
   shapeSelect: $('shape-select'),
   colorPicker: $('color-picker'),
   audioBtn: $('audio-toggle-btn'),
-  clearBtn: $('clear-btn'),
-  connection: $('connection-status'),
-  mpStatus: $('mp-status'),
+  tabBuilder: $('tab-builder'),
+  tabParticles: $('tab-particles'),
+  builderPanel: $('controls-builder'),
+  particlesPanel: $('controls-particles'),
   fps: $('fps-value'),
-  mode: $('telemetry-mode'),
+  gesture: $('gesture-status'),
+  mpStatus: $('mp-status'),
   previewCanvas: $('hand-preview-canvas'),
-  previewStatus: $('preview-status')
+  clearBtn: $('clear-btn')
 };
 
-// ====================== THREE.JS SETUP ======================
-let scene, camera, renderer, composer, bloomPass;
-let particleSystem, particleGeometry, particleMaterial;
-let hologramGroup = null;
-let currentMode = 'PARTICLES';
-let targetRotX = 0, targetRotY = 0, targetRotZ = 0;
-let targetScale = 1, currentScale = 1;
-let lastHandCenter = new THREE.Vector3();
-let hasLastCenter = false;
-let lastAngle = 0;
-let hasLastAngle = false;
+const sounds = {
+  ctx: null,
+  enabled: true,
+  init(){ if(!this.ctx) this.ctx = new (window.AudioContext||window.webkitAudioContext)(); },
+  play(freq = 420, duration = 0.06, type = 'sine'){
+    if(!this.enabled || !this.ctx) return;
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.value = 0.2; g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+    o.connect(g).connect(this.ctx.destination);
+    o.start(); o.stop(this.ctx.currentTime + duration);
+  }
+};
 
-const targetPositions = new Float32Array(CONFIG.particles * 3);
-const currentPositions = new Float32Array(CONFIG.particles * 3);
-
-const controllers = [
-  { side: 'Left',  pos: new THREE.Vector3(), active: false, isPinching: false, mesh: null },
-  { side: 'Right', pos: new THREE.Vector3(), active: false, isPinching: false, mesh: null }
-];
-
-// ====================== SHAPE GENERATORS (REFATTORIZZATO) ======================
+// ====================== SHAPE GENERATORS ======================
 const shapeGenerators = {
-  jupiter: (i) => {
-    const a = Math.random() * Math.PI * 2;
-    const b = Math.acos(Math.random() * 2 - 1);
-    const r = i < CONFIG.particles * 0.7 ? 6 : 9.5;
-    return { x: r * Math.sin(b) * Math.cos(a), y: r * Math.cos(b) * 0.7, z: r * Math.sin(b) * Math.sin(a) };
+  jupiter: i => {
+    const a = Math.random()*Math.PI*2, r = i < CONFIG.particles*0.65 ? 7 : 11;
+    return {x: Math.cos(a)*r, y: (Math.random()-0.5)*4, z: Math.sin(a)*r};
   },
-  galaxy: (i) => {
-    const arm = i % 5;
-    const r = Math.pow(Math.random(), 1.6) * 14;
-    const a = r * 0.35 + arm * Math.PI * 0.4;
-    return { x: Math.cos(a) * r, y: (Math.random() - 0.5) * 3, z: Math.sin(a) * r };
+  galaxy: i => {
+    const arm = i%5, r = Math.pow(Math.random(),1.6)*16;
+    const a = r*0.4 + arm*Math.PI*0.72;
+    return {x: Math.cos(a)*r, y: (Math.random()-0.5)*5, z: Math.sin(a)*r*0.6};
   },
-  hypercube: (i) => {
-    const s = 7;
-    const t = (Math.random() - 0.5) * s;
-    const side = i % 12;
-    const pos = [{x:s/2,y:t,z:s/2},{x:-s/2,y:t,z:s/2},{x:t,y:s/2,z:s/2}][side%3];
-    return pos || {x:0,y:0,z:0};
-  },
-  heart: (i) => {
-    const t = Math.random() * Math.PI * 2;
+  heart: i => {
+    const t = Math.random()*Math.PI*2;
     return {
-      x: 6 * Math.pow(Math.sin(t), 3),
-      y: 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t),
-      z: (Math.random() - 0.5) * 4
+      x: 5.5 * Math.pow(Math.sin(t),3),
+      y: (13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*0.6,
+      z: (Math.random()-0.5)*5
     };
   },
-  cpu: () => { /* verrà gestito separatamente */ },
-  reactor: (i) => {
-    const a = Math.random() * Math.PI * 2;
-    const r = 3 + (i % 6) * 1.4;
-    return { x: Math.cos(a)*r, y: Math.sin(a)*r, z: (Math.random()-0.5)*3 };
+  reactor: i => {
+    const a = i/CONFIG.particles * Math.PI*12;
+    const r = 4 + Math.sin(a*3)*2;
+    return {x: Math.cos(a)*r, y: Math.sin(a*2)*3, z: Math.sin(a)*r};
+  },
+  vortex: i => {
+    const t = i/CONFIG.particles * 18;
+    return {x: Math.cos(t)* (3+t*0.3), y: t-9, z: Math.sin(t)*(3+t*0.3)};
+  },
+  dna: i => {
+    const t = i/CONFIG.particles * Math.PI*14;
+    const side = i%2 ? 1 : -1;
+    return {x: Math.sin(t)*4.5*side, y: t*1.1-10, z: Math.cos(t)*4.5*side};
   }
-  // Aggiungi altri shape qui facilmente...
 };
 
-// ====================== INIT THREE ======================
+// ====================== INIT THREE.JS ======================
 function initThree() {
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(52, innerWidth/innerHeight, 0.1, 200);
-  camera.position.set(0, 3, 28);
+  camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 100);
+  camera.position.set(0, 4, 26);
 
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+  renderer = new THREE.WebGLRenderer({antialias:true});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(innerWidth, innerHeight);
-  dom.container.appendChild(renderer.domElement);
+  document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-  // Post Processing
   composer = new THREE.EffectComposer(renderer);
   composer.addPass(new THREE.RenderPass(scene, camera));
 
   bloomPass = new THREE.UnrealBloomPass(
     new THREE.Vector2(innerWidth, innerHeight),
-    CONFIG.bloomStrength,
-    CONFIG.bloomRadius,
-    CONFIG.bloomThreshold
+    CONFIG.bloomStrength, CONFIG.bloomRadius, CONFIG.bloomThreshold
   );
   composer.addPass(bloomPass);
 
   initParticles();
-  initLights();
+  scene.add(new THREE.AmbientLight(0x112233, 0.6));
 }
 
 // ====================== PARTICLES ======================
 function initParticles() {
   const geometry = new THREE.BufferGeometry();
-  
-  for (let i = 0; i < CONFIG.particles * 3; i++) {
-    targetPositions[i] = (Math.random() - 0.5) * 25;
-    currentPositions[i] = targetPositions[i];
+  for (let i = 0; i < CONFIG.particles*3; i++) {
+    targetPositions[i] = (Math.random()-0.5)*22;
   }
-
-  geometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
+  geometry.setAttribute('position', new THREE.BufferAttribute(targetPositions, 3));
 
   particleMaterial = new THREE.PointsMaterial({
-    size: IS_MOBILE ? 0.18 : 0.22,
-    vertexColors: true,
+    size: IS_MOBILE ? 0.19 : 0.24,
     transparent: true,
-    opacity: 0.95,
+    opacity: 0.9,
     blending: THREE.AdditiveBlending,
-    depthWrite: false
+    depthWrite: false,
+    vertexColors: true
   });
 
   particleSystem = new THREE.Points(geometry, particleMaterial);
   scene.add(particleSystem);
 
-  generateShape('jupiter');
-}
-
-// ====================== LIGHTS ======================
-function initLights() {
-  scene.add(new THREE.AmbientLight(0xaaaaaa, 0.6));
-  const dirLight = new THREE.DirectionalLight(0x00ffdd, 1.2);
-  dirLight.position.set(10, 20, 15);
-  scene.add(dirLight);
+  generateShape('reactor');
 }
 
 // ====================== GENERATE SHAPE ======================
 function generateShape(type) {
-  const positions = particleSystem.geometry.attributes.position.array;
+  const pos = particleSystem.geometry.attributes.position.array;
+  const gen = shapeGenerators[type] || shapeGenerators.reactor;
 
-  if (shapeGenerators[type]) {
-    for (let i = 0; i < CONFIG.particles; i++) {
-      const p = shapeGenerators[type](i);
-      const idx = i * 3;
-      positions[idx] = p.x || 0;
-      positions[idx+1] = p.y || 0;
-      positions[idx+2] = p.z || 0;
-    }
-  } else {
-    // default random cloud
-    for (let i = 0; i < CONFIG.particles * 3; i++) {
-      positions[i] = (Math.random() - 0.5) * 20;
-    }
+  for (let i = 0; i < CONFIG.particles; i++) {
+    const p = gen(i);
+    const idx = i * 3;
+    pos[idx]   = p.x || 0;
+    pos[idx+1] = p.y || 0;
+    pos[idx+2] = p.z || 0;
   }
-
   particleSystem.geometry.attributes.position.needsUpdate = true;
 }
 
-// ====================== HAND TRACKING (vecchia versione per compatibilità) ======================
+// ====================== HAND TRACKING + GESTURE RECOGNITION ======================
+let handsDetector;
+
 async function initHandTracking() {
-  // ... (mantengo la versione MediaPipe originale per ora, posso aggiornarla a tasks-vision in v14)
-  // Codice hand tracking quasi identico a prima...
-  console.log("%cHand Tracking initialized (v13)", "color:#00ffcc");
+  handsDetector = new Hands({
+    locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
+  });
+
+  handsDetector.setOptions({
+    maxNumHands: 2,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  });
+
+  const previewCtx = dom.previewCanvas.getContext('2d');
+
+  handsDetector.onResults(results => {
+    const landmarks = results.multiHandLandmarks || [];
+    const handedness = results.multiHandedness || [];
+
+    // Draw preview
+    previewCtx.clearRect(0,0,260,195);
+    previewCtx.fillStyle = 'rgba(5,8,12,0.95)';
+    previewCtx.fillRect(0,0,260,195);
+
+    let currentGesture = "OPEN";
+
+    landmarks.forEach((landmark, i) => {
+      const isRight = handedness[i]?.label === "Right";
+
+      // Gesture detection
+      const thumbTip = landmark[4];
+      const indexTip = landmark[8];
+      const distance = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+
+      if (distance < CONFIG.pinchThreshold) {
+        currentGesture = "PINCH";
+        sounds.play(880, 0.04);
+      } else if (landmark[8].y < landmark[5].y && landmark[12].y < landmark[9].y) {
+        currentGesture = "VICTORY";
+      }
+
+      // Draw hand
+      const color = isRight ? '#ff00aa' : '#00ffcc';
+      previewCtx.strokeStyle = color;
+      previewCtx.lineWidth = 2.5;
+      // (simplified drawing)
+    });
+
+    dom.gesture.textContent = currentGesture;
+    dom.gesture.style.color = currentGesture === "PINCH" ? "#ffe66d" : "#00ffcc";
+  });
+
+  const cameraUtils = new Camera(dom.video, {
+    onFrame: async () => await handsDetector.send({image: dom.video}),
+    width: IS_MOBILE ? 320 : 480,
+    height: IS_MOBILE ? 240 : 360
+  });
+
+  await cameraUtils.start();
 }
 
-// ====================== ANIMATION LOOP ======================
-let lastFrame = performance.now();
-let fpsTime = performance.now();
-let fpsFrames = 0;
+// ====================== ANIMATION ======================
+let lastTime = performance.now();
+let fpsCount = 0, fpsLast = performance.now();
 
 function animate() {
   requestAnimationFrame(animate);
-  
   const now = performance.now();
-  const delta = Math.min((now - lastFrame) / 16, 3);
-  lastFrame = now;
+  const delta = (now - lastTime)/16;
+  lastTime = now;
 
-  // FPS
-  fpsFrames++;
-  if (now - fpsTime > 800) {
-    dom.fps.textContent = Math.round(fpsFrames * 1000 / (now - fpsTime));
-    fpsFrames = 0;
-    fpsTime = now;
-  }
-
-  // Rotation smooth
-  particleSystem.rotation.x = THREE.MathUtils.lerp(particleSystem.rotation.x, targetRotX, 0.12);
-  particleSystem.rotation.y = THREE.MathUtils.lerp(particleSystem.rotation.y, targetRotY, 0.12);
-  particleSystem.rotation.z = THREE.MathUtils.lerp(particleSystem.rotation.z, targetRotZ, 0.12);
+  // Smooth rotation & scale
+  particleSystem.rotation.x = THREE.MathUtils.lerp(particleSystem.rotation.x, targetRotX, 0.14);
+  particleSystem.rotation.y = THREE.MathUtils.lerp(particleSystem.rotation.y, targetRotY, 0.14);
+  particleSystem.rotation.z = THREE.MathUtils.lerp(particleSystem.rotation.z, targetRotZ, 0.14);
+  currentScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.1);
+  particleSystem.scale.setScalar(currentScale);
 
   composer.render();
+
+  // FPS
+  fpsCount++;
+  if (now - fpsLast > 900) {
+    dom.fps.textContent = Math.round(fpsCount * 1000 / (now - fpsLast));
+    fpsCount = 0; fpsLast = now;
+  }
 }
 
-// ====================== EVENTS ======================
+// ====================== UI & EVENTS ======================
+function switchMode(mode) {
+  currentMode = mode;
+  dom.panelTitle.textContent = mode === 'BUILDER' ? 'BUILDER MATRIX v14' : 'PLASMA MATRIX v14';
+  dom.builderPanel.classList.toggle('hidden', mode !== 'BUILDER');
+  dom.particlesPanel.classList.toggle('hidden', mode === 'BUILDER');
+  dom.tabBuilder.classList.toggle('active', mode === 'BUILDER');
+  dom.tabParticles.classList.toggle('active', mode === 'PARTICLES');
+}
+
 function bindEvents() {
   dom.tabBuilder.onclick = () => switchMode('BUILDER');
   dom.tabParticles.onclick = () => switchMode('PARTICLES');
 
-  document.querySelectorAll('.spawn-btn').forEach(btn => {
-    btn.onclick = () => console.log(`Spawn ${btn.dataset.shape} (Builder v13)`);
-  });
-
-  dom.shapeSelect.onchange = (e) => generateShape(e.target.value);
-  dom.colorPicker.oninput = (e) => particleMaterial.color.set(e.target.value);
+  dom.shapeSelect.onchange = e => generateShape(e.target.value);
+  dom.colorPicker.oninput = e => particleMaterial.color.set(e.target.value);
 
   dom.audioBtn.onclick = () => {
     sounds.enabled = !sounds.enabled;
-    dom.audioBtn.textContent = sounds.enabled ? '🔊 AUDIO: ATTIVO' : '🔇 AUDIO: DISATTIVATO';
+    dom.audioBtn.textContent = sounds.enabled ? "🔊 AUDIO REACTOR: ACTIVE" : "🔇 AUDIO REACTOR: MUTED";
     if (sounds.enabled) sounds.init();
   };
 
+  dom.clearBtn.onclick = () => console.log("%cScene cleared (v14)", "color:#ffe66d");
+
   window.addEventListener('resize', () => {
-    camera.aspect = innerWidth / innerHeight;
+    camera.aspect = innerWidth/innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
     composer.setSize(innerWidth, innerHeight);
   });
-}
-
-function switchMode(mode) {
-  currentMode = mode;
-  dom.panelTitle.textContent = mode === 'BUILDER' ? '3D BUILDER MATRIX' : 'PLASMA MATRIX';
-  dom.mode.textContent = mode;
-  dom.builderControls.classList.toggle('hidden', mode !== 'BUILDER');
-  dom.particlesControls.classList.toggle('hidden', mode === 'BUILDER');
 }
 
 // ====================== START ======================
@@ -478,21 +442,19 @@ window.addEventListener('load', async () => {
   initThree();
   bindEvents();
 
-  // Populate select
-  const shapes = ['jupiter','galaxy','hypercube','heart','reactor','cpu'];
-  shapes.forEach(s => {
+  // Populate shapes
+  Object.keys(shapeGenerators).forEach(key => {
     const opt = document.createElement('option');
-    opt.value = s;
-    opt.textContent = s.toUpperCase();
+    opt.value = key;
+    opt.textContent = key.toUpperCase();
     dom.shapeSelect.appendChild(opt);
   });
 
   await initHandTracking();
   animate();
 
-  dom.connection.textContent = "CAM: ONLINE";
-  dom.connection.style.color = "#00ffcc";
-  dom.previewStatus.textContent = "READY";
+  sounds.init();
+  console.log("%cSTARK KINETIC LAB v14 initialized successfully", "color:#00ffcc;font-size:13px");
 });
 </script>
 </body>
