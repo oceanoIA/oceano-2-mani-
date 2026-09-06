@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>STARK KINETIC LAB v14 // VISION PRO</title>
+<title>STARK KINETIC LAB v15</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -15,87 +13,111 @@
   --pink:#ff00aa;
   --yellow:#ffe66d;
   --cyan:#00e8ff;
-  --line:rgba(255,255,255,.18);
-  --panel:rgba(6,9,12,.82);
+  --dim:rgba(255,255,255,0.45);
+  --line:rgba(255,255,255,0.12);
+  --panel:rgba(8,11,15,0.78);
 }
 
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
-body{
-  font-family:'Share Tech Mono',monospace;
-  background:#000;color:#fff;overflow:hidden;
-  position:fixed;inset:0;
+* { margin:0; padding:0; box-sizing:border-box; user-select:none; }
+body {
+  font-family:'Share Tech Mono', monospace;
+  background:#000; color:#fff; overflow:hidden;
+  position:fixed; inset:0;
 }
 
-#canvas-container{position:absolute;inset:0;z-index:1;}
+#canvas-container { position:absolute; inset:0; z-index:1; }
 
-.hud-scanline{
-  position:fixed;inset:0;z-index:5;pointer-events:none;
-  background:repeating-linear-gradient(to bottom,transparent 0,transparent 4px,rgba(0,255,220,.025) 5px);
+.hud-scanline {
+  position:fixed; inset:0; z-index:5; pointer-events:none;
+  background:repeating-linear-gradient(to bottom, transparent 0px, transparent 4px, rgba(0,255,204,0.035) 5px);
   mix-blend-mode:screen;
 }
 
-.stark-header{
-  position:absolute;top:0;left:0;right:0;height:64px;
-  background:rgba(5,8,12,.85);backdrop-filter:blur(16px);
+.stark-header {
+  position:absolute; top:0; left:0; right:0; height:58px;
+  background:rgba(5,8,12,0.85); backdrop-filter:blur(20px);
   border-bottom:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;padding:0 24px;
-  z-index:10;font-family:Orbitron,sans-serif;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 28px; z-index:20; font-family:Orbitron, sans-serif;
 }
 
-.stark-title{font-size:15px;font-weight:900;letter-spacing:3px;text-shadow:0 0 20px var(--green);}
-.security-badge{font-size:9px;padding:4px 12px;border:1px solid var(--green);border-radius:20px;color:var(--green);}
-
-.mode-dock{
-  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
-  background:rgba(8,10,14,.9);border:1px solid var(--line);border-radius:30px;
-  padding:8px;display:flex;gap:10px;z-index:20;backdrop-filter:blur(12px);
+.stark-title {
+  font-size:14px; font-weight:900; letter-spacing:3.5px;
+  text-shadow:0 0 20px var(--green);
 }
 
-.tab-btn{
-  padding:11px 22px;border:1px solid var(--line);background:rgba(255,255,255,.04);
-  border-radius:16px;font-size:10px;letter-spacing:1.5px;cursor:pointer;transition:.25s;
+.status {
+  font-size:9px; padding:4px 14px; border:1px solid var(--green);
+  border-radius:30px; color:var(--green); letter-spacing:1px;
 }
 
-.tab-btn.active,.tab-btn:hover{
-  background:rgba(0,255,200,.12);border-color:var(--green);color:var(--green);box-shadow:0 0 20px rgba(0,255,200,.4);
+.mode-dock {
+  position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+  background:rgba(8,11,15,0.9); border:1px solid var(--line);
+  border-radius:40px; padding:6px; display:flex; gap:6px; z-index:30;
+  backdrop-filter:blur(16px);
 }
 
-.ui-overlay{
-  position:absolute;top:82px;left:20px;width:310px;max-height:calc(100vh - 180px);
-  background:var(--panel);border:1px solid var(--line);border-radius:20px;
-  padding:18px;overflow-y:auto;backdrop-filter:blur(14px);z-index:10;
+.tab-btn {
+  padding:10px 26px; font-size:10px; font-weight:500; letter-spacing:2px;
+  border-radius:30px; cursor:pointer; transition:all 0.3s;
+  border:1px solid transparent;
 }
 
-label{display:block;font-size:9px;letter-spacing:1px;color:#888;margin:14px 0 6px;}
-select,input[type=color],.stark-btn{
-  width:100%;height:42px;background:rgba(255,255,255,.06);border:1px solid var(--line);
-  border-radius:12px;color:white;font:inherit;padding:0 12px;
+.tab-btn.active {
+  background:rgba(0,255,204,0.12); color:var(--green);
+  border:1px solid var(--green); box-shadow:0 0 25px rgba(0,255,204,0.3);
 }
 
-.stark-btn{cursor:pointer;}
-.stark-btn:hover{border-color:var(--green);background:rgba(0,255,200,.1);}
-
-.telemetry-box{margin-top:20px;padding:14px;background:rgba(0,0,0,.6);border-radius:16px;border:1px solid #222;}
-.telemetry-row{display:flex;justify-content:space-between;margin:6px 0;font-size:9px;}
-
-.camera-preview-container{
-  position:absolute;right:20px;bottom:90px;width:260px;height:195px;
-  border:1px solid var(--line);border-radius:18px;overflow:hidden;
-  box-shadow:0 10px 30px rgba(0,0,0,.8);background:#05070a;
+.ui-overlay {
+  position:absolute; top:78px; left:24px; width:280px;
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:20px; padding:20px 18px; z-index:20;
+  backdrop-filter:blur(16px); box-shadow:0 20px 40px rgba(0,0,0,0.7);
 }
 
-#hand-preview-canvas{width:100%;height:100%;transform:scaleX(-1);}
-.preview-hud-tag{
-  position:absolute;top:8px;left:8px;background:rgba(0,0,0,.8);
-  padding:4px 10px;border:1px solid var(--line);border-radius:8px;font-size:8px;
+label {
+  font-size:8.5px; letter-spacing:1.5px; color:var(--dim);
+  margin-bottom:6px; display:block;
+}
+
+select, input[type="color"] {
+  width:100%; height:38px; background:rgba(255,255,255,0.04);
+  border:1px solid var(--line); border-radius:12px; color:white;
+  font-family:inherit; padding:0 12px;
+}
+
+.telemetry {
+  margin-top:24px; font-size:9px; line-height:1.8;
+  border-top:1px solid var(--line); padding-top:14px;
+}
+
+.telemetry-item {
+  display:flex; justify-content:space-between; margin:4px 0;
+  color:var(--dim);
+}
+
+.telemetry-item strong { color:#fff; font-weight:normal; }
+
+.camera-preview {
+  position:absolute; right:24px; bottom:32px; width:220px; height:165px;
+  border:1px solid var(--line); border-radius:18px; overflow:hidden;
+  background:#05080c; box-shadow:0 15px 35px rgba(0,0,0,0.8);
+}
+
+#hand-preview-canvas { width:100%; height:100%; transform:scaleX(-1); }
+
+.preview-tag {
+  position:absolute; top:10px; left:10px; font-size:7.5px;
+  background:rgba(0,0,0,0.7); padding:3px 9px; border-radius:20px;
+  border:1px solid var(--line); color:var(--dim);
 }
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/three@0.134/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134/examples/js/postprocessing/UnrealBloomPass.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
@@ -107,158 +129,122 @@ select,input[type=color],.stark-btn{
 <div class="hud-scanline"></div>
 
 <header class="stark-header">
-  <div class="stark-title">
-    STARK KINETIC LAB <span class="security-badge">v14</span>
-  </div>
-  <span id="connection-status" style="color:#00ffcc">CAM: ONLINE</span>
+  <div class="stark-title">STARK KINETIC LAB <span style="color:#00ffcc; font-size:11px;">v15</span></div>
+  <div class="status" id="connection-status">LINK ESTABLISHED</div>
 </header>
 
 <nav class="mode-dock">
-  <button id="tab-builder" class="tab-btn">SYS 01 • BUILDER</button>
-  <button id="tab-particles" class="tab-btn active">SYS 02 • PLASMA MATRIX</button>
+  <button id="tab-particles" class="tab-btn active">PLASMA MATRIX</button>
+  <button id="tab-builder" class="tab-btn">NEURAL BUILDER</button>
 </nav>
 
-<section class="ui-overlay" id="main-panel">
-  <div style="font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2px;margin-bottom:12px;">
-    <span id="panel-title-text">PLASMA MATRIX v14</span>
+<section class="ui-overlay">
+  <div id="panel-title" style="font-family:Orbitron; font-size:11px; letter-spacing:2px; color:var(--green); margin-bottom:16px;">
+    PLASMA MATRIX v15
   </div>
 
-  <div id="controls-particles">
-    <label>HOLOGRAM TEMPLATE</label>
+  <div id="particles-controls">
+    <label>HOLOGRAPHIC TEMPLATE</label>
     <select id="shape-select"></select>
-    <label>PLASMA COLOR</label>
+    <label style="margin-top:16px;">CORE EMISSION</label>
     <input type="color" id="color-picker" value="#00ffcc">
   </div>
 
-  <div id="controls-builder" class="hidden">
-    <label>SPAWN OBJECT</label>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-      <button class="stark-btn spawn-btn" data-shape="cube">CUBE</button>
-      <button class="stark-btn spawn-btn" data-shape="sphere">SPHERE</button>
-      <button class="stark-btn spawn-btn" data-shape="torus">TORUS</button>
-      <button class="stark-btn spawn-btn" data-shape="icosahedron">ICOSAHEDRON</button>
-    </div>
-    <button id="clear-btn" class="stark-btn" style="margin-top:16px;">RESET SCENE</button>
+  <div id="builder-controls" class="hidden">
+    <label>SPATIAL OBJECT</label>
+    <select id="builder-select">
+      <option value="cube">CUBE</option>
+      <option value="sphere">SPHERE</option>
+      <option value="torus">TORUS</option>
+      <option value="icosahedron">ICOSAHEDRON</option>
+    </select>
+    <button id="clear-btn" style="margin-top:18px; width:100%; height:38px; background:transparent; border:1px solid var(--line); color:var(--yellow);">
+      RESET FIELD
+    </button>
   </div>
 
-  <button id="audio-toggle-btn" class="stark-btn" style="margin-top:20px;width:100%;">🔊 AUDIO REACTOR: ACTIVE</button>
-
-  <div class="telemetry-box">
-    <div class="telemetry-row"><span>MODE</span><strong id="telemetry-mode">PARTICLES</strong></div>
-    <div class="telemetry-row"><span>FPS</span><strong id="fps-value">—</strong></div>
-    <div class="telemetry-row"><span>GESTURE</span><strong id="gesture-status" style="color:#ffe66d">OPEN</strong></div>
-    <div class="telemetry-row"><span>HAND STATUS</span><strong id="mp-status">TRACKING</strong></div>
+  <div class="telemetry">
+    <div class="telemetry-item"><span>SYSTEM</span><strong id="telemetry-mode">PARTICLES</strong></div>
+    <div class="telemetry-item"><span>FPS</span><strong id="fps-value">00</strong></div>
+    <div class="telemetry-item"><span>GESTURE</span><strong id="gesture" style="color:var(--yellow)">OPEN</strong></div>
+    <div class="telemetry-item"><span>TRACKING</span><strong id="mp-status" style="color:var(--green)">ACTIVE</strong></div>
   </div>
 </section>
 
-<div class="camera-preview-container">
-  <span class="preview-hud-tag">OPTICAL HAND FEED v14</span>
-  <canvas id="hand-preview-canvas" width="260" height="195"></canvas>
+<div class="camera-preview">
+  <div class="preview-tag">OPTICAL FEED</div>
+  <canvas id="hand-preview-canvas" width="220" height="165"></canvas>
 </div>
 
 <script>
-// ====================== STARK KINETIC LAB v14 ======================
-'use strict';
-
-const IS_MOBILE = innerWidth < 800 || /Mobi|Android/i.test(navigator.userAgent);
+// ====================== STARK KINETIC LAB v15 ======================
+const IS_MOBILE = innerWidth < 820;
 
 const CONFIG = {
-  particles: IS_MOBILE ? 3200 : 4800,
-  bloomStrength: 2.4,
-  bloomRadius: 0.8,
-  bloomThreshold: 0.15,
-  handSmooth: 0.65,
-  pinchThreshold: 0.085,
-  axisSensitivity: 0.72,
-  rollSensitivity: 0.48,
+  particles: IS_MOBILE ? 3400 : 5200,
+  bloomStrength: 1.65,
+  bloomRadius: 0.55,
+  bloomThreshold: 0.12,
+  handSmooth: 0.68,
+  pinchThreshold: 0.09,
+  sensitivity: 0.75
 };
 
 let scene, camera, renderer, composer, bloomPass;
 let particleSystem, particleMaterial;
-let currentMode = 'PARTICLES';
+let currentMode = "PARTICLES";
 let targetRotX = 0, targetRotY = 0, targetRotZ = 0;
 let targetScale = 1, currentScale = 1;
 let lastCenter = new THREE.Vector3();
 let lastAngle = 0;
-let hasLastData = false;
+let hasLast = false;
 
-const targetPositions = new Float32Array(CONFIG.particles * 3);
+const targetPos = new Float32Array(CONFIG.particles * 3);
 const $ = id => document.getElementById(id);
 
 const dom = {
-  connection: $('connection-status'),
-  panelTitle: $('panel-title-text'),
   shapeSelect: $('shape-select'),
   colorPicker: $('color-picker'),
-  audioBtn: $('audio-toggle-btn'),
-  tabBuilder: $('tab-builder'),
+  builderSelect: $('builder-select'),
+  clearBtn: $('clear-btn'),
   tabParticles: $('tab-particles'),
-  builderPanel: $('controls-builder'),
-  particlesPanel: $('controls-particles'),
+  tabBuilder: $('tab-builder'),
+  particlesControls: $('particles-controls'),
+  builderControls: $('builder-controls'),
+  panelTitle: $('panel-title'),
   fps: $('fps-value'),
-  gesture: $('gesture-status'),
+  gesture: $('gesture'),
   mpStatus: $('mp-status'),
-  previewCanvas: $('hand-preview-canvas'),
-  clearBtn: $('clear-btn')
+  connection: $('connection-status')
 };
 
-const sounds = {
-  ctx: null,
-  enabled: true,
-  init(){ if(!this.ctx) this.ctx = new (window.AudioContext||window.webkitAudioContext)(); },
-  play(freq = 420, duration = 0.06, type = 'sine'){
-    if(!this.enabled || !this.ctx) return;
-    const o = this.ctx.createOscillator();
-    const g = this.ctx.createGain();
-    o.type = type; o.frequency.value = freq;
-    g.gain.value = 0.2; g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
-    o.connect(g).connect(this.ctx.destination);
-    o.start(); o.stop(this.ctx.currentTime + duration);
-  }
-};
+const sounds = { enabled: true, ctx: null };
+function initAudio() {
+  if (!sounds.ctx) sounds.ctx = new (window.AudioContext || window.webkitAudioContext)();
+}
 
-// ====================== SHAPE GENERATORS ======================
-const shapeGenerators = {
-  jupiter: i => {
-    const a = Math.random()*Math.PI*2, r = i < CONFIG.particles*0.65 ? 7 : 11;
-    return {x: Math.cos(a)*r, y: (Math.random()-0.5)*4, z: Math.sin(a)*r};
-  },
+// ====================== SHAPES ======================
+const shapes = {
+  reactor: i => ({ x: Math.cos(i*0.1)* (4 + Math.sin(i*0.3)*2), y: Math.sin(i*0.15)*5, z: Math.sin(i*0.1)*6 }),
   galaxy: i => {
-    const arm = i%5, r = Math.pow(Math.random(),1.6)*16;
-    const a = r*0.4 + arm*Math.PI*0.72;
-    return {x: Math.cos(a)*r, y: (Math.random()-0.5)*5, z: Math.sin(a)*r*0.6};
+    const a = i * 0.08; const r = Math.sqrt(i) * 0.35;
+    return { x: Math.cos(a)*r, y: (Math.random()-0.5)*4, z: Math.sin(a)*r };
   },
+  vortex: i => ({ x: Math.cos(i*0.12)*(5+i*0.008), y: i*0.025-8, z: Math.sin(i*0.12)*(5+i*0.008) }),
   heart: i => {
-    const t = Math.random()*Math.PI*2;
-    return {
-      x: 5.5 * Math.pow(Math.sin(t),3),
-      y: (13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*0.6,
-      z: (Math.random()-0.5)*5
-    };
+    const t = i * 0.025;
+    return { x: Math.sin(t)*6, y: (Math.cos(t)-0.5*Math.cos(2*t))*4-2, z: Math.random()*4-2 };
   },
-  reactor: i => {
-    const a = i/CONFIG.particles * Math.PI*12;
-    const r = 4 + Math.sin(a*3)*2;
-    return {x: Math.cos(a)*r, y: Math.sin(a*2)*3, z: Math.sin(a)*r};
-  },
-  vortex: i => {
-    const t = i/CONFIG.particles * 18;
-    return {x: Math.cos(t)* (3+t*0.3), y: t-9, z: Math.sin(t)*(3+t*0.3)};
-  },
-  dna: i => {
-    const t = i/CONFIG.particles * Math.PI*14;
-    const side = i%2 ? 1 : -1;
-    return {x: Math.sin(t)*4.5*side, y: t*1.1-10, z: Math.cos(t)*4.5*side};
-  }
+  nebula: i => ({ x: (Math.random()-0.5)*18, y: (Math.random()-0.5)*14, z: (Math.random()-0.5)*12 })
 };
 
-// ====================== INIT THREE.JS ======================
+// ====================== THREE.JS ======================
 function initThree() {
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 100);
-  camera.position.set(0, 4, 26);
+  camera = new THREE.PerspectiveCamera(48, innerWidth/innerHeight, 0.1, 100);
+  camera.position.set(0, 3, 28);
 
-  renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(innerWidth, innerHeight);
   document.getElementById('canvas-container').appendChild(renderer.domElement);
@@ -266,195 +252,147 @@ function initThree() {
   composer = new THREE.EffectComposer(renderer);
   composer.addPass(new THREE.RenderPass(scene, camera));
 
-  bloomPass = new THREE.UnrealBloomPass(
-    new THREE.Vector2(innerWidth, innerHeight),
-    CONFIG.bloomStrength, CONFIG.bloomRadius, CONFIG.bloomThreshold
-  );
+  bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), CONFIG.bloomStrength, CONFIG.bloomRadius, CONFIG.bloomThreshold);
   composer.addPass(bloomPass);
 
   initParticles();
-  scene.add(new THREE.AmbientLight(0x112233, 0.6));
+  scene.add(new THREE.AmbientLight(0x112233, 0.7));
 }
 
-// ====================== PARTICLES ======================
 function initParticles() {
-  const geometry = new THREE.BufferGeometry();
-  for (let i = 0; i < CONFIG.particles*3; i++) {
-    targetPositions[i] = (Math.random()-0.5)*22;
-  }
-  geometry.setAttribute('position', new THREE.BufferAttribute(targetPositions, 3));
+  const geo = new THREE.BufferGeometry();
+  for (let i = 0; i < CONFIG.particles*3; i++) targetPos[i] = (Math.random()-0.5)*24;
+  geo.setAttribute('position', new THREE.BufferAttribute(targetPos, 3));
 
   particleMaterial = new THREE.PointsMaterial({
-    size: IS_MOBILE ? 0.19 : 0.24,
+    size: IS_MOBILE ? 0.18 : 0.23,
     transparent: true,
-    opacity: 0.9,
+    opacity: 0.92,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
     vertexColors: true
   });
 
-  particleSystem = new THREE.Points(geometry, particleMaterial);
+  particleSystem = new THREE.Points(geo, particleMaterial);
   scene.add(particleSystem);
-
   generateShape('reactor');
 }
 
-// ====================== GENERATE SHAPE ======================
-function generateShape(type) {
+function generateShape(name) {
   const pos = particleSystem.geometry.attributes.position.array;
-  const gen = shapeGenerators[type] || shapeGenerators.reactor;
-
+  const fn = shapes[name] || shapes.reactor;
   for (let i = 0; i < CONFIG.particles; i++) {
-    const p = gen(i);
-    const idx = i * 3;
-    pos[idx]   = p.x || 0;
-    pos[idx+1] = p.y || 0;
-    pos[idx+2] = p.z || 0;
+    const p = fn(i);
+    const idx = i*3;
+    pos[idx] = p.x; pos[idx+1] = p.y; pos[idx+2] = p.z;
   }
   particleSystem.geometry.attributes.position.needsUpdate = true;
 }
 
-// ====================== HAND TRACKING + GESTURE RECOGNITION ======================
-let handsDetector;
+// ====================== HAND TRACKING ======================
+async function initHands() {
+  const hands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+  hands.setOptions({ maxNumHands: 2, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
 
-async function initHandTracking() {
-  handsDetector = new Hands({
-    locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
+  const ctx = $('hand-preview-canvas').getContext('2d');
+
+  hands.onResults(res => {
+    ctx.clearRect(0,0,220,165);
+    ctx.fillStyle = 'rgba(5,8,12,0.95)';
+    ctx.fillRect(0,0,220,165);
+
+    const gesture = (res.multiHandLandmarks?.[0] && 
+      Math.hypot(res.multiHandLandmarks[0][4].x - res.multiHandLandmarks[0][8].x,
+                 res.multiHandLandmarks[0][4].y - res.multiHandLandmarks[0][8].y) < CONFIG.pinchThreshold) 
+      ? "PINCH" : "OPEN";
+
+    dom.gesture.textContent = gesture;
+    dom.gesture.style.color = gesture === "PINCH" ? "var(--yellow)" : "var(--green)";
+
+    // Simple hand drawing
+    if (res.multiHandLandmarks) {
+      res.multiHandLandmarks.forEach(landmarks => {
+        ctx.strokeStyle = '#00ffcc';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < landmarks.length-1; i++) {
+          ctx.beginPath();
+          ctx.moveTo(landmarks[i].x*220, landmarks[i].y*165);
+          ctx.lineTo(landmarks[i+1].x*220, landmarks[i+1].y*165);
+          ctx.stroke();
+        }
+      });
+    }
   });
 
-  handsDetector.setOptions({
-    maxNumHands: 2,
-    modelComplexity: 1,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5
+  const camera = new Camera($('video-input'), {
+    onFrame: async () => await hands.send({image: $('video-input')}),
+    width: 320, height: 240
   });
-
-  const previewCtx = dom.previewCanvas.getContext('2d');
-
-  handsDetector.onResults(results => {
-    const landmarks = results.multiHandLandmarks || [];
-    const handedness = results.multiHandedness || [];
-
-    // Draw preview
-    previewCtx.clearRect(0,0,260,195);
-    previewCtx.fillStyle = 'rgba(5,8,12,0.95)';
-    previewCtx.fillRect(0,0,260,195);
-
-    let currentGesture = "OPEN";
-
-    landmarks.forEach((landmark, i) => {
-      const isRight = handedness[i]?.label === "Right";
-
-      // Gesture detection
-      const thumbTip = landmark[4];
-      const indexTip = landmark[8];
-      const distance = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
-
-      if (distance < CONFIG.pinchThreshold) {
-        currentGesture = "PINCH";
-        sounds.play(880, 0.04);
-      } else if (landmark[8].y < landmark[5].y && landmark[12].y < landmark[9].y) {
-        currentGesture = "VICTORY";
-      }
-
-      // Draw hand
-      const color = isRight ? '#ff00aa' : '#00ffcc';
-      previewCtx.strokeStyle = color;
-      previewCtx.lineWidth = 2.5;
-      // (simplified drawing)
-    });
-
-    dom.gesture.textContent = currentGesture;
-    dom.gesture.style.color = currentGesture === "PINCH" ? "#ffe66d" : "#00ffcc";
-  });
-
-  const cameraUtils = new Camera(dom.video, {
-    onFrame: async () => await handsDetector.send({image: dom.video}),
-    width: IS_MOBILE ? 320 : 480,
-    height: IS_MOBILE ? 240 : 360
-  });
-
-  await cameraUtils.start();
+  await camera.start();
 }
 
 // ====================== ANIMATION ======================
-let lastTime = performance.now();
-let fpsCount = 0, fpsLast = performance.now();
+let last = performance.now(), fpsTime = performance.now(), fpsFrames = 0;
 
 function animate() {
   requestAnimationFrame(animate);
   const now = performance.now();
-  const delta = (now - lastTime)/16;
-  lastTime = now;
+  const delta = (now - last)/16;
+  last = now;
 
-  // Smooth rotation & scale
-  particleSystem.rotation.x = THREE.MathUtils.lerp(particleSystem.rotation.x, targetRotX, 0.14);
-  particleSystem.rotation.y = THREE.MathUtils.lerp(particleSystem.rotation.y, targetRotY, 0.14);
-  particleSystem.rotation.z = THREE.MathUtils.lerp(particleSystem.rotation.z, targetRotZ, 0.14);
-  currentScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.1);
+  particleSystem.rotation.x = THREE.MathUtils.lerp(particleSystem.rotation.x, targetRotX, 0.12);
+  particleSystem.rotation.y = THREE.MathUtils.lerp(particleSystem.rotation.y, targetRotY, 0.12);
+  particleSystem.rotation.z = THREE.MathUtils.lerp(particleSystem.rotation.z, targetRotZ, 0.12);
+  
+  currentScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.08);
   particleSystem.scale.setScalar(currentScale);
 
   composer.render();
 
-  // FPS
-  fpsCount++;
-  if (now - fpsLast > 900) {
-    dom.fps.textContent = Math.round(fpsCount * 1000 / (now - fpsLast));
-    fpsCount = 0; fpsLast = now;
+  fpsFrames++;
+  if (now - fpsTime > 800) {
+    dom.fps.textContent = (fpsFrames * 1000 / (now - fpsTime)).toFixed(0);
+    fpsFrames = 0; fpsTime = now;
   }
 }
 
-// ====================== UI & EVENTS ======================
+// ====================== UI ======================
 function switchMode(mode) {
   currentMode = mode;
-  dom.panelTitle.textContent = mode === 'BUILDER' ? 'BUILDER MATRIX v14' : 'PLASMA MATRIX v14';
-  dom.builderPanel.classList.toggle('hidden', mode !== 'BUILDER');
-  dom.particlesPanel.classList.toggle('hidden', mode === 'BUILDER');
-  dom.tabBuilder.classList.toggle('active', mode === 'BUILDER');
-  dom.tabParticles.classList.toggle('active', mode === 'PARTICLES');
+  dom.panelTitle.textContent = mode === "PARTICLES" ? "PLASMA MATRIX v15" : "NEURAL BUILDER v15";
+  dom.particlesControls.classList.toggle("hidden", mode !== "PARTICLES");
+  dom.builderControls.classList.toggle("hidden", mode !== "BUILDER");
+  dom.tabParticles.classList.toggle("active", mode === "PARTICLES");
+  dom.tabBuilder.classList.toggle("active", mode === "BUILDER");
 }
 
-function bindEvents() {
-  dom.tabBuilder.onclick = () => switchMode('BUILDER');
-  dom.tabParticles.onclick = () => switchMode('PARTICLES');
-
-  dom.shapeSelect.onchange = e => generateShape(e.target.value);
-  dom.colorPicker.oninput = e => particleMaterial.color.set(e.target.value);
-
-  dom.audioBtn.onclick = () => {
-    sounds.enabled = !sounds.enabled;
-    dom.audioBtn.textContent = sounds.enabled ? "🔊 AUDIO REACTOR: ACTIVE" : "🔇 AUDIO REACTOR: MUTED";
-    if (sounds.enabled) sounds.init();
-  };
-
-  dom.clearBtn.onclick = () => console.log("%cScene cleared (v14)", "color:#ffe66d");
-
-  window.addEventListener('resize', () => {
-    camera.aspect = innerWidth/innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-    composer.setSize(innerWidth, innerHeight);
-  });
-}
-
-// ====================== START ======================
-window.addEventListener('load', async () => {
-  initThree();
-  bindEvents();
-
-  // Populate shapes
-  Object.keys(shapeGenerators).forEach(key => {
+function initUI() {
+  Object.keys(shapes).forEach(key => {
     const opt = document.createElement('option');
     opt.value = key;
     opt.textContent = key.toUpperCase();
     dom.shapeSelect.appendChild(opt);
   });
 
-  await initHandTracking();
+  dom.shapeSelect.onchange = e => generateShape(e.target.value);
+  dom.colorPicker.oninput = e => particleMaterial.color.set(e.target.value);
+  dom.clearBtn.onclick = () => console.log('%cField Reset', 'color:#ffe66d');
+
+  dom.tabParticles.onclick = () => switchMode("PARTICLES");
+  dom.tabBuilder.onclick = () => switchMode("BUILDER");
+
+  initAudio();
+}
+
+// ====================== START ======================
+window.addEventListener('load', async () => {
+  initThree();
+  initUI();
+  await initHands();
   animate();
 
-  sounds.init();
-  console.log("%cSTARK KINETIC LAB v14 initialized successfully", "color:#00ffcc;font-size:13px");
+  dom.connection.textContent = "NEURAL LINK ACTIVE";
+  console.log('%cSTARK KINETIC LAB v15 — Minimal Future Mode', 'color:#00ffcc; font-size:14px');
 });
 </script>
 </body>
