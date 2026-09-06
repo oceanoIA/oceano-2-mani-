@@ -3,24 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>STARK KINETIC LAB v12 // VISION PRO</title>
+<title>STARK KINETIC LAB v14 // QUANTUM INTERFACE // VISION PRO</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900;950&family=Share+Tech+Mono&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --white:#fff;
-  --dim:rgba(255,255,255,.58);
-  --line:rgba(255,255,255,.16);
-  --panel:rgba(8,10,12,.76);
-  --green:#00ffcc;
-  --pink:#ff00aa;
-  --yellow:#ffe66d;
-  --red:#ff5577;
-  --cyan:#00e8ff;
-  --radius:18px;
+  --bg:#0a0a0f;
+  --bg-secondary:#12121a;
+  --fg:#e8e8f0;
+  --muted:#6a6a8a;
+  --accent:#00ffcc;
+  --accent2:#ff00aa;
+  --accent3:#ffe66d;
+  --accent4:#00e8ff;
+  --card:#0f0f1a;
+  --border:rgba(255,255,255,.08);
+  --radius:12px;
+  --blur:10px;
 }
 
 *{
@@ -36,9 +38,11 @@ html,body{
   height:100%;
   overflow:hidden;
   background:#000;
-  font-family:'Share Tech Mono',monospace;
+  font-family:'Space Grotesk',sans-serif;
   color:#fff;
 }
+
+/* --[ MAIN LAYOUT ]-- */
 
 body{
   position:fixed;
@@ -46,13 +50,12 @@ body{
   touch-action:none;
 }
 
-button,select,input{
-  font:inherit;
+#root{
+  width:100%;
+  height:100%;
 }
 
-button{
-  color:inherit;
-}
+/* --[ CANVAS CONTAINER ]-- */
 
 #canvas-container{
   position:absolute;
@@ -68,11 +71,7 @@ button{
   height:100%;
 }
 
-#video-input{
-  display:none;
-}
-
-/* ================= HUD ================= */
+/* --[ HUD SCANLINES ]-- */
 
 .hud-scanline{
   position:fixed;
@@ -82,213 +81,226 @@ button{
   background:repeating-linear-gradient(
     to bottom,
     transparent 0,
-    transparent 3px,
-    rgba(255,255,255,.018) 4px
+    transparent 2px,
+    rgba(255,255,255,.012) 3px
   );
   mix-blend-mode:screen;
 }
+
+/* --[ HEADER ]-- */
 
 .stark-header{
   position:absolute;
   top:0;
   left:0;
   width:100%;
-  height:60px;
+  height:68px;
   z-index:10;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 24px;
-  background:rgba(8,8,8,.72);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--line);
+  padding:0 32px;
+  background:linear-gradient(180deg, rgba(10,10,15,.85) 0%, rgba(5,5,10,.92) 100%);
+  backdrop-filter:blur(var(--blur));
+  -webkit-backdrop-filter:blur(var(--blur));
+  border-bottom:1px solid var(--border);
   contain:layout paint;
 }
 
 .stark-title{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
   font-family:Orbitron,sans-serif;
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:2px;
-  text-shadow:0 0 12px rgba(255,255,255,.35);
+  font-size:14px;
+  font-weight:950;
+  letter-spacing:3px;
+  text-transform:uppercase;
+}
+
+.stark-title .glow{
+  color:var(--accent);
+  text-shadow:0 0 20px rgba(0,255,204,.45), 0 0 40px rgba(0,255,204,.25);
 }
 
 .security-badge,
 .hud-status{
-  padding:3px 8px;
-  border:1px solid var(--line);
-  border-radius:20px;
-  background:rgba(255,255,255,.04);
-  font-size:8px;
-  letter-spacing:1px;
+  padding:4px 10px;
+  border:1px solid var(--border);
+  border-radius:24px;
+  background:rgba(255,255,255,.03);
+  font-size:7.5px;
+  letter-spacing:1.2px;
+  font-family:Orbitron,sans-serif;
 }
 
 .hud-status{
-  color:var(--green);
-  min-width:95px;
+  color:var(--accent);
+  min-width:100px;
   text-align:center;
 }
 
+.status-dot{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  margin-right:6px;
+  vertical-align:middle;
+}
+
+.status-dot.online{
+  background:var(--accent);
+  box-shadow:0 0 10px var(--accent);
+}
+
+.status-dot.offline{
+  background:#444;
+}
+
+/* --[ MODE DOCK ]-- */
+
 .mode-dock{
   position:absolute;
-  bottom:22px;
+  bottom:18px;
   left:50%;
   transform:translateX(-50%);
   display:flex;
-  gap:6px;
+  gap:4px;
   z-index:20;
-  padding:7px;
-  background:rgba(10,10,10,.78);
-  border:1px solid var(--line);
-  border-radius:24px;
-  box-shadow:0 10px 25px rgba(0,0,0,.65);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-}
-
-.tab-btn,
-.stark-btn{
-  position:relative;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.035);
-  border-radius:14px;
-  cursor:pointer;
-  transition:.18s ease;
-  touch-action:manipulation;
+  padding:6px 10px;
+  background:rgba(15,15,25,.78);
+  border:1px solid var(--border);
+  border-radius:28px;
+  box-shadow:0 12px 30px rgba(0,0,0,.7);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
 }
 
 .tab-btn{
-  padding:9px 18px;
+  position:relative;
+  flex:1;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.025);
+  border-radius:16px;
+  cursor:pointer;
+  transition:.2s ease;
+  touch-action:manipulation;
   font-family:Orbitron,sans-serif;
-  font-size:9px;
+  font-size:8.5px;
   letter-spacing:1px;
-  color:var(--dim);
+  color:var(--muted);
 }
 
-.tab-btn:hover,
+.tab-btn:hover{
+  color:#fff;
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.4);
+}
+
 .tab-btn.active{
   color:#fff;
-  background:rgba(255,255,255,.14);
-  border-color:rgba(255,255,255,.65);
-  box-shadow:0 0 14px rgba(255,255,255,.12);
+  background:rgba(0,255,204,.18);
+  border-color:var(--accent);
+  box-shadow:0 0 20px rgba(0,255,204,.18);
 }
 
-.stark-btn{
-  height:36px;
-  padding:0 10px;
-  font-family:Orbitron,sans-serif;
-  font-size:9px;
-  letter-spacing:.7px;
-  font-weight:700;
-}
-
-.stark-btn:hover{
-  background:rgba(255,255,255,.13);
-  border-color:rgba(255,255,255,.65);
-}
-
-.stark-btn:active,
-.tab-btn:active{
-  transform:scale(.97);
-}
-
-.stark-btn::before,
 .tab-btn::before{
   content:"";
   position:absolute;
-  left:6px;
-  top:5px;
-  width:4px;
-  height:4px;
+  left:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:3px;
+  height:3px;
   border-left:1px solid #fff;
   border-top:1px solid #fff;
-  opacity:.35;
+  opacity:.2;
 }
 
-/* ================= LEFT PANEL ================= */
+/* --[ PANEL OVERLAY ]-- */
 
 .ui-overlay{
   position:absolute;
-  top:74px;
-  left:18px;
-  width:292px;
-  max-height:calc(100vh - 150px);
+  top:82px;
+  left:22px;
+  width:320px;
+  max-height:calc(100vh - 160px);
   overflow-y:auto;
-  z-index:10;
-  padding:16px;
-  background:var(--panel);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  border:1px solid var(--line);
-  border-radius:22px;
-  box-shadow:0 15px 30px rgba(0,0,0,.65);
+  z-index:15;
+  padding:22px;
+  background:var(--card);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--border);
+  border-radius:28px;
+  box-shadow:0 20px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.02);
   display:flex;
   flex-direction:column;
-  gap:11px;
+  gap:16px;
   contain:layout paint;
-  transition:transform .22s ease,opacity .22s ease;
-  scrollbar-width:none;
+  transition:transform .2s ease,opacity .2s;
 }
 
-.ui-overlay::-webkit-scrollbar{
-  display:none;
-}
+.ui-overlay::-webkit-scrollbar{display:none;}
 
 .ui-overlay.closed{
-  transform:translateX(-105%);
+  transform:translateX(-110%);
   opacity:0;
   pointer-events:none;
 }
 
+/* Panel Header */
 .panel-header{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  padding-bottom:8px;
-  border-bottom:1px solid var(--line);
+  align-items:flex-start;
+}
+
+.panel-title{
   font-family:Orbitron,sans-serif;
   font-size:10px;
-  letter-spacing:1px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--muted);
 }
 
 .panel-online{
-  font-size:8px;
-  color:var(--green);
+  font-size:7px;
+  color:var(--accent);
 }
 
+/* Control Groups */
 .control-group{
   display:flex;
   flex-direction:column;
-  gap:6px;
+  gap:8px;
 }
 
 label{
-  font-size:8px;
+  font-size:7.5px;
   letter-spacing:1px;
-  color:var(--dim);
+  color:var(--muted);
+  text-transform:uppercase;
 }
 
 select,
-.stark-btn,
-input[type=color]{
+.stark-btn{
   width:100%;
   outline:none;
 }
 
 select{
-  height:36px;
-  padding:0 10px;
+  height:38px;
+  padding:0 14px;
   color:#fff;
-  background:rgba(255,255,255,.045);
-  border:1px solid var(--line);
-  border-radius:14px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  border-radius:16px;
   font-family:Orbitron,sans-serif;
-  font-size:9px;
-  font-weight:700;
+  font-size:8.5px;
+  font-weight:600;
 }
 
 select option{
@@ -297,47 +309,57 @@ select option{
 }
 
 input[type=color]{
-  height:34px;
-  padding:3px;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--line);
-  border-radius:14px;
+  height:36px;
+  width:36px;
+  padding:0;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:12px;
+  cursor:pointer;
 }
 
 .btn-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
 }
 
-.panel-section{
-  overflow:hidden;
-  max-height:700px;
-  opacity:1;
-  transition:max-height .25s ease,opacity .2s ease;
+.stark-btn{
+  height:38px;
+  padding:0 14px;
+  font-family:Orbitron,sans-serif;
+  font-size:8.5px;
+  letter-spacing:.5px;
+  font-weight:600;
+  text-transform:uppercase;
 }
 
-.panel-section.hidden{
-  max-height:0;
-  opacity:0;
-  pointer-events:none;
+.stark-btn:hover{
+  background:rgba(255,255,255,.06);
+  border-color:rgba(255,255,255,.4);
 }
 
+.stark-btn:active{
+  transform:scale(.96);
+}
+
+/* Telemetry Box */
 .telemetry-box{
-  padding:9px;
-  background:rgba(0,0,0,.42);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:15px;
+  padding:14px;
+  background:rgba(0,0,0,.4);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:10px;
 }
 
 .telemetry-top{
   display:flex;
   justify-content:space-between;
-  color:var(--dim);
-  font-size:8px;
+  align-items:center;
+  color:var(--muted);
+  font-size:7px;
 }
 
 .telemetry-top strong{
@@ -345,83 +367,58 @@ input[type=color]{
 }
 
 .hand-card{
-  padding:6px 0 6px 8px;
-  border-left:2px solid rgba(255,255,255,.25);
-  font-size:8px;
-}
-
-.hand-card.left{
-  border-color:var(--green);
-}
-
-.hand-card.right{
-  border-color:var(--pink);
-}
-
-.telemetry-row{
+  padding:6px 10px;
+  border-left:2px solid rgba(255,255,255,.15);
+  font-size:7px;
   display:flex;
-  justify-content:space-between;
-  padding:2px 0;
-  color:var(--dim);
+  flex-direction:column;
+  gap:4px;
 }
 
-.telemetry-val{
-  color:#fff;
-}
+.hand-card.left{border-color:var(--accent);}
+.hand-card.right{border-color:var(--accent2);}
 
-.state-tracking{
-  color:var(--green)!important;
-}
-
-.state-lost{
-  color:var(--red)!important;
-}
-
-.state-searching{
-  color:var(--yellow)!important;
-}
-
-.hand-indicator{
-  display:inline-block;
-  width:6px;
-  height:6px;
+.hand-card .dot{
+  width:5px;
+  height:5px;
   border-radius:50%;
-  margin-right:4px;
-  background:#444;
+  background:#333;
   box-shadow:0 0 0 transparent;
+  transition:.15s;
 }
 
-.hand-indicator.on{
-  background:var(--green);
-  box-shadow:0 0 9px var(--green);
+.hand-card .dot.on{
+  background:var(--accent);
+  box-shadow:0 0 8px var(--accent);
 }
 
-.hand-indicator.right.on{
-  background:var(--pink);
-  box-shadow:0 0 9px var(--pink);
+.hand-card .dot.right.on{
+  background:var(--accent2);
+  box-shadow:0 0 8px var(--accent2);
 }
 
+/* Builder Selection */
 #builder-selection{
-  min-height:16px;
-  color:var(--yellow);
-  font-size:8px;
-  letter-spacing:.7px;
+  min-height:18px;
+  color:var(--accent3);
+  font-size:7px;
+  letter-spacing:.5px;
 }
 
-/* ================= CAMERA ================= */
+/* --[ CAMERA PREVIEW ]-- */
 
 .camera-preview-container{
   position:absolute;
-  right:18px;
-  bottom:20px;
-  width:240px;
-  height:180px;
-  z-index:10;
+  right:22px;
+  bottom:22px;
+  width:260px;
+  height:196px;
+  z-index:15;
   overflow:hidden;
-  background:rgba(5,7,9,.82);
-  border:1px solid var(--line);
-  border-radius:18px;
-  box-shadow:0 12px 25px rgba(0,0,0,.65);
+  background:rgba(5,8,12,.8);
+  border:1px solid var(--border);
+  border-radius:20px;
+  box-shadow:0 16px 35px rgba(0,0,0,.65);
   contain:strict;
 }
 
@@ -430,46 +427,46 @@ input[type=color]{
   height:100%;
   display:block;
   transform:scaleX(-1);
-  opacity:.9;
+  opacity:.85;
 }
 
 .preview-hud-tag{
   position:absolute;
-  top:6px;
-  left:7px;
+  top:8px;
+  left:10px;
   z-index:2;
-  padding:2px 6px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:rgba(0,0,0,.72);
-  font-size:7px;
+  padding:3px 8px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:rgba(0,0,0,.7);
+  font-size:6.5px;
   letter-spacing:1px;
   pointer-events:none;
 }
 
 .preview-status{
   position:absolute;
-  right:7px;
-  top:6px;
-  padding:2px 5px;
-  border-radius:8px;
-  background:rgba(0,0,0,.72);
-  font-size:7px;
-  color:var(--yellow);
+  right:10px;
+  top:8px;
+  padding:3px 8px;
+  border-radius:10px;
+  background:rgba(0,0,0,.7);
+  font-size:6.5px;
+  color:var(--accent3);
 }
 
-/* ================= BUILDER TARGET ================= */
+/* --[ SELECTION RING ]-- */
 
 #selection-ring{
   position:absolute;
-  width:45px;
-  height:45px;
-  border:1px solid var(--yellow);
+  width:50px;
+  height:50px;
+  border:1.5px solid var(--accent3);
   border-radius:50%;
-  z-index:8;
+  z-index:12;
   pointer-events:none;
   display:none;
-  box-shadow:0 0 12px rgba(255,230,109,.3);
+  box-shadow:0 0 18px rgba(255,230,109,.25);
 }
 
 #selection-ring::before,
@@ -477,91 +474,77 @@ input[type=color]{
   content:"";
   position:absolute;
   left:50%;
-  top:-6px;
+  top:-7px;
   width:1px;
-  height:57px;
-  background:rgba(255,230,109,.55);
+  height:63px;
+  background:rgba(255,230,109,.45);
 }
 
 #selection-ring::after{
   transform:rotate(90deg);
 }
 
-/* ================= MOBILE ================= */
+/* --[ MOBILE RESPONSIVE ]-- */
 
 @media(max-width:700px){
 
   .stark-header{
-    height:50px;
-    padding:0 10px;
+    height:56px;
+    padding:0 14px;
   }
 
   .stark-title{
-    font-size:9px;
+    font-size:11px;
     gap:6px;
   }
 
-  .security-badge{
-    display:none;
-  }
+  .security-badge{display:none;}
 
   .hud-status{
     font-size:7px;
-    min-width:75px;
+    min-width:82px;
   }
 
   .ui-overlay{
-    top:58px;
-    left:8px;
-    width:245px;
-    max-height:calc(100vh - 128px);
-    padding:12px;
-    border-radius:18px;
+    top:56px;
+    left:10px;
+    width:260px;
+    max-height:calc(100vh - 120px);
+    padding:16px;
+    border-radius:20px;
   }
 
   .mode-dock{
-    bottom:10px;
+    bottom:8px;
     width:calc(100% - 20px);
-    justify-content:center;
+    justify-content:flex-end;
   }
 
   .tab-btn{
     flex:1;
-    padding:9px 5px;
-    font-size:7px;
+    padding:7px 3px;
+    font-size:6.5px;
   }
 
   .camera-preview-container{
-    width:150px;
-    height:112px;
-    right:8px;
-    bottom:62px;
-    border-radius:14px;
+    width:160px;
+    height:118px;
+    right:10px;
+    bottom:54px;
+    border-radius:16px;
   }
 
-  .preview-hud-tag{
-    font-size:5px;
-  }
-
-  .preview-status{
-    font-size:5px;
-  }
+  .preview-hud-tag{font-size:5px;}
+  .preview-status{font-size:5px;}
 }
 
 @media(max-width:430px){
 
-  .ui-overlay{
-    width:220px;
-  }
+  .ui-overlay{width:230px;}
 
-  .camera-preview-container{
-    width:130px;
-    height:98px;
-  }
+  .camera-preview-container{width:138px; height:102px;}
 
-  .stark-btn{
-    font-size:8px;
-  }
+  .stark-btn{font-size:7.5px;}
 }
 
 @media(max-width:700px){
@@ -578,6 +561,12 @@ input[type=color]{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/GlitchPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/shaders/OutlinePass.js"></script>
 
 </head>
 
@@ -591,25 +580,25 @@ input[type=color]{
 
 <header class="stark-header">
   <div class="stark-title">
-    <span>STARK LAB</span>
+    <span class="glow">STARK LAB</span>
     <span class="security-badge">
-      VISION PRO // LOW LATENCY
+      VISION PRO // QUANTUM MODE
     </span>
   </div>
 
   <span id="connection-status" class="hud-status">
-    CAM: INIT
+    <span class="status-dot offline"></span>CAM: INIT
   </span>
 </header>
 
 <nav class="mode-dock">
 
-  <button id="tab-builder" class="tab-btn">
+  <button id="tab-builder" class="tab-btn active">
     SYS 01: 3D BUILDER
   </button>
 
-  <button id="tab-particles" class="tab-btn active">
-    SYS 02: PLASMA MATRIX
+  <button id="tab-particles" class="tab-btn">
+    SYS 02: QUANTUM PLASMA
   </button>
 
 </nav>
@@ -617,9 +606,7 @@ input[type=color]{
 <section class="ui-overlay" id="main-panel">
 
   <div class="panel-header">
-    <span id="panel-title-text">
-      PARTICLE MATRIX
-    </span>
+    <span class="panel-title">QUANTUM CONTROL</span>
 
     <span class="panel-online" id="panel-online">
       [ONLINE]
@@ -628,38 +615,38 @@ input[type=color]{
 
   <!-- ================= BUILDER ================= -->
 
-  <div id="controls-builder" class="panel-section hidden">
+  <div id="controls-builder" class="panel-section">
 
     <div class="control-group">
 
       <label>
-        SPAWN OGGETTI 3D
+        PROTOGEN MATRIX
       </label>
 
       <div class="btn-grid">
 
         <button class="stark-btn spawn-btn" data-shape="cube">
-          + CUBO
+          + CUBO QUANTIST
         </button>
 
         <button class="stark-btn spawn-btn" data-shape="sphere">
-          + SFERA
+          + SFERA PLASMA
         </button>
 
         <button class="stark-btn spawn-btn" data-shape="pyramid">
-          + PIRAMIDE
+          + PIRAMIDE NEURALE
         </button>
 
         <button class="stark-btn spawn-btn" data-shape="torus">
-          + TORUS
+          + TORUS ANTIMATERIA
         </button>
 
         <button class="stark-btn spawn-btn" data-shape="cylinder">
-          + CILINDRO
+          + CILINDRO CORE
         </button>
 
         <button class="stark-btn spawn-btn" data-shape="icosahedron">
-          + ICOSAEDRO
+          + ICOSAEDRO VORTEX
         </button>
 
       </div>
@@ -676,9 +663,9 @@ input[type=color]{
 
   </div>
 
-  <!-- ================= PARTICLES ================= -->
+  <!-- ================= QUANTUM PARTICLES ================= -->
 
-  <div id="controls-particles" class="panel-section">
+  <div id="controls-particles" class="panel-section hidden">
 
     <div class="control-group">
 
@@ -688,69 +675,47 @@ input[type=color]{
 
       <select id="shape-select">
 
-        <option value="jupiter">JUPITER & RINGS</option>
-        <option value="galaxy">GALAXY SPIRAL</option>
-        <option value="hypercube">HYPERCUBE MATRIX</option>
-        <option value="heart">HEART MATRIX</option>
-        <option value="flower">NEURAL FLOWER</option>
-        <option value="buddha">BUDDHA HOLOGRAM</option>
-        <option value="fireworks">ENERGY EXPLOSION</option>
-        <option value="saturn">SATURN RING SYSTEM</option>
-        <option value="DNA">DNA DOUBLE HELIX</option>
-
-        <option value="cpu">JARVIS CPU // 3D CIRCUIT</option>
-        <option value="gpu">STARK GPU // 3D CORE</option>
-        <option value="ram">QUANTUM RAM // 3D MEMORY</option>
-        <option value="ssd">HOLO SSD // DATA CORE</option>
-
-        <option value="atom">ATOMIC CORE</option>
-        <option value="solar">SOLAR SYSTEM</option>
-        <option value="blackhole">BLACK HOLE</option>
-        <option value="nebula">NEBULA CLOUD</option>
+        <option value="quantum">QUANTUM FIELD</option>
+        <option value="neuron">NEURAL NETWORK</option>
         <option value="vortex">QUANTUM VORTEX</option>
-        <option value="tornado">TORNADO</option>
-        <option value="wave">OCEAN WAVE</option>
-        <option value="spiral">GALACTIC SPIRAL</option>
-        <option value="star">FIVE POINT STAR</option>
-        <option value="sun">ENERGY SUN</option>
-        <option value="moon">MOON</option>
-        <option value="comet">COMET</option>
-        <option value="earth">EARTH</option>
-        <option value="mars">MARS</option>
-        <option value="diamond">DIAMOND</option>
-        <option value="crystal">CRYSTAL</option>
-        <option value="gear">MECHANICAL GEAR</option>
-        <option value="ringstack">RING STACK</option>
-        <option value="capsule">ENERGY CAPSULE</option>
-        <option value="cone">CONE FIELD</option>
-        <option value="cubeSphere">CUBE SPHERE</option>
-        <option value="octahedron">OCTAHEDRON</option>
-        <option value="dodecahedron">DODECAHEDRON</option>
-        <option value="tetrahedron">TETRAHEDRON</option>
-        <option value="torusKnot">TORUS KNOT</option>
-        <option value="mobius">MOBIUS LOOP</option>
-        <option value="trefoil">TREFOIL KNOT</option>
-        <option value="butterfly">BUTTERFLY</option>
-        <option value="eye">CYBER EYE</option>
-        <option value="brain">NEURAL BRAIN</option>
-        <option value="tree">DIGITAL TREE</option>
-        <option value="mountain">MOUNTAIN</option>
-        <option value="dna2">DNA CORE</option>
-        <option value="atom2">DOUBLE ATOM</option>
-        <option value="satellite">SATELLITE</option>
-        <option value="rocket">ROCKET</option>
-        <option value="spaceship">SPACESHIP</option>
-        <option value="robot">ROBOT CORE</option>
-        <option value="shield">ENERGY SHIELD</option>
-        <option value="helmet">FUTURE HELMET</option>
-        <option value="crown">CROWN</option>
-        <option value="infinity">INFINITY</option>
-        <option value="hourglass">HOURGLASS</option>
-        <option value="tesseract">TESSERACT</option>
-        <option value="portal">ENERGY PORTAL</option>
-        <option value="matrix">MATRIX CORE</option>
-        <option value="reactor">ARC REACTOR</option>
-        <option value="mechanism">STARK MECHANISM</option>
+        <option value="tesseract">TESSERACT 4D</option>
+        <option value="metatron">METATRON'S CUBE</option>
+        <option value="flower">ENERGY FLOWER</option>
+        <option value="dna">DNA DOUBLE HELIX</option>
+        <option value="metatron2">METATRON INTERLOCKING</option>
+        <option value="sri">SRI YANTRA</option>
+        <option value="flower2>FIBONACCI SPIRAL</option>
+        <option value="golden">GOLDEN RATIO</option>
+        <option value="star">STELLAR NEXUS</option>
+        <option value="black">BLACK HOLE EVENT</option>
+        <option value="nebula">NEBULA CLOUD</option>
+        <option value="aurora">AURORA BOREALIS</option>
+        <option value="comet">COMET TRAIL</option>
+        <option value="galaxy">GALACTIC DISK</option>
+        <option value="pulsar">PULSAR BEACON</option>
+        <option value="quasar">QUASAR JET</option>
+        <option value="wormhole">WORMHOLE</option>
+        <option value="singularity">SINGULARITY</option>
+        <option value="event">EVENT HORIZON</option>
+        <option value="cosmos">COSMIC WEB</option>
+        <option value="void">VOID STRUCTURE</option>
+        <option value="photon">PHOTON BLAST</option>
+        <option value="electron">ELECTRON ORBITAL</option>
+        <option value="proton">PROTON CORE</option>
+        <option value="atom3">TRI-ATOMIC</option>
+        <option value="crystal">CRYSTAL LATTICE</option>
+        <option value="meta">META-MATERIAL</option>
+        <option value="photon2">PHOTON CRYSTAL</option>
+        <option value="hologram">HOLOGRAM MATRIX</option>
+        <option value="resonance">RESONANCE CHAMBER</option>
+        <option value="frequency">FREQUENCY GENERATOR</option>
+        <option value="tone">TONE CHART</option>
+        <option value="spectrum">SPECTRUM ANALYSIS</option>
+        <option value="wave">WAVE INTERFERENCE</option>
+        <option value="interference">INTERFERENCE PATTERN</option>
+        <option value="diffraction">DIFFRACTION GRATING</option>
+        <option value="polarization">POLARIZATION</option>
+        <option value="photoelectric">PHOTOELECTRIC EFFECT</option>
 
       </select>
 
@@ -759,24 +724,49 @@ input[type=color]{
     <div class="control-group">
 
       <label>
-        PLASMA COLOR
+        EMISSION INTENSITY
       </label>
 
-      <input type="color" id="color-picker" value="#ffffff">
+      <input type="range" id="intensity-slider" min="0" max="2" step="0.1" value="1">
+      <span id="intensity-value">1.0x</span>
+
+    </div>
+
+    <div class="control-group">
+
+      <label>
+        COLOR SCHEME
+      </label>
+
+      <select id="color-scheme">
+
+        <option value="cyan">CYAN / MAGENTA</option>
+        <option value="green">GREEN / PINK</option>
+        <option value="yellow">YELLOW / BLUE</option>
+        <option value="purple">PURPLE / ORANGE</option>
+        <option value="white">WHITE / CLEAR</option>
+        <option value="neon">NEON RAINBOW</option>
+        <option value="acid">ACID TRIP</option>
+        <option value="matrix">DIGITAL MATRIX</option>
+        <option value="retro">RETRO FUTURE</option>
+        <option value="ocean">OCEAN DEPTH</option>
+        <option value="fire">ENERGY FIRE</option>
+        <option value="ice">ICE CRYSTAL</option>
+        <option value="lava">LAVA FLOW</option>
+        <option value="aurora2">AURORA BOREALIS</option>
+        <option value="psychedelic">PSYCHEDELIC</option>
+
+      </select>
 
     </div>
 
   </div>
 
-  <button id="audio-toggle-btn" class="stark-btn">
-    🔊 AUDIO: ATTIVO
-  </button>
-
   <div class="telemetry-box">
 
     <div class="telemetry-top">
       <span>MODE</span>
-      <strong id="telemetry-mode">PARTICLES</strong>
+      <strong id="telemetry-mode">QUANTUM PLASMA</strong>
     </div>
 
     <div class="telemetry-top">
@@ -786,147 +776,112 @@ input[type=color]{
 
     <div class="telemetry-top">
       <span>PARTICLES</span>
-      <strong id="particle-value">4000</strong>
+      <strong id="particle-value">6000</strong>
     </div>
 
     <div class="telemetry-top">
-      <span>MEDIAPIPE</span>
-      <strong id="mp-status">SEARCHING</strong>
+      <span>HANDS</span>
+      <strong id="hands-value">0/2</strong>
     </div>
 
-    <div class="hand-card left">
-
-      <div class="telemetry-row">
-        <span>
-          <i id="hand-dot-1" class="hand-indicator"></i>
-          LEFT
-        </span>
-
-        <span id="h1-status" class="telemetry-val state-searching">
-          SEARCHING
-        </span>
-      </div>
-
-      <div class="telemetry-row">
-        <span>GESTURE</span>
-        <span id="h1-grab" class="telemetry-val">OPEN</span>
-      </div>
-
-    </div>
-
-    <div class="hand-card right">
-
-      <div class="telemetry-row">
-        <span>
-          <i id="hand-dot-2" class="hand-indicator right"></i>
-          RIGHT
-        </span>
-
-        <span id="h2-status" class="telemetry-val state-searching">
-          SEARCHING
-        </span>
-      </div>
-
-      <div class="telemetry-row">
-        <span>GESTURE</span>
-        <span id="h2-grab" class="telemetry-val">OPEN</span>
-      </div>
-
+    <div class="telemetry-top">
+      <span>GESTURE</span>
+      <strong id="gesture-value">NONE</strong>
     </div>
 
   </div>
+
+  <button id="audio-toggle-btn" class="stark-btn">
+    🔊 AUDIO: QUANTUM RESONANCE
+  </button>
+
+  <div id="selection-ring"></div>
 
 </section>
 
 <div class="camera-preview-container">
 
   <span class="preview-hud-tag">
-    OPTICAL // HAND FEED
+    QUANTUM OPTICAL // HAND FEED
   </span>
 
   <span id="preview-status" class="preview-status">
     INIT
   </span>
 
-  <canvas id="hand-preview-canvas" width="240" height="180"></canvas>
+  <canvas id="hand-preview-canvas" width="260" height="196"></canvas>
 
 </div>
-
-<div id="selection-ring"></div>
 
 <script>
 'use strict';
 
 /* =========================================================
-   CONFIG
+   QUANTUM CONFIG
 ========================================================= */
 
 const IS_MOBILE =
   /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
   innerWidth <= 700;
 
-const CONFIG = {
+const QUANTUM_CONFIG = {
 
-  particles: IS_MOBILE ? 3000 : 4000,
+  particles: IS_MOBILE ? 4000 : 6000,
 
-  handFPS: IS_MOBILE ? 20 : 24,
+  handFPS: IS_MOBILE ? 22 : 24,
 
-  cameraWidth: IS_MOBILE ? 256 : 320,
-  cameraHeight: IS_MOBILE ? 192 : 240,
+  cameraWidth: IS_MOBILE ? 320 : 400,
+  cameraHeight: IS_MOBILE ? 240 : 300,
 
-  handSmooth: 0.72,
+  handSmooth: 0.75,
 
-  pinchOn: 0.075,
-  pinchOff: 0.105,
+  pinchOn: 0.065,
+  pinchOff: 0.1,
 
-  particleSmooth: 0.22,
-  particleReaction: 0.08,
+  particleSmooth: 0.18,
+  particleReaction: 0.12,
 
-  maxBlocks: 28,
+  maxBlocks: 32,
 
-  builderGravity: 0.06,
+  bloomStrength: 1.2,
+  bloomThreshold: 0,
+  bloomRadius: 0.8,
 
-  throwPower: 0,
+  bloomKernel: 64,
 
-  snapSize: 1,
-
-  /*
-    IMPORTANT:
-    No inertia.
-    The object receives rotation ONLY from
-    the movement of the hands.
-  */
-  axisSensitivity: 0.50,
-
-  rollSensitivity: 0.34,
+  glitchAmount: 0,
 
   renderScale:
     IS_MOBILE
       ? 1
-      : Math.min(window.devicePixelRatio || 1, 1.5),
+      : Math.min(window.devicePixelRatio || 1, 1.8),
 
   colors:{
-    white:0xffffff,
+    cyan:0x00ffff,
+    magenta:0xff00ff,
     green:0x00ffcc,
-    pink:0xff00aa,
-    yellow:0xffe66d,
-    cyan:0x00e8ff
+    pink:0xff69b4,
+    yellow:0xfff569,
+    blue:0x00aaff,
+    orange:0xffa500,
+    white:0xffffff
   }
 
 };
 
-const PARTICLE_COUNT = CONFIG.particles;
+const PARTICLE_COUNT = QUANTUM_CONFIG.particles;
 
 /* =========================================================
-   SOUND
+   AUDIO SYSTEM - QUANTUM RESONANCE
 ========================================================= */
 
-class SciFiSoundSystem{
+class QuantumAudioSystem{
 
   constructor(){
     this.ctx=null;
-    this.humOsc=null;
-    this.humGain=null;
+    this.oscillators={};
+  this.gains={};
+    this.reverb=null;
     this.enabled=true;
     this.initialized=false;
   }
@@ -945,18 +900,23 @@ class SciFiSoundSystem{
 
       this.ctx=new AudioCtx();
 
-      this.humOsc=this.ctx.createOscillator();
-      this.humGain=this.ctx.createGain();
+      // Main hum
+      this.oscillators.hum=this.ctx.createOscillator();
+      this.gains.hum=this.ctx.createGain();
 
-      this.humOsc.type='sine';
-      this.humOsc.frequency.value=50;
+      this.oscillators.hum.type='sine';
+      this.oscillators.hum.frequency.value=440;
 
-      this.humGain.gain.value=0.008;
+      this.gains.hum.gain.value=0.005;
 
-      this.humOsc.connect(this.humGain);
-      this.humGain.connect(this.ctx.destination);
+      this.oscillators.hum.connect(this.gains.hum);
+      this.gains.hum.connect(this.ctx.destination);
 
-      this.humOsc.start();
+      this.oscillators.hum.start();
+
+      // Reverb
+      this.reverb=this.ctx.createBiquadFilter();
+      this.reverb.type='allpass';
 
       this.initialized=true;
 
@@ -980,27 +940,48 @@ class SciFiSoundSystem{
     const t=this.ctx.currentTime;
 
     o.type='sine';
+    o.frequency.setValueAtTime(110,t);
+    o.frequency.exponentialRampToValueAtTime(550,t+0.05);
 
-    o.frequency.setValueAtTime(220,t);
-    o.frequency.exponentialRampToValueAtTime(700,t+0.07);
-
-    g.gain.setValueAtTime(0.1,t);
-    g.gain.exponentialRampToValueAtTime(0.001,t+0.07);
+    g.gain.setValueAtTime(0.15,t);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.05);
 
     o.connect(g);
     g.connect(this.ctx.destination);
 
     o.start(t);
-    o.stop(t+0.07);
+    o.stop(t+0.05);
+
+  }
+
+  release(){
+
+    if(!this.enabled)return;
+
+    const o=this.ctx.createOscillator();
+    const g=this.ctx.createGain();
+
+    const t=this.ctx.currentTime;
+
+    o.type='triangle';
+    o.frequency.value=220;
+
+    g.gain.value=0.02;
+    g.gain.setTargetAtTime(0.001,t,0.1);
+
+    o.connect(g);
+    g.connect(this.ctx.destination);
+
+    o.start(t);
 
   }
 
 }
 
-const sounds=new SciFiSoundSystem();
+const sounds=new QuantumAudioSystem();
 
 /* =========================================================
-   DOM
+   DOM ELEMENTS
 ========================================================= */
 
 const $=id=>document.getElementById(id);
@@ -1017,7 +998,7 @@ const dom={
 
   particles:$('controls-particles'),
 
-  panelTitle:$('panel-title-text'),
+  panelTitle:$('panel-title'),
 
   panelOnline:$('panel-online'),
 
@@ -1028,6 +1009,12 @@ const dom={
   shapeSelect:$('shape-select'),
 
   colorPicker:$('color-picker'),
+
+  intensitySlider:$('intensity-slider'),
+
+  intensityValue:$('intensity-value'),
+
+  colorSchemeSelect:$('color-scheme'),
 
   audio:$('audio-toggle-btn'),
 
@@ -1041,7 +1028,11 @@ const dom={
 
   particleValue:$('particle-value'),
 
+  handsValue:$('hands-value'),
+
   mode:$('telemetry-mode'),
+
+  gestureValue:$('gesture-value'),
 
   preview:$('hand-preview-canvas'),
 
@@ -1070,12 +1061,13 @@ const dom={
 };
 
 /* =========================================================
-   THREE VARIABLES
+   THREE & POST-PROCESSING INIT
 ========================================================= */
 
 let scene;
 let camera;
 let renderer;
+let composer;
 
 let builderGroup;
 let particleGroup;
@@ -1105,11 +1097,6 @@ let currentMode='PARTICLES';
 let targetScale=1;
 let currentScale=1;
 
-/*
-  Rotation is controlled directly by the hand movement.
-
-  There is intentionally NO automatic rotation.
-*/
 let targetRotX=0;
 let targetRotY=0;
 let targetRotZ=0;
@@ -1132,89 +1119,10 @@ let fpsFrames=0;
 
 let pageVisible=true;
 
-/* =========================================================
-   CONTROLLERS
-========================================================= */
-
-function createController(index){
-
-  return{
-
-    side:index===0?'Left':'Right',
-
-    mesh:null,
-
-    pointLight:null,
-
-    rayLine:null,
-
-    trail:null,
-
-    trailPoints:[],
-
-    trailGeometry:null,
-
-    pos:new THREE.Vector3(),
-
-    target:new THREE.Vector3(),
-
-    lastPos:new THREE.Vector3(),
-
-    velocity:new THREE.Vector3(),
-
-    active:false,
-
-    isPinching:false,
-
-    wasPinching:false,
-
-    lastSeen:0,
-
-    grabbedBlock:null,
-
-    grabOffset:new THREE.Vector3(),
-
-    grabStartHand:new THREE.Vector3(),
-
-    grabStartBlock:new THREE.Vector3(),
-
-    statusEl:dom.hands[index].status,
-
-    grabEl:dom.hands[index].grab,
-
-    dotEl:dom.hands[index].dot
-
-  };
-
-}
-
-const controllers=[
-  createController(0),
-  createController(1)
-];
+let glitchTimestamp=0;
 
 /* =========================================================
-   HAND CONNECTIONS
-========================================================= */
-
-const HAND_CONNECTIONS=[
-
-  [0,1],[1,2],[2,3],[3,4],
-
-  [0,5],[5,6],[6,7],[7,8],
-
-  [5,9],[9,10],[10,11],[11,12],
-
-  [9,13],[13,14],[14,15],[15,16],
-
-  [13,17],[17,18],[18,19],[19,20],
-
-  [0,17]
-
-];
-
-/* =========================================================
-   THREE INITIALIZATION
+   THREE INITIALIZATION WITH POST-PROCESSING
 ========================================================= */
 
 function initThree(){
@@ -1224,19 +1132,20 @@ function initThree(){
   scene.background=new THREE.Color(0x000000);
 
   camera=new THREE.PerspectiveCamera(
-    55,
+    65,
     innerWidth/innerHeight,
     0.1,
     1000
   );
 
-  camera.position.set(0,2.2,28);
+  camera.position.set(0,2.5,35);
 
   camera.lookAt(0,0,0);
 
   renderer=new THREE.WebGLRenderer({
     antialias:!IS_MOBILE,
-    powerPreference:'high-performance'
+    powerPreference:'high-performance',
+    alpha:true
   });
 
   renderer.setPixelRatio(CONFIG.renderScale);
@@ -1249,6 +1158,40 @@ function initThree(){
 
   dom.container.appendChild(renderer.domElement);
 
+  // Init Post-Processing Composer
+  composer=new THREE.EffectComposer(renderer);
+
+  const renderPass=new THREE.RenderPass(
+    scene,
+    camera
+  );
+
+  composer.addPass(
+    renderPass
+  );
+
+  // Bloom Pass for that glowing effect
+  const bloomPass=new THREE.UnrealBloomPass(
+    new THREE.Vector2(
+      innerWidth,
+      innerHeight
+    ),
+    QUANTUM_CONFIG.bloomStrength,
+    QUANTUM_CONFIG.bloomThreshold,
+    QUANTUM_CONFIG.bloomRadius
+  );
+
+  composer.addPass(
+    bloomPass
+  );
+
+  // Glitch Pass for dramatic effects
+  const glitchPass=new THREE.GlitchPass();
+  glitchPass.enabled=false;
+  composer.addPass(
+    glitchPass
+  );
+
   initBuilder();
 
   initControllers();
@@ -1257,10 +1200,16 @@ function initThree(){
 
   initPreview();
 
+  window.addEventListener(
+    'resize',
+    onResize,
+    {passive:true}
+  );
+
 }
 
 /* =========================================================
-   BUILDER
+   BUILDER INIT
 ========================================================= */
 
 function initBuilder(){
@@ -1274,67 +1223,50 @@ function initBuilder(){
   scene.add(
     new THREE.AmbientLight(
       0xffffff,
-      0.8
+      0.9
     )
   );
 
   const light=
     new THREE.DirectionalLight(
       0xffffff,
-      0.7
+      0.8
     );
 
   light.position.set(
-    10,
-    20,
-    15
+    15,
+    30,
+    20
   );
 
   scene.add(light);
 
-  const floor=
-    new THREE.Mesh(
-
-      new THREE.PlaneGeometry(
-        60,
-        60
-      ),
-
-      new THREE.MeshStandardMaterial({
-        color:0x111111,
-        roughness:0.85,
-        metalness:0.1
-      })
-
-    );
-
-  floor.rotation.set(
-    -Math.PI/2,
-    0,
-    0
-  );
-
-  floor.position.y=-6;
-
-  builderGroup.add(floor);
-
-  const grid=
+  // Add subtle grid
+  const gridHelper=
     new THREE.GridHelper(
       60,
       30,
-      0xffffff,
-      0x333333
+      0x333333,
+      111111
     );
 
-  grid.rotation.set(
+  gridHelper.rotation.set(
     -Math.PI/2,
     0,
     0
   );
 
-  grid.position.y=-5.98;
+  gridHelper.position.y=-5.98;
 
-  builderGroup.add(grid);
+  builderGroup.add(gridHelper);
+
+  // Add helper axes
+  const axes=
+    new THREE.AxesHelper(5);
+
+  axes.position.set(0,0,-1);
+
+  builderGroup.add(axes);
 
   spawnShape(
     'cube',
@@ -1356,20 +1288,23 @@ function initControllers(){
 
       const color=
         index===0
-          ? CONFIG.colors.green
-          : CONFIG.colors.pink;
+          ? QUANTUM_CONFIG.colors.cyan
+          : QUANTUM_CONFIG.colors.magenta;
 
+      // Hand dot mesh
       const dot=
         new THREE.Mesh(
 
           new THREE.SphereGeometry(
-            0.17,
-            7,
-            7
+            0.22,
+            12,
+            12
           ),
 
           new THREE.MeshBasicMaterial({
-            color
+            color,
+            transparent:true,
+            opacity:0.8
           })
 
         );
@@ -1380,11 +1315,12 @@ function initControllers(){
 
       builderGroup.add(dot);
 
+      // Point light
       ctrl.pointLight=
         new THREE.PointLight(
           color,
-          0.5,
-          7
+          0.8,
+          12
         );
 
       ctrl.pointLight.visible=false;
@@ -1393,6 +1329,7 @@ function initControllers(){
         ctrl.pointLight
       );
 
+      // Ray line
       const lineGeo=
         new THREE.BufferGeometry();
 
@@ -1412,7 +1349,7 @@ function initControllers(){
           new THREE.LineBasicMaterial({
             color,
             transparent:true,
-            opacity:0.3
+            opacity:0.4
           })
 
         );
@@ -1423,9 +1360,10 @@ function initControllers(){
         ctrl.rayLine
       );
 
+      // Trail setup
       ctrl.trailPoints=
         Array.from(
-          {length:12},
+          {length:20},
           ()=>new THREE.Vector3()
         );
 
@@ -1437,7 +1375,7 @@ function initControllers(){
         'position',
 
         new THREE.BufferAttribute(
-          new Float32Array(12*3),
+          new Float32Array(20*3),
           3
         )
 
@@ -1451,7 +1389,7 @@ function initControllers(){
           new THREE.LineBasicMaterial({
             color,
             transparent:true,
-            opacity:0.28
+            opacity:0.25
           })
 
         );
@@ -1462,13 +1400,17 @@ function initControllers(){
         ctrl.trail
       );
 
+      // Trail color animation
+      ctrl.trailColor=
+        new THREE.Color(color);
+
     }
   );
 
 }
 
 /* =========================================================
-   PARTICLES
+   PARTICLES QUANTUM INIT
 ========================================================= */
 
 function initParticles(){
@@ -1489,7 +1431,7 @@ function initParticles(){
   ){
 
     const v=
-      (Math.random()-0.5)*20;
+      (Math.random()-0.5)*30;
 
     targetPositions[i]=v;
 
@@ -1508,59 +1450,25 @@ function initParticles(){
 
   );
 
-  const colors=
-    new Float32Array(
-      PARTICLE_COUNT*3
-    );
-
-  for(
-    let i=0;
-    i<PARTICLE_COUNT;
-    i++
-  ){
-
-    const v=
-      Math.random()<0.7
-        ? 1
-        : Math.random()<0.66
-          ? 0.66
-          : 0.33;
-
-    const j=i*3;
-
-    colors[j]=v;
-    colors[j+1]=v;
-    colors[j+2]=v;
-
-  }
-
-  particleGeometry.setAttribute(
-    'color',
-    new THREE.BufferAttribute(
-      colors,
-      3
-    )
-  );
-
-  const texture=
-    createGlowTexture();
+  // Create color based on scheme
+  updateColorScheme();
 
   particleMaterial=
     new THREE.PointsMaterial({
 
-      size:IS_MOBILE?0.26:0.30,
+      size:IS_MOBILE?0.22:0.28,
 
-      vertexColors:true,
-
-      map:texture,
+      vertexColors:false,
 
       transparent:true,
 
-      opacity:0.92,
+      opacity:0.95,
 
       blending:THREE.AdditiveBlending,
 
-      depthWrite:false
+      depthWrite:false,
+
+      sizeAttenuation:true
 
     });
 
@@ -1574,105 +1482,165 @@ function initParticles(){
     particleSystem
   );
 
-  createHardwareHolograms();
+  // Add field forces
+  createFieldForces();
 
   generateShape(
-    'jupiter'
+    'quantum'
   );
 
   dom.particleValue.textContent=
     PARTICLE_COUNT;
 
+  dom.intensitySlider.value=1;
+  dom.intensityValue.textContent='1.0x';
+
 }
 
 /* =========================================================
-   GLOW TEXTURE
+   COLOR SCHEME UPDATE
 ========================================================= */
 
-function createGlowTexture(){
+function updateColorScheme(){
 
-  const c=
-    document.createElement(
-      'canvas'
+  const scheme=
+    dom.colorSchemeSelect.value;
+
+  const colors=
+    getSchemeColors(scheme);
+
+  particleMaterial.color.setHex(
+    colors.main
+  );
+
+  // Update bloom color
+  const bloomPass=
+    composer.passes.find(
+      p=>p.isBloomPass
     );
 
-  c.width=64;
-  c.height=64;
+  if(bloomPass){
 
-  const ctx=
-    c.getContext('2d');
-
-  const g=
-    ctx.createRadialGradient(
-      32,
-      32,
-      1,
-      32,
-      32,
-      32
+    bloomPass.defaultColor.setHex(
+      colors.main
     );
 
-  g.addColorStop(
-    0,
-    'rgba(255,255,255,1)'
-  );
+  }
 
-  g.addColorStop(
-    0.18,
-    'rgba(255,255,255,.98)'
-  );
-
-  g.addColorStop(
-    0.42,
-    'rgba(255,255,255,.65)'
-  );
-
-  g.addColorStop(
-    0.7,
-    'rgba(255,255,255,.18)'
-  );
-
-  g.addColorStop(
-    1,
-    'rgba(255,255,255,0)'
-  );
-
-  ctx.fillStyle=g;
-
-  ctx.fillRect(
-    0,
-    0,
-    64,
-    64
-  );
-
-  const texture=
-    new THREE.CanvasTexture(c);
-
-  texture.generateMipmaps=false;
-
-  texture.minFilter=
-    THREE.LinearFilter;
-
-  texture.magFilter=
-    THREE.LinearFilter;
-
-  return texture;
+  // Update glow
+  updateGlowColors(colors);
 
 }
 
 /* =========================================================
-   HARDWARE HOLOGRAMS
+   GET SCHEME COLORS
+========================================================= */
+
+function getSchemeColors(scheme){
+
+  const schemes={
+    cyan:{
+      main:0x00ffff,
+      glow:0x00ccff
+    },
+    green:{
+      main:0x00ffcc,
+      glow:0x00cc99
+    },
+    yellow:{
+      main:0xfff569,
+      glow:0xffd839
+    },
+    purple:{
+      main:0xa020f0,
+      glow:0x9010e0
+    },
+    white:{
+      main:0xffffff,
+      glow:0xffffff
+    },
+    neon:{
+      main:0xff00ff,
+      glow:0xff00cc
+    },
+    acid:{
+      main:0xffe066,
+      glow:0xfff59d
+    },
+    matrix:{
+      main:0x39ff14,
+      glow:0x00ff00
+    },
+    retro:{
+      main:0xff6b6b,
+      glow:0xff8c42
+    },
+    ocean:{
+      main:0x00bcd4,
+      glow:0x0091c8
+    },
+    fire:{
+      main:0xff6b35,
+      glow:0xff8c00
+    },
+    ice:{
+      main:0x79ffd2,
+      glow:0x50e3c2
+    },
+    lava:{
+      main:0xff4500,
+      glow:0xff6347
+    },
+    aurora:{
+      main:0xff8c42,
+      glow:0xffa07a
+    },
+    psychedelic:{
+      main:0xff6b9d,
+      glow:0xff8c42
+    },
+    spectrum:{
+      main:0x00d4ff,
+      glow:0x00aaff
+    }
+  };
+
+  return schemes[scheme]||schemes.cyan;
+
+}
+
+/* =========================================================
+   GLOW COLOR UPDATE
+========================================================= */
+
+function updateGlowColors(colors){
+
+  // Update all point light intensities
+  for(
+    const ctrl of controllers
+  ){
+
+    if(
+      ctrl.pointLight
+    ){
+
+      ctrl.pointLight.color.setHex(
+        colors.glow
+      );
+
+    }
+
+  }
+
+}
+
+/* =========================================================
+   HARDWARE HOLOGRAMS (ENHANCED)
 ========================================================= */
 
 let hardwareGroups={};
 
-/*
-  The hardware holograms are built once and then
-  simply shown/hidden. This avoids generating geometry
-  every time the user changes the template.
-*/
-
+/* Create all hardware holograms */
 function createHardwareHolograms(){
 
   hardwareGroups.cpu=
@@ -1701,10 +1669,7 @@ function createHardwareHolograms(){
 
 }
 
-/* =========================================================
-   MATERIAL FACTORY
-========================================================= */
-
+/* Material factory */
 function hardwareMaterials(){
 
   return{
@@ -1784,1891 +1749,96 @@ function hardwareMaterials(){
         metalness:0.75,
         emissive:0xff5500,
         emissiveIntensity:1.3
-      })
-
-  };
-
-}
-
-/* =========================================================
-   MOTHERBOARD 3D
-========================================================= */
-
-function createMotherboardHologram(){
-
-  const group=
-    new THREE.Group();
-
-  const content=
-    new THREE.Group();
-
-  group.add(content);
-
-  const m=
-    hardwareMaterials();
-
-  const geoBox=
-    new THREE.BoxGeometry(
-      1,
-      1,
-      1
-    );
-
-  const geoCyl=
-    new THREE.CylinderGeometry(
-      .5,
-      .5,
-      1,
-      10
-    );
-
-  const geoTorus=
-    new THREE.TorusGeometry(
-      1,
-      .08,
-      10,
-      32
-    );
-
-  function box(
-    w,
-    h,
-    d,
-    mat,
-    x,
-    y,
-    z
-  ){
-
-    const mesh=
-      new THREE.Mesh(
-        geoBox,
-        mat
-      );
-
-    mesh.scale.set(
-      w,
-      h,
-      d
-    );
-
-    mesh.position.set(
-      x,
-      y,
-      z
-    );
-
-    content.add(mesh);
-
-    return mesh;
-
-  }
-
-  /* ================= BOARD BODY ================= */
-
-  box(
-    16,
-    0.42,
-    11.2,
-    m.pcb,
-    0,
-    0,
-    0
-  );
-
-  /*
-    Additional bottom layer creates actual
-    visible thickness/depth.
-  */
-
-  box(
-    15.7,
-    0.16,
-    10.9,
-    m.pcbEdge,
-    0,
-    -0.29,
-    0
-  );
-
-  /* ================= EDGES ================= */
-
-  box(
-    15.5,
-    .07,
-    .25,
-    m.gold,
-    0,
-    .24,
-    -5.72
-  );
-
-  box(
-    15.5,
-    .07,
-    .25,
-    m.gold,
-    0,
-    .24,
-    5.72
-  );
-
-  box(
-    .25,
-    .07,
-    10.7,
-    m.gold,
-    -8.08,
-    .24,
-    0
-  );
-
-  box(
-    .25,
-    .07,
-    10.7,
-    m.gold,
-    8.08,
-    .24,
-    0
-  );
-
-  /* ================= CIRCUIT TRACES ================= */
-
-  const buses=[
-
-    [14,.055,.12,0,.26,-2],
-    [14,.055,.12,0,.26,2],
-
-    [12,.055,.10,0,.26,-4],
-    [12,.055,.10,0,.26,4],
-
-    [.11,.055,10,-4,.26,0],
-    [.11,.055,10,4,.26,0],
-
-    [.10,.055,4,0,.26,-3.5],
-    [.10,.055,4,0,.26,3.5]
-
-  ];
-
-  buses.forEach(
-    data=>box(
-      data[0],
-      data[1],
-      data[2],
-      m.copper,
-      data[3],
-      data[4],
-      data[5]
-    )
-  );
-
-  /* ================= CENTRAL SOCKET ================= */
-
-  const socket=
-    new THREE.Mesh(
-      new THREE.BoxGeometry(
-        3.5,
-        .28,
-        3.5
-      ),
-      m.silver
-    );
-
-  socket.position.set(
-    0,
-    .40,
-    0
-  );
-
-  content.add(socket);
-
-  const socketInner=
-    new THREE.Mesh(
-      new THREE.BoxGeometry(
-        2.65,
-        .16,
-        2.65
-      ),
-      m.chip
-    );
-
-  socketInner.position.y=.57;
-
-  content.add(
-    socketInner
-  );
-
-  /* ================= CPU ================= */
-
-  const cpu=
-    new THREE.Mesh(
-      new THREE.BoxGeometry(
-        2.15,
-        .55,
-        2.15
-      ),
-      m.chip
-    );
-
-  cpu.position.set(
-    0,
-    .90,
-    0
-  );
-
-  content.add(cpu);
-
-  const cpuTop=
-    new THREE.Mesh(
-      new THREE.BoxGeometry(
-        1.65,
-        .08,
-        1.65
-      ),
-      m.silver
-    );
-
-  cpuTop.position.set(
-    0,
-    1.22,
-    0
-  );
-
-  content.add(
-    cpuTop
-  );
-
-  const cpuCore=
-    new THREE.Mesh(
-      new THREE.BoxGeometry(
-        .75,
-        .10,
-        .75
-      ),
-      m.cyan
-    );
-
-  cpuCore.position.set(
-    0,
-    1.32,
-    0
-  );
-
-  content.add(
-    cpuCore
-  );
-
-  /* ================= RAM ================= */
-
-  const ramSlots=[];
-
-  for(let r=0;r<4;r++){
-
-    const z=
-      -3.5+r*1.15;
-
-    const slot=
-      box(
-        .42,
-        .10,
-        5.7,
-        m.silver,
-        3.75,
-        .30,
-        z
-      );
-
-    ramSlots.push(slot);
-
-    const module=
-      box(
-        .22,
-        .48,
-        5.25,
-        r%2
-          ? m.cyan
-          : m.pink,
-        3.75,
-        .60,
-        z
-      );
-
-    module.userData.baseY=
-      module.position.y;
-
-    for(
-      let k=0;
-      k<12;
-      k++
-    ){
-
-      box(
-        .24,
-        .08,
-        .08,
-        m.gold,
-        3.75,
-        .88,
-        z-2.1+k*.38
-      );
-
-    }
-
-  }
-
-  /* ================= HEATSINK ================= */
-
-  const heatsink=
-    new THREE.Group();
-
-  content.add(
-    heatsink
-  );
-
-  for(
-    let i=0;
-    i<7;
-    i++
-  ){
-
-    const fin=
-      box(
-        .18,
-        1.25,
-        2.6,
-        m.silver,
-        -3.2+i*.38,
-        .95,
-        3.25
-      );
-
-    fin.userData.heatsink=true;
-
-  }
-
-  box(
-    3,
-    .22,
-    2.8,
-    m.chip,
-    -2.1,
-    .38,
-    3.25
-  );
-
-  /* ================= VRM CHIPS ================= */
-
-  const vrmPositions=[
-
-    [-6,-3],
-    [-6,-1.8],
-    [-6,.0],
-    [-6,1.8],
-    [-6,3.6],
-
-    [6,-3],
-    [6,-1.8],
-    [6,0],
-    [6,1.8],
-    [6,3.6]
-
-  ];
-
-  vrmPositions.forEach(
-    ([x,z])=>{
-
-      box(
-        .75,
-        .45,
-        1.15,
-        m.chip,
-        x,
-        .48,
-        z
-      );
-
-      box(
-        .52,
-        .08,
-        .72,
-        m.silver,
-        x,
-        .73,
-        z
-      );
-
-    }
-  );
-
-  /* ================= CAPACITORS ================= */
-
-  const capPositions=[
-
-    [-4.8,-4.3],
-    [-4.0,-4.3],
-    [-3.2,-4.3],
-
-    [4.8,-4.3],
-    [4.0,-4.3],
-    [3.2,-4.3],
-
-    [-4.8,4.3],
-    [-4.0,4.3],
-    [-3.2,4.3],
-
-    [4.8,4.3],
-    [4.0,4.3],
-    [3.2,4.3]
-
-  ];
-
-  capPositions.forEach(
-    ([x,z],i)=>{
-
-      const cap=
-        new THREE.Mesh(
-          geoCyl,
-          i%2
-            ? m.cyan
-            : m.orange
-        );
-
-      cap.scale.set(
-        .18,
-        .55,
-        .18
-      );
-
-      cap.position.set(
-        x,
-        .58,
-        z
-      );
-
-      content.add(cap);
-
-    }
-  );
-
-  /* ================= PCIe SLOTS ================= */
-
-  for(let i=0;i<3;i++){
-
-    box(
-      9,
-      .10,
-      .28,
-      m.gold,
-      0,
-      .31,
-      -4+i*1.15
-    );
-
-  }
-
-  /* ================= CONNECTORS ================= */
-
-  for(let i=0;i<14;i++){
-
-    box(
-      .25,
-      .18,
-      .45,
-      m.gold,
-      -7.45+i*.48,
-      .40,
-      -5.2
-    );
-
-  }
-
-  /* ================= CENTRAL LIGHT RINGS ================= */
-
-  const reactor=
-    new THREE.Group();
-
-  reactor.position.y=1.4;
-
-  content.add(
-    reactor
-  );
-
-  const ring1=
-    new THREE.Mesh(
-      geoTorus,
-      m.gold
-    );
-
-  ring1.scale.set(
-    2.5,
-    2.5,
-    1.35
-  );
-
-  ring1.rotation.x=
-    Math.PI/2;
-
-  reactor.add(
-    ring1
-  );
-
-  const ring2=
-    new THREE.Mesh(
-      geoTorus,
-      m.copper
-    );
-
-  ring2.scale.set(
-    1.8,
-    1.8,
-    1.15
-  );
-
-  ring2.rotation.x=
-    Math.PI/2;
-
-  reactor.add(
-    ring2
-  );
-
-  const ring3=
-    new THREE.Mesh(
-      geoTorus,
-      m.cyan
-    );
-
-  ring3.scale.set(
-    1.15,
-    1.15,
-    1
-  );
-
-  ring3.rotation.x=
-    Math.PI/2;
-
-  reactor.add(
-    ring3
-  );
-
-  const core=
-    new THREE.Mesh(
-      geoCyl,
-      m.orange
-    );
-
-  core.scale.set(
-    1.35,
-    .35,
-    1.35
-  );
-
-  reactor.add(
-    core
-  );
-
-  /* ================= CIRCUIT NODES ================= */
-
-  const nodePositions=[
-
-    [-3,-1.5],
-    [3,-1.5],
-    [-3,1.5],
-    [3,1.5],
-
-    [-6,-4.5],
-    [6,-4.5],
-    [-6,4.5],
-    [6,4.5],
-
-    [1.5,0],
-    [-1.5,0]
-
-  ];
-
-  nodePositions.forEach(
-    ([x,z],i)=>{
-
-      const led=
-        new THREE.Mesh(
-          geoCyl,
-          i%2
-            ? m.cyan
-            : m.orange
-        );
-
-      led.scale.set(
-        .18,
-        .35,
-        .18
-      );
-
-      led.position.set(
-        x,
-        .42,
-        z
-      );
-
-      content.add(
-        led
-      );
-
-    }
-  );
-
-  /* ================= LIGHTS ================= */
-
-  const light1=
-    new THREE.PointLight(
-      0xffaa44,
-      1.1,
-      14
-    );
-
-  light1.position.set(
-    0,
-    2.2,
-    0
-  );
-
-  content.add(
-    light1
-  );
-
-  const light2=
-    new THREE.PointLight(
-      0x00ccff,
-      .7,
-      14
-    );
-
-  light2.position.set(
-    0,
-    1,
-    2
-  );
-
-  content.add(
-    light2
-  );
-
-  /*
-    Static perspective.
-    It NEVER changes automatically.
-  */
-
-  content.rotation.x=-0.42;
-  content.rotation.y=0.48;
-
-  group.userData={
-    type:'cpu',
-    content,
-    reactor,
-    ring1,
-    ring2,
-    ring3,
-    light1,
-    light2,
-    cpuCore,
-    idleTime:0
-  };
-
-  return group;
-
-}
-
-/* =========================================================
-   GPU HOLOGRAM
-========================================================= */
-
-function createGPUHologram(){
-
-  const group=
-    new THREE.Group();
-
-  const content=
-    new THREE.Group();
-
-  group.add(content);
-
-  const m=
-    hardwareMaterials();
-
-  const boxGeo=
-    new THREE.BoxGeometry(
-      1,
-      1,
-      1
-    );
-
-  function box(
-    w,h,d,mat,x,y,z
-  ){
-
-    const mesh=
-      new THREE.Mesh(
-        boxGeo,
-        mat
-      );
-
-    mesh.scale.set(
-      w,h,d
-    );
-
-    mesh.position.set(
-      x,y,z
-    );
-
-    content.add(mesh);
-
-    return mesh;
-
-  }
-
-  box(
-    13,
-    .65,
-    5.5,
-    m.pcb,
-    0,
-    0,
-    0
-  );
-
-  box(
-    12.6,
-    .12,
-    5.1,
-    m.pcbEdge,
-    0,
-    .38,
-    0
-  );
-
-  /* GPU CORE */
-
-  box(
-    3.2,
-    .65,
-    3.2,
-    m.chip,
-    0,
-    .65,
-    0
-  );
-
-  box(
-    2.5,
-    .12,
-    2.5,
-    m.cyan,
-    0,
-    1.03,
-    0
-  );
-
-  /* HEATSINK */
-
-  for(let i=0;i<9;i++){
-
-    box(
-      .22,
-      1.3,
-      3.5,
-      m.silver,
-      -2.4+i*.6,
-      1.15,
-      0
-    );
-
-  }
-
-  /* FANS */
-
-  const fanGeo=
-    new THREE.TorusGeometry(
-      1.35,
-      .10,
-      8,
-      32
-    );
-
-  for(let f=0;f<2;f++){
-
-    const fan=
-      new THREE.Mesh(
-        fanGeo,
-        m.cyan
-      );
-
-    fan.rotation.x=
-      Math.PI/2;
-
-    fan.position.set(
-      f===0?-4:4,
-      .75,
-      0
-    );
-
-    content.add(
-      fan
-    );
-
-  }
-
-  /* POWER CIRCUITS */
-
-  for(let i=0;i<12;i++){
-
-    box(
-      .12,
-      .10,
-      1.5,
-      i%2?m.cyan:m.orange,
-      -5.2+i*.95,
-      .45,
-      -2
-    );
-
-  }
-
-  content.rotation.x=-.25;
-  content.rotation.y=.35;
-
-  group.userData={
-    type:'gpu',
-    content
-  };
-
-  return group;
-
-}
-
-/* =========================================================
-   RAM HOLOGRAM
-========================================================= */
-
-function createRAMHologram(){
-
-  const group=
-    new THREE.Group();
-
-  const content=
-    new THREE.Group();
-
-  group.add(content);
-
-  const m=
-    hardwareMaterials();
-
-  const boxGeo=
-    new THREE.BoxGeometry(
-      1,
-      1,
-      1
-    );
-
-  function box(
-    w,h,d,mat,x,y,z
-  ){
-
-    const mesh=
-      new THREE.Mesh(
-        boxGeo,
-        mat
-      );
-
-    mesh.scale.set(
-      w,h,d
-    );
-
-    mesh.position.set(
-      x,y,z
-    );
-
-    content.add(mesh);
-
-    return mesh;
-
-  }
-
-  for(let r=0;r<6;r++){
-
-    const x=
-      -6+r*2.4;
-
-    box(
-      .55,
-      4.8,
-      1.15,
-      m.pcb,
-      x,
-      0,
-      0
-    );
-
-    box(
-      .42,
-      4.2,
-      .95,
-      r%2?m.cyan:m.pink,
-      x,
-      .05,
-      0
-    );
-
-    for(let k=0;k<12;k++){
-
-      box(
-        .44,
-        .12,
-        .12,
-        m.gold,
-        x,
-        -1.7+k*.31,
-        .57
-      );
-
-    }
-
-    box(
-      .55,
-      .18,
-      1.2,
-      m.silver,
-      x,
-      2.5,
-      0
-    );
-
-    box(
-      .55,
-      .18,
-      1.2,
-      m.gold,
-      x,
-      -2.5,
-      0
-    );
-
-  }
-
-  content.rotation.x=-.25;
-  content.rotation.y=.35;
-
-  group.userData={
-    type:'ram',
-    content
-  };
-
-  return group;
-
-}
-
-/* =========================================================
-   SSD HOLOGRAM
-========================================================= */
-
-function createSSDHologram(){
-
-  const group=
-    new THREE.Group();
-
-  const content=
-    new THREE.Group();
-
-  group.add(content);
-
-  const m=
-    hardwareMaterials();
-
-  const boxGeo=
-    new THREE.BoxGeometry(
-      1,
-      1,
-      1
-    );
-
-  function box(
-    w,h,d,mat,x,y,z
-  ){
-
-    const mesh=
-      new THREE.Mesh(
-        boxGeo,
-        mat
-      );
-
-    mesh.scale.set(
-      w,h,d
-    );
-
-    mesh.position.set(
-      x,y,z
-    );
-
-    content.add(mesh);
-
-    return mesh;
-
-  }
-
-  /* SSD BODY */
-
-  box(
-    9,
-    .7,
-    4,
-    m.pcb,
-    0,
-    0,
-    0
-  );
-
-  box(
-    8.5,
-    .10,
-    3.5,
-    m.pcbEdge,
-    0,
-    .42,
-    0
-  );
-
-  /* DATA CORE */
-
-  box(
-    3,
-    .35,
-    2.5,
-    m.chip,
-    0,
-    .65,
-    0
-  );
-
-  box(
-    2,
-    .10,
-    1.5,
-    m.cyan,
-    0,
-    .87,
-    0
-  );
-
-  /* MEMORY CHIPS */
-
-  for(let i=0;i<8;i++){
-
-    box(
-      1.0,
-      .38,
-      .7,
-      i%2?m.pink:m.silver,
-      -3.5+(i%4)*2.3,
-      .58,
-      i<4?-1.15:1.15
-    );
-
-  }
-
-  /* DATA LINES */
-
-  for(let i=0;i<12;i++){
-
-    box(
-      .12,
-      .08,
-      2.5,
-      i%2?m.cyan:m.orange,
-      -4.5+i*.82,
-      .48,
-      0
-    );
-
-  }
-
-  content.rotation.x=-.3;
-  content.rotation.y=.4;
-
-  group.userData={
-    type:'ssd',
-    content
-  };
-
-  return group;
-
-}
-
-/* =========================================================
-   PREVIEW
-========================================================= */
-
-let previewCtx;
-
-function initPreview(){
-
-  previewCtx=
-    dom.preview.getContext(
-      '2d'
-    );
-
-  drawPreview([]);
-
-}
-
-function drawPreview(hands){
-
-  const ctx=previewCtx;
-
-  const w=dom.preview.width;
-  const h=dom.preview.height;
-
-  ctx.clearRect(
-    0,
-    0,
-    w,
-    h
-  );
-
-  ctx.fillStyle=
-    'rgba(5,10,14,.92)';
-
-  ctx.fillRect(
-    0,
-    0,
-    w,
-    h
-  );
-
-  if(!hands?.length){
-
-    ctx.fillStyle=
-      'rgba(255,255,255,.35)';
-
-    ctx.font=
-      '9px "Share Tech Mono"';
-
-    ctx.textAlign='center';
-
-    ctx.fillText(
-      'SEARCHING HANDS...',
-      w/2,
-      h/2
-    );
-
-    return;
-
-  }
-
-  hands.forEach(
-    (landmarks,i)=>{
-
-      ctx.strokeStyle=
-        i===0
-          ? '#00ffcc'
-          : '#ff00aa';
-
-      ctx.lineWidth=1.5;
-
-      HAND_CONNECTIONS.forEach(
-        pair=>{
-
-          const a=
-            landmarks[pair[0]];
-
-          const b=
-            landmarks[pair[1]];
-
-          ctx.beginPath();
-
-          ctx.moveTo(
-            a.x*w,
-            a.y*h
-          );
-
-          ctx.lineTo(
-            b.x*w,
-            b.y*h
-          );
-
-          ctx.stroke();
-
-        }
-      );
-
-      landmarks.forEach(
-        (p,index)=>{
-
-          ctx.fillStyle=
-            (
-              index===4 ||
-              index===8
-            )
-              ? '#ffe66d'
-              : (
-                  i===0
-                    ? '#00ffcc'
-                    : '#ff00aa'
-                );
-
-          ctx.beginPath();
-
-          ctx.arc(
-            p.x*w,
-            p.y*h,
-            (
-              index===4 ||
-              index===8
-            )
-              ? 3
-              : 1.7,
-            0,
-            Math.PI*2
-          );
-
-          ctx.fill();
-
-        }
-      );
-
-    }
-  );
-
-}
-
-/* =========================================================
-   SPAWN BUILDER OBJECT
-========================================================= */
-
-function spawnShape(
-  type,
-  x,
-  y,
-  z
-){
-
-  let geo;
-
-  const size=3;
-
-  switch(type){
-
-    case 'sphere':
-      geo=
-        new THREE.SphereGeometry(
-          1.65,
-          12,
-          12
-        );
-      break;
-
-    case 'pyramid':
-      geo=
-        new THREE.ConeGeometry(
-          2.1,
-          3,
-          4
-        );
-      break;
-
-    case 'torus':
-      geo=
-        new THREE.TorusGeometry(
-          1.5,
-          .5,
-          8,
-          16
-        );
-      break;
-
-    case 'cylinder':
-      geo=
-        new THREE.CylinderGeometry(
-          1.5,
-          1.5,
-          3,
-          12
-        );
-      break;
-
-    case 'icosahedron':
-      geo=
-        new THREE.IcosahedronGeometry(
-          1.9
-        );
-      break;
-
-    default:
-      geo=
-        new THREE.BoxGeometry(
-          size,
-          size,
-          size
-        );
-
-  }
-
-  const color=
-    Math.random()>.5
-      ? 0xffffff
-      : 0x888888;
-
-  const mesh=
-    new THREE.Mesh(
-
-      geo,
-
+      }),
+
+    // Quantum materials
+    quantumField:
+      new THREE.ShaderMaterial({
+        uniforms:{
+          time:{value:0},
+          color1:{value:new THREE.Color(0x00ffff)},
+          color2:{value:new THREE.Color(0xff00ff)},
+          strength:{value:1.0}
+        },
+        vertexShader:`
+          varying vec2 vUv;
+          void main(){
+            vUv=uv;
+            gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+          }
+        `,
+        fragmentShader:`
+          uniform float time;
+          uniform vec3 color1;
+          uniform vec3 color2;
+          uniform float strength;
+          varying vec2 vUv;
+          
+          void main(){
+            float t=time*0.5;
+            float wave=sin(vUv.x*10.0+t*2.0)*0.5+0.5;
+            float wave2=sin(vUv.y*10.0+t*2.5)*0.5+0.5;
+            
+            vec3 col1=color1;
+            vec3 col2=color2;
+            
+            vec3 mixed=mix(col1,col2,wave);
+            
+            float intensity=strength*0.8;
+            
+            float noise=sin(t*5.0+vUv.x*100.0+vUv.y*100.0)*0.1;
+            
+            vec3 final=mixed+noise;
+            
+            gl_FragColor=vec4(final,intensity);
+          }
+        `
+      }),
+
+    ring:
       new THREE.MeshStandardMaterial({
-        color,
-        roughness:.35,
-        metalness:.2
+        color:0x00ffff,
+        roughness:0.1,
+        metalness:0.9,
+        emissive:0x00b8d0,
+        emissiveIntensity:2.0
       })
 
-    );
-
-  mesh.position.set(
-
-    x ??
-      (Math.random()-.5)*8,
-
-    y ?? 6,
-
-    z ??
-      (Math.random()-.5)*4
-
-  );
-
-  mesh.rotation.set(
-    0,
-    0,
-    0
-  );
-
-  mesh.userData={
-
-    originalColor:color,
-
-    velocity:
-      new THREE.Vector3(),
-
-    isGrabbed:false,
-
-    size,
-
-    type
-
-  };
-
-  builderGroup.add(
-    mesh
-  );
-
-  blocks.push(
-    mesh
-  );
-
-  if(
-    blocks.length>
-    CONFIG.maxBlocks
-  ){
-
-    disposeBlock(
-      blocks.shift()
-    );
-
-  }
-
-}
-
-/* =========================================================
-   DISPOSE BLOCK
-========================================================= */
-
-function disposeBlock(block){
-
-  if(!block)return;
-
-  builderGroup.remove(
-    block
-  );
-
-  block.geometry?.dispose();
-
-  block.material?.dispose();
-
-  if(
-    selectedBlock===block
-  ){
-
-    selectedBlock=null;
-
-  }
-
-}
-
-/* =========================================================
-   CLEAR
-========================================================= */
-
-function clearBlocks(){
-
-  blocks.forEach(
-    disposeBlock
-  );
-
-  blocks=[];
-
-  controllers.forEach(
-    c=>{
-      c.grabbedBlock=null;
-      c.isPinching=false;
-    }
-  );
-
-  selectedBlock=null;
-
-  updateSelectionUI();
-
-}
-
-/* =========================================================
-   HIGHLIGHT
-========================================================= */
-
-function highlightBlock(
-  block,
-  on
-){
-
-  if(!block)return;
-
-  block.material.color.setHex(
-
-    on
-      ? CONFIG.colors.yellow
-      : block.userData.originalColor
-
-  );
-
-}
-
-/* =========================================================
-   SNAP
-========================================================= */
-
-function snapBlock(block){
-
-  if(!block)return;
-
-  const s=
-    CONFIG.snapSize;
-
-  block.position.x=
-    Math.round(
-      block.position.x/s
-    )*s;
-
-  block.position.y=
-    Math.round(
-      block.position.y/s
-    )*s;
-
-  block.position.z=
-    Math.round(
-      block.position.z/s
-    )*s;
-
-}
-
-/* =========================================================
-   SELECTION UI
-========================================================= */
-
-function updateSelectionUI(){
-
-  if(selectedBlock){
-
-    dom.selection.textContent=
-      'TARGET: '+
-      selectedBlock
-        .userData
-        .type
-        .toUpperCase();
-
-    dom.ring.style.display=
-      'block';
-
-  }else{
-
-    dom.selection.textContent=
-      'TARGET: NESSUN OGGETTO';
-
-    dom.ring.style.display=
-      'none';
-
-  }
-
-}
-
-/* =========================================================
-   RANDOM SHAPES
-========================================================= */
-
-function randomSphere(radius){
-
-  const a=
-    Math.random()*Math.PI*2;
-
-  const b=
-    Math.acos(
-      Math.random()*2-1
-    );
-
-  const r=
-    radius*
-    Math.cbrt(
-      Math.random()
-    );
-
-  return{
-
-    x:
-      r*
-      Math.sin(b)*
-      Math.cos(a),
-
-    y:
-      r*
-      Math.cos(b),
-
-    z:
-      r*
-      Math.sin(b)*
-      Math.sin(a)
-
-  };
-
-}
-
-function randomShell(radius){
-
-  const a=
-    Math.random()*Math.PI*2;
-
-  const b=
-    Math.acos(
-      Math.random()*2-1
-    );
-
-  const r=
-    radius+
-    (Math.random()-.5)*.25;
-
-  return{
-
-    x:
-      r*
-      Math.sin(b)*
-      Math.cos(a),
-
-    y:
-      r*
-      Math.cos(b),
-
-    z:
-      r*
-      Math.sin(b)*
-      Math.sin(a)
-
   };
 
 }
 
 /* =========================================================
-   CPU PARTICLE FALLBACK
+   FIELD FORCES FOR PARTICLES
 ========================================================= */
 
-function generateCPU(i){
+function createFieldForces(){
 
-  function iso(
-    x,
-    y,
-    z
-  ){
+  // Create attractor points that follow hands
+  fieldAttractors=[];
 
-    const a=.38;
-    const b=.55;
+  for(let i=0;i<4;i++){
 
-    const cosA=
-      Math.cos(a);
+    fieldAttractors.push({
 
-    const sinA=
-      Math.sin(a);
+      position:new THREE.Vector3(
+        (Math.random()-0.5)*20,
+        (Math.random()-0.5)*15,
+        (Math.random()-0.5)*20
+      ),
 
-    const cosB=
-      Math.cos(b);
+      strength:Math.random()*0.5+0.2,
 
-    const sinB=
-      Math.sin(b);
+      influenceRadius:12
 
-    let x1=
-      x*cosB-z*sinB;
-
-    let z1=
-      x*sinB+z*cosB;
-
-    let y1=
-      y*cosA-z1*sinA;
-
-    z1=
-      y*sinA+z1*cosA;
-
-    return{
-      x:x1,
-      y:y1,
-      z:z1
-    };
+    });
 
   }
-
-  if(i<1100){
-
-    const teeth=20;
-
-    const a=
-      Math.random()*
-      Math.PI*2;
-
-    const ring=i%5;
-
-    let r=
-      2.6+
-      ring*.48;
-
-    if(
-      ring===4 &&
-      Math.sin(a*teeth)>.5
-    ){
-
-      r+=
-        .5+
-        Math.random()*.3;
-
-    }
-
-    const y=
-      (Math.random()-.5)*.5;
-
-    return iso(
-      Math.cos(a)*r,
-      y+.9,
-      Math.sin(a)*r
-    );
-
-  }
-
-  if(i<1400){
-
-    const a=
-      Math.random()*
-      Math.PI*2;
-
-    const r=
-      Math.random()*2.3;
-
-    return iso(
-      Math.cos(a)*r,
-      (Math.random()-.5)*.35+.9,
-      Math.sin(a)*r
-    );
-
-  }
-
-  if(i<2000){
-
-    const x=
-      (Math.random()-.5)*14;
-
-    const z=
-      (Math.random()-.5)*9;
-
-    const y=
-      (Math.random()-.5)*.1;
-
-    return iso(
-      x,
-      y,
-      z
-    );
-
-  }
-
-  if(i<2800){
-
-    const line=i%12;
-
-    const t=
-      Math.random()*2-1;
-
-    let x=0;
-    let z=0;
-    let y=.2;
-
-    if(line<5){
-
-      x=t*6.5;
-
-      z=(line-2)*1.5;
-
-      y+=
-        Math.sin(t*5)*.05;
-
-    }else if(line<10){
-
-      z=t*4.5;
-
-      x=(line-7)*2.2;
-
-      y+=
-        Math.sin(t*4)*.04;
-
-    }else{
-
-      const a=t*Math.PI;
-
-      const r=
-        3+
-        Math.random()*3.5;
-
-      x=
-        Math.cos(a)*r;
-
-      z=
-        Math.sin(a)*r*.65;
-
-    }
-
-    return iso(
-      x,
-      y,
-      z
-    );
-
-  }
-
-  if(i<3200){
-
-    const a=
-      (i%20)*
-      (Math.PI*2/20)+
-      (Math.random()-.5)*.1;
-
-    const r=
-      3.5+
-      Math.random()*5;
-
-    return iso(
-      Math.cos(a)*r,
-      .18,
-      Math.sin(a)*r
-    );
-
-  }
-
-  if(i<3600){
-
-    const chip=i%10;
-
-    const cx=
-      ((chip%5)-2)*2.8;
-
-    const cz=
-      (Math.floor(chip/5)-.5)*3.5;
-
-    return iso(
-
-      cx+
-        (Math.random()-.5)*1.3,
-
-      .3+
-        Math.random()*.7,
-
-      cz+
-        (Math.random()-.5)*1
-
-    );
-
-  }
-
-  if(i<3850){
-
-    const side=i%4;
-
-    let x,z;
-
-    if(side===0){
-
-      x=-7.2;
-
-      z=
-        (Math.random()-.5)*7;
-
-    }else if(side===1){
-
-      x=7.2;
-
-      z=
-        (Math.random()-.5)*7;
-
-    }else if(side===2){
-
-      z=-4.8;
-
-      x=
-        (Math.random()-.5)*11;
-
-    }else{
-
-      z=4.8;
-
-      x=
-        (Math.random()-.5)*11;
-
-    }
-
-    return iso(
-      x,
-      .15+
-        Math.random()*.5,
-      z
-    );
-
-  }
-
-  const a=
-    Math.random()*
-    Math.PI*2;
-
-  const r=
-    6+
-    Math.random()*2.5;
-
-  return iso(
-
-    Math.cos(a)*r,
-
-    (Math.random()-.5)*.8,
-
-    Math.sin(a)*r
-
-  );
 
 }
 
 /* =========================================================
-   GENERATE PARTICLE SHAPE
+   PROCEDURAL SHAPE GENERATION
 ========================================================= */
 
 function generateShape(type){
@@ -3747,203 +1917,165 @@ function generateShape(type){
     let z=0;
 
     if(
-      type==='jupiter' ||
-      type==='saturn'
+      type==='quantum' ||
+      type==='quantumField'
     ){
 
-      const saturn=
-        type==='saturn';
-
-      const body=
-        saturn?.5:.75;
-
-      if(
-        i<
-        PARTICLE_COUNT*body
-      ){
-
-        const a=
-          Math.random()*
-          Math.PI*2;
-
-        const b=
-          Math.acos(
-            Math.random()*2-1
-          );
-
-        const r=
-          saturn?5:7;
-
-        x=
-          r*
-          Math.sin(b)*
-          Math.cos(a);
-
-        y=
-          r*
-          Math.cos(b)*
-          (saturn?1:.85);
-
-        z=
-          r*
-          Math.sin(b)*
-          Math.sin(a);
-
-      }else{
-
-        const a=
-          Math.random()*
-          Math.PI*2;
-
-        const r=
-          (saturn?7:9)+
-          Math.random()*
-          (saturn?6:4);
-
-        x=
-          Math.cos(a)*r;
-
-        z=
-          Math.sin(a)*r;
-
-        y=
-          (Math.random()-.5)*.2;
-
-      }
-
-    }else if(type==='galaxy'){
-
-      const arm=i%4;
-
-      const r=
-        Math.pow(
-          Math.random(),
-          1.5
-        )*15;
-
-      const a=
-        r*.4+
-        arm*Math.PI/2;
-
-      x=
-        Math.cos(a)*r+
-        (Math.random()-.5)*.7;
-
-      z=
-        Math.sin(a)*r+
-        (Math.random()-.5)*.7;
-
-      y=
-        (Math.random()-.5)*
-        Math.max(
-          .2,
-          1.8-r*.1
-        );
-
-    }else if(type==='DNA'){
-
-      const t=
-        i/PARTICLE_COUNT*
-        Math.PI*12;
-
-      const strand=
-        i%2?-1:1;
-
-      x=
-        Math.sin(t)*4*strand;
-
-      y=
-        i/PARTICLE_COUNT*16-8;
-
-      z=
-        Math.cos(t)*4*strand;
-
-    }else if(type==='hypercube'){
-
-      const s=6;
-
-      const t=
-        Math.random()*s-s/2;
-
-      const side=i%12;
-
-      if(side===0){
-        x=s/2;
-        y=t;
-        z=s/2;
-      }else if(side===1){
-        x=-s/2;
-        y=t;
-        z=s/2;
-      }else if(side===2){
-        x=t;
-        y=s/2;
-        z=s/2;
-      }else if(side===3){
-        x=t;
-        y=-s/2;
-        z=s/2;
-      }else if(side===4){
-        x=s/2;
-        y=t;
-        z=-s/2;
-      }else if(side===5){
-        x=-s/2;
-        y=t;
-        z=-s/2;
-      }else if(side===6){
-        x=t;
-        y=s/2;
-        z=-s/2;
-      }else if(side===7){
-        x=t;
-        y=-s/2;
-        z=-s/2;
-      }else if(side===8){
-        x=s/2;
-        y=s/2;
-        z=t;
-      }else if(side===9){
-        x=-s/2;
-        y=s/2;
-        z=t;
-      }else if(side===10){
-        x=s/2;
-        y=-s/2;
-        z=t;
-      }else{
-        x=-s/2;
-        y=-s/2;
-        z=t;
-      }
-
-    }else if(type==='heart'){
-
+      // Quantum field - chaotic but organized
       const t=
         Math.random()*
         Math.PI*2;
 
-      x=
-        16*
+      const r=
         Math.pow(
-          Math.sin(t),
-          3
-        )*.55;
+          Math.random(),
+          0.7
+        )*18;
+
+      const noise=
+        (Math.random()-.5)*.5;
+
+      x=
+        Math.cos(t)*r+
+        noise;
 
       y=
-        (
-          13*Math.cos(t)-
-          5*Math.cos(2*t)-
-          2*Math.cos(3*t)-
-          Math.cos(4*t)
-        )*.55;
+        (Math.random()-.5)*12;
 
       z=
-        (Math.random()-.5)*
-        3*.55;
+        Math.sin(t)*r+
+        noise;
+
+    }else if(type==='neuron'){
+
+      // Neural network pattern
+      const t=
+        i/PARTICLE_COUNT*
+        Math.PI*18;
+
+      const strand=
+        i%2===0
+          ? 1
+          : -1;
+
+      const radius=
+        5+
+        Math.sin(t*.5)*.5;
+
+      x=
+        Math.cos(t)*radius*strand;
+
+      y=
+        i/PARTICLE_COUNT*14-7;
+
+      z=
+        Math.sin(t)*radius*strand;
+
+    }else if(type==='vortex'){
+
+      // Vortex field
+      const t=
+        Math.random()*
+        Math.PI*12;
+
+      const r=
+        2+
+        Math.random()*8;
+
+      const spiral=
+        i%12;
+
+      x=
+        Math.cos(t+r*i*.3)*r;
+
+      y=
+        t*.2-4;
+
+      z=
+        Math.sin(t+r*i*.3)*r;
+
+    }else if(type==='tesseract'){
+
+      // 4D hypercube projection
+      const s=8;
+
+      const q=i%24;
+
+      const signs=[
+
+        q&1?1:-1,
+        q&2?1:-1,
+        q&4?1:-1
+
+      ];
+
+      const t=
+        Math.random()*2-1;
+
+      x=
+        signs[0]*s+
+        t*3;
+
+      y=
+        signs[1]*s+
+        t*3;
+
+      z=
+        signs[2]*s+
+        t*3;
+
+      // Add w-component effect
+      y+=Math.sin(t*6)*.5;
+
+    }else if(type==='metatron'){
+
+      // Metatron's Cube
+      const a=
+        Math.random()*
+        Math.PI*2;
+
+      const segments=12;
+
+      for(
+        let s=0;
+        s<segments;
+        s++
+      ){
+
+        const angle=
+          a+s*Math.PI/6;
+
+        const r=
+          3+
+          Math.random()*2;
+
+        const x=
+          Math.cos(angle)*r;
+
+        const z=
+          Math.sin(angle)*r;
+
+        const y=
+          (s-5.5)*.8;
+
+        p[j]=x;
+        p[j+1]=y;
+        p[j+2]=z;
+
+        j+=3;
+
+        // Second ring
+        p[j]=x*0.8;
+        p[j+1]=y;
+        p[j+2]=z*0.8;
+
+        j+=3;
+
+      }
 
     }else if(type==='flower'){
 
+      // Energy flower
       const u=
         Math.random()*
         Math.PI*2;
@@ -3953,8 +2085,8 @@ function generateShape(type){
         Math.PI;
 
       const r=
-        9*
-        Math.sin(6*u)*
+        8*
+        Math.sin(5*u)*
         Math.sin(v);
 
       x=
@@ -3971,58 +2103,160 @@ function generateShape(type){
         r*
         Math.cos(v);
 
-    }else if(type==='buddha'){
+    }else if(type==='dna'){
 
-      if(Math.random()<.35){
+      // DNA double helix
+      const t=
+        i/PARTICLE_COUNT*
+        Math.PI*12;
 
-        const a=
-          Math.random()*
-          Math.PI*2;
+      const strand=
+        i%2===0
+          ? 1
+          : -1;
 
-        const r=
-          2+
-          Math.random()*8;
+      const radius=
+        4;
+
+      x=
+        Math.sin(t)*radius*strand;
+
+      y=
+        i/PARTICLE_COUNT*16-8;
+
+      z=
+        Math.cos(t)*radius*strand;
+
+    }else if(type==='sri'){
+
+      // Sri Yantra
+      const n=
+        Math.floor(
+          i/Math.floor(
+            PARTICLE_COUNT/48
+          )
+        );
+
+      const t=
+        i%48*Math.PI/24;
+
+      const levels=5;
+
+      let r=
+        1+
+        n*.2;
+
+      for(
+        let l=0;
+        l<levels;
+        l++
+      ){
+
+        const innerRadius=
+          r*.7;
 
         x=
-          Math.cos(a)*r;
+          Math.cos(t)*r;
 
         z=
-          Math.sin(a)*r;
+          Math.sin(t)*r;
 
         y=
-          -7+
-          (Math.random()-.5)*1.2;
+          l*2.5;
 
-      }else{
+        p[j]=x;
+        p[j+1]=y;
+        p[j+2]=z;
 
-        const h=
-          Math.random()*9;
+        j+=3;
 
-        const w=
-          (1-h/9)*6.5;
-
-        const a=
-          Math.random()*
-          Math.PI*2;
-
-        x=
-          Math.cos(a)*
-          w*
-          Math.random();
-
-        z=
-          Math.sin(a)*
-          w*
-          Math.random();
-
-        y=
-          -6+h;
+        r=innerRadius;
 
       }
 
-    }else if(type==='fireworks'){
+    }else if(type==='golden'){
 
+      // Golden ratio spiral
+      const phi=
+        (1+Math.sqrt(5))/2;
+
+      const t=
+        Math.sqrt(i/PARTICLE_COUNT)*
+        Math.PI*2*phi;
+
+      const r=
+        0.5+
+        Math.sqrt(i/PARTICLE_COUNT)*3;
+
+      x=
+        Math.cos(t)*r;
+
+      y=
+        (Math.random()-.5)*4;
+
+      z=
+        Math.sin(t)*r;
+
+    }else if(type==='stellar'){
+
+      // Stellar nexus
       const a=
+        Math.random()*
+        Math.PI*2;
+
+      const r=
+        5+
+        Math.random()*5;
+
+      x=
+        Math.cos(a)*r;
+
+      y=
+        (Math.random()-.5)*6;
+
+      z=
+        Math.sin(a)*r;
+
+    }else if(type==='black'){
+
+      // Black hole event horizon
+      const a=
+        Math.random()*
+        Math.PI*2;
+
+      const r=
+        2+
+        Math.random()*10;
+
+      const h=
+        Math.random()*8-4;
+
+      x=
+        Math.cos(a)*r;
+
+      y=h;
+
+      z=
+        Math.sin(a)*r;
+
+    }else if(type==='nebula'){
+
+      // Nebula cloud
+      const q=
+        randomSphere(12);
+
+      x=q.x;
+      y=q.y;
+      z=q.z;
+
+      // Add turbulence
+      x+=Math.sin(y*2)*.5;
+      z+=Math.cos(x*2)*.5;
+
+    }else if(type==='aurora'){
+
+      // Aurora borealis
+      const t=
         Math.random()*
         Math.PI*2;
 
@@ -4032,291 +2266,35 @@ function generateShape(type){
         );
 
       const r=
-        2+
-        Math.random()*12;
+        5+
+        Math.random()*5;
 
       x=
         r*
         Math.sin(b)*
-        Math.cos(a);
+        Math.cos(t);
 
       y=
         r*
         Math.sin(b)*
-        Math.sin(a);
+        Math.sin(t);
 
       z=
         r*
         Math.cos(b);
 
-    }else if(type==='atom'){
-
-      if(
-        i<
-        PARTICLE_COUNT*.55
-      ){
-
-        const q=
-          randomShell(6);
-
-        x=q.x;
-        y=q.y;
-        z=q.z;
-
-      }else{
-
-        const a=
-          Math.random()*
-          Math.PI*2;
-
-        const r=
-          Math.random()*8;
-
-        x=
-          Math.cos(a)*r;
-
-        y=
-          Math.sin(a)*r;
-
-        z=
-          (Math.random()-.5)*.3;
-
-      }
-
-    }else if(type==='solar'){
-
-      if(
-        i<
-        PARTICLE_COUNT*.65
-      ){
-
-        const q=
-          randomShell(3.5);
-
-        x=q.x;
-        y=q.y;
-        z=q.z;
-
-      }else{
-
-        const ring=i%4;
-
-        const a=
-          Math.random()*
-          Math.PI*2;
-
-        const r=
-          5+
-          ring*2+
-          Math.random();
-
-        x=
-          Math.cos(a)*r;
-
-        y=
-          (Math.random()-.5)*.18;
-
-        z=
-          Math.sin(a)*r;
-
-      }
-
-    }else if(type==='blackhole'){
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      const r=
-        2+
-        Math.random()*11;
-
-      x=
-        Math.cos(a)*r;
-
-      z=
-        Math.sin(a)*r;
-
-      y=
-        (Math.random()-.5)*
-        Math.max(
-          .15,
-          2-r*.12
-        );
-
-    }else if(type==='nebula'){
-
-      const q=
-        randomSphere(10);
-
-      x=
-        q.x+
-        Math.sin(q.y)*2;
-
-      y=q.y;
-
-      z=q.z;
-
-    }else if(type==='vortex'){
-
-      const t=
-        Math.random()*
-        Math.PI*12;
-
-      const r=
-        .3+
-        Math.random()*9;
-
-      x=
-        Math.cos(t)*r;
-
-      y=
-        t*.22-4;
-
-      z=
-        Math.sin(t)*r;
-
-    }else if(type==='tornado'){
-
-      const h=
-        Math.random()*12-6;
-
-      const radius=
-        .7+
-        (h+6)*.55;
-
-      const a=
-        Math.random()*
-        Math.PI*2+
-        h*1.4;
-
-      x=
-        Math.cos(a)*radius;
-
-      y=h;
-
-      z=
-        Math.sin(a)*radius;
-
-    }else if(type==='wave'){
-
-      x=
-        (Math.random()-.5)*18;
-
-      z=
-        (Math.random()-.5)*8;
-
-      y=
-        Math.sin(x*.75)*2+
-        Math.cos(z*.9);
-
-    }else if(type==='spiral'){
-
-      const t=
-        Math.random()*
-        Math.PI*8;
-
-      const r=t*.45;
-
-      x=
-        Math.cos(t)*r;
-
-      y=
-        (Math.random()-.5)*1.5;
-
-      z=
-        Math.sin(t)*r;
-
-    }else if(type==='star'){
-
-      const a=
-        Math.floor(
-          Math.random()*10
-        );
-
-      const angle=
-        a*Math.PI/5;
-
-      const r=
-        a%2===0
-          ? 8
-          : 3.5;
-
-      x=
-        Math.cos(angle)*r;
-
-      y=
-        Math.sin(angle)*r;
-
-      z=
-        (Math.random()-.5)*1.2;
-
-    }else if(type==='sun'){
-
-      if(
-        i<
-        PARTICLE_COUNT*.7
-      ){
-
-        const q=
-          randomShell(5);
-
-        x=q.x;
-        y=q.y;
-        z=q.z;
-
-      }else{
-
-        const a=
-          Math.random()*
-          Math.PI*2;
-
-        const r=
-          6+
-          Math.random()*5;
-
-        x=
-          Math.cos(a)*r;
-
-        z=
-          Math.sin(a)*r;
-
-        y=
-          (Math.random()-.5)*.5;
-
-      }
-
-    }else if(type==='moon'){
-
-      const q=
-        randomShell(6);
-
-      x=q.x;
-      y=q.y;
-      z=q.z;
-
-      if(
-        x<0 &&
-        Math.random()<.65
-      ){
-
-        x*=.65;
-        y*=.65;
-        z*=.65;
-
-      }
-
     }else if(type==='comet'){
 
+      // Comet trail
       if(
         i<
-        PARTICLE_COUNT*.35
+        PARTICLE_COUNT*.4
       ){
 
         const q=
-          randomShell(2.7);
+          randomShell(3);
 
-        x=q.x+4;
+        x=q.x+5;
         y=q.y;
         z=q.z;
 
@@ -4330,54 +2308,285 @@ function generateShape(type){
 
         y=
           (Math.random()-.5)*
-          (1+t*3);
+          (1+t*4);
 
         z=
           (Math.random()-.5)*
-          (1+t*4);
+          (1+t*5);
 
       }
 
-    }else if(
-      type==='earth' ||
-      type==='mars'
-    ){
+    }else if(type==='galaxy'){
 
-      const radius=
-        type==='earth'
-          ? 6
-          : 5.5;
-
-      const q=
-        randomShell(radius);
-
-      x=q.x;
-      y=q.y;
-      z=q.z;
-
-    }else if(type==='diamond'){
-
-      const y0=
-        Math.random()*2-1;
+      // Galactic disk
+      const arm=i%4;
 
       const r=
-        (1-Math.abs(y0))*7;
+        Math.pow(
+          Math.random(),
+          1.3
+        )*16;
 
+      const a=
+        r*.3+
+        arm*Math.PI/2;
+
+      x=
+        Math.cos(a)*r+
+        (Math.random()-.5)*.5;
+
+      z=
+        Math.sin(a)*r+
+        (Math.random()-.5)*.5;
+
+      y=
+        (Math.random()-.5)*
+        Math.max(
+          .3,
+          2-r*.1
+        );
+
+    }else if(type==='pulsar'){
+
+      // Pulsar beacon
+      const t=
+        Math.random()*
+        Math.PI*8;
+
+      const r=
+        3+
+        Math.sin(t*3)*2;
+
+      x=
+        Math.cos(t)*r;
+
+      y=
+        t*.15;
+
+      z=
+        Math.sin(t)*r;
+
+    }else if(type==='quasar'){
+
+      // Quasar jet
+      const t=
+        Math.random()*
+        Math.PI*2;
+
+      const r=
+        5+
+        Math.random()*6;
+
+      const jetLength=
+        8+
+        Math.random()*10;
+
+      x=
+        Math.cos(t)*r;
+
+      y=
+        t*.3;
+
+      z=
+        Math.sin(t)*r;
+
+    }else if(type==='wormhole'){
+
+      // Wormhole
+      const t=
+        Math.random()*
+        Math.PI*2;
+
+      const r1=
+        3+
+        Math.random()*2;
+
+      const r2=
+        6+
+        Math.random()*3;
+
+      const h=
+        Math.random()*4-2;
+
+      x=
+        Math.cos(t)*r1;
+
+      y=h;
+
+      z=
+        Math.sin(t)*r1;
+
+      // Inner ring
+      x+=
+        Math.cos(t)*r2*0.5;
+      z+=
+        Math.sin(t)*r2*0.5;
+
+    }else if(type==='singularity'){
+
+      // Singularity
       const a=
         Math.random()*
         Math.PI*2;
+
+      const r=
+        Math.random()*3;
 
       x=
         Math.cos(a)*r;
 
       y=
-        y0*7;
+        (Math.random()-.5)*.5;
+
+      z=
+        Math.sin(a)*r;
+
+    }else if(type==='event'){
+
+      // Event horizon
+      const a=
+        Math.random()*
+        Math.PI*2;
+
+      const r=
+        5+
+        Math.random()*5;
+
+      const h=
+        Math.random()*6-3;
+
+      x=
+        Math.cos(a)*r;
+
+      y=h;
+
+      z=
+        Math.sin(a)*r;
+
+    }else if(type==='cosmos'){
+
+      // Cosmic web
+      const a=
+        Math.random()*
+        Math.PI*2;
+
+      const r=
+        4+
+        Math.random()*6;
+
+      x=
+        Math.cos(a)*r;
+
+      y=
+        (Math.random()-.5)*4;
+
+      z=
+        Math.sin(a)*r;
+
+    }else if(type==='void'){
+
+      // Void structure
+      const a=
+        Math.random()*
+        Math.PI*2;
+
+      const r=
+        8+
+        Math.random()*4;
+
+      const d=
+        Math.random();
+
+      x=
+        Math.cos(a)*r*(1-d);
+
+      y=
+        (Math.random()-.5)*3;
+
+      z=
+        Math.sin(a)*r*(1-d);
+
+    }else if(type==='photon'){
+
+      // Photon blast
+      const a=
+        Math.random()*
+        Math.PI*2;
+
+      const r=
+        2+
+        Math.random()*5;
+
+      x=
+        Math.cos(a)*r;
+
+      y=
+        (Math.random()-.5)*3;
+
+      z=
+        Math.sin(a)*r;
+
+    }else if(type==='electron'){
+
+      // Electron orbital
+      const t=
+        Math.random()*
+        Math.PI*2;
+
+      const r=
+        2+
+        Math.random()*2;
+
+      x=
+        Math.cos(t)*r;
+
+      y=
+        (Math.random()-.5)*1;
+
+      z=
+        Math.sin(t)*r;
+
+    }else if(type==='proton'){
+
+      // Proton core
+      const a=
+        Math.random()*
+        Math.PI*2;
+
+      const r=
+        1;
+
+      x=
+        Math.cos(a)*r;
+
+      y=
+        (Math.random()-.5)*.3;
+
+      z=
+        Math.sin(a)*r;
+
+    }else if(type==='atom3'){
+
+      // Tri-atomic
+      const a=
+        (i%3)*
+        Math.PI*2/3;
+
+      const r=
+        2;
+
+      x=
+        Math.cos(a)*r;
+
+      y=
+        (Math.random()-.5)*1;
 
       z=
         Math.sin(a)*r;
 
     }else if(type==='crystal'){
 
+      // Crystal lattice
       const column=i%8;
 
       const a=
@@ -4385,7 +2594,7 @@ function generateShape(type){
 
       const r=
         2+
-        Math.random()*4;
+        Math.random()*3;
 
       x=
         Math.cos(a)*r;
@@ -4394,700 +2603,38 @@ function generateShape(type){
         Math.sin(a)*r;
 
       y=
-        (Math.random()-.5)*12;
+        (Math.random()-.5)*10;
 
-    }else if(type==='gear'){
+    }else if(type==='meta'){
 
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      const teeth=12;
-
-      const r=
-        6+
-        (
-          Math.sin(a*teeth)>0
-            ? .9
-            : 0
-        );
-
-      x=
-        Math.cos(a)*r;
-
-      y=
-        (Math.random()-.5)*2;
-
-      z=
-        Math.sin(a)*r;
-
-    }else if(type==='ringstack'){
-
-      const ring=i%5;
-
+      // Meta-material
       const a=
         Math.random()*
         Math.PI*2;
 
       const r=
         3+
-        ring*1.2;
+        Math.random()*4;
+
+      const angle=
+        a+Math.random()*.3;
 
       x=
-        Math.cos(a)*r;
+        Math.cos(angle)*r;
+
+      z=
+        Math.sin(angle)*r;
 
       y=
-        ring*1.2-3;
+        (Math.random()-.5)*8;
 
-      z=
-        Math.sin(a)*r;
+    }else if(type==='hologram'){
 
-    }else if(type==='capsule'){
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      const y0=
-        Math.random()*12-6;
-
-      const r=
-        Math.abs(y0)>4
-          ? Math.sqrt(
-              Math.max(
-                0,
-                9-
-                Math.pow(
-                  Math.abs(y0)-4,
-                  2
-                )
-              )
-            )
-          : 3;
-
-      x=
-        Math.cos(a)*r;
-
-      y=y0;
-
-      z=
-        Math.sin(a)*r;
-
-    }else if(type==='cone'){
-
-      const y0=
-        Math.random()*10-5;
-
-      const r=
-        (y0+5)/10*7;
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      x=
-        Math.cos(a)*r;
-
-      y=y0;
-
-      z=
-        Math.sin(a)*r;
-
-    }else if(type==='cubeSphere'){
-
-      const q=
-        randomSphere(6);
-
-      x=
-        Math.max(
-          -5,
-          Math.min(5,q.x)
-        );
-
-      y=
-        Math.max(
-          -5,
-          Math.min(5,q.y)
-        );
-
-      z=
-        Math.max(
-          -5,
-          Math.min(5,q.z)
-        );
-
-    }else if(type==='octahedron'){
-
-      const q=
-        randomSphere(7);
-
-      const sum=
-        Math.abs(q.x)+
-        Math.abs(q.y)+
-        Math.abs(q.z);
-
-      const s=
-        7/sum;
-
-      x=q.x*s;
-      y=q.y*s;
-      z=q.z*s;
-
-    }else if(type==='dodecahedron'){
-
-      const q=
-        randomSphere(7);
-
-      x=
-        Math.round(q.x*3)/3;
-
-      y=
-        Math.round(q.y*3)/3;
-
-      z=
-        Math.round(q.z*3)/3;
-
-    }else if(type==='tetrahedron'){
-
-      const verts=[
-        [0,6,0],
-        [-5,-4,3],
-        [5,-4,3],
-        [0,-4,-5]
-      ];
-
-      const a=
-        verts[i%4];
-
-      x=
-        a[0]+
-        (Math.random()-.5)*.5;
-
-      y=
-        a[1]+
-        (Math.random()-.5)*.5;
-
-      z=
-        a[2]+
-        (Math.random()-.5)*.5;
-
-    }else if(type==='torusKnot'){
-
-      const t=
-        Math.random()*
-        Math.PI*2;
-
-      const p=3;
-      const q=2;
-
-      const r=
-        5+
-        2*Math.cos(q*t);
-
-      x=
-        r*Math.cos(p*t);
-
-      y=
-        2*Math.sin(q*t);
-
-      z=
-        r*Math.sin(p*t);
-
-    }else if(type==='mobius'){
-
-      const u=
-        Math.random()*
-        Math.PI*2;
-
-      const v=
-        (Math.random()-.5)*2;
-
-      const r=
-        6+
-        v*Math.cos(u/2);
-
-      x=
-        r*Math.cos(u);
-
-      y=
-        v*Math.sin(u/2);
-
-      z=
-        r*Math.sin(u);
-
-    }else if(type==='trefoil'){
-
-      const t=
-        Math.random()*
-        Math.PI*2;
-
-      x=
-        6*
-        (
-          Math.sin(t)+
-          2*Math.sin(2*t)
-        )*.6;
-
-      y=
-        6*
-        (
-          Math.cos(t)-
-          2*Math.cos(2*t)
-        )*.6;
-
-      z=
-        -6*
-        Math.sin(3*t)*.6;
-
-    }else if(type==='butterfly'){
-
-      const t=
-        Math.random()*
-        Math.PI*12;
-
-      const r=
-        Math.exp(
-          Math.cos(t)
-        )-
-        2*Math.cos(4*t)-
-        Math.pow(
-          Math.sin(t/12),
-          5
-        );
-
-      x=
-        Math.sin(t)*r*2;
-
-      y=
-        Math.cos(t)*r*2;
-
-      z=
-        (Math.random()-.5)*3;
-
-    }else if(type==='eye'){
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      const b=
-        Math.random()*
-        Math.PI;
-
-      const r=
-        7*Math.sin(b);
-
-      x=
-        Math.cos(a)*r;
-
-      y=
-        Math.sin(a)*r*.55;
-
-      z=
-        Math.cos(b)*7;
-
-    }else if(type==='brain'){
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      const b=
-        Math.random()*
-        Math.PI;
-
-      const r=
-        6+
-        Math.sin(a*7)*.5;
-
-      x=
-        r*Math.sin(b)*Math.cos(a);
-
-      y=
-        r*Math.cos(b);
-
-      z=
-        r*Math.sin(b)*Math.sin(a);
-
-    }else if(type==='tree'){
-
-      const branch=i%12;
-
-      const h=
-        Math.random()*12-6;
-
-      const r=
-        Math.max(
-          .4,
-          (h+6)*.45
-        );
-
-      const a=
-        branch*Math.PI/6+
-        h*.4;
-
-      x=
-        Math.cos(a)*r;
-
-      y=h;
-
-      z=
-        Math.sin(a)*r;
-
-    }else if(type==='mountain'){
-
-      x=
-        (Math.random()-.5)*16;
-
-      z=
-        (Math.random()-.5)*10;
-
-      const d=
-        Math.sqrt(
-          x*x+z*z
-        );
-
-      y=
-        7-d*.7+
-        (Math.random()-.5)*1.2;
-
-    }else if(type==='dna2'){
-
-      const t=
-        Math.random()*
-        Math.PI*12;
-
-      const strand=
-        i%2===0
-          ? 1
-          : -1;
-
-      x=
-        Math.sin(t)*
-        3.5*
-        strand;
-
-      y=
-        t/
-        (Math.PI*12)*
-        14-7;
-
-      z=
-        Math.cos(t)*
-        3.5*
-        strand;
-
-    }else if(type==='atom2'){
-
-      const ring=i%3;
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      const r=
-        4+
-        ring*2;
-
-      x=
-        Math.cos(a)*r;
-
-      y=
-        Math.sin(a)*r;
-
-      z=
-        Math.sin(a*3)*2;
-
-    }else if(type==='satellite'){
-
-      if(
-        i<
-        PARTICLE_COUNT*.4
-      ){
-
-        const q=
-          randomShell(3);
-
-        x=q.x;
-        y=q.y;
-        z=q.z;
-
-      }else{
-
-        const side=i%4;
-
-        x=
-          side<2
-            ? (
-                side===0
-                  ? -7
-                  : 7
-              )
-            : (Math.random()-.5)*10;
-
-        y=
-          (Math.random()-.5)*1.5;
-
-        z=
-          side>=2
-            ? (
-                side===2
-                  ? -5
-                  : 5
-              )
-            : (Math.random()-.5)*5;
-
-      }
-
-    }else if(type==='rocket'){
-
-      const h=
-        Math.random()*14-7;
-
-      const r=
-        h>2
-          ? 1.8
-          : Math.max(
-              .3,
-              1.8-(2-h)*.2
-            );
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      x=
-        Math.cos(a)*r;
-
-      y=h;
-
-      z=
-        Math.sin(a)*r;
-
-    }else if(type==='spaceship'){
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      const r=
-        Math.random()*7;
-
-      x=
-        r*Math.cos(a);
-
-      y=
-        (Math.random()-.5)*
-        (2+r*.15);
-
-      z=
-        r*.45*Math.sin(a);
-
-    }else if(type==='robot'){
-
-      const part=i%5;
-
-      if(part===0){
-
-        x=
-          (Math.random()-.5)*7;
-
-        y=
-          3+
-          (Math.random()-.5)*4;
-
-        z=
-          (Math.random()-.5)*5;
-
-      }else if(part===1){
-
-        x=
-          (Math.random()-.5)*4;
-
-        y=
-          -2+
-          (Math.random()-.5)*4;
-
-        z=
-          (Math.random()-.5)*3;
-
-      }else{
-
-        const a=
-          Math.random()*
-          Math.PI*2;
-
-        x=
-          Math.cos(a)*7;
-
-        y=
-          (Math.random()-.5)*8;
-
-        z=
-          Math.sin(a)*4;
-
-      }
-
-    }else if(type==='shield'){
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      const r=
-        8+
-        Math.sin(a*6)*.5;
-
-      x=
-        Math.cos(a)*r;
-
-      y=
-        Math.sin(a)*r;
-
-      z=
-        (Math.random()-.5)*1;
-
-    }else if(type==='helmet'){
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      const b=
-        Math.random()*
-        Math.PI;
-
-      const r=7;
-
-      x=
-        r*Math.sin(b)*Math.cos(a);
-
-      y=
-        r*Math.cos(b);
-
-      z=
-        r*Math.sin(b)*Math.sin(a);
-
-      if(y<0)y*=.45;
-
-    }else if(type==='crown'){
-
-      const n=i%5;
-
-      const a=
-        n*Math.PI*2/5;
-
-      const r=6;
-
-      x=
-        Math.cos(a)*r+
-        (Math.random()-.5)*1.2;
-
-      y=
-        2+
-        (n%2)*5+
-        (Math.random()-.5)*1;
-
-      z=
-        Math.sin(a)*r+
-        (Math.random()-.5)*1.2;
-
-    }else if(type==='infinity'){
-
-      const t=
-        Math.random()*
-        Math.PI*2;
-
-      const s=6;
-
-      x=
-        s*Math.sin(t);
-
-      y=
-        s*
-        Math.sin(t)*
-        Math.cos(t);
-
-      z=
-        (Math.random()-.5)*2;
-
-    }else if(type==='hourglass'){
-
-      const y0=
-        Math.random()*12-6;
-
-      const r=
-        Math.abs(y0)*.75+.5;
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      x=
-        Math.cos(a)*r;
-
-      y=y0;
-
-      z=
-        Math.sin(a)*r;
-
-    }else if(type==='tesseract'){
-
-      const s=6;
-
-      const q=i%16;
-
-      const signs=[
-
-        q&1?1:-1,
-        q&2?1:-1,
-        q&4?1:-1,
-        q&8?1:-1
-
-      ];
-
-      const t=
-        Math.random()*2-1;
-
-      x=
-        signs[0]*s+
-        t*2;
-
-      y=
-        signs[1]*s+
-        t*2;
-
-      z=
-        signs[2]*s+
-        t*2;
-
-      if(q%3===0)x*=.6;
-
-    }else if(type==='portal'){
-
-      const a=
-        Math.random()*
-        Math.PI*2;
-
-      const r=
-        5+
-        Math.sin(a*8)*.5;
-
-      x=
-        Math.cos(a)*r;
-
-      y=
-        Math.sin(a)*r;
-
-      z=
-        Math.sin(a*4)*1.5;
-
-    }else if(type==='matrix'){
-
+      // Hologram matrix
       const column=i%20;
 
       x=
-        column*.7-7;
+        column*.8-7;
 
       y=
         (Math.random()-.5)*14;
@@ -5095,47 +2642,199 @@ function generateShape(type){
       z=
         Math.sin(column*2)*3;
 
-    }else if(type==='reactor'){
+    }else if(type==='resonance'){
 
-      const a=
+      // Resonance chamber
+      const t=
         Math.random()*
         Math.PI*2;
 
-      const ring=i%4;
+      const r=
+        4+
+        Math.sin(t*3)*2;
+
+      x=
+        Math.cos(t)*r;
+
+      y=
+        t*.2;
+
+      z=
+        Math.sin(t)*r;
+
+    }else if(type==='frequency'){
+
+      // Frequency generator
+      const t=
+        Math.random()*
+        Math.PI*4;
 
       const r=
-        2+
-        ring*1.7;
+        3+
+        Math.random()*3;
+
+      const freq=i%8;
+
+      x=
+        Math.cos(t+r*.5)*r;
+
+      y=
+        (freq-3.5)*.8;
+
+      z=
+        Math.sin(t+r*.5)*r;
+
+    }else if(type==='tone'){
+
+      // Tone chart
+      const note=i%12;
+
+      const a=
+        note*Math.PI/6;
+
+      const r=
+        3+
 
       x=
         Math.cos(a)*r;
 
       y=
-        Math.sin(a)*r;
-
-      z=
         (Math.random()-.5)*2;
 
-    }else if(type==='mechanism'){
+      z=
+        Math.sin(a)*r;
 
-      const ring=i%6;
+    }else if(type==='spectrum'){
 
+      // Spectrum analysis
+      const band=i%32;
+
+      const height=
+        Math.random()*8;
+
+      x=
+        (band-15)*.3;
+
+      y=height;
+
+      z=
+        (Math.random()-.5)*6;
+
+    }else if(type==='wave'){
+
+      // Wave interference
+      const t1=
+        Math.random()*
+        Math.PI*2;
+
+      const t2=
+        Math.random()*
+        Math.PI*2;
+
+      const a1=
+        1;
+
+      const a2=
+        1;
+
+      x=
+        Math.sin(t1)*a1+
+        Math.sin(t2)*a2;
+
+      y=
+        (Math.random()-.5)*2;
+
+      z=
+        Math.cos(t1)*a1+
+        Math.cos(t2)*a2;
+
+    }else if(type==='interference'){
+
+      // Interference pattern
+      const t=
+        Math.random()*
+        Math.PI*4;
+
+      const r=
+        3+
+        Math.sin(t*3)*2;
+
+      x=
+        Math.cos(t)*r;
+
+      y=
+        t*.1;
+
+      z=
+        Math.sin(t)*r;
+
+    }else if(type==='diffraction'){
+
+      // Diffraction grating
+      const lines=i%60;
+
+      const d=
+        lines*.1;
+
+      const angle=
+        d*Math.PI;
+
+      x=
+        Math.cos(angle)*5;
+
+      y=
+        (Math.random()-.5)*3;
+
+      z=
+        Math.sin(angle)*5;
+
+    }else if(type==='polarization'){
+
+      // Polarization
       const a=
         Math.random()*
         Math.PI*2;
 
       const r=
-        2+
-        ring*1.1;
+        3;
+
+      const p=
+        Math.random()>.5
+          ? 0
+          : 1;
 
       x=
-        Math.cos(a)*r;
+        Math.cos(a)*r*Math.cos(Math.PI*p/2);
 
       y=
-        Math.sin(a)*r;
+        Math.sin(a)*r*Math.sin(Math.PI*p/2);
 
       z=
-        Math.sin(a*ring)*3;
+        r*Math.cos(Math.PI*p/2);
+
+    }else if(type==='photoelectric'){
+
+      // Photoelectric effect
+      const t=
+        Math.random()*
+        Math.PI*2;
+
+      const r=
+        Math.random()*5;
+
+      const w=
+        Math.random()>.5
+          ? 1
+          : -1;
+
+      x=
+        Math.cos(t)*r*w;
+
+      y=
+        (Math.random()-.5)*2;
+
+      z=
+        Math.sin(t)*r*w;
 
     }
 
@@ -5178,9 +2877,9 @@ async function initHandTracking(){
 
     modelComplexity:0,
 
-    minDetectionConfidence:.45,
+    minDetectionConfidence:.55,
 
-    minTrackingConfidence:.45
+    minTrackingConfidence:.55
 
   });
 
@@ -5190,7 +2889,7 @@ async function initHandTracking(){
 
   const interval=
     1000/
-    CONFIG.handFPS;
+    QUANTUM_CONFIG.handFPS;
 
   hands.onResults(
     results=>{
@@ -5261,13 +2960,9 @@ async function initHandTracking(){
         }
       );
 
-      /*
-        Rotation + zoom are calculated
-        ONLY after both hand positions
-        have been updated.
-      */
-
       updateParticleTargets();
+
+      updateGestures();
 
     }
   );
@@ -5326,10 +3021,10 @@ async function initHandTracking(){
           },
 
         width:
-          CONFIG.cameraWidth,
+          QUANTUM_CONFIG.cameraWidth,
 
         height:
-          CONFIG.cameraHeight
+          QUANTUM_CONFIG.cameraHeight
 
       }
     );
@@ -5390,7 +3085,7 @@ async function initHandTracking(){
 }
 
 /* =========================================================
-   UPDATE HAND
+   UPDATE CONTROLLER
 ========================================================= */
 
 function updateController(
@@ -5411,21 +3106,16 @@ function updateController(
   const index=
     landmarks[8];
 
+  const middle=
+    landmarks[12];
+
   const centerX=
     (thumb.x+index.x)*.5;
 
   const centerY=
     (thumb.y+index.y)*.5;
 
-  const centerZ=
-    (thumb.z+index.z)*.5;
-
-  /*
-    Mirror compensation:
-    moving hand physically right
-    should move the hologram right.
-  */
-
+  // Mirror compensation
   const ndcX=
     (1-centerX)*2-1;
 
@@ -5449,7 +3139,7 @@ function updateController(
     ).normalize();
 
   const targetZ=
-    -centerZ*20;
+    -centerZ*25;
 
   if(
     Math.abs(dir.z)>.0001
@@ -5471,13 +3161,15 @@ function updateController(
 
     ctrl.pos.lerp(
       ctrl.target,
-      CONFIG.handSmooth
+      QUANTUM_CONFIG.handSmooth
     );
 
     ctrl.velocity.copy(
       ctrl.pos
     ).sub(
       ctrl.lastPos
+    ).divideScalar(
+      Math.max(deltaTime*.01,0.01)
     );
 
     ctrl.mesh.position.copy(
@@ -5521,7 +3213,7 @@ function updateController(
 }
 
 /* =========================================================
-   PINCH
+   PINCH DETECTION
 ========================================================= */
 
 function updatePinch(
@@ -5545,10 +3237,15 @@ function updatePinch(
 
     if(
       distance>
-      CONFIG.pinchOff
+      QUANTUM_CONFIG.pinchOff
     ){
 
       ctrl.isPinching=false;
+
+      // Release any grabbed block
+      releaseBlock(
+        ctrl
+      );
 
     }
 
@@ -5556,10 +3253,13 @@ function updatePinch(
 
     if(
       distance<
-      CONFIG.pinchOn
+      QUANTUM_CONFIG.pinchOn
     ){
 
       ctrl.isPinching=true;
+
+      // Play sound
+      sounds.pinch();
 
     }
 
@@ -5570,7 +3270,75 @@ function updatePinch(
     ctrl.isPinching
   ){
 
-    sounds.pinch();
+    // Trigger quantum event
+    triggerQuantumEvent();
+
+  }
+
+}
+
+/* =========================================================
+   QUANTUM EVENT
+========================================================= */
+
+function triggerQuantumEvent(){
+
+  // Random color shift
+  const schemes={
+    cyan:{main:0x00ffff,glow:0x00ccff},
+    green:{main:0x00ffcc,glow:0x00cc99},
+    yellow:{main:0xfff569,glow:0xffd839},
+    purple:{main:0xa020f0,glow:0x9010e0},
+    neon:{main:0xff00ff,glow:0xff00cc}
+  };
+
+  const scheme=
+    Object.keys(
+      schemes
+    )[Math.floor(
+      Math.random()*5
+    )];
+
+  const s=
+    schemes[scheme];
+
+  // Update particle material
+  if(particleMaterial){
+
+    particleMaterial.color.setHex(
+      s.main
+    );
+
+  }
+
+  // Update bloom
+  const bloomPass=
+    composer.passes.find(
+      p=>p.isBloomPass
+    );
+
+  if(bloomPass){
+
+    bloomPass.defaultColor.setHex(
+      s.glow
+    );
+
+  }
+
+  // Update controller lights
+  for(
+    const ctrl of controllers
+  ){
+
+    if(
+      ctrl.pointLight
+    ){
+
+      ctrl.pointLight.color.setHex(
+        s.glow
+      );
+
+    }
 
   }
 
@@ -5597,7 +3365,7 @@ function loseController(
   ctrl.rayLine.visible=false;
 
   if(
-    elapsed>350
+    elapsed>400
   ){
 
     ctrl.isPinching=false;
@@ -5774,7 +3542,7 @@ function updateRay(
 }
 
 /* =========================================================
-   HAND TRAIL
+   TRAIL
 ========================================================= */
 
 function updateTrail(
@@ -5795,7 +3563,7 @@ function updateTrail(
     ctrl.pos.clone()
   );
 
-  ctrl.trailPoints.length=12;
+  ctrl.trailPoints.length=20;
 
   const attr=
     ctrl.trailGeometry
@@ -5804,7 +3572,7 @@ function updateTrail(
 
   for(
     let i=0;
-    i<12;
+    i<20;
     i++
   ){
 
@@ -5831,20 +3599,6 @@ function updateTrail(
    TWO HAND CONTROL
 ========================================================= */
 
-/*
-  THIS IS THE IMPORTANT PART.
-
-  TWO HANDS:
-
-  1. Distance between hands = ONLY SCALE.
-  2. Midpoint movement = X/Y rotation.
-  3. Change of angle between hands = Z rotation.
-  4. No automatic rotation.
-  5. No inertia.
-  6. If hands stop, rotation stops.
-  7. Moving hands apart symmetrically does NOT rotate.
-*/
-
 function updateParticleTargets(){
 
   if(
@@ -5857,7 +3611,7 @@ function updateParticleTargets(){
   const right=
     controllers[1];
 
-  const ROT_GAIN=.85;
+  const ROT_GAIN=.9;
 
   if(
     left.active &&
@@ -5867,20 +3621,13 @@ function updateParticleTargets(){
     const a=left.pos;
     const b=right.pos;
 
-    /*
-      Midpoint = rotation controller.
-    */
-
+    // Midpoint = rotation controller
     const center=
       new THREE.Vector3()
         .addVectors(a,b)
         .multiplyScalar(.5);
 
-    /*
-      ONLY frame-to-frame movement.
-      No velocity and no inertia.
-    */
-
+    // ONLY frame-to-frame movement
     if(
       hasLastHandCenter
     ){
@@ -5895,12 +3642,12 @@ function updateParticleTargets(){
 
       targetRotY+=
         dx*
-        CONFIG.axisSensitivity*
+        QUANTUM_CONFIG.axisSensitivity*
         ROT_GAIN;
 
       targetRotX+=
         -dy*
-        CONFIG.axisSensitivity*
+        QUANTUM_CONFIG.axisSensitivity*
         ROT_GAIN;
 
     }
@@ -5913,26 +3660,19 @@ function updateParticleTargets(){
 
     hasLastHandCenter=true;
 
-    /*
-      Distance = ONLY zoom.
-    */
-
+    // Distance = ONLY zoom
     const distance=
       a.distanceTo(b);
 
     targetScale=
       THREE.MathUtils.clamp(
-        .65+
-        distance*.075,
-        .65,
-        2.4
+        .5+
+        distance*.08,
+        .5,
+        3.0
       );
 
-    /*
-      Relative angle = roll.
-      Distance itself does NOT affect rotation.
-    */
-
+    // Relative angle = roll
     const angle=
       Math.atan2(
         b.y-a.y,
@@ -5963,7 +3703,7 @@ function updateParticleTargets(){
 
       targetRotZ+=
         deltaAngle*
-        CONFIG.rollSensitivity;
+        QUANTUM_CONFIG.rollSensitivity;
 
     }
 
@@ -5976,13 +3716,7 @@ function updateParticleTargets(){
 
   }
 
-  /*
-    ONE HAND:
-
-    Movement can rotate the object,
-    but there is NO zoom.
-  */
-
+  // ONE HAND mode
   const activeHand=
     left.active
       ? left
@@ -5994,10 +3728,6 @@ function updateParticleTargets(){
 
     hasLastHandCenter=false;
     hasLastHandAngle=false;
-
-    /*
-      Freeze the object exactly.
-    */
 
     return;
 
@@ -6020,12 +3750,12 @@ function updateParticleTargets(){
 
     targetRotY+=
       dx*
-      CONFIG.axisSensitivity*
+      QUANTUM_CONFIG.axisSensitivity*
       ROT_GAIN;
 
     targetRotX+=
       -dy*
-      CONFIG.axisSensitivity*
+      QUANTUM_CONFIG.axisSensitivity*
       ROT_GAIN;
 
   }
@@ -6037,10 +3767,6 @@ function updateParticleTargets(){
     p.y;
 
   hasLastHandCenter=true;
-
-  /*
-    No automatic one-hand zoom.
-  */
 
   targetScale=1;
 
@@ -6083,7 +3809,7 @@ function updateBuilderHand(
 
       const builderGain=
         1+
-        CONFIG.axisSensitivity;
+        QUANTUM_CONFIG.axisSensitivity;
 
       const dx=
         (
@@ -6159,7 +3885,7 @@ function selectNearestBlock(
 
   let nearest=null;
 
-  let best=4;
+  let best=5;
 
   for(
     const block of blocks
@@ -6265,459 +3991,90 @@ function releaseBlock(
 }
 
 /* =========================================================
-   PARTICLE UPDATE
+   SNAP
 ========================================================= */
 
-function updateParticles(
-  delta
-){
+function snapBlock(block){
 
-  if(
-    currentMode!=='PARTICLES'
-  )return;
+  if(!block)return;
 
-  const lerp=
-    Math.min(
-      CONFIG.particleSmooth*
-      delta,
-      .45
-    );
+  const s=
+    QUANTUM_CONFIG.snapSize;
 
-  /*
-    Smooth follow ONLY.
+  block.position.x=
+    Math.round(
+      block.position.x/s
+    )*s;
 
-    It does not create autonomous motion.
-    Once target rotation stops changing,
-    the hologram stops.
-  */
+  block.position.y=
+    Math.round(
+      block.position.y/s
+    )*s;
 
-  particleGroup.rotation.x+=
-    (
-      targetRotX-
-      particleGroup.rotation.x
-    )*
-    lerp;
-
-  particleGroup.rotation.y+=
-    (
-      targetRotY-
-      particleGroup.rotation.y
-    )*
-    lerp;
-
-  particleGroup.rotation.z+=
-    (
-      targetRotZ-
-      particleGroup.rotation.z
-    )*
-    lerp;
-
-  currentScale+=
-    (
-      targetScale-
-      currentScale
-    )*
-    lerp;
-
-  particleGroup.scale.setScalar(
-    currentScale
-  );
-
-  shapePulse=
-    Math.max(
-      0,
-      shapePulse-
-      .025*delta
-    );
-
-  /*
-    IMPORTANT:
-    There is NO:
-      rotation.y += ...
-      rotation.x += ...
-      position.y += ...
-    here.
-
-    Therefore the hologram never spins by itself.
-  */
-
-  if(
-    hardwareType
-  ){
-
-    updateHardwareHologram();
-
-    return;
-
-  }
-
-  const positions=
-    particleGeometry
-      .attributes
-      .position
-      .array;
-
-  const pinch=
-    controllers[0].isPinching||
-    controllers[1].isPinching;
-
-  for(
-    let i=0,j=0;
-    i<PARTICLE_COUNT;
-    i++,j+=3
-  ){
-
-    let tx=
-      targetPositions[j]*
-      currentScale;
-
-    let ty=
-      targetPositions[j+1]*
-      currentScale;
-
-    let tz=
-      targetPositions[j+2]*
-      currentScale;
-
-    if(
-      pinch &&
-      (i&1)===0
-    ){
-
-      tx*=.012;
-      ty*=.012;
-      tz*=.012;
-
-    }
-
-    const speed=
-      pinch &&
-      (i&1)===0
-        ? .55
-        : .18+
-          shapePulse*.08;
-
-    positions[j]+=
-      (
-        tx-
-        positions[j]
-      )*
-      speed;
-
-    positions[j+1]+=
-      (
-        ty-
-        positions[j+1]
-      )*
-      speed;
-
-    positions[j+2]+=
-      (
-        tz-
-        positions[j+2]
-      )*
-      speed;
-
-  }
-
-  particleGeometry
-    .attributes
-    .position
-    .needsUpdate=true;
+  block.position.z=
+    Math.round(
+      block.position.z/s
+    )*s;
 
 }
 
 /* =========================================================
-   HARDWARE HOLOGRAM UPDATE
+   UPDATE SELECTION UI
 ========================================================= */
 
-function updateHardwareHologram(){
+function updateSelectionUI(){
 
-  if(!hologramGroup)return;
+  if(selectedBlock){
 
-  const ud=
-    hologramGroup.userData;
+    dom.selection.textContent=
+      'TARGET: '+
+      selectedBlock
+        .userData
+        .type
+        .toUpperCase();
 
-  /*
-    No position animation.
-    No automatic rotation.
+    dom.ring.style.display=
+      'block';
 
-    Only tiny light modulation is allowed,
-    because it does not move the hologram.
-  */
+  }else{
 
-  if(
-    ud.light1
-  ){
-
-    ud.light1.intensity=
-      .95+
-      Math.sin(
-        performance.now()*.002
-      )*.15;
-
-  }
-
-}
-
-/* =========================================================
-   BUILDER UPDATE
-========================================================= */
-
-function updateBuilder(
-  delta
-){
-
-  if(
-    currentMode!=='BUILDER'
-  )return;
-
-  const gravity=
-    CONFIG.builderGravity*
-    delta;
-
-  for(
-    const block of blocks
-  ){
-
-    if(
-      block.userData.isGrabbed
-    )continue;
-
-    const velocity=
-      block.userData.velocity;
-
-    velocity.y-=gravity;
-
-    velocity.x=0;
-
-    velocity.z=0;
-
-    block.position.addScaledVector(
-      velocity,
-      delta
-    );
-
-    const floorY=
-      -6+
-      block.userData.size*.5;
-
-    if(
-      block.position.y<
-      floorY
-    ){
-
-      block.position.y=
-        floorY;
-
-      velocity.y=0;
-      velocity.x=0;
-      velocity.z=0;
-
-    }
-
-  }
-
-  resolveCollisions();
-
-  updateSelectionRing();
-
-}
-
-/* =========================================================
-   COLLISIONS
-========================================================= */
-
-function resolveCollisions(){
-
-  const cell=3.5;
-
-  const grid=new Map();
-
-  for(
-    const block of blocks
-  ){
-
-    if(
-      block.userData.isGrabbed
-    )continue;
-
-    const x=
-      Math.floor(
-        block.position.x/cell
-      );
-
-    const z=
-      Math.floor(
-        block.position.z/cell
-      );
-
-    const key=
-      x+','+z;
-
-    let list=
-      grid.get(key);
-
-    if(!list){
-
-      list=[];
-
-      grid.set(
-        key,
-        list
-      );
-
-    }
-
-    list.push(
-      block
-    );
-
-  }
-
-  for(
-    const [key,list]
-    of grid
-  ){
-
-    const parts=
-      key.split(',');
-
-    const cx=+parts[0];
-    const cz=+parts[1];
-
-    for(
-      let ox=-1;
-      ox<=1;
-      ox++
-    ){
-
-      for(
-        let oz=-1;
-        oz<=1;
-        oz++
-      ){
-
-        const otherList=
-          grid.get(
-            (cx+ox)+
-            ','+
-            (cz+oz)
-          );
-
-        if(!otherList)
-          continue;
-
-        for(
-          const a of list
-        ){
-
-          for(
-            const b of otherList
-          ){
-
-            if(a===b)
-              continue;
-
-            const dx=
-              a.position.x-
-              b.position.x;
-
-            const dz=
-              a.position.z-
-              b.position.z;
-
-            if(
-              dx*dx+
-              dz*dz>
-              8.5
-            )continue;
-
-            const top=
-              b.position.y+
-              b.userData.size*.5+
-              a.userData.size*.5;
-
-            if(
-              a.position.y<=top &&
-              a.position.y>b.position.y
-            ){
-
-              a.position.y=top;
-
-              a.userData.velocity.set(
-                0,
-                0,
-                0
-              );
-
-              b.userData.velocity.set(
-                0,
-                0,
-                0
-              );
-
-            }
-
-          }
-
-        }
-
-      }
-
-    }
-
-  }
-
-}
-
-/* =========================================================
-   SELECTION RING
-========================================================= */
-
-function updateSelectionRing(){
-
-  if(
-    !selectedBlock ||
-    currentMode!=='BUILDER'
-  ){
+    dom.selection.textContent=
+      'TARGET: NESSUN OGGETTO';
 
     dom.ring.style.display=
       'none';
 
-    return;
-
   }
 
-  const v=
-    selectedBlock.position.clone();
+}
 
-  v.project(
-    camera
-  );
+/* =========================================================
+   UPDATE FPS
+========================================================= */
 
-  const x=
-    (
-      v.x*.5+
-      .5
-    )*
-    innerWidth;
+function updateFPS(now){
 
-  const y=
-    (
-      -v.y*.5+
-      .5
-    )*
-    innerHeight;
+  fpsFrames++;
 
-  dom.ring.style.display=
-    'block';
+  if(
+    now-fpsTime>=500
+  ){
 
-  dom.ring.style.left=
-    (x-22)+'px';
+    const fps=
+      Math.round(
+        fpsFrames*
+        1000/
+        (now-fpsTime)
+      );
 
-  dom.ring.style.top=
-    (y-22)+'px';
+    dom.fps.textContent=
+      fps;
+
+    fpsFrames=0;
+
+    fpsTime=now;
+
+  }
 
 }
 
@@ -6757,11 +4114,6 @@ function switchMode(
     'hidden',
     builder
   );
-
-  dom.panelTitle.textContent=
-    builder
-      ? '3D BUILDER MATRIX'
-      : 'PARTICLE MATRIX';
 
   dom.mode.textContent=
     mode;
@@ -6857,21 +4209,38 @@ function bindEvents(){
     }
   );
 
-  dom.colorPicker.addEventListener(
+  dom.intensitySlider.addEventListener(
     'input',
     e=>{
 
+      const val=
+        parseFloat(e.target.value);
+
+      QUANTUM_CONFIG.bloomStrength=
+        val;
+
       if(
-        particleMaterial
+        composer.passes.find(
+          p=>p.isBloomPass
+        )
       ){
 
-        particleMaterial.color.set(
-          e.target.value
-        );
+        composer.passes.find(
+          p=>p.isBloomPass
+        ).strength=
+          val;
 
       }
 
+      dom.intensityValue.textContent=
+        `${val.toFixed(1)}x`;
+
     }
+  );
+
+  dom.colorSchemeSelect.addEventListener(
+    'change',
+    updateColorScheme
   );
 
   dom.audio.addEventListener(
@@ -6883,7 +4252,7 @@ function bindEvents(){
 
       dom.audio.textContent=
         sounds.enabled
-          ? '🔊 AUDIO: ATTIVO'
+          ? '🔊 AUDIO: QUANTUM RESONANCE'
           : '🔇 AUDIO: DISATTIVATO';
 
       if(
@@ -6902,11 +4271,6 @@ function bindEvents(){
     onResize,
     {passive:true}
   );
-
-  /*
-    Performance:
-    pause visual updates when tab is hidden.
-  */
 
   document.addEventListener(
     'visibilitychange',
@@ -6930,7 +4294,7 @@ function bindEvents(){
 }
 
 /* =========================================================
-   CONNECTION
+   CONNECTION STATUS
 ========================================================= */
 
 function setConnection(
@@ -6959,36 +4323,6 @@ function setConnection(
 
     dom.connection.style.color=
       '#ffe66d';
-
-  }
-
-}
-
-/* =========================================================
-   FPS
-========================================================= */
-
-function updateFPS(now){
-
-  fpsFrames++;
-
-  if(
-    now-fpsTime>=500
-  ){
-
-    const fps=
-      Math.round(
-        fpsFrames*
-        1000/
-        (now-fpsTime)
-      );
-
-    dom.fps.textContent=
-      fps;
-
-    fpsFrames=0;
-
-    fpsTime=now;
 
   }
 
@@ -7024,6 +4358,20 @@ function animate(){
     now
   );
 
+  // Update bloom time
+  if(
+    composer.passes.find(
+      p=>p.isBloomPass
+    )
+  ){
+
+    composer.passes.find(
+      p=>p.isBloomPass
+    ).uniforms.time.value=
+      now*0.001;
+
+  }
+
   if(
     currentMode==='BUILDER'
   ){
@@ -7040,10 +4388,38 @@ function animate(){
 
   }
 
-  renderer.render(
-    scene,
-    camera
+  // Render with post-processing
+  composer.render(
+    delta
   );
+
+  // occasional glitch effect
+  if(
+    Math.random()>.98 &&
+    currentMode==='PARTICLES'
+  ){
+
+    glitchTimestamp=
+      performance.now();
+
+    const glitchPass=
+      composer.passes.find(
+        p=>p.isGlitchPass
+      );
+
+    if(glitchPass){
+
+      glitchPass.enabled=true;
+
+      setTimeout(()=>{
+
+        glitchPass.enabled=false;
+
+      },150);
+
+    }
+
+  }
 
 }
 
@@ -7069,7 +4445,7 @@ function onResize(){
       ? 1
       : Math.min(
           window.devicePixelRatio||1,
-          1.5
+          1.8
         )
   );
 
@@ -7077,6 +4453,12 @@ function onResize(){
     innerWidth,
     innerHeight,
     false
+  );
+
+  // Update composer targets
+  composer.setSize(
+    innerWidth,
+    innerHeight
   );
 
 }
@@ -7093,12 +4475,9 @@ window.addEventListener(
 
     bindEvents();
 
-    /*
-      Force initial PARTICLES mode.
-    */
-
+    // Start in PARTICLES mode
     currentMode=
-      'BUILDER';
+      'PARTICLES';
 
     switchMode(
       'PARTICLES'
