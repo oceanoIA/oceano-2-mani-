@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>STARK KINETIC LAB v16 • NEURAL CORE</title>
+<title>STARK NEURAL FIELD</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
@@ -12,75 +12,80 @@
   --green:#00ffcc;
   --pink:#ff00aa;
   --yellow:#ffe66d;
-  --bg:#05080c;
 }
 
-* { margin:0; padding:0; box-sizing:border-box; user-select:none; }
-body {
-  font-family:'Inter', system-ui;
-  background:var(--bg); color:#fff; overflow:hidden;
-  position:fixed; inset:0;
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+body{
+  font-family:'Inter',system-ui;
+  background:#05080c;color:#fff;overflow:hidden;
+  position:fixed;inset:0;
 }
 
-#canvas-container { position:absolute; inset:0; z-index:1; }
+#canvas-container{position:absolute;inset:0;z-index:1;}
 
-.header {
-  position:absolute; top:0; left:0; right:0; height:52px;
-  background:rgba(5,8,12,0.75); backdrop-filter:blur(24px);
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0 32px; z-index:100; border-bottom:1px solid rgba(0,255,204,0.1);
-  font-family:'Orbitron', sans-serif; font-size:13px; letter-spacing:2px;
+.header{
+  position:absolute;top:0;left:0;right:0;height:48px;
+  background:rgba(5,8,12,0.7);backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 30px;z-index:100;
+  border-bottom:1px solid rgba(0,255,204,0.12);
+  font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2.5px;
 }
 
-.status {
-  font-size:9px; padding:5px 16px; border:1px solid var(--green);
-  border-radius:30px; color:var(--green); background:rgba(0,255,204,0.08);
+.status{
+  font-size:8.5px;padding:4px 14px;border:1px solid var(--green);
+  border-radius:30px;color:var(--green);background:rgba(0,255,204,0.06);
 }
 
-.dock {
-  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
-  background:rgba(8,12,18,0.85); border:1px solid rgba(0,255,204,0.2);
-  border-radius:50px; padding:5px; display:flex; gap:4px; z-index:100;
-  backdrop-filter:blur(20px);
+.dock{
+  position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
+  background:rgba(8,12,18,0.8);border:1px solid rgba(0,255,204,0.2);
+  border-radius:40px;padding:5px;display:flex;gap:4px;z-index:100;
+  backdrop-filter:blur(16px);
 }
 
-.tab {
-  padding:10px 28px; font-size:10px; font-weight:500; letter-spacing:1.5px;
-  border-radius:50px; cursor:pointer; transition:0.4s;
+.tab{
+  padding:9px 24px;font-size:9px;font-weight:500;letter-spacing:1.8px;
+  border-radius:30px;cursor:pointer;border:1px solid transparent;
+  transition:.3s;color:#555;
+}
+.tab.active{
+  color:var(--green);border-color:rgba(0,255,204,0.3);
+  background:rgba(0,255,204,0.1);box-shadow:0 0 20px rgba(0,255,204,0.25);
 }
 
-.tab.active {
-  background:rgba(0,255,204,0.15); color:var(--green); box-shadow:0 0 25px rgba(0,255,204,0.4);
+.panel{
+  position:absolute;top:64px;left:20px;width:250px;padding:18px;
+  background:rgba(8,12,18,0.6);border:1px solid rgba(0,255,204,0.15);
+  border-radius:16px;backdrop-filter:blur(16px);z-index:90;
+  font-size:9px;letter-spacing:0.6px;
 }
 
-.panel {
-  position:absolute; top:78px; left:28px; width:260px; padding:20px;
-  background:rgba(8,12,18,0.65); border:1px solid rgba(0,255,204,0.15);
-  border-radius:18px; backdrop-filter:blur(20px); z-index:90;
-  font-size:9.5px; letter-spacing:0.8px;
+.field-label{
+  color:var(--green);font-size:7.5px;letter-spacing:1.8px;margin-top:14px;margin-bottom:6px;
 }
 
-.label { color:#00ffcc88; margin:18px 0 6px; font-size:8px; letter-spacing:1.8px; }
-
-select, input[type=color] {
-  width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(0,255,204,0.3);
-  border-radius:10px; color:white; height:42px; padding:0 14px;
+select,input[type=color]{
+  width:100%;background:rgba(255,255,255,0.03);
+  border:1px solid rgba(0,255,204,0.25);border-radius:10px;
+  color:#fff;height:38px;padding:0 12px;font:inherit;
 }
 
-.preview {
-  position:absolute; right:28px; bottom:32px; width:200px; height:150px;
-  border:1px solid rgba(0,255,204,0.25); border-radius:16px; overflow:hidden;
-  background:#00000088; backdrop-filter:blur(10px);
+.telemetry{
+  margin-top:18px;font-size:8.5px;line-height:2;opacity:0.85;
 }
+.telemetry span{float:right;color:var(--green);}
 
-.preview-tag {
-  position:absolute; top:8px; left:8px; font-size:7px; padding:2px 8px;
-  background:rgba(0,0,0,0.6); border:1px solid var(--green); border-radius:20px;
-  color:var(--green);
+.preview{
+  position:absolute;right:20px;bottom:26px;width:190px;height:142px;
+  border:1px solid rgba(0,255,204,0.2);border-radius:14px;overflow:hidden;
+  background:#00000088;backdrop-filter:blur(8px);
 }
-
-.telemetry {
-  margin-top:24px; font-size:8.5px; line-height:1.9; opacity:0.85;
+.preview canvas{width:100%;height:100%;display:block;transform:scaleX(-1);}
+.preview-tag{
+  position:absolute;top:6px;left:6px;font-size:6.5px;padding:2px 7px;
+  background:rgba(0,0,0,0.6);border:1px solid var(--green);border-radius:20px;
+  color:var(--green);letter-spacing:1px;
 }
 </style>
 
@@ -88,7 +93,6 @@ select, input[type=color] {
 <script src="https://cdn.jsdelivr.net/npm/three@0.134/examples/js/postprocessing/EffectComposer.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.134/examples/js/postprocessing/RenderPass.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.134/examples/js/postprocessing/UnrealBloomPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js"></script>
 
 </head>
@@ -98,8 +102,8 @@ select, input[type=color] {
 <div id="canvas-container"></div>
 
 <header class="header">
-  <div>STARK NEURAL CORE <span style="color:#00ffcc;font-size:11px;">v16</span></div>
-  <div class="status" id="status">NEURAL LINK • LIVE</div>
+  <div>STARK NEURAL FIELD</div>
+  <div class="status" id="status">INIZIALIZZAZIONE</div>
 </header>
 
 <nav class="dock">
@@ -108,93 +112,133 @@ select, input[type=color] {
 </nav>
 
 <section class="panel">
-  <div id="title" style="color:#00ffcc; font-family:Orbitron; font-size:12px; letter-spacing:3px;">NEURAL FIELD v16</div>
+  <div id="title" style="color:var(--green);font-family:Orbitron;font-size:11px;letter-spacing:2.5px;margin-bottom:10px;">NEURAL FIELD</div>
   
   <div id="particles-ui">
-    <div class="label">NEURAL ARCHITECTURE</div>
-    <select id="shape-select"></select>
-    <div class="label" style="margin-top:14px;">EMISSION SPECTRUM</div>
+    <div class="field-label">ARCHITETTURA</div>
+    <select id="shape-select">
+      <option value="reactor">REACTOR</option>
+      <option value="galaxy">GALAXY</option>
+      <option value="vortex">VORTEX</option>
+      <option value="heart">HEART</option>
+      <option value="nebula">NEBULA</option>
+    </select>
+    <div class="field-label">SPETTRO</div>
     <input type="color" id="color-picker" value="#00ffcc">
   </div>
 
   <div id="builder-ui" class="hidden">
-    <div class="label">FORGE PROTOCOL</div>
+    <div class="field-label">FORGE</div>
     <select id="builder-select">
-      <option value="cube">CUBE NODE</option>
-      <option value="sphere">SPHERE NODE</option>
-      <option value="torus">TORUS NODE</option>
+      <option value="cube">CUBE</option>
+      <option value="sphere">SPHERE</option>
+      <option value="torus">TORUS</option>
     </select>
   </div>
 
   <div class="telemetry">
-    <div>GESTURE <span id="gesture" style="color:#ffe66d;float:right;">OPEN</span></div>
-    <div>FPS <span id="fps" style="float:right;">—</span></div>
-    <div>CONNECTION <span id="tracking" style="color:#00ffcc;float:right;">STABLE</span></div>
+    GESTURE <span id="gesture">OPEN</span>
+    FPS <span id="fps">--</span>
+    TRACKING <span id="tracking">SEARCHING</span>
+    CONN <span id="connections-count">0</span>
   </div>
 </section>
 
 <div class="preview">
   <div class="preview-tag">NEURAL OPTICS</div>
-  <canvas id="hand-preview-canvas" width="200" height="150"></canvas>
+  <canvas id="hand-preview-canvas"></canvas>
 </div>
 
 <script>
-// ====================== STARK v16 - NEURAL FUTURE ======================
+'use strict';
+
+// ====================== CONFIG ======================
 const CONFIG = {
-  particles: 4800,
-  connections: 1200,
-  bloom: 1.85,
-  sensitivity: 0.82
+  particles: 4200,
+  connections: 900,
+  bloomStrength: 1.4,
+  bloomRadius: 0.5,
+  bloomThreshold: 0.08,
+  handSmooth: 0.72,
+  pinchThreshold: 0.085,
+  sensitivity: 0.85
 };
 
-let scene, camera, renderer, composer, bloom;
-let particles, lines;
-let positions, colors;
-let currentMode = "PARTICLES";
-
+// ====================== DOM ======================
 const $ = id => document.getElementById(id);
+
 const dom = {
+  video: $('video-input'),
+  container: $('canvas-container'),
+  previewCanvas: $('hand-preview-canvas'),
+  status: $('status'),
+  title: $('title'),
+  particlesUI: $('particles-ui'),
+  builderUI: $('builder-ui'),
   shapeSelect: $('shape-select'),
   colorPicker: $('color-picker'),
   gesture: $('gesture'),
   fps: $('fps'),
   tracking: $('tracking'),
-  status: $('status'),
-  title: $('title'),
-  particlesUI: $('particles-ui'),
-  builderUI: $('builder-ui'),
+  connections: $('connections-count'),
   tabP: $('tab-particles'),
   tabB: $('tab-builder')
 };
 
-let targetRX = 0, targetRY = 0, targetRZ = 0;
-let scaleTarget = 1, scaleCurrent = 1;
-let lastHandPos = new THREE.Vector3();
-let hasHandData = false;
+// ====================== THREE.JS ======================
+let scene, camera, renderer, composer, bloom;
+let particles, lines;
+let positions, linePositions;
+let currentMode = 'PARTICLES';
 
-// ====================== NEURAL PARTICLES ======================
-function createNeuralField() {
+let targetRX = 0, targetRY = 0;
+let scaleTarget = 1, scaleCurrent = 1;
+let lastHandCenter = {x:0, y:0, z:0};
+let hasHand = false;
+let lineCount = 0;
+
+function initThree(){
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 100);
+  camera.position.set(0, 2.5, 30);
+
+  renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  dom.container.appendChild(renderer.domElement);
+
+  composer = new THREE.EffectComposer(renderer);
+  composer.addPass(new THREE.RenderPass(scene, camera));
+
+  bloom = new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), CONFIG.bloomStrength, CONFIG.bloomRadius, CONFIG.bloomThreshold);
+  composer.addPass(bloom);
+
+  scene.add(new THREE.AmbientLight(0x112233, 0.5));
+
+  // Neural Particles
   const geo = new THREE.BufferGeometry();
   positions = new Float32Array(CONFIG.particles * 3);
-  colors = new Float32Array(CONFIG.particles * 3);
-
-  for (let i = 0; i < CONFIG.particles; i++) {
+  const cols = new Float32Array(CONFIG.particles * 3);
+  
+  for (let i = 0; i < CONFIG.particles; i++){
     const i3 = i * 3;
-    positions[i3]   = (Math.random()-0.5) * 28;
-    positions[i3+1] = (Math.random()-0.5) * 28;
-    positions[i3+2] = (Math.random()-0.5) * 28;
-
-    colors[i3] = 0.2; colors[i3+1] = 1.0; colors[i3+2] = 0.8;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = Math.pow(Math.random(), 0.6) * 12;
+    positions[i3]   = r * Math.sin(phi) * Math.cos(theta);
+    positions[i3+1] = r * Math.sin(phi) * Math.sin(theta) * 0.8;
+    positions[i3+2] = r * Math.cos(phi);
+    cols[i3] = 0.15; cols[i3+1] = 0.95; cols[i3+2] = 0.75;
   }
 
   geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
 
   const mat = new THREE.PointsMaterial({
-    size: 0.085,
+    size: 0.075,
     vertexColors: true,
     transparent: true,
-    opacity: 0.9,
+    opacity: 0.95,
     blending: THREE.AdditiveBlending,
     depthWrite: false
   });
@@ -204,182 +248,258 @@ function createNeuralField() {
 
   // Neural Connections
   const lineGeo = new THREE.BufferGeometry();
-  const linePos = new Float32Array(CONFIG.connections * 6);
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
-  
+  linePositions = new Float32Array(CONFIG.connections * 6);
+  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+  lineGeo.setDrawRange(0, 0);
+
   const lineMat = new THREE.LineBasicMaterial({
     color: 0x00ffcc,
     transparent: true,
-    opacity: 0.1,
+    opacity: 0.08,
     blending: THREE.AdditiveBlending
   });
 
   lines = new THREE.LineSegments(lineGeo, lineMat);
   scene.add(lines);
+
+  generateShape('reactor');
 }
 
-function updateNeuralConnections() {
-  const pos = particles.geometry.attributes.position.array;
-  const linePos = lines.geometry.attributes.position.array;
-  let count = 0;
+// ====================== SHAPES ======================
+function generateShape(type){
+  for (let i = 0; i < CONFIG.particles; i++){
+    const i3 = i * 3;
+    let x, y, z;
+    switch(type){
+      case 'reactor':
+        x = Math.cos(i * 0.04) * (4 + Math.sin(i * 0.08) * 2.5);
+        y = Math.sin(i * 0.06) * 4.5;
+        z = Math.sin(i * 0.04) * 5.5;
+        break;
+      case 'galaxy':
+        const a = i * 0.09; const r = Math.sqrt(i) * 0.32;
+        x = Math.cos(a) * r; y = (Math.random() - 0.5) * 3; z = Math.sin(a) * r;
+        break;
+      case 'vortex':
+        const t = i * 0.028;
+        x = Math.cos(t) * (3 + t * 0.35); y = t * 0.4 - 7; z = Math.sin(t) * (3 + t * 0.35);
+        break;
+      case 'heart':
+        const th = i * 0.032;
+        x = Math.sin(th) * 5; y = (Math.cos(th) - 0.5 * Math.cos(2*th)) * 3.5 - 1.5; z = (Math.random() - 0.5) * 3;
+        break;
+      case 'nebula':
+        x = (Math.random() - 0.5) * 22; y = (Math.random() - 0.5) * 18; z = (Math.random() - 0.5) * 16;
+        break;
+      default:
+        x = (Math.random()-0.5)*18; y=(Math.random()-0.5)*18; z=(Math.random()-0.5)*18;
+    }
+    positions[i3]   = x;
+    positions[i3+1] = y;
+    positions[i3+2] = z;
+  }
+  particles.geometry.attributes.position.needsUpdate = true;
+}
 
-  for (let i = 0; i < CONFIG.particles && count < CONFIG.connections*6; i += 8) {
-    for (let j = i+1; j < i+25 && count < CONFIG.connections*6; j++) {
+// ====================== HAND TRACKING ======================
+let handsDetector;
+let previewCtx;
+let lastProcess = 0;
+const FRAME_INTERVAL = 1000 / 24;
+
+async function initHands(){
+  previewCtx = dom.previewCanvas.getContext('2d');
+  dom.previewCanvas.width = 190;
+  dom.previewCanvas.height = 142;
+
+  handsDetector = new Hands({
+    locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+  });
+
+  handsDetector.setOptions({
+    maxNumHands: 2,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.65,
+    minTrackingConfidence: 0.65
+  });
+
+  handsDetector.onResults(results => {
+    const landmarks = results.multiHandLandmarks || [];
+    const handedness = results.multiHandedness || [];
+
+    // Update status & tracking
+    if (landmarks.length > 0){
+      dom.tracking.textContent = 'LOCKED';
+      dom.tracking.style.color = '#00ffcc';
+      dom.status.textContent = 'NEURAL LINK • LIVE';
+      dom.status.style.color = '#00ffcc';
+    } else {
+      dom.tracking.textContent = 'SEARCHING';
+      dom.tracking.style.color = '#ff00aa';
+      dom.status.textContent = 'RICERCA IMPUGNATURE';
+      dom.status.style.color = '#ffe66d';
+    }
+
+    // Gesture detection (first hand)
+    if (landmarks[0]){
+      const pinch = Math.hypot(landmarks[0][4].x - landmarks[0][8].x, landmarks[0][4].y - landmarks[0][8].y);
+      dom.gesture.textContent = pinch < CONFIG.pinchThreshold ? 'PINCH' : 'OPEN';
+      dom.gesture.style.color = pinch < CONFIG.pinchThreshold ? '#ffe66d' : '#00ffcc';
+
+      // Update 3D rotation/scale from hand center
+      const cx = (landmarks[0][0].x + landmarks[0][9].x) * 0.5;
+      const cy = (landmarks[0][0].y + landmarks[0][9].y) * 0.5;
+      const cz = (landmarks[0][0].z + landmarks[0][9].z) * 0.5;
+
+      const ndcX = (1 - cx) * 2 - 1;
+      const ndcY = -(cy * 2 - 1);
+      const vec = new THREE.Vector3(ndcX, ndcY, 0.6);
+      vec.unproject(camera);
+
+      if (hasHand){
+        targetRY += (vec.x - lastHandCenter.x) * CONFIG.sensitivity;
+        targetRX += (vec.y - lastHandCenter.y) * CONFIG.sensitivity * -1;
+        scaleTarget = THREE.MathUtils.clamp(scaleTarget + (landmarks[0][4].z - landmarks[0][8].z) * 9, 0.6, 2.2);
+      }
+      lastHandCenter = {x: vec.x, y: vec.y, z: vec.z};
+      hasHand = true;
+    } else {
+      hasHand = false;
+    }
+
+    // Draw preview
+    previewCtx.clearRect(0, 0, 190, 142);
+    previewCtx.fillStyle = '#05080c';
+    previewCtx.fillRect(0, 0, 190, 142);
+
+    if (landmarks.length){
+      previewCtx.strokeStyle = '#00ffcc';
+      previewCtx.lineWidth = 1.8;
+      const lm = landmarks[0];
+      for (let i = 0; i < lm.length - 1; i++){
+        previewCtx.beginPath();
+        previewCtx.moveTo(lm[i].x * 190, lm[i].y * 142);
+        previewCtx.lineTo(lm[i+1].x * 190, lm[i+1].y * 142);
+        previewCtx.stroke();
+      }
+      // Pinch dot
+      const pDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
+      previewCtx.fillStyle = pDist < CONFIG.pinchThreshold ? '#ffe66d' : '#00ffcc';
+      previewCtx.beginPath();
+      previewCtx.arc(lm[4].x * 190, lm[4].y * 142, 3, 0, Math.PI*2);
+      previewCtx.fill();
+    }
+  });
+
+  // Stream video
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240, facingMode: 'user' } });
+    dom.video.srcObject = stream;
+    dom.video.play();
+
+    dom.video.addEventListener('loadeddata', () => {
+      requestAnimationFrame(processFrame);
+    });
+
+  } catch(e){
+    dom.status.textContent = 'CAMERA NON DISPONIBILE';
+    dom.status.style.color = '#ff5577';
+    console.warn('Camera error:', e);
+  }
+}
+
+function processFrame(){
+  const now = performance.now();
+  if (now - lastProcess < FRAME_INTERVAL){
+    requestAnimationFrame(processFrame);
+    return;
+  }
+  lastProcess = now;
+
+  if (dom.video.readyState >= 2 && !document.hidden){
+    try {
+      handsDetector.send({ image: dom.video });
+    } catch(e){
+      // silent retry
+    }
+  }
+  requestAnimationFrame(processFrame);
+}
+
+// ====================== ANIMATION ======================
+let lastFrame = performance.now();
+let fpsFrames = 0, fpsTime = performance.now();
+
+function animate(){
+  requestAnimationFrame(animate);
+  const now = performance.now();
+  const delta = Math.min((now - lastFrame) / 16, 3);
+  lastFrame = now;
+
+  // Smooth rotation
+  particles.rotation.x = THREE.MathUtils.lerp(particles.rotation.x, targetRX, 0.12);
+  particles.rotation.y = THREE.MathUtils.lerp(particles.rotation.y, targetRY, 0.12);
+  particles.rotation.z = THREE.MathUtils.lerp(particles.rotation.z, 0, 0.08);
+
+  scaleCurrent = THREE.MathUtils.lerp(scaleCurrent, scaleTarget, 0.1);
+  particles.scale.setScalar(scaleCurrent);
+  lines.scale.setScalar(scaleCurrent);
+
+  // Update neural connections
+  updateConnections();
+
+  composer.render();
+
+  // FPS
+  fpsFrames++;
+  if (now - fpsTime > 700){
+    dom.fps.textContent = Math.round(fpsFrames * 1000 / (now - fpsTime));
+    fpsFrames = 0;
+    fpsTime = now;
+  }
+}
+
+function updateConnections(){
+  const pos = positions;
+  let count = 0;
+  const max = CONFIG.connections * 6;
+
+  for (let i = 0; i < CONFIG.particles && count < max; i += 6){
+    for (let j = i + 2; j < i + 18 && count < max; j++){
       const dx = pos[i*3] - pos[j*3];
       const dy = pos[i*3+1] - pos[j*3+1];
       const dz = pos[i*3+2] - pos[j*3+2];
-      
-      if (dx*dx + dy*dy + dz*dz < 35) {
-        linePos[count++] = pos[i*3];
-        linePos[count++] = pos[i*3+1];
-        linePos[count++] = pos[i*3+2];
-        linePos[count++] = pos[j*3];
-        linePos[count++] = pos[j*3+1];
-        linePos[count++] = pos[j*3+2];
+      const dist2 = dx*dx + dy*dy + dz*dz;
+      if (dist2 < 22){
+        linePositions[count++] = pos[i*3];
+        linePositions[count++] = pos[i*3+1];
+        linePositions[count++] = pos[i*3+2];
+        linePositions[count++] = pos[j*3];
+        linePositions[count++] = pos[j*3+1];
+        linePositions[count++] = pos[j*3+2];
       }
     }
   }
   lines.geometry.attributes.position.needsUpdate = true;
-  lines.geometry.setDrawRange(0, count/3);
-}
-
-// ====================== INIT ======================
-function initThree() {
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(52, innerWidth/innerHeight, 0.1, 100);
-  camera.position.set(0, 2, 32);
-
-  renderer = new THREE.WebGLRenderer({ antialias:true, alpha:false });
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
-  renderer.setSize(innerWidth, innerHeight);
-  document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-  composer = new THREE.EffectComposer(renderer);
-  composer.addPass(new THREE.RenderPass(scene, camera));
-
-  bloom = new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), CONFIG.bloom, 0.6, 0.1);
-  composer.addPass(bloom);
-
-  createNeuralField();
-  scene.add(new THREE.AmbientLight(0x112233, 0.6));
-}
-
-async function initHands() {
-  const hands = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-  hands.setOptions({ maxNumHands: 2, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7 });
-
-  const ctx = $('hand-preview-canvas').getContext('2d');
-
-  hands.onResults(r => {
-    ctx.clearRect(0,0,200,150);
-    ctx.fillStyle = '#05080c';
-    ctx.fillRect(0,0,200,150);
-
-    if (r.multiHandLandmarks?.length) {
-      dom.tracking.textContent = "LOCKED";
-      dom.tracking.style.color = "#00ffcc";
-
-      const lm = r.multiHandLandmarks[0];
-      const pinchDist = Math.hypot(lm[4].x-lm[8].x, lm[4].y-lm[8].y);
-      
-      dom.gesture.textContent = pinchDist < 0.09 ? "PINCH" : "OPEN";
-      dom.gesture.style.color = pinchDist < 0.09 ? "#ffe66d" : "#00ffcc";
-
-      updateFromHand(lm);
-    } else {
-      dom.tracking.textContent = "SEARCHING";
-      dom.tracking.style.color = "#ff00aa";
-    }
-  });
-
-  const cam = new Camera($('video-input'), {
-    onFrame: async () => await hands.send({image: $('video-input')}),
-    width: 320, height: 240
-  });
-  await cam.start();
-}
-
-function updateFromHand(landmarks) {
-  const centerX = (landmarks[0].x + landmarks[9].x) * 0.5;
-  const centerY = (landmarks[0].y + landmarks[9].y) * 0.5;
-
-  const ndcX = (1 - centerX) * 2 - 1;
-  const ndcY = -(centerY * 2 - 1);
-
-  const vec = new THREE.Vector3(ndcX, ndcY, 0.6);
-  vec.unproject(camera);
-
-  if (hasHandData) {
-    targetRY += (vec.x - lastHandPos.x) * CONFIG.sensitivity;
-    targetRX += (vec.y - lastHandPos.y) * CONFIG.sensitivity * -1;
-    scaleTarget = THREE.MathUtils.clamp(scaleTarget + (landmarks[4].z - landmarks[8].z) * 8, 0.6, 2.2);
-  }
-
-  lastHandPos.set(vec.x, vec.y, 0);
-  hasHandData = true;
-}
-
-// ====================== ANIMATION ======================
-let lastTime = performance.now(), frames = 0, fpsTime = performance.now();
-
-function animate() {
-  requestAnimationFrame(animate);
-  const now = performance.now();
-
-  particles.rotation.x = THREE.MathUtils.lerp(particles.rotation.x, targetRX, 0.1);
-  particles.rotation.y = THREE.MathUtils.lerp(particles.rotation.y, targetRY, 0.1);
-  particles.rotation.z = THREE.MathUtils.lerp(particles.rotation.z, targetRZ, 0.08);
-
-  scaleCurrent = THREE.MathUtils.lerp(scaleCurrent, scaleTarget, 0.12);
-  particles.scale.setScalar(scaleCurrent);
-  lines.scale.setScalar(scaleCurrent);
-
-  updateNeuralConnections();
-
-  composer.render();
-
-  frames++;
-  if (now - fpsTime > 700) {
-    dom.fps.textContent = Math.round(frames * 1000 / (now - fpsTime));
-    frames = 0; fpsTime = now;
-  }
+  lines.geometry.setDrawRange(0, count / 3);
+  dom.connections.textContent = Math.floor(count / 6);
 }
 
 // ====================== UI ======================
-function initUI() {
-  const architectures = ["reactor","galaxy","vortex","heart","nebula"];
-  architectures.forEach(name => {
-    const o = document.createElement('option');
-    o.value = name; o.textContent = name.toUpperCase();
-    dom.shapeSelect.appendChild(o);
-  });
+function switchMode(mode){
+  currentMode = mode;
+  dom.title.textContent = mode === 'PARTICLES' ? 'NEURAL FIELD' : 'SPATIAL FORGE';
+  dom.particlesUI.classList.toggle('hidden', mode !== 'PARTICLES');
+  dom.builderUI.classList.toggle('hidden', mode !== 'BUILDER');
+  dom.tabP.classList.toggle('active', mode === 'PARTICLES');
+  dom.tabB.classList.toggle('active', mode === 'BUILDER');
+}
 
-  dom.shapeSelect.onchange = e => {
-    // Placeholder - puoi espandere la funzione generateShape se vuoi
-    console.log("%cNeural architecture changed → " + e.target.value, "color:#00ffcc");
-  };
-
-  dom.colorPicker.oninput = e => {
-    particles.material.color.set(e.target.value);
-  };
-
-  dom.tabP.onclick = () => {
-    currentMode = "PARTICLES";
-    dom.title.textContent = "NEURAL FIELD v16";
-    dom.particlesUI.classList.remove("hidden");
-    dom.builderUI.classList.add("hidden");
-    dom.tabP.classList.add("active");
-    dom.tabB.classList.remove("active");
-  };
-
-  dom.tabB.onclick = () => {
-    currentMode = "BUILDER";
-    dom.title.textContent = "SPATIAL FORGE v16";
-    dom.particlesUI.classList.add("hidden");
-    dom.builderUI.classList.remove("hidden");
-    dom.tabP.classList.remove("active");
-    dom.tabB.classList.add("active");
-  };
+function initUI(){
+  dom.shapeSelect.onchange = e => generateShape(e.target.value);
+  dom.colorPicker.oninput = e => particles.material.color.set(e.target.value);
+  dom.tabP.onclick = () => switchMode('PARTICLES');
+  dom.tabB.onclick = () => switchMode('BUILDER');
 }
 
 // ====================== START ======================
@@ -388,8 +508,6 @@ window.addEventListener('load', async () => {
   initUI();
   await initHands();
   animate();
-
-  console.log("%cSTARK KINETIC LAB v16 — Neural Future Initialized", "color:#00ffcc; font-size:15px");
 });
 </script>
 </body>
