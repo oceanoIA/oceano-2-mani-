@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>OCEANO KINETIC LAB v12 // VISION PRO</title>
+<title>STARK KINETIC LAB v12 // VISION PRO</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -495,6 +495,37 @@ input[type=color]{
   transform:rotate(90deg);
 }
 
+/* ================= JARVIS CORE ================= */
+
+#controls-jarvis .telemetry-box{
+  gap:7px;
+}
+
+.jarvis-readout strong{
+  color:var(--cyan);
+  text-shadow:0 0 8px rgba(0,232,255,.45);
+}
+
+.jarvis-selection{
+  min-height:34px;
+  padding:9px;
+  border:1px solid rgba(0,232,255,.22);
+  border-radius:12px;
+  background:rgba(0,232,255,.035);
+  color:rgba(255,255,255,.72);
+  font-size:7px;
+  line-height:1.45;
+  letter-spacing:.6px;
+}
+
+.jarvis-core-glow{
+  pointer-events:none;
+}
+
+@media(max-width:700px){
+  .jarvis-selection{font-size:6px;}
+}
+
 /* ================= MOBILE ================= */
 
 @media(max-width:700px){
@@ -599,7 +630,7 @@ input[type=color]{
 
 <header class="stark-header">
   <div class="stark-title">
-    <span>OCEANO LAB</span>
+    <span>STARK LAB</span>
     <span class="security-badge">
       VISION PRO // LOW LATENCY
     </span>
@@ -618,6 +649,10 @@ input[type=color]{
 
   <button id="tab-particles" class="tab-btn active">
     SYS 02: PLASMA MATRIX
+  </button>
+
+  <button id="tab-jarvis" class="tab-btn">
+    SYS 03: JARVIS CORE
   </button>
 
 </nav>
@@ -772,6 +807,31 @@ input[type=color]{
 
       <input type="color" id="color-picker" value="#ffffff">
 
+    </div>
+
+  </div>
+
+  <!-- ================= JARVIS CORE ================= -->
+
+  <div id="controls-jarvis" class="panel-section hidden">
+
+    <div class="control-group">
+      <label>JARVIS COMMAND CENTER</label>
+      <div class="telemetry-box jarvis-readout">
+        <div class="telemetry-top"><span>CORE</span><strong id="jarvis-core-state">ONLINE</strong></div>
+        <div class="telemetry-top"><span>POWER</span><strong id="jarvis-power">100%</strong></div>
+        <div class="telemetry-top"><span>LINK</span><strong id="jarvis-link">STABLE</strong></div>
+        <div class="telemetry-top"><span>CONTROL</span><strong id="jarvis-control">HANDS</strong></div>
+      </div>
+    </div>
+
+    <div class="btn-grid">
+      <button id="jarvis-center-btn" class="stark-btn">CENTER CORE</button>
+      <button id="jarvis-pulse-btn" class="stark-btn">ENERGY PULSE</button>
+    </div>
+
+    <div id="jarvis-selection" class="jarvis-selection">
+      SYSTEM READY // MOVE HANDS TO CONTROL
     </div>
 
   </div>
@@ -1038,6 +1098,24 @@ const dom={
 
   tabParticles:$('tab-particles'),
 
+  tabJarvis:$('tab-jarvis'),
+
+  jarvis:$('controls-jarvis'),
+
+  jarvisCenter:$('jarvis-center-btn'),
+
+  jarvisPulse:$('jarvis-pulse-btn'),
+
+  jarvisSelection:$('jarvis-selection'),
+
+  jarvisCoreState:$('jarvis-core-state'),
+
+  jarvisPower:$('jarvis-power'),
+
+  jarvisLink:$('jarvis-link'),
+
+  jarvisControl:$('jarvis-control'),
+
   shapeSelect:$('shape-select'),
 
   colorPicker:$('color-picker'),
@@ -1096,6 +1174,18 @@ let particleGroup;
 let particleGeometry;
 let particleMaterial;
 let particleSystem;
+
+let jarvisGroup=null;
+let jarvisCore=null;
+let jarvisCoreHalo=null;
+let jarvisRings=[];
+let jarvisDataNodes=[];
+let jarvisBeamLines=[];
+let jarvisTargetPosition=new THREE.Vector3(0,1.5,0);
+let jarvisCurrentPosition=new THREE.Vector3(0,1.5,0);
+let jarvisTargetScale=1;
+let jarvisCurrentScale=1;
+let jarvisPulse=0;
 
 const targetPositions=
   new Float32Array(PARTICLE_COUNT*3);
@@ -1272,6 +1362,8 @@ function initThree(){
   initControllers();
 
   initParticles();
+
+  initJarvisCore();
 
   initPreview();
 
@@ -3064,6 +3156,213 @@ function createSSDHologram(){
 
   return group;
 
+}
+
+/* =========================================================
+   SYS 03 // JARVIS COMMAND CENTER
+========================================================= */
+
+function initJarvisCore(){
+
+  jarvisGroup=new THREE.Group();
+  jarvisGroup.visible=false;
+  scene.add(jarvisGroup);
+
+  const cyan=0x00e8ff;
+  const white=0xffffff;
+  const pink=0xff00aa;
+
+  const coreMat=new THREE.MeshBasicMaterial({
+    color:cyan,
+    transparent:true,
+    opacity:.95,
+    blending:THREE.AdditiveBlending,
+    depthWrite:false
+  });
+
+  jarvisCore=new THREE.Mesh(
+    new THREE.IcosahedronGeometry(1.35,2),
+    coreMat
+  );
+  jarvisCore.position.set(0,1.5,0);
+  jarvisGroup.add(jarvisCore);
+
+  const wire=new THREE.Mesh(
+    new THREE.IcosahedronGeometry(1.65,2),
+    new THREE.MeshBasicMaterial({
+      color:white,
+      wireframe:true,
+      transparent:true,
+      opacity:.35,
+      blending:THREE.AdditiveBlending,
+      depthWrite:false
+    })
+  );
+  wire.position.copy(jarvisCore.position);
+  jarvisGroup.add(wire);
+
+  jarvisCoreHalo=new THREE.Mesh(
+    new THREE.SphereGeometry(2.25,24,24),
+    new THREE.MeshBasicMaterial({
+      color:cyan,
+      transparent:true,
+      opacity:.055,
+      blending:THREE.AdditiveBlending,
+      depthWrite:false
+    })
+  );
+  jarvisCoreHalo.position.copy(jarvisCore.position);
+  jarvisGroup.add(jarvisCoreHalo);
+
+  const ringSpecs=[
+    [3.0,.035,cyan,0.0],
+    [3.7,.025,white,.55],
+    [4.45,.032,pink,1.05],
+    [5.2,.018,cyan,1.55]
+  ];
+
+  jarvisRings=[];
+  ringSpecs.forEach((r,i)=>{
+    const ring=new THREE.Mesh(
+      new THREE.TorusGeometry(r[0],r[1],8,96),
+      new THREE.MeshBasicMaterial({
+        color:r[2],
+        transparent:true,
+        opacity:i===1?.42:.7,
+        blending:THREE.AdditiveBlending,
+        depthWrite:false
+      })
+    );
+    ring.position.copy(jarvisCore.position);
+    ring.rotation.x=Math.PI/2;
+    ring.rotation.z=r[3];
+    jarvisGroup.add(ring);
+    jarvisRings.push(ring);
+  });
+
+  // Static HUD brackets around the core. They never rotate automatically.
+  const bracketMat=new THREE.LineBasicMaterial({
+    color:cyan,
+    transparent:true,
+    opacity:.55,
+    blending:THREE.AdditiveBlending,
+    depthWrite:false
+  });
+
+  const bracketPoints=[
+    [-6,4,0,-4,4,0,-4,3.5,0],
+    [6,4,0,4,4,0,4,3.5,0],
+    [-6,-1,0,-4,-1,0,-4,-.5,0],
+    [6,-1,0,4,-1,0,4,-.5,0]
+  ];
+
+  bracketPoints.forEach(a=>{
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.Float32BufferAttribute(a,3));
+    const line=new THREE.Line(geo,bracketMat);
+    jarvisGroup.add(line);
+    jarvisBeamLines.push(line);
+  });
+
+  // Data nodes / status points
+  for(let i=0;i<18;i++){
+    const a=(i/18)*Math.PI*2;
+    const radius=6.1+(i%3)*.55;
+    const node=new THREE.Mesh(
+      new THREE.SphereGeometry(i%3===0?.075:.045,7,7),
+      new THREE.MeshBasicMaterial({
+        color:i%3===0?pink:cyan,
+        transparent:true,
+        opacity:.8,
+        blending:THREE.AdditiveBlending,
+        depthWrite:false
+      })
+    );
+    node.position.set(
+      Math.cos(a)*radius,
+      1.5+Math.sin(a)*radius*.45,
+      Math.sin(a)*1.5
+    );
+    jarvisGroup.add(node);
+    jarvisDataNodes.push(node);
+  }
+
+  const light=new THREE.PointLight(cyan,2.0,16);
+  light.position.copy(jarvisCore.position);
+  jarvisGroup.add(light);
+
+  jarvisGroup.userData={wire,light};
+}
+
+function resetJarvisCore(){
+  jarvisTargetPosition.set(0,1.5,0);
+  jarvisCurrentPosition.copy(jarvisTargetPosition);
+  jarvisTargetScale=1;
+  jarvisCurrentScale=1;
+  jarvisGroup.position.set(0,0,0);
+  jarvisGroup.scale.setScalar(1);
+  jarvisPulse=1;
+  dom.jarvisSelection.textContent='CORE CENTERED // SYSTEM READY';
+}
+
+function updateJarvisCore(delta){
+
+  if(currentMode!=='JARVIS' || !jarvisGroup)return;
+
+  // Position follows the midpoint only. No autonomous rotation.
+  const left=controllers[0];
+  const right=controllers[1];
+  let controlHand=null;
+
+  if(left.active && right.active){
+    const cx=(left.pos.x+right.pos.x)*.5;
+    const cy=(left.pos.y+right.pos.y)*.5;
+    jarvisTargetPosition.x=THREE.MathUtils.clamp(cx*.72,-5.5,5.5);
+    jarvisTargetPosition.y=THREE.MathUtils.clamp(1.5+cy*.55,-1.0,5.5);
+
+    const d=Math.hypot(right.pos.x-left.pos.x,right.pos.y-left.pos.y);
+    jarvisTargetScale=THREE.MathUtils.clamp(.72+(d*.09),.72,1.75);
+    dom.jarvisControl.textContent='2 HANDS // MOVE + ZOOM';
+    controlHand='DUAL';
+  }else if(left.active || right.active){
+    controlHand=left.active?'LEFT':'RIGHT';
+    const c=left.active?left:right;
+    jarvisTargetPosition.x=THREE.MathUtils.clamp(c.pos.x*.8,-5.5,5.5);
+    jarvisTargetPosition.y=THREE.MathUtils.clamp(1.5+c.pos.y*.62,-1.0,5.5);
+    jarvisTargetScale=1;
+    dom.jarvisControl.textContent=controlHand+' HAND // MOVE';
+  }else{
+    dom.jarvisControl.textContent='HANDS // STANDBY';
+  }
+
+  const lerp=Math.min(.18*delta,.35);
+  jarvisCurrentPosition.lerp(jarvisTargetPosition,lerp);
+  jarvisCurrentScale+=(jarvisTargetScale-jarvisCurrentScale)*lerp;
+
+  jarvisGroup.position.set(
+    jarvisCurrentPosition.x,
+    jarvisCurrentPosition.y-1.5,
+    0
+  );
+  jarvisGroup.scale.setScalar(jarvisCurrentScale);
+
+  jarvisPulse=Math.max(0,jarvisPulse-.035*delta);
+  const pulse=1+Math.sin(performance.now()*.004)*.025+jarvisPulse*.12;
+  jarvisCore.scale.setScalar(pulse);
+  jarvisCoreHalo.scale.setScalar(1+jarvisPulse*.15);
+  jarvisGroup.userData.light.intensity=1.5+jarvisPulse*2.5;
+
+  dom.jarvisPower.textContent=Math.round(94+Math.abs(Math.sin(performance.now()*.001))*6)+'%';
+  dom.jarvisLink.textContent=(left.active||right.active)?'TRACKING':'STABLE';
+  dom.jarvisCoreState.textContent='ONLINE';
+
+  if(controlHand){
+    dom.jarvisSelection.textContent=controlHand==='DUAL'
+      ? 'DUAL LINK // MIDPOINT POSITION + DISTANCE ZOOM'
+      : controlHand+' LINK // CORE POSITION CONTROL';
+  }else{
+    dom.jarvisSelection.textContent='SYSTEM READY // MOVE HANDS TO CONTROL';
+  }
 }
 
 /* =========================================================
@@ -6796,76 +7095,54 @@ function switchMode(
   mode
 ){
 
-  if(
-    currentMode===mode
-  )return;
+  if(currentMode===mode)return;
 
   currentMode=mode;
 
-  const builder=
-    mode==='BUILDER';
+  const builder=mode==='BUILDER';
+  const particles=mode==='PARTICLES';
+  const jarvis=mode==='JARVIS';
 
-  dom.tabBuilder.classList.toggle(
-    'active',
-    builder
-  );
+  dom.tabBuilder.classList.toggle('active',builder);
+  dom.tabParticles.classList.toggle('active',particles);
+  dom.tabJarvis.classList.toggle('active',jarvis);
 
-  dom.tabParticles.classList.toggle(
-    'active',
-    !builder
-  );
+  dom.builder.classList.toggle('hidden',!builder);
+  dom.particles.classList.toggle('hidden',!particles);
+  dom.jarvis.classList.toggle('hidden',!jarvis);
 
-  dom.builder.classList.toggle(
-    'hidden',
-    !builder
-  );
-
-  dom.particles.classList.toggle(
-    'hidden',
-    builder
-  );
-
-  dom.panelTitle.textContent=
-    builder
-      ? '3D BUILDER MATRIX'
+  dom.panelTitle.textContent=builder
+    ? '3D BUILDER MATRIX'
+    : jarvis
+      ? 'JARVIS COMMAND CENTER'
       : 'PARTICLE MATRIX';
 
-  dom.mode.textContent=
-    mode;
+  dom.mode.textContent=mode;
 
-  builderGroup.visible=
-    builder;
+  builderGroup.visible=builder;
+  particleGroup.visible=particles;
+  jarvisGroup.visible=jarvis;
 
-  particleGroup.visible=
-    !builder;
-
-  controllers.forEach(
-    c=>{
-
-      c.rayLine.visible=
-        builder&&
-        c.active;
-
-      c.trail.visible=
-        !builder&&
-        c.active;
-
-    }
-  );
+  controllers.forEach(c=>{
+    c.rayLine.visible=builder&&c.active;
+    c.trail.visible=particles&&c.active;
+  });
 
   if(!builder){
-
     selectedBlock=null;
-
-    controllers.forEach(
-      c=>releaseBlock(c)
-    );
-
+    controllers.forEach(c=>releaseBlock(c));
     updateSelectionUI();
-
   }
 
+  // Freeze particle rotation state when leaving SYS 02.
+  if(jarvis){
+    hasLastHandCenter=false;
+    hasLastHandAngle=false;
+    hasZoomAnchor=false;
+    dom.jarvisSelection.textContent='JARVIS CORE ONLINE // MOVE HANDS TO CONTROL';
+  }
 }
+
 
 /* =========================================================
    EVENTS
@@ -6955,6 +7232,28 @@ function bindEvents(){
       switchMode(
         'PARTICLES'
       );
+    }
+  );
+
+  dom.tabJarvis.addEventListener(
+    'click',
+    ()=>{
+      switchMode(
+        'JARVIS'
+      );
+    }
+  );
+
+  dom.jarvisCenter.addEventListener(
+    'click',
+    resetJarvisCore
+  );
+
+  dom.jarvisPulse.addEventListener(
+    'click',
+    ()=>{
+      jarvisPulse=1;
+      sounds.pinch();
     }
   );
 
@@ -7158,19 +7457,17 @@ function animate(){
     now
   );
 
-  if(
-    currentMode==='BUILDER'
-  ){
+  if(currentMode==='BUILDER'){
 
-    updateBuilder(
-      delta
-    );
+    updateBuilder(delta);
 
-  }else{
+  }else if(currentMode==='PARTICLES'){
 
-    updateParticles(
-      delta
-    );
+    updateParticles(delta);
+
+  }else if(currentMode==='JARVIS'){
+
+    updateJarvisCore(delta);
 
   }
 
