@@ -7808,5 +7808,304 @@ function bindEvents(){
 
         btn.addEventListener(
           'click',
-       
-Anteprima troncata per file di grandi dimensioni
+          ()=>{
+            spawnShape(
+              btn.dataset.shape
+            );
+          }
+        );
+
+      }
+    );
+
+  dom.clear.addEventListener(
+    'click',
+    clearBlocks
+  );
+
+  dom.shapeSelect.addEventListener(
+    'change',
+    e=>{
+      generateShape(
+        e.target.value
+      );
+    }
+  );
+
+  dom.colorPicker.addEventListener(
+    'input',
+    e=>{
+
+      if(
+        particleMaterial
+      ){
+
+        particleMaterial.color.set(
+          e.target.value
+        );
+
+      }
+
+    }
+  );
+
+  dom.audio.addEventListener(
+    'click',
+    ()=>{
+
+      sounds.enabled=
+        !sounds.enabled;
+
+      dom.audio.textContent=
+        sounds.enabled
+          ? 'AUDIO: ACTIVE'
+          : 'AUDIO: MUTED';
+
+      if(
+        sounds.enabled
+      ){
+
+        sounds.init();
+
+      }
+
+    }
+  );
+
+  window.addEventListener(
+    'resize',
+    onResize,
+    {passive:true}
+  );
+
+  /*
+    Performance:
+    pause visual updates when tab is hidden.
+  */
+
+  document.addEventListener(
+    'visibilitychange',
+    ()=>{
+
+      pageVisible=
+        !document.hidden;
+
+      if(
+        pageVisible
+      ){
+
+        lastFrame=
+          performance.now();
+
+      }
+
+    }
+  );
+
+}
+
+/* =========================================================
+   CONNECTION
+========================================================= */
+
+function setConnection(
+  text,
+  type
+){
+
+  dom.connection.textContent=
+    text;
+
+  if(
+    type==='green'
+  ){
+
+    dom.connection.style.color=
+      '#00ffcc';
+
+  }else if(
+    type==='red'
+  ){
+
+    dom.connection.style.color=
+      '#ff5577';
+
+  }else{
+
+    dom.connection.style.color=
+      '#ffe66d';
+
+  }
+
+}
+
+/* =========================================================
+   FPS
+========================================================= */
+
+function updateFPS(now){
+
+  fpsFrames++;
+
+  if(
+    now-fpsTime>=500
+  ){
+
+    const fps=
+      Math.round(
+        fpsFrames*
+        1000/
+        (now-fpsTime)
+      );
+
+    dom.fps.textContent=
+      fps;
+
+    fpsFrames=0;
+
+    fpsTime=now;
+
+  }
+
+}
+
+/* =========================================================
+   ANIMATION LOOP
+========================================================= */
+
+function animate(){
+
+  requestAnimationFrame(
+    animate
+  );
+
+  if(
+    !pageVisible
+  )return;
+
+  const now=
+    performance.now();
+
+  const delta=
+    Math.min(
+      (now-lastFrame)/
+      16.67,
+      2
+    );
+
+  lastFrame=now;
+
+  updateFPS(
+    now
+  );
+
+  if(currentMode==='BUILDER'){
+
+    updateBuilder(delta);
+
+  }else if(currentMode==='PARTICLES'){
+
+    updateParticles(delta);
+
+  }else if(currentMode==='JARVIS'){
+
+    updateJarvisCore(delta);
+
+  }
+
+  renderer.render(
+    scene,
+    camera
+  );
+
+}
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+function onResize(){
+
+  if(
+    !camera ||
+    !renderer
+  )return;
+
+  camera.aspect=
+    innerWidth/
+    innerHeight;
+
+  camera.updateProjectionMatrix();
+
+  renderer.setPixelRatio(
+    IS_MOBILE
+      ? 1
+      : Math.min(
+          window.devicePixelRatio||1,
+          1.5
+        )
+  );
+
+  renderer.setSize(
+    innerWidth,
+    innerHeight,
+    false
+  );
+
+}
+
+/* =========================================================
+   START
+========================================================= */
+
+window.addEventListener(
+  'load',
+  async()=>{
+
+    initThree();
+
+    bindEvents();
+
+    /*
+      Force initial PARTICLES mode.
+    */
+
+    currentMode=
+      'BUILDER';
+
+    switchMode(
+      'PARTICLES'
+    );
+
+    setConnection(
+      'CAM: INIT',
+      'yellow'
+    );
+
+    try{
+
+      await initHandTracking();
+
+    }catch(e){
+
+      console.error(
+        'MediaPipe init error:',
+        e
+      );
+
+      setConnection(
+        'CAM: FAILED',
+        'red'
+      );
+
+    }
+
+    animate();
+
+  }
+);
+
+</script>
+
+</body>
+</html>
