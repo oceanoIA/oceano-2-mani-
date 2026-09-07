@@ -824,6 +824,16 @@ body.jarvis-mode #jarvis-engineering-hud{
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 
+
+<style id="hands-only-camera-removal">
+/* HANDS ONLY: webcam is used for tracking but never displayed */
+#video-input, .camera-preview-container, #camera-preview, .camera-preview, .video-preview {
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+</style>
 </head>
 
 <body>
