@@ -818,35 +818,6 @@ body.jarvis-mode #jarvis-engineering-hud{
   #j14-readout{right:16px;bottom:61px;}
 }
 
-
-/* V16 — HAND SKELETON ONLY: camera feed is used internally for tracking but never rendered */
-.camera-preview-container{
-  position:fixed !important;
-  inset:0 !important;
-  width:100vw !important;
-  height:100vh !important;
-  right:auto !important;
-  bottom:auto !important;
-  border:0 !important;
-  border-radius:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  pointer-events:none !important;
-  z-index:4 !important;
-}
-#hand-preview-canvas{
-  position:absolute !important;
-  inset:0 !important;
-  width:100vw !important;
-  height:100vh !important;
-  display:block !important;
-  transform:scaleX(-1);
-  opacity:1 !important;
-  background:transparent !important;
-}
-.preview-hud-tag,.preview-status{display:none !important;}
-body.jarvis-mode #hand-preview-canvas{opacity:1 !important;}
-
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -3952,19 +3923,65 @@ function drawPreview(hands){
   const w=dom.preview.width;
   const h=dom.preview.height;
 
-  /* Solo scheletro delle mani: nessun frame video, nessun pannello. */
   ctx.clearRect(0,0,w,h);
 
-  if(!hands?.length)return;
+  /*
+    MOSTRA LA TELECAMERA REALE.
+    Il canvas viene specchiato via CSS, quindi
+    l'immagine e i landmark rimangono allineati.
+  */
+  if(dom.video.readyState>=2 && dom.video.videoWidth){
+
+    ctx.save();
+
+    const vw=dom.video.videoWidth;
+    const vh=dom.video.videoHeight;
+    const videoRatio=vw/vh;
+    const canvasRatio=w/h;
+
+    let dw=w, dh=h, dx=0, dy=0;
+
+    if(videoRatio>canvasRatio){
+      dh=h;
+      dw=h*videoRatio;
+      dx=(w-dw)*.5;
+    }else{
+      dw=w;
+      dh=w/videoRatio;
+      dy=(h-dh)*.5;
+    }
+
+    ctx.drawImage(dom.video,dx,dy,dw,dh);
+    ctx.restore();
+
+  }else{
+
+    ctx.fillStyle='#050a0e';
+    ctx.fillRect(0,0,w,h);
+
+  }
+
+  /* Velo HUD leggero, senza coprire la telecamera */
+  ctx.fillStyle='rgba(0,0,0,.10)';
+  ctx.fillRect(0,0,w,h);
+
+  if(!hands?.length){
+
+    ctx.fillStyle='rgba(255,255,255,.8)';
+    ctx.font='9px "Share Tech Mono"';
+    ctx.textAlign='center';
+    ctx.fillText('CAMERA ONLINE // SEARCHING HANDS',w/2,h-12);
+    return;
+
+  }
 
   hands.forEach((landmarks,i)=>{
 
     ctx.strokeStyle=i===0?'#00ffcc':'#ff00aa';
-    ctx.lineWidth=2.2;
-    ctx.lineCap='round';
-    ctx.lineJoin='round';
+    ctx.lineWidth=1.8;
 
     HAND_CONNECTIONS.forEach(pair=>{
+
       const a=landmarks[pair[0]];
       const b=landmarks[pair[1]];
 
@@ -3972,12 +3989,12 @@ function drawPreview(hands){
       ctx.moveTo(a.x*w,a.y*h);
       ctx.lineTo(b.x*w,b.y*h);
       ctx.stroke();
+
     });
 
     landmarks.forEach((p,index)=>{
-      const key=index===4 || index===8;
 
-      ctx.fillStyle=key
+      ctx.fillStyle=(index===4||index===8)
         ? '#ffe66d'
         : (i===0?'#00ffcc':'#ff00aa');
 
@@ -3985,17 +4002,24 @@ function drawPreview(hands){
       ctx.arc(
         p.x*w,
         p.y*h,
-        key?4:2.2,
+        (index===4||index===8)?3.2:1.8,
         0,
         Math.PI*2
       );
       ctx.fill();
+
     });
 
   });
 
-}
+  ctx.fillStyle='rgba(0,0,0,.68)';
+  ctx.fillRect(7,h-24,128,17);
+  ctx.fillStyle='#fff';
+  ctx.font='8px "Share Tech Mono"';
+  ctx.textAlign='left';
+  ctx.fillText('OPTICAL FEED // HAND TRACK',12,h-12);
 
+}
 /* =========================================================
    SPAWN BUILDER OBJECT
 ========================================================= */
