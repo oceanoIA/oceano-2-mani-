@@ -847,18 +847,6 @@ body.jarvis-mode #jarvis-engineering-hud{
 .preview-hud-tag,.preview-status{display:none !important;}
 body.jarvis-mode #hand-preview-canvas{opacity:1 !important;}
 
-
-/* V18 // COMPACT FLUID HAND SKELETON PANEL */
-#connection-status{display:none !important;}
-.camera-preview-container{position:fixed !important;top:12px !important;right:12px !important;left:auto !important;bottom:auto !important;width:220px !important;height:138px !important;z-index:60 !important;overflow:hidden !important;cursor:grab !important;touch-action:none !important;background:rgba(2,7,10,.88) !important;border:1px solid rgba(0,232,255,.48) !important;border-radius:9px !important;box-shadow:0 0 0 1px rgba(0,232,255,.06),0 8px 24px rgba(0,0,0,.55),inset 0 0 18px rgba(0,232,255,.025) !important;}
-.camera-preview-container::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.014) 0,rgba(255,255,255,.014) 1px,transparent 1px,transparent 4px);}
-.hand-panel-title{position:absolute;top:6px;left:8px;z-index:4;padding:2px 5px;border-left:1px solid #00e8ff;background:rgba(0,0,0,.42);color:#fff;font:7px/1.1 "Share Tech Mono",monospace;letter-spacing:1px;pointer-events:none;}
-.hand-panel-status{position:absolute;top:7px;right:8px;z-index:4;color:#00e8ff;font:6px/1.1 "Share Tech Mono",monospace;letter-spacing:.7px;pointer-events:none;}
-.camera-preview-container::after{content:"DRAG";position:absolute;right:7px;bottom:5px;z-index:4;color:rgba(255,255,255,.24);font:5px "Share Tech Mono",monospace;letter-spacing:.8px;pointer-events:none;}
-#hand-preview-canvas{width:100% !important;height:100% !important;display:block !important;transform:scaleX(-1) !important;opacity:1 !important;background:transparent !important;}
-.preview-hud-tag,.preview-status{display:none !important;}
-.camera-preview-container.dragging{cursor:grabbing !important;border-color:rgba(0,232,255,.8) !important;}
-@media(max-width:700px){.camera-preview-container{top:52px !important;right:8px !important;width:185px !important;height:116px !important;}}
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -1166,11 +1154,20 @@ body.jarvis-mode #hand-preview-canvas{opacity:1 !important;}
 
 </section>
 
-<div class="camera-preview-container" aria-label="Hand tracking panel">
-  <span class="hand-panel-title">HAND TRACKING</span>
-  <span class="hand-panel-status">2CH // LANDMARKS</span>
-  <canvas id="hand-preview-canvas" width="560" height="420"></canvas>
+<div class="camera-preview-container">
+
+  <span class="preview-hud-tag">
+    OPTICAL // HAND FEED
+  </span>
+
+  <span id="preview-status" class="preview-status">
+    INIT
+  </span>
+
+  <canvas id="hand-preview-canvas" width="240" height="180"></canvas>
+
 </div>
+
 
 <div id="jarvis-compat" style="display:none" aria-hidden="true">
   <span id="jarvis-core-state">ONLINE</span>
@@ -3937,10 +3934,6 @@ function updateJarvisCore(delta){
 ========================================================= */
 
 let previewCtx;
-let previewTargets=[null,null];
-let previewSmooth=[null,null];
-let previewAlpha=[0,0];
-let previewFrameStarted=false;
 
 function initPreview(){
 
@@ -3949,90 +3942,32 @@ function initPreview(){
   dom.preview.width=560;
   dom.preview.height=420;
 
-  if(!previewFrameStarted){
-    previewFrameStarted=true;
-    requestAnimationFrame(renderHandPreview);
-  }
+  drawPreview([]);
 
 }
 
 function drawPreview(hands){
 
-  /*
-     MediaPipe aggiorna i landmark a ~20-24 Hz.
-     Il pannello invece viene renderizzato a ogni frame del browser.
-     I landmark ricevuti diventano TARGET e vengono interpolati: niente scatti.
-  */
-  previewTargets=[null,null];
-
-  (hands||[]).slice(0,2).forEach((landmarks,i)=>{
-    previewTargets[i]=landmarks.map(p=>({x:p.x,y:p.y,z:p.z||0}));
-  });
-}
-
-function renderHandPreview(){
-
   const ctx=previewCtx;
-  if(!ctx){
-    requestAnimationFrame(renderHandPreview);
-    return;
-  }
-
   const w=dom.preview.width;
   const h=dom.preview.height;
+
+  /* Solo scheletro delle mani: nessun frame video, nessun pannello. */
   ctx.clearRect(0,0,w,h);
 
-  for(let i=0;i<2;i++){
+  if(!hands?.length)return;
 
-    const target=previewTargets[i];
-    const current=previewSmooth[i];
+  hands.forEach((landmarks,i)=>{
 
-    if(target){
-      if(!current || current.length!==target.length){
-        previewSmooth[i]=target.map(p=>({...p}));
-      }else{
-        /* Interpolazione esponenziale: fluida ma reattiva. */
-        const k=.32;
-        for(let j=0;j<target.length;j++){
-          current[j].x+=(target[j].x-current[j].x)*k;
-          current[j].y+=(target[j].y-current[j].y)*k;
-          current[j].z+=(target[j].z-current[j].z)*k;
-        }
-      }
-      previewAlpha[i]+=(1-previewAlpha[i])*.28;
-    }else{
-      previewAlpha[i]+=(0-previewAlpha[i])*.18;
-    }
-
-    const landmarks=previewSmooth[i];
-    const alpha=previewAlpha[i];
-    if(!landmarks || alpha<.01)continue;
-
-    const base=i===0?'0,255,204':'255,0,170';
-    const glow= i===0?'#00ffcc':'#ff00aa';
-
-    /* alone line glow */
-    ctx.save();
-    ctx.globalAlpha=alpha*.16;
-    ctx.strokeStyle=glow;
-    ctx.lineWidth=5;
+    ctx.strokeStyle=i===0?'#00ffcc':'#ff00aa';
+    ctx.lineWidth=2.2;
     ctx.lineCap='round';
     ctx.lineJoin='round';
-    HAND_CONNECTIONS.forEach(pair=>{
-      const a=landmarks[pair[0]], b=landmarks[pair[1]];
-      if(!a||!b)return;
-      ctx.beginPath();
-      ctx.moveTo(a.x*w,a.y*h);
-      ctx.lineTo(b.x*w,b.y*h);
-      ctx.stroke();
-    });
 
-    ctx.globalAlpha=alpha;
-    ctx.strokeStyle=`rgb(${base})`;
-    ctx.lineWidth=1.55;
     HAND_CONNECTIONS.forEach(pair=>{
-      const a=landmarks[pair[0]], b=landmarks[pair[1]];
-      if(!a||!b)return;
+      const a=landmarks[pair[0]];
+      const b=landmarks[pair[1]];
+
       ctx.beginPath();
       ctx.moveTo(a.x*w,a.y*h);
       ctx.lineTo(b.x*w,b.y*h);
@@ -4041,16 +3976,24 @@ function renderHandPreview(){
 
     landmarks.forEach((p,index)=>{
       const key=index===4 || index===8;
-      ctx.fillStyle=key?'#ffe66d':glow;
-      ctx.globalAlpha=alpha;
+
+      ctx.fillStyle=key
+        ? '#ffe66d'
+        : (i===0?'#00ffcc':'#ff00aa');
+
       ctx.beginPath();
-      ctx.arc(p.x*w,p.y*h,key?3:1.45,0,Math.PI*2);
+      ctx.arc(
+        p.x*w,
+        p.y*h,
+        key?4:2.2,
+        0,
+        Math.PI*2
+      );
       ctx.fill();
     });
-    ctx.restore();
-  }
 
-  requestAnimationFrame(renderHandPreview);
+  });
+
 }
 
 /* =========================================================
@@ -7730,7 +7673,6 @@ function initPreviewDrag(){
 
   panel.addEventListener('pointerdown',e=>{
 
-    if(e.target===dom.preview)return;
     dragging=true;
     panel.classList.add('dragging');
 
