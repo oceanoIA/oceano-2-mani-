@@ -612,6 +612,212 @@ input[type=color]{
     -webkit-backdrop-filter:blur(5px);
   }
 }
+
+/* =========================================================
+   V14 // INDUSTRIAL ENGINEERING VISUAL SYSTEM
+   SYS 03 is intentionally restrained: black, white, cyan.
+========================================================= */
+
+:root{
+  --v14-cyan:#00e8ff;
+  --v14-white:#f3f7fa;
+  --v14-dim:rgba(243,247,250,.48);
+  --v14-line:rgba(243,247,250,.13);
+  --v14-critical:#ff8a2a;
+}
+
+body{
+  background:#000;
+}
+
+body.jarvis-mode .hud-scanline{
+  opacity:.16;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 5px,
+    rgba(255,255,255,.012) 6px
+  );
+}
+
+body.jarvis-mode .stark-header{
+  height:48px;
+  padding:0 18px;
+  background:rgba(0,0,0,.72);
+  border-bottom:1px solid rgba(255,255,255,.10);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+}
+
+body.jarvis-mode .stark-title{
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;
+  font-weight:400;
+  letter-spacing:2.6px;
+  text-shadow:none;
+}
+
+body.jarvis-mode .security-badge{
+  border:0;
+  border-radius:0;
+  padding:0;
+  background:none;
+  color:var(--v14-dim);
+  font-size:7px;
+  letter-spacing:1.4px;
+}
+
+body.jarvis-mode .hud-status{
+  min-width:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:none;
+  font-size:8px;
+  letter-spacing:1.3px;
+  color:var(--v14-cyan);
+}
+
+body.jarvis-mode #main-panel{
+  display:none;
+}
+
+body.jarvis-mode .mode-dock{
+  left:18px;
+  bottom:16px;
+  transform:none;
+  padding:0;
+  gap:16px;
+  background:none;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+
+body.jarvis-mode .tab-btn{
+  padding:3px 0;
+  border:0;
+  border-radius:0;
+  background:none;
+  font-family:'Share Tech Mono',monospace;
+  font-size:7px;
+  letter-spacing:1.1px;
+  color:rgba(255,255,255,.34);
+}
+
+body.jarvis-mode .tab-btn::before{
+  display:none;
+}
+
+body.jarvis-mode .tab-btn.active{
+  color:var(--v14-white);
+  background:none;
+  border:0;
+  box-shadow:none;
+}
+
+body.jarvis-mode .camera-preview-container{
+  width:190px;
+  height:142px;
+  right:18px;
+  bottom:16px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:2px;
+  background:rgba(0,0,0,.68);
+  box-shadow:none;
+}
+
+body.jarvis-mode #hand-preview-canvas{
+  opacity:.72;
+}
+
+body.jarvis-mode .preview-hud-tag,
+body.jarvis-mode .preview-status{
+  border:0;
+  border-radius:0;
+  background:rgba(0,0,0,.46);
+  font-size:6px;
+  letter-spacing:1px;
+}
+
+#jarvis-engineering-hud{
+  position:fixed;
+  inset:0;
+  z-index:12;
+  pointer-events:none;
+  display:none;
+  color:var(--v14-white);
+  font-family:'Share Tech Mono',monospace;
+}
+
+body.jarvis-mode #jarvis-engineering-hud{
+  display:block;
+}
+
+.j14-corner{
+  position:absolute;
+  width:92px;
+  height:28px;
+  opacity:.72;
+}
+
+.j14-corner.tl{left:18px;top:64px;border-left:1px solid var(--v14-line);border-top:1px solid var(--v14-line);}
+.j14-corner.tr{right:18px;top:64px;border-right:1px solid var(--v14-line);border-top:1px solid var(--v14-line);}
+.j14-corner.bl{left:18px;bottom:70px;border-left:1px solid var(--v14-line);border-bottom:1px solid var(--v14-line);}
+.j14-corner.br{right:18px;bottom:70px;border-right:1px solid var(--v14-line);border-bottom:1px solid var(--v14-line);}
+
+.j14-label{
+  position:absolute;
+  font-size:7px;
+  line-height:1.5;
+  letter-spacing:1.25px;
+  color:var(--v14-dim);
+  text-transform:uppercase;
+}
+
+#j14-system{left:25px;top:70px;}
+#j14-system strong{display:block;color:var(--v14-white);font-weight:400;font-size:9px;letter-spacing:2px;}
+#j14-telemetry{right:25px;top:70px;text-align:right;}
+#j14-telemetry strong{color:var(--v14-cyan);font-weight:400;}
+#j14-control{left:25px;bottom:77px;}
+#j14-control strong{display:block;color:var(--v14-white);font-weight:400;}
+#j14-readout{right:25px;bottom:77px;text-align:right;}
+#j14-readout strong{color:var(--v14-cyan);font-weight:400;}
+
+.j14-crosshair{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:26px;
+  height:26px;
+  transform:translate(-50%,-50%);
+  opacity:.30;
+}
+.j14-crosshair::before,
+.j14-crosshair::after{
+  content:"";
+  position:absolute;
+  background:rgba(255,255,255,.55);
+}
+.j14-crosshair::before{left:50%;top:0;width:1px;height:100%;}
+.j14-crosshair::after{left:0;top:50%;width:100%;height:1px;}
+
+@media(max-width:700px){
+  body.jarvis-mode .stark-header{height:44px;padding:0 10px;}
+  body.jarvis-mode .mode-dock{left:10px;bottom:10px;gap:10px;}
+  body.jarvis-mode .camera-preview-container{width:150px;height:112px;right:10px;bottom:10px;}
+  .j14-corner.tl{left:10px;top:56px;}
+  .j14-corner.tr{right:10px;top:56px;}
+  .j14-corner.bl{left:10px;bottom:54px;}
+  .j14-corner.br{right:10px;bottom:54px;}
+  #j14-system{left:16px;top:61px;}
+  #j14-telemetry{right:16px;top:61px;}
+  #j14-control{left:16px;bottom:61px;}
+  #j14-readout{right:16px;bottom:61px;}
+}
+
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -656,6 +862,38 @@ input[type=color]{
   </button>
 
 </nav>
+
+<div id="jarvis-engineering-hud" aria-hidden="true">
+  <div class="j14-corner tl"></div>
+  <div class="j14-corner tr"></div>
+  <div class="j14-corner bl"></div>
+  <div class="j14-corner br"></div>
+
+  <div class="j14-crosshair"></div>
+
+  <div id="j14-system" class="j14-label">
+    <strong>SYS 03 / JARVIS CORE</strong>
+    ENGINEERING VISUALIZATION<br>
+    CORE LINK <span id="j14-link">STABLE</span>
+  </div>
+
+  <div id="j14-telemetry" class="j14-label">
+    CPU <strong id="j14-cpu">82%</strong><br>
+    GPU <strong id="j14-gpu">61%</strong><br>
+    RAM <strong id="j14-ram">74%</strong>
+  </div>
+
+  <div id="j14-control" class="j14-label">
+    CONTROL<br>
+    <strong id="j14-control-value">HANDS / STANDBY</strong>
+  </div>
+
+  <div id="j14-readout" class="j14-label">
+    TRACKING <strong id="j14-hands">0 HANDS</strong><br>
+    LATENCY <strong id="j14-latency">18.4 MS</strong><br>
+    SCALE <strong id="j14-scale">1.00X</strong>
+  </div>
+</div>
 
 <section class="ui-overlay" id="main-panel">
 
@@ -811,33 +1049,14 @@ input[type=color]{
 
   </div>
 
-  <!-- ================= JARVIS CORE ================= -->
+  <!-- ================= SYS 03 / ENGINEERING CONTROL ================= -->
 
   <div id="controls-jarvis" class="panel-section hidden">
-
-    <div class="control-group">
-      <label>JARVIS COMMAND CENTER</label>
-      <div class="telemetry-box jarvis-readout">
-        <div class="telemetry-top"><span>CORE</span><strong id="jarvis-core-state">ONLINE</strong></div>
-        <div class="telemetry-top"><span>POWER</span><strong id="jarvis-power">100%</strong></div>
-        <div class="telemetry-top"><span>LINK</span><strong id="jarvis-link">STABLE</strong></div>
-        <div class="telemetry-top"><span>CONTROL</span><strong id="jarvis-control">HANDS</strong></div>
-      </div>
-    </div>
-
-    <div class="btn-grid">
-      <button id="jarvis-center-btn" class="stark-btn">CENTER CORE</button>
-      <button id="jarvis-pulse-btn" class="stark-btn">ENERGY PULSE</button>
-    </div>
-
-    <div id="jarvis-selection" class="jarvis-selection">
-      SYSTEM READY // MOVE HANDS TO CONTROL
-    </div>
-
+    <!-- SYS 03 intentionally has no large dashboard. -->
   </div>
 
   <button id="audio-toggle-btn" class="stark-btn">
-    🔊 AUDIO: ATTIVO
+    AUDIO: ACTIVE
   </button>
 
   <div class="telemetry-box">
@@ -918,6 +1137,14 @@ input[type=color]{
 
   <canvas id="hand-preview-canvas" width="240" height="180"></canvas>
 
+</div>
+
+
+<div id="jarvis-compat" style="display:none" aria-hidden="true">
+  <span id="jarvis-core-state">ONLINE</span>
+  <span id="jarvis-power">100%</span>
+  <span id="jarvis-link">STABLE</span>
+  <span id="jarvis-control">HANDS</span>
 </div>
 
 <div id="selection-ring"></div>
@@ -1181,6 +1408,11 @@ let jarvisCoreHalo=null;
 let jarvisRings=[];
 let jarvisDataNodes=[];
 let jarvisBeamLines=[];
+let jarvisTextSprites={};
+let jarvisLastTelemetry=0;
+let jarvisInteractionRotX=0;
+let jarvisInteractionRotY=0;
+let jarvisBaseRotation=new THREE.Euler(-0.16,0.22,0);
 let jarvisTargetPosition=new THREE.Vector3(0,1.5,0);
 let jarvisCurrentPosition=new THREE.Vector3(0,1.5,0);
 let jarvisTargetScale=1;
@@ -3162,6 +3394,94 @@ function createSSDHologram(){
    SYS 03 // JARVIS COMMAND CENTER
 ========================================================= */
 
+function createEngineeringTextSprite(text, options={}){
+  const canvas=document.createElement('canvas');
+  canvas.width=512;
+  canvas.height=96;
+  const ctx=canvas.getContext('2d');
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.font=(options.size||24)+'px "Share Tech Mono", monospace';
+  ctx.textAlign=options.align||'left';
+  ctx.textBaseline='middle';
+  ctx.fillStyle=options.color||'#dce7eb';
+  ctx.globalAlpha=options.alpha===undefined?.88:options.alpha;
+  ctx.fillText(text,options.align==='right'?500:12,48);
+
+  const texture=new THREE.CanvasTexture(canvas);
+  texture.generateMipmaps=false;
+  texture.minFilter=THREE.LinearFilter;
+  texture.magFilter=THREE.LinearFilter;
+
+  const mat=new THREE.SpriteMaterial({
+    map:texture,
+    transparent:true,
+    depthWrite:false,
+    depthTest:false
+  });
+
+  const sprite=new THREE.Sprite(mat);
+  sprite.scale.set(options.width||4.4,options.height||.72,1);
+  return sprite;
+}
+
+function setEngineeringTextSprite(sprite,text,options={}){
+  if(!sprite)return;
+  const canvas=sprite.material.map.image;
+  const ctx=canvas.getContext('2d');
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.font=(options.size||24)+'px "Share Tech Mono", monospace';
+  ctx.textAlign=options.align||'left';
+  ctx.textBaseline='middle';
+  ctx.fillStyle=options.color||'#dce7eb';
+  ctx.globalAlpha=options.alpha===undefined?.88:options.alpha;
+  ctx.fillText(text,options.align==='right'?500:12,48);
+
+  sprite.material.map.needsUpdate=true;
+}
+
+function addCoreRing(radius,tube,color,opacity,rotation){
+  const ring=new THREE.Mesh(
+    new THREE.TorusGeometry(radius,tube,8,128),
+    new THREE.MeshBasicMaterial({
+      color,
+      transparent:true,
+      opacity,
+      blending:THREE.AdditiveBlending,
+      depthWrite:false
+    })
+  );
+  ring.rotation.copy(rotation||new THREE.Euler(Math.PI/2,0,0));
+  jarvisGroup.add(ring);
+  jarvisRings.push(ring);
+  return ring;
+}
+
+function addCoreAxisLine(a,b,color=0x00e8ff,opacity=.34){
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute([
+      a.x,a.y,a.z,
+      b.x,b.y,b.z
+    ],3)
+  );
+  const line=new THREE.Line(
+    geo,
+    new THREE.LineBasicMaterial({
+      color,
+      transparent:true,
+      opacity,
+      blending:THREE.AdditiveBlending,
+      depthWrite:false
+    })
+  );
+  jarvisGroup.add(line);
+  jarvisBeamLines.push(line);
+  return line;
+}
+
 function initJarvisCore(){
 
   jarvisGroup=new THREE.Group();
@@ -3169,202 +3489,399 @@ function initJarvisCore(){
   scene.add(jarvisGroup);
 
   const cyan=0x00e8ff;
-  const white=0xffffff;
-  const pink=0xff00aa;
+  const white=0xf3f7fa;
+  const orange=0xff8a2a;
 
-  const coreMat=new THREE.MeshBasicMaterial({
-    color:cyan,
-    transparent:true,
-    opacity:.95,
-    blending:THREE.AdditiveBlending,
-    depthWrite:false
-  });
-
-  jarvisCore=new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.35,2),
-    coreMat
-  );
-  jarvisCore.position.set(0,1.5,0);
-  jarvisGroup.add(jarvisCore);
-
-  const wire=new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.65,2),
-    new THREE.MeshBasicMaterial({
-      color:white,
-      wireframe:true,
-      transparent:true,
-      opacity:.35,
-      blending:THREE.AdditiveBlending,
-      depthWrite:false
-    })
-  );
-  wire.position.copy(jarvisCore.position);
-  jarvisGroup.add(wire);
-
-  jarvisCoreHalo=new THREE.Mesh(
-    new THREE.SphereGeometry(2.25,24,24),
+  /* CORE VOLUME */
+  const coreOuter=new THREE.Mesh(
+    new THREE.IcosahedronGeometry(1.45,2),
     new THREE.MeshBasicMaterial({
       color:cyan,
       transparent:true,
-      opacity:.055,
+      opacity:.10,
+      wireframe:true,
       blending:THREE.AdditiveBlending,
       depthWrite:false
     })
   );
-  jarvisCoreHalo.position.copy(jarvisCore.position);
-  jarvisGroup.add(jarvisCoreHalo);
+  coreOuter.position.set(0,1.5,0);
+  jarvisGroup.add(coreOuter);
 
-  const ringSpecs=[
-    [3.0,.035,cyan,0.0],
-    [3.7,.025,white,.55],
-    [4.45,.032,pink,1.05],
-    [5.2,.018,cyan,1.55]
-  ];
+  const coreInner=new THREE.Mesh(
+    new THREE.IcosahedronGeometry(.86,2),
+    new THREE.MeshBasicMaterial({
+      color:white,
+      transparent:true,
+      opacity:.92,
+      wireframe:true,
+      blending:THREE.AdditiveBlending,
+      depthWrite:false
+    })
+  );
+  coreInner.position.copy(coreOuter.position);
+  jarvisGroup.add(coreInner);
+  jarvisCore=coreInner;
 
+  const die=new THREE.Mesh(
+    new THREE.BoxGeometry(.62,.16,.62),
+    new THREE.MeshBasicMaterial({
+      color:cyan,
+      transparent:true,
+      opacity:.86,
+      blending:THREE.AdditiveBlending,
+      depthWrite:false
+    })
+  );
+  die.position.copy(coreOuter.position);
+  jarvisGroup.add(die);
+
+  const halo=new THREE.Mesh(
+    new THREE.SphereGeometry(2.05,32,20),
+    new THREE.MeshBasicMaterial({
+      color:cyan,
+      transparent:true,
+      opacity:.028,
+      blending:THREE.AdditiveBlending,
+      depthWrite:false
+    })
+  );
+  halo.position.copy(coreOuter.position);
+  jarvisGroup.add(halo);
+  jarvisCoreHalo=halo;
+
+  /* PRECISION RINGS — static unless hand input changes group rotation */
   jarvisRings=[];
-  ringSpecs.forEach((r,i)=>{
-    const ring=new THREE.Mesh(
-      new THREE.TorusGeometry(r[0],r[1],8,96),
-      new THREE.MeshBasicMaterial({
-        color:r[2],
-        transparent:true,
-        opacity:i===1?.42:.7,
-        blending:THREE.AdditiveBlending,
-        depthWrite:false
-      })
-    );
-    ring.position.copy(jarvisCore.position);
-    ring.rotation.x=Math.PI/2;
-    ring.rotation.z=r[3];
-    jarvisGroup.add(ring);
-    jarvisRings.push(ring);
-  });
+  addCoreRing(1.95,.014,white,.50,new THREE.Euler(Math.PI/2,0,0));
+  addCoreRing(2.55,.022,cyan,.66,new THREE.Euler(Math.PI/2,.20,0));
+  addCoreRing(3.35,.012,white,.30,new THREE.Euler(0,Math.PI/2,.12));
+  addCoreRing(4.15,.018,cyan,.42,new THREE.Euler(.38,0,.24));
+  addCoreRing(5.05,.010,white,.20,new THREE.Euler(1.15,.2,0));
 
-  // Static HUD brackets around the core. They never rotate automatically.
+  /* Structural axis lines */
+  addCoreAxisLine(
+    new THREE.Vector3(-5.7,1.5,0),
+    new THREE.Vector3(-1.0,1.5,0),
+    white,.18
+  );
+  addCoreAxisLine(
+    new THREE.Vector3(1.0,1.5,0),
+    new THREE.Vector3(5.7,1.5,0),
+    white,.18
+  );
+  addCoreAxisLine(
+    new THREE.Vector3(0,-3.3,0),
+    new THREE.Vector3(0,.45,0),
+    cyan,.16
+  );
+  addCoreAxisLine(
+    new THREE.Vector3(0,2.55,0),
+    new THREE.Vector3(0,6.0,0),
+    cyan,.16
+  );
+
+  /* Technical reference brackets */
   const bracketMat=new THREE.LineBasicMaterial({
     color:cyan,
     transparent:true,
-    opacity:.55,
+    opacity:.42,
     blending:THREE.AdditiveBlending,
     depthWrite:false
   });
 
-  const bracketPoints=[
-    [-6,4,0,-4,4,0,-4,3.5,0],
-    [6,4,0,4,4,0,4,3.5,0],
-    [-6,-1,0,-4,-1,0,-4,-.5,0],
-    [6,-1,0,4,-1,0,4,-.5,0]
-  ];
-
-  bracketPoints.forEach(a=>{
+  [
+    [-6.2,5.1,0,-4.8,5.1,0,-4.8,4.6,0],
+    [6.2,5.1,0,4.8,5.1,0,4.8,4.6,0],
+    [-6.2,-2.1,0,-4.8,-2.1,0,-4.8,-1.6,0],
+    [6.2,-2.1,0,4.8,-2.1,0,4.8,-1.6,0]
+  ].forEach(points=>{
     const geo=new THREE.BufferGeometry();
-    geo.setAttribute('position',new THREE.Float32BufferAttribute(a,3));
-    const line=new THREE.Line(geo,bracketMat);
-    jarvisGroup.add(line);
-    jarvisBeamLines.push(line);
+    geo.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
+    jarvisGroup.add(new THREE.Line(geo,bracketMat));
   });
 
-  // Data nodes / status points
-  for(let i=0;i<18;i++){
-    const a=(i/18)*Math.PI*2;
-    const radius=6.1+(i%3)*.55;
+  /* Data nodes: sparse, functional, not decorative */
+  jarvisDataNodes=[];
+  for(let i=0;i<12;i++){
+    const angle=(i/12)*Math.PI*2;
+    const radius=i%2?5.65:6.15;
     const node=new THREE.Mesh(
-      new THREE.SphereGeometry(i%3===0?.075:.045,7,7),
+      new THREE.BoxGeometry(i%3===0?.13:.08,.08,i%3===0?.13:.08),
       new THREE.MeshBasicMaterial({
-        color:i%3===0?pink:cyan,
+        color:i%4===0?orange:cyan,
         transparent:true,
-        opacity:.8,
+        opacity:i%4===0?.72:.48,
         blending:THREE.AdditiveBlending,
         depthWrite:false
       })
     );
     node.position.set(
-      Math.cos(a)*radius,
-      1.5+Math.sin(a)*radius*.45,
-      Math.sin(a)*1.5
+      Math.cos(angle)*radius,
+      1.5+Math.sin(angle)*radius*.43,
+      0
     );
     jarvisGroup.add(node);
     jarvisDataNodes.push(node);
   }
 
-  const light=new THREE.PointLight(cyan,2.0,16);
-  light.position.copy(jarvisCore.position);
+  /* 3D-integrated engineering readouts */
+  jarvisTextSprites={};
+
+  jarvisTextSprites.title=createEngineeringTextSprite(
+    'SYSTEM CORE',
+    {size:25,width:4.6,height:.68,color:'#f3f7fa',alpha:.90}
+  );
+  jarvisTextSprites.title.position.set(-2.3,6.0,0);
+  jarvisGroup.add(jarvisTextSprites.title);
+
+  jarvisTextSprites.cpu=createEngineeringTextSprite(
+    'CPU  82%',
+    {size:20,width:3.5,height:.55,color:'#00e8ff',alpha:.84}
+  );
+  jarvisTextSprites.cpu.position.set(-7.1,3.7,0);
+  jarvisGroup.add(jarvisTextSprites.cpu);
+
+  jarvisTextSprites.gpu=createEngineeringTextSprite(
+    'GPU  61%',
+    {size:20,width:3.5,height:.55,color:'#00e8ff',alpha:.84}
+  );
+  jarvisTextSprites.gpu.position.set(4.1,3.7,0);
+  jarvisGroup.add(jarvisTextSprites.gpu);
+
+  jarvisTextSprites.ram=createEngineeringTextSprite(
+    'RAM  74%',
+    {size:20,width:3.5,height:.55,color:'#00e8ff',alpha:.84}
+  );
+  jarvisTextSprites.ram.position.set(-7.1,-2.5,0);
+  jarvisGroup.add(jarvisTextSprites.ram);
+
+  jarvisTextSprites.tracking=createEngineeringTextSprite(
+    'TRACKING  0 HANDS',
+    {size:18,width:4.7,height:.55,color:'#f3f7fa',alpha:.74}
+  );
+  jarvisTextSprites.tracking.position.set(3.2,-2.5,0);
+  jarvisGroup.add(jarvisTextSprites.tracking);
+
+  jarvisTextSprites.latency=createEngineeringTextSprite(
+    'LATENCY  18.4 MS',
+    {size:18,width:4.7,height:.55,color:'#f3f7fa',alpha:.74}
+  );
+  jarvisTextSprites.latency.position.set(3.2,-3.25,0);
+  jarvisGroup.add(jarvisTextSprites.latency);
+
+  const light=new THREE.PointLight(cyan,1.2,13);
+  light.position.copy(coreOuter.position);
   jarvisGroup.add(light);
 
-  jarvisGroup.userData={wire,light};
-}
+  jarvisGroup.userData={
+    coreOuter,
+    die,
+    light,
+    lastPosition:new THREE.Vector3(),
+    interactionRotX:0,
+    interactionRotY:0
+  };
 
+  jarvisBaseRotation.set(-0.12,0.18,0);
+  jarvisGroup.rotation.copy(jarvisBaseRotation);
+}
 function resetJarvisCore(){
+  if(!jarvisGroup)return;
+
   jarvisTargetPosition.set(0,1.5,0);
   jarvisCurrentPosition.copy(jarvisTargetPosition);
   jarvisTargetScale=1;
   jarvisCurrentScale=1;
+
+  jarvisInteractionRotX=0;
+  jarvisInteractionRotY=0;
+
   jarvisGroup.position.set(0,0,0);
   jarvisGroup.scale.setScalar(1);
-  jarvisPulse=1;
-  dom.jarvisSelection.textContent='CORE CENTERED // SYSTEM READY';
-}
+  jarvisGroup.rotation.copy(jarvisBaseRotation);
 
+  jarvisPulse=1;
+  const msg=document.getElementById('jarvis-selection');
+  if(msg)msg.textContent='CORE CENTERED // SYSTEM READY';
+}
 function updateJarvisCore(delta){
 
   if(currentMode!=='JARVIS' || !jarvisGroup)return;
 
-  // Position follows the midpoint only. No autonomous rotation.
   const left=controllers[0];
   const right=controllers[1];
-  let controlHand=null;
 
+  let controlHand='STANDBY';
+
+  /* One hand = direct translation. No autonomous motion. */
   if(left.active && right.active){
+
     const cx=(left.pos.x+right.pos.x)*.5;
     const cy=(left.pos.y+right.pos.y)*.5;
-    jarvisTargetPosition.x=THREE.MathUtils.clamp(cx*.72,-5.5,5.5);
-    jarvisTargetPosition.y=THREE.MathUtils.clamp(1.5+cy*.55,-1.0,5.5);
 
-    const d=Math.hypot(right.pos.x-left.pos.x,right.pos.y-left.pos.y);
-    jarvisTargetScale=THREE.MathUtils.clamp(.72+(d*.09),.72,1.75);
-    dom.jarvisControl.textContent='2 HANDS // MOVE + ZOOM';
-    controlHand='DUAL';
+    jarvisTargetPosition.x=THREE.MathUtils.clamp(cx*.70,-5.4,5.4);
+    jarvisTargetPosition.y=THREE.MathUtils.clamp(1.5+cy*.52,-.8,5.4);
+
+    const distance=Math.hypot(
+      right.pos.x-left.pos.x,
+      right.pos.y-left.pos.y
+    );
+
+    if(!hasZoomAnchor){
+      zoomAnchorDistance=distance;
+      zoomAnchorScale=jarvisCurrentScale;
+      hasZoomAnchor=true;
+    }
+
+    const zoomDelta=distance-zoomAnchorDistance;
+    if(Math.abs(zoomDelta)>CONFIG.zoomDeadzone){
+      jarvisTargetScale=THREE.MathUtils.clamp(
+        zoomAnchorScale+zoomDelta*.55,
+        .62,
+        1.85
+      );
+    }else{
+      jarvisTargetScale=zoomAnchorScale;
+    }
+
+    /* Lateral midpoint movement = proportional yaw/pitch.
+       It stops immediately when the midpoint stops. */
+    if(hasLastHandCenter){
+      const dx=cx-lastHandCenterX;
+      const dy=cy-lastHandCenterY;
+
+      if(Math.abs(dx)>CONFIG.rotationDeadzone){
+        jarvisInteractionRotY=THREE.MathUtils.clamp(
+          jarvisInteractionRotY+dx*.55,
+          -1.25,
+          1.25
+        );
+      }
+
+      if(Math.abs(dy)>CONFIG.rotationDeadzone){
+        jarvisInteractionRotX=THREE.MathUtils.clamp(
+          jarvisInteractionRotX-dy*.40,
+          -.95,
+          .95
+        );
+      }
+    }
+
+    lastHandCenterX=cx;
+    lastHandCenterY=cy;
+    hasLastHandCenter=true;
+
+    controlHand='2 HANDS // MOVE + ZOOM';
+
   }else if(left.active || right.active){
-    controlHand=left.active?'LEFT':'RIGHT';
+
     const c=left.active?left:right;
-    jarvisTargetPosition.x=THREE.MathUtils.clamp(c.pos.x*.8,-5.5,5.5);
-    jarvisTargetPosition.y=THREE.MathUtils.clamp(1.5+c.pos.y*.62,-1.0,5.5);
+
+    jarvisTargetPosition.x=THREE.MathUtils.clamp(c.pos.x*.78,-5.4,5.4);
+    jarvisTargetPosition.y=THREE.MathUtils.clamp(1.5+c.pos.y*.58,-.8,5.4);
+
     jarvisTargetScale=1;
-    dom.jarvisControl.textContent=controlHand+' HAND // MOVE';
+    hasZoomAnchor=false;
+
+    /* With one hand, translation is primary. Small lateral motion
+       still provides proportional yaw; stopping the hand freezes it. */
+    if(hasLastHandCenter){
+      const dx=c.pos.x-lastHandCenterX;
+      if(Math.abs(dx)>CONFIG.rotationDeadzone){
+        jarvisInteractionRotY=THREE.MathUtils.clamp(
+          jarvisInteractionRotY+dx*.32,
+          -1.25,
+          1.25
+        );
+      }
+    }
+
+    lastHandCenterX=c.pos.x;
+    lastHandCenterY=c.pos.y;
+    hasLastHandCenter=true;
+    hasLastHandAngle=false;
+
+    controlHand=left.active?'LEFT HAND // MOVE':'RIGHT HAND // MOVE';
+
   }else{
-    dom.jarvisControl.textContent='HANDS // STANDBY';
+
+    /* FREEZE ABSOLUTE: no rotation, no scale change, no autonomous drift. */
+    hasLastHandCenter=false;
+    hasLastHandAngle=false;
+    hasZoomAnchor=false;
+    controlHand='HANDS / STANDBY';
   }
 
   const lerp=Math.min(.18*delta,.35);
-  jarvisCurrentPosition.lerp(jarvisTargetPosition,lerp);
-  jarvisCurrentScale+=(jarvisTargetScale-jarvisCurrentScale)*lerp;
+
+  jarvisCurrentPosition.lerp(
+    jarvisTargetPosition,
+    lerp
+  );
+
+  jarvisCurrentScale+=(
+    jarvisTargetScale-jarvisCurrentScale
+  )*lerp;
 
   jarvisGroup.position.set(
     jarvisCurrentPosition.x,
     jarvisCurrentPosition.y-1.5,
     0
   );
+
   jarvisGroup.scale.setScalar(jarvisCurrentScale);
 
-  jarvisPulse=Math.max(0,jarvisPulse-.035*delta);
-  const pulse=1+Math.sin(performance.now()*.004)*.025+jarvisPulse*.12;
-  jarvisCore.scale.setScalar(pulse);
-  jarvisCoreHalo.scale.setScalar(1+jarvisPulse*.15);
-  jarvisGroup.userData.light.intensity=1.5+jarvisPulse*2.5;
+  /* Rotation is purely the accumulated result of actual hand movement.
+     No requestAnimationFrame-based rotation is applied. */
+  jarvisGroup.rotation.x=jarvisBaseRotation.x+jarvisInteractionRotX;
+  jarvisGroup.rotation.y=jarvisBaseRotation.y+jarvisInteractionRotY;
+  jarvisGroup.rotation.z=jarvisBaseRotation.z;
 
-  dom.jarvisPower.textContent=Math.round(94+Math.abs(Math.sin(performance.now()*.001))*6)+'%';
-  dom.jarvisLink.textContent=(left.active||right.active)?'TRACKING':'STABLE';
-  dom.jarvisCoreState.textContent='ONLINE';
-
-  if(controlHand){
-    dom.jarvisSelection.textContent=controlHand==='DUAL'
-      ? 'DUAL LINK // MIDPOINT POSITION + DISTANCE ZOOM'
-      : controlHand+' LINK // CORE POSITION CONTROL';
+  /* Explicit pulse only: triggered by the user, never continuously. */
+  if(jarvisPulse>0){
+    jarvisPulse=Math.max(0,jarvisPulse-.045*delta);
+    const pulseScale=1+jarvisPulse*.08;
+    jarvisGroup.userData.coreOuter.scale.setScalar(pulseScale);
+    jarvisGroup.userData.die.scale.setScalar(pulseScale);
+    jarvisGroup.userData.light.intensity=1.2+jarvisPulse*1.8;
   }else{
-    dom.jarvisSelection.textContent='SYSTEM READY // MOVE HANDS TO CONTROL';
+    jarvisGroup.userData.coreOuter.scale.setScalar(1);
+    jarvisGroup.userData.die.scale.setScalar(1);
+    jarvisGroup.userData.light.intensity=1.2;
   }
-}
 
+  const handCount=(left.active?1:0)+(right.active?1:0);
+
+  if(jarvisTextSprites.tracking){
+    if(performance.now()-jarvisLastTelemetry>120){
+      setEngineeringTextSprite(
+        jarvisTextSprites.tracking,
+        'TRACKING  '+handCount+' HAND'+(handCount===1?'':'S'),
+        {size:18,width:4.7,height:.55,color:'#f3f7fa',alpha:.74}
+      );
+      setEngineeringTextSprite(
+        jarvisTextSprites.latency,
+        'LATENCY  18.4 MS',
+        {size:18,width:4.7,height:.55,color:'#f3f7fa',alpha:.74}
+      );
+      jarvisLastTelemetry=performance.now();
+    }
+  }
+
+  const hudControl=document.getElementById('j14-control-value');
+  const hudHands=document.getElementById('j14-hands');
+  const hudScale=document.getElementById('j14-scale');
+  const hudLink=document.getElementById('j14-link');
+
+  if(hudControl)hudControl.textContent=controlHand;
+  if(hudHands)hudHands.textContent=handCount+' HAND'+(handCount===1?'':'S');
+  if(hudScale)hudScale.textContent=jarvisCurrentScale.toFixed(2)+'X';
+  if(hudLink)hudLink.textContent=handCount?'TRACKING':'STABLE';
+
+  dom.jarvisPower.textContent='100%';
+  dom.jarvisLink.textContent=handCount?'TRACKING':'STABLE';
+  dom.jarvisCoreState.textContent='ONLINE';
+  dom.jarvisControl.textContent=controlHand;
+}
 /* =========================================================
    PREVIEW
 ========================================================= */
@@ -7099,6 +7616,8 @@ function switchMode(
 
   currentMode=mode;
 
+  document.body.classList.toggle('jarvis-mode',mode==='JARVIS');
+
   const builder=mode==='BUILDER';
   const particles=mode==='PARTICLES';
   const jarvis=mode==='JARVIS';
@@ -7139,7 +7658,8 @@ function switchMode(
     hasLastHandCenter=false;
     hasLastHandAngle=false;
     hasZoomAnchor=false;
-    dom.jarvisSelection.textContent='JARVIS CORE ONLINE // MOVE HANDS TO CONTROL';
+    const msg=document.getElementById('jarvis-selection');
+    if(msg)msg.textContent='JARVIS CORE ONLINE // MOVE HANDS TO CONTROL';
   }
 }
 
@@ -7244,18 +7764,22 @@ function bindEvents(){
     }
   );
 
-  dom.jarvisCenter.addEventListener(
-    'click',
-    resetJarvisCore
-  );
+  if(dom.jarvisCenter){
+    dom.jarvisCenter.addEventListener(
+      'click',
+      resetJarvisCore
+    );
+  }
 
-  dom.jarvisPulse.addEventListener(
-    'click',
-    ()=>{
-      jarvisPulse=1;
-      sounds.pinch();
-    }
-  );
+  if(dom.jarvisPulse){
+    dom.jarvisPulse.addEventListener(
+      'click',
+      ()=>{
+        jarvisPulse=1;
+        sounds.pinch();
+      }
+    );
+  }
 
   document
     .querySelectorAll(
@@ -7316,8 +7840,8 @@ function bindEvents(){
 
       dom.audio.textContent=
         sounds.enabled
-          ? '🔊 AUDIO: ATTIVO'
-          : '🔇 AUDIO: DISATTIVATO';
+          ? 'AUDIO: ACTIVE'
+          : 'AUDIO: MUTED';
 
       if(
         sounds.enabled
