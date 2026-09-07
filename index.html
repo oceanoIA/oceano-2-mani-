@@ -411,13 +411,15 @@ input[type=color]{
 /* ================= CAMERA ================= */
 
 .camera-preview-container{
-  position:absolute;
+  position:fixed;
   right:18px;
   bottom:20px;
-  width:240px;
-  height:180px;
-  z-index:10;
+  width:280px;
+  height:210px;
+  z-index:30;
   overflow:hidden;
+  cursor:grab;
+  touch-action:none;
   background:rgba(5,7,9,.82);
   border:1px solid var(--line);
   border-radius:18px;
@@ -430,7 +432,13 @@ input[type=color]{
   height:100%;
   display:block;
   transform:scaleX(-1);
-  opacity:.9;
+  opacity:1;
+  object-fit:cover;
+  background:#05070a;
+}
+.camera-preview-container.dragging{
+  cursor:grabbing;
+  box-shadow:0 0 0 1px rgba(0,232,255,.55),0 18px 45px rgba(0,0,0,.8),0 0 25px rgba(0,232,255,.12);
 }
 
 .preview-hud-tag{
@@ -532,8 +540,8 @@ input[type=color]{
   }
 
   .camera-preview-container{
-    width:150px;
-    height:112px;
+    width:190px;
+    height:142px;
     right:8px;
     bottom:62px;
     border-radius:14px;
@@ -555,8 +563,8 @@ input[type=color]{
   }
 
   .camera-preview-container{
-    width:130px;
-    height:98px;
+    width:165px;
+    height:124px;
   }
 
   .stark-btn{
@@ -867,14 +875,19 @@ const IS_MOBILE =
 
 const CONFIG = {
 
-  particles: IS_MOBILE ? 6000 : 7000,
+  particles: IS_MOBILE ? 3000 : 4000,
 
   handFPS: IS_MOBILE ? 20 : 24,
 
   cameraWidth: IS_MOBILE ? 256 : 320,
   cameraHeight: IS_MOBILE ? 192 : 240,
 
-  handSmooth: 0.72,
+  handSmooth: 0.78,
+
+  /* Precisione controllo mani */
+  zoomSensitivity: 0.24,
+  zoomDeadzone: 0.012,
+  rotationDeadzone: 0.0018,
 
   pinchOn: 0.075,
   pinchOff: 0.105,
@@ -1121,6 +1134,11 @@ let lastHandAngle=0;
 
 let hasLastHandCenter=false;
 let hasLastHandAngle=false;
+
+/* Zoom a due mani: niente salti quando le mani entrano */
+let zoomAnchorDistance=0;
+let zoomAnchorScale=1;
+let hasZoomAnchor=false;
 
 let shapePulse=0;
 
@@ -1691,7 +1709,24 @@ function createHardwareHolograms(){
     hardwareGroups
   ).forEach(
     group=>{
+
       group.visible=false;
+
+      /* Look olografico coerente su ogni componente */
+      group.traverse(obj=>{
+        if(obj.material){
+          const mats=Array.isArray(obj.material)
+            ? obj.material
+            : [obj.material];
+
+          mats.forEach(mat=>{
+            if(mat.transparent===undefined)return;
+            mat.transparent=true;
+            mat.depthWrite=true;
+          });
+        }
+      });
+
       particleGroup.add(group);
     }
   );
@@ -2435,6 +2470,136 @@ function createMotherboardHologram(){
     light1
   );
 
+  /* =====================================================
+     JARVIS CPU // HOLOGRAPHIC PRO LAYER
+     Struttura multilivello, wireframe e circuiti luminosi.
+     Tutto statico: nessuna animazione autonoma.
+  ===================================================== */
+
+  const holoWireMat=new THREE.LineBasicMaterial({
+    color:0x00e8ff,
+    transparent:true,
+    opacity:.48,
+    blending:THREE.AdditiveBlending
+  });
+
+  const boardEdges=new THREE.EdgesGeometry(
+    new THREE.BoxGeometry(16.05,.52,11.25)
+  );
+
+  const boardWire=new THREE.LineSegments(
+    boardEdges,
+    holoWireMat
+  );
+  boardWire.position.y=.05;
+  content.add(boardWire);
+
+  /* CPU die multilayer */
+  const cpuFrame=new THREE.Mesh(
+    new THREE.BoxGeometry(2.55,.08,2.55),
+    new THREE.MeshBasicMaterial({
+      color:0x00e8ff,
+      transparent:true,
+      opacity:.28,
+      wireframe:true
+    })
+  );
+  cpuFrame.position.set(0,1.38,0);
+  content.add(cpuFrame);
+
+  const cpuHaloOuter=new THREE.Mesh(
+    new THREE.TorusGeometry(2.0,.035,8,64),
+    new THREE.MeshBasicMaterial({
+      color:0x00e8ff,
+      transparent:true,
+      opacity:.65,
+      blending:THREE.AdditiveBlending
+    })
+  );
+  cpuHaloOuter.rotation.x=Math.PI/2;
+  cpuHaloOuter.position.y=1.42;
+  content.add(cpuHaloOuter);
+
+  const cpuHaloInner=new THREE.Mesh(
+    new THREE.TorusGeometry(1.45,.025,8,64),
+    new THREE.MeshBasicMaterial({
+      color:0xff00aa,
+      transparent:true,
+      opacity:.55,
+      blending:THREE.AdditiveBlending
+    })
+  );
+  cpuHaloInner.rotation.x=Math.PI/2;
+  cpuHaloInner.position.y=1.46;
+  content.add(cpuHaloInner);
+
+  /* 4 bracci di energia dal CPU verso la scheda */
+  const traceMat=new THREE.LineBasicMaterial({
+    color:0x00e8ff,
+    transparent:true,
+    opacity:.55,
+    blending:THREE.AdditiveBlending
+  });
+
+  const tracePts=[
+    [-1.1,1.35,0, -4.8,1.35,0],
+    [1.1,1.35,0, 4.8,1.35,0],
+    [0,1.35,-1.1, 0,1.35,-4.2],
+    [0,1.35,1.1, 0,1.35,4.2]
+  ];
+
+  tracePts.forEach(v=>{
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute(
+      'position',
+      new THREE.Float32BufferAttribute(v,3)
+    );
+    content.add(new THREE.Line(geo,traceMat));
+  });
+
+  /* Contatti CPU */
+  for(let r=0;r<8;r++){
+    for(let c=0;c<8;c++){
+      const contact=new THREE.Mesh(
+        new THREE.BoxGeometry(.10,.035,.10),
+        m.gold
+      );
+      contact.position.set(
+        -1.05+c*.30,
+        1.37,
+        -1.05+r*.30
+      );
+      content.add(contact);
+    }
+  }
+
+  /* Viti / punti di ancoraggio */
+  [[-7.25,-4.85],[7.25,-4.85],[-7.25,4.85],[7.25,4.85]]
+    .forEach(([x,z])=>{
+      const screw=new THREE.Mesh(
+        new THREE.CylinderGeometry(.16,.16,.08,12),
+        m.silver
+      );
+      screw.rotation.x=Math.PI/2;
+      screw.position.set(x,.34,z);
+      content.add(screw);
+    });
+
+  /* Cornici olografiche */
+  const frameMat=new THREE.LineBasicMaterial({
+    color:0xff00aa,
+    transparent:true,
+    opacity:.34,
+    blending:THREE.AdditiveBlending
+  });
+
+  const frameGeo=new THREE.EdgesGeometry(
+    new THREE.BoxGeometry(16.8,.15,11.8)
+  );
+  const frame=new THREE.LineSegments(frameGeo,frameMat);
+  frame.position.y=2.15;
+  content.add(frame);
+
   const light2=
     new THREE.PointLight(
       0x00ccff,
@@ -2909,10 +3074,10 @@ let previewCtx;
 
 function initPreview(){
 
-  previewCtx=
-    dom.preview.getContext(
-      '2d'
-    );
+  previewCtx=dom.preview.getContext('2d');
+
+  dom.preview.width=560;
+  dom.preview.height=420;
 
   drawPreview([]);
 
@@ -2921,123 +3086,106 @@ function initPreview(){
 function drawPreview(hands){
 
   const ctx=previewCtx;
-
   const w=dom.preview.width;
   const h=dom.preview.height;
 
-  ctx.clearRect(
-    0,
-    0,
-    w,
-    h
-  );
+  ctx.clearRect(0,0,w,h);
 
-  ctx.fillStyle=
-    'rgba(5,10,14,.92)';
+  /*
+    MOSTRA LA TELECAMERA REALE.
+    Il canvas viene specchiato via CSS, quindi
+    l'immagine e i landmark rimangono allineati.
+  */
+  if(dom.video.readyState>=2 && dom.video.videoWidth){
 
-  ctx.fillRect(
-    0,
-    0,
-    w,
-    h
-  );
+    ctx.save();
+
+    const vw=dom.video.videoWidth;
+    const vh=dom.video.videoHeight;
+    const videoRatio=vw/vh;
+    const canvasRatio=w/h;
+
+    let dw=w, dh=h, dx=0, dy=0;
+
+    if(videoRatio>canvasRatio){
+      dh=h;
+      dw=h*videoRatio;
+      dx=(w-dw)*.5;
+    }else{
+      dw=w;
+      dh=w/videoRatio;
+      dy=(h-dh)*.5;
+    }
+
+    ctx.drawImage(dom.video,dx,dy,dw,dh);
+    ctx.restore();
+
+  }else{
+
+    ctx.fillStyle='#050a0e';
+    ctx.fillRect(0,0,w,h);
+
+  }
+
+  /* Velo HUD leggero, senza coprire la telecamera */
+  ctx.fillStyle='rgba(0,0,0,.10)';
+  ctx.fillRect(0,0,w,h);
 
   if(!hands?.length){
 
-    ctx.fillStyle=
-      'rgba(255,255,255,.35)';
-
-    ctx.font=
-      '9px "Share Tech Mono"';
-
+    ctx.fillStyle='rgba(255,255,255,.8)';
+    ctx.font='9px "Share Tech Mono"';
     ctx.textAlign='center';
-
-    ctx.fillText(
-      'SEARCHING HANDS...',
-      w/2,
-      h/2
-    );
-
+    ctx.fillText('CAMERA ONLINE // SEARCHING HANDS',w/2,h-12);
     return;
 
   }
 
-  hands.forEach(
-    (landmarks,i)=>{
+  hands.forEach((landmarks,i)=>{
 
-      ctx.strokeStyle=
-        i===0
-          ? '#00ffcc'
-          : '#ff00aa';
+    ctx.strokeStyle=i===0?'#00ffcc':'#ff00aa';
+    ctx.lineWidth=1.8;
 
-      ctx.lineWidth=1.5;
+    HAND_CONNECTIONS.forEach(pair=>{
 
-      HAND_CONNECTIONS.forEach(
-        pair=>{
+      const a=landmarks[pair[0]];
+      const b=landmarks[pair[1]];
 
-          const a=
-            landmarks[pair[0]];
+      ctx.beginPath();
+      ctx.moveTo(a.x*w,a.y*h);
+      ctx.lineTo(b.x*w,b.y*h);
+      ctx.stroke();
 
-          const b=
-            landmarks[pair[1]];
+    });
 
-          ctx.beginPath();
+    landmarks.forEach((p,index)=>{
 
-          ctx.moveTo(
-            a.x*w,
-            a.y*h
-          );
+      ctx.fillStyle=(index===4||index===8)
+        ? '#ffe66d'
+        : (i===0?'#00ffcc':'#ff00aa');
 
-          ctx.lineTo(
-            b.x*w,
-            b.y*h
-          );
-
-          ctx.stroke();
-
-        }
+      ctx.beginPath();
+      ctx.arc(
+        p.x*w,
+        p.y*h,
+        (index===4||index===8)?3.2:1.8,
+        0,
+        Math.PI*2
       );
+      ctx.fill();
 
-      landmarks.forEach(
-        (p,index)=>{
+    });
 
-          ctx.fillStyle=
-            (
-              index===4 ||
-              index===8
-            )
-              ? '#ffe66d'
-              : (
-                  i===0
-                    ? '#00ffcc'
-                    : '#ff00aa'
-                );
+  });
 
-          ctx.beginPath();
-
-          ctx.arc(
-            p.x*w,
-            p.y*h,
-            (
-              index===4 ||
-              index===8
-            )
-              ? 3
-              : 1.7,
-            0,
-            Math.PI*2
-          );
-
-          ctx.fill();
-
-        }
-      );
-
-    }
-  );
+  ctx.fillStyle='rgba(0,0,0,.68)';
+  ctx.fillRect(7,h-24,128,17);
+  ctx.fillStyle='#fff';
+  ctx.font='8px "Share Tech Mono"';
+  ctx.textAlign='left';
+  ctx.fillText('OPTICAL FEED // HAND TRACK',12,h-12);
 
 }
-
 /* =========================================================
    SPAWN BUILDER OBJECT
 ========================================================= */
@@ -5847,207 +5995,134 @@ function updateTrail(
 
 function updateParticleTargets(){
 
-  if(
-    currentMode!=='PARTICLES'
-  )return;
+  if(currentMode!=='PARTICLES')return;
 
-  const left=
-    controllers[0];
+  const left=controllers[0];
+  const right=controllers[1];
 
-  const right=
-    controllers[1];
+  const ROT_GAIN=.78;
 
-  const ROT_GAIN=.85;
-
-  if(
-    left.active &&
-    right.active
-  ){
+  if(left.active && right.active){
 
     const a=left.pos;
     const b=right.pos;
 
-    /*
-      Midpoint = rotation controller.
-    */
+    const center=new THREE.Vector3()
+      .addVectors(a,b)
+      .multiplyScalar(.5);
 
-    const center=
-      new THREE.Vector3()
-        .addVectors(a,b)
-        .multiplyScalar(.5);
+    /* SOLO movimento del centro = rotazione */
+    if(hasLastHandCenter){
 
-    /*
-      ONLY frame-to-frame movement.
-      No velocity and no inertia.
-    */
+      const dx=center.x-lastHandCenterX;
+      const dy=center.y-lastHandCenterY;
 
-    if(
-      hasLastHandCenter
-    ){
+      if(Math.abs(dx)>CONFIG.rotationDeadzone){
+        targetRotY+=dx*CONFIG.axisSensitivity*ROT_GAIN;
+      }
 
-      const dx=
-        center.x-
-        lastHandCenterX;
-
-      const dy=
-        center.y-
-        lastHandCenterY;
-
-      targetRotY+=
-        dx*
-        CONFIG.axisSensitivity*
-        ROT_GAIN;
-
-      targetRotX+=
-        -dy*
-        CONFIG.axisSensitivity*
-        ROT_GAIN;
+      if(Math.abs(dy)>CONFIG.rotationDeadzone){
+        targetRotX-=dy*CONFIG.axisSensitivity*ROT_GAIN;
+      }
 
     }
 
-    lastHandCenterX=
-      center.x;
-
-    lastHandCenterY=
-      center.y;
-
+    lastHandCenterX=center.x;
+    lastHandCenterY=center.y;
     hasLastHandCenter=true;
 
     /*
-      Distance = ONLY zoom.
+      ZOOM ULTRA PRECISO:
+      la distanza iniziale diventa il punto zero.
+      Aprire/chiudere le mani modifica SOLO la scala.
     */
+    const dx=b.x-a.x;
+    const dy=b.y-a.y;
+    const distance2D=Math.hypot(dx,dy);
 
-    const distance=
-      a.distanceTo(b);
+    if(!hasZoomAnchor){
+      zoomAnchorDistance=distance2D;
+      zoomAnchorScale=currentScale;
+      hasZoomAnchor=true;
+    }
 
-    targetScale=
-      THREE.MathUtils.clamp(
-        .65+
-        distance*.075,
-        .65,
-        2.4
+    const deltaZoom=distance2D-zoomAnchorDistance;
+
+    if(Math.abs(deltaZoom)>CONFIG.zoomDeadzone){
+      targetScale=THREE.MathUtils.clamp(
+        zoomAnchorScale+
+        deltaZoom*CONFIG.zoomSensitivity,
+        .55,
+        2.8
       );
+    }else{
+      targetScale=zoomAnchorScale;
+    }
 
-    /*
-      Relative angle = roll.
-      Distance itself does NOT affect rotation.
-    */
+    /* Roll: solo rotazione reale delle due mani */
+    const angle=Math.atan2(dy,dx);
 
-    const angle=
-      Math.atan2(
-        b.y-a.y,
-        b.x-a.x
-      );
+    if(hasLastHandAngle){
 
-    if(
-      hasLastHandAngle
-    ){
+      let deltaAngle=angle-lastHandAngle;
 
-      let deltaAngle=
-        angle-
-        lastHandAngle;
+      while(deltaAngle>Math.PI)deltaAngle-=Math.PI*2;
+      while(deltaAngle<-Math.PI)deltaAngle+=Math.PI*2;
 
-      while(
-        deltaAngle>Math.PI
-      ){
-        deltaAngle-=
-          Math.PI*2;
+      if(Math.abs(deltaAngle)>.0015){
+        targetRotZ+=deltaAngle*CONFIG.rollSensitivity;
       }
-
-      while(
-        deltaAngle<-Math.PI
-      ){
-        deltaAngle+=
-          Math.PI*2;
-      }
-
-      targetRotZ+=
-        deltaAngle*
-        CONFIG.rollSensitivity;
 
     }
 
-    lastHandAngle=
-      angle;
-
+    lastHandAngle=angle;
     hasLastHandAngle=true;
 
     return;
-
   }
 
   /*
-    ONE HAND:
-
-    Movement can rotate the object,
-    but there is NO zoom.
+    UNA MANO:
+    movimento = rotazione.
+    Nessun zoom.
   */
-
-  const activeHand=
-    left.active
-      ? left
-      : right.active
-        ? right
-        : null;
+  const activeHand=left.active?left:right.active?right:null;
 
   if(!activeHand){
 
     hasLastHandCenter=false;
     hasLastHandAngle=false;
+    hasZoomAnchor=false;
 
-    /*
-      Freeze the object exactly.
-    */
-
+    /* FREEZE ASSOLUTO: nessuna rotazione automatica */
     return;
+  }
+
+  const p=activeHand.pos;
+
+  if(hasLastHandCenter){
+
+    const dx=p.x-lastHandCenterX;
+    const dy=p.y-lastHandCenterY;
+
+    if(Math.abs(dx)>CONFIG.rotationDeadzone){
+      targetRotY+=dx*CONFIG.axisSensitivity*ROT_GAIN;
+    }
+
+    if(Math.abs(dy)>CONFIG.rotationDeadzone){
+      targetRotX-=dy*CONFIG.axisSensitivity*ROT_GAIN;
+    }
 
   }
 
-  const p=
-    activeHand.pos;
-
-  if(
-    hasLastHandCenter
-  ){
-
-    const dx=
-      p.x-
-      lastHandCenterX;
-
-    const dy=
-      p.y-
-      lastHandCenterY;
-
-    targetRotY+=
-      dx*
-      CONFIG.axisSensitivity*
-      ROT_GAIN;
-
-    targetRotX+=
-      -dy*
-      CONFIG.axisSensitivity*
-      ROT_GAIN;
-
-  }
-
-  lastHandCenterX=
-    p.x;
-
-  lastHandCenterY=
-    p.y;
-
+  lastHandCenterX=p.x;
+  lastHandCenterY=p.y;
   hasLastHandCenter=true;
 
-  /*
-    No automatic one-hand zoom.
-  */
-
   targetScale=1;
-
+  hasZoomAnchor=false;
   hasLastHandAngle=false;
-
 }
-
 /* =========================================================
    BUILDER HAND
 ========================================================= */
@@ -6446,17 +6521,9 @@ function updateHardwareHologram(){
     because it does not move the hologram.
   */
 
-  if(
-    ud.light1
-  ){
-
-    ud.light1.intensity=
-      .95+
-      Math.sin(
-        performance.now()*.002
-      )*.15;
-
-  }
+  /* NESSUNA ANIMAZIONE AUTOMATICA.
+     Anche le luci restano statiche: il modello si muove
+     solo quando l'utente muove le mani. */
 
 }
 
@@ -6804,7 +6871,74 @@ function switchMode(
    EVENTS
 ========================================================= */
 
+function initPreviewDrag(){
+
+  const panel=dom.previewContainer;
+  if(!panel)return;
+
+  let dragging=false;
+  let startX=0,startY=0;
+  let baseLeft=0,baseTop=0;
+
+  panel.addEventListener('pointerdown',e=>{
+
+    dragging=true;
+    panel.classList.add('dragging');
+
+    const rect=panel.getBoundingClientRect();
+
+    startX=e.clientX;
+    startY=e.clientY;
+    baseLeft=rect.left;
+    baseTop=rect.top;
+
+    panel.style.left=baseLeft+'px';
+    panel.style.top=baseTop+'px';
+    panel.style.right='auto';
+    panel.style.bottom='auto';
+
+    panel.setPointerCapture?.(e.pointerId);
+
+  });
+
+  panel.addEventListener('pointermove',e=>{
+
+    if(!dragging)return;
+
+    const margin=6;
+    const maxX=innerWidth-panel.offsetWidth-margin;
+    const maxY=innerHeight-panel.offsetHeight-margin;
+
+    const x=THREE.MathUtils.clamp(
+      baseLeft+(e.clientX-startX),
+      margin,
+      Math.max(margin,maxX)
+    );
+
+    const y=THREE.MathUtils.clamp(
+      baseTop+(e.clientY-startY),
+      margin,
+      Math.max(margin,maxY)
+    );
+
+    panel.style.left=x+'px';
+    panel.style.top=y+'px';
+
+  });
+
+  const stop=()=>{
+    dragging=false;
+    panel.classList.remove('dragging');
+  };
+
+  panel.addEventListener('pointerup',stop);
+  panel.addEventListener('pointercancel',stop);
+
+}
+
 function bindEvents(){
+
+  initPreviewDrag();
 
   dom.tabBuilder.addEventListener(
     'click',
